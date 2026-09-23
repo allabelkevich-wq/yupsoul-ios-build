@@ -20340,6 +20340,9 @@ body.theme-light #myTracksPage .mtv2-player .v2act,html.is-vk-light:not(.dark) #
     #mtShareSheet{--cta:linear-gradient(135deg,#ec4899,#f97316);--cta-glow:rgba(236,72,153,.5);--line:rgba(255,255,255,.09);--line-2:rgba(255,255,255,.16);--text:#f5f1fb;--muted:rgba(245,241,251,.64);--surface:rgba(255,255,255,.06);--sans:'Inter',ui-sans-serif,system-ui,-apple-system,sans-serif;
       position:fixed;inset:0;z-index:10045;display:none;flex-direction:column;background:linear-gradient(180deg,rgba(10,6,18,.9),rgba(8,5,16,.98));backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);color:var(--text);font-family:var(--sans)}
     #mtShareSheet.open{display:flex}
+    /* Натив (App Store): «Ещё» дублирует «Истории» (обе — карточка через системный лист), прячем; тактильный отклик пилюль формата — по образцу :active в этом же блоке (аудит 23.09) */
+    html.is-native #mshTgMore{display:none !important}
+    #mtShareSheet .msh-fmt:active{transform:scale(.94)}
     #mtShareSheet .msh-head{flex:none;display:flex;align-items:center;gap:12px;padding:calc(16px + env(safe-area-inset-top)) 18px 6px}
     #mtShareSheet .msh-head b{flex:1;font-size:16px;font-weight:600;letter-spacing:-.01em}
     #mtShareSheet .msh-x{flex:none;width:38px;height:38px;border-radius:50%;border:1px solid var(--line-2);background:rgba(255,255,255,.06);color:var(--text);display:grid;place-items:center;cursor:pointer;transition:transform .12s}
@@ -21299,7 +21302,7 @@ body.theme-light #myTracksPage .mtv2-player .v2act,html.is-vk-light:not(.dark) #
           if(_pid==null || e.pointerId!==_pid) return;
           var dx=e.clientX-_startX, dy=e.clientY-_startY;
           if(!_decided){
-            if(Math.abs(dx)>8 && Math.abs(dx)>Math.abs(dy)){ _decided=true; dragging=true; }
+            if(Math.abs(dx)>8 && Math.abs(dx)>Math.abs(dy)){ _decided=true; dragging=true; window._mtVolDragging=true; }
             else if(Math.abs(dy)>8 && Math.abs(dy)>=Math.abs(dx)){ _decided=true; dragging=false; }
             else return;
           }
@@ -21312,11 +21315,11 @@ body.theme-light #myTracksPage .mtv2-player .v2act,html.is-vk-light:not(.dark) #
             var dx=Math.abs(e.clientX-_startX), dy=Math.abs(e.clientY-_startY);
             if(dx<5 && dy<5 && (Date.now()-_startT)<300){ setFromX(e.clientX); if(vol>0) last=vol; }
           }
-          dragging=false; _decided=false; _pid=null;
+          dragging=false; _decided=false; _pid=null; window._mtVolDragging=false;
         }
         track.addEventListener('pointerup', _endDrag);
         /* pointercancel: система/palm-rejection отменяет pointer — без сброса dragging залипал true, следующий pointermove дёргал громкость */
-        track.addEventListener('pointercancel',function(e){ if(_pid==null || e.pointerId!==_pid) return; dragging=false; _decided=false; _pid=null; if(vol>0) last=vol; });
+        track.addEventListener('pointercancel',function(e){ if(_pid==null || e.pointerId!==_pid) return; dragging=false; _decided=false; _pid=null; window._mtVolDragging=false; if(vol>0) last=vol; });
         if(btn) btn.addEventListener('click',function(){ if(vol>0){ last=vol; vol=0; } else { vol=last||60; } paint(); apply(); });
         /* Движок зовёт это когда загружает трек — выставить UI из сохранённой громкости (0..1). */
         window._mtSyncVolUI=function(v01){ var v=Math.max(0,Math.min(100,Math.round((v01==null?vol/100:v01)*100))); vol=v; if(vol>0) last=vol; paint(); };
@@ -21414,6 +21417,9 @@ body.theme-light #myTracksPage .mtv2-player .v2act,html.is-vk-light:not(.dark) #
       /* данные волн (дизайн-константы: имя/иконка/оттенок/подпись). k = ключ волны для API.
          Счётчики слушателей — РЕАЛЬНЫЕ, приходят из /api/radio/stations (не хардкод). */
       /* ── Волны по настроению (дизайн showcase-playlist). k = ключ API, art = генеративная обложка ── */
+      // Радио: ряд «волн по настроению» скрыт — сортировка по настроению не соответствовала трекам,
+      // оставлены только жанры (решение Аллы 23.09, TestFlight 27). Данные волн в треках живут как раньше.
+      var RADIO_WAVES_UI=false;
       var WAVES=[
         {k:'mood',   nk:'rwMood',   n:'По настроению', art:'radial-gradient(120% 120% at 25% 18%,hsl(300,90%,68%),transparent 55%),linear-gradient(160deg,hsl(300,55%,20%),hsl(268,55%,11%))'},
         {k:'tender', nk:'rwTender', n:'Нежность',      art:'radial-gradient(120% 120% at 25% 18%,hsl(330,92%,70%),transparent 55%),linear-gradient(160deg,hsl(320,55%,20%),hsl(268,55%,11%))'},
@@ -21445,7 +21451,7 @@ body.theme-light #myTracksPage .mtv2-player .v2act,html.is-vk-light:not(.dark) #
         var on=(window._mtRadioMode && window._mtCurRadioId===it.id);
         return '<div class="rt'+(on?' on':'')+'" role="button" tabindex="0" data-id="'+esc(it.id)+'" data-wave="'+esc(it.wave||'')+'" data-idx="'+idx+'">'
           +'<span class="art rt-art">'+(idx<3?'<span class="rt-rank rt-rank-'+(idx+1)+'">'+(idx+1)+'</span>':'')+artHtml(it)+'</span>'
-          +'<span class="rt-body"><span class="rt-name">'+esc(it.title||'')+'</span><span class="rt-sub"><span class="who">'+who+'</span> · '+esc(waveName(it.wave))+(it.genre?' · '+esc(genreName(it.genre)):'')+'</span></span>'
+          +'<span class="rt-body"><span class="rt-name">'+esc(it.title||'')+'</span><span class="rt-sub"><span class="who">'+who+'</span>'+(RADIO_WAVES_UI?' · '+esc(waveName(it.wave)):'')+(it.genre?' · '+esc(genreName(it.genre)):'')+'</span></span>'
           +'<span class="rt-tail">'
           +(showSave?('<button type="button" class="rt-save'+(it.saved?' on':'')+'" data-act="save" aria-label="'+esc(T('rdSave','Сохранить'))+'">'+bookmarkSvg()+'</button>'):'')
           /* Правило 1.2 App Store: у чужого контента обязаны быть жалоба и
@@ -21469,7 +21475,7 @@ body.theme-light #myTracksPage .mtv2-player .v2act,html.is-vk-light:not(.dark) #
       }
       function startStationsPoll(){ if(window._rStationsTimer) return; window._rStationsTimer=setInterval(function(){ var pg=document.getElementById('myTracksPage'), rp=$('mtPanelRadio'); if(!pg||!pg.classList.contains('active')){ clearInterval(window._rStationsTimer); window._rStationsTimer=null; return; } if(!rp||!rp.classList.contains('on')) return; _radioLoadStations(); },20000); }
       function renderAir(it){ var air=$('mtAir'); if(!air) return; if(!it){ air.innerHTML=''; return; }
-        air.innerHTML='<div class="air"><span class="art">'+artHtml(it)+'</span><div class="air-tx"><span class="air-eyebrow"><span class="dot"></span> '+esc(T('rdNowOnAir','В эфире сейчас'))+'</span><div class="air-name">'+esc(it.title||'')+'</div><div class="air-by">'+esc(it.author||T('rdAnon','Аноним'))+' · '+esc(waveName(it.wave))+'</div></div><button type="button" class="air-play" data-airplay aria-label="'+esc(T('rdListen2','Слушать'))+'"><svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor"><polygon points="7 4 20 12 7 20"/></svg></button></div>';
+        air.innerHTML='<div class="air"><span class="art">'+artHtml(it)+'</span><div class="air-tx"><span class="air-eyebrow"><span class="dot"></span> '+esc(T('rdNowOnAir','В эфире сейчас'))+'</span><div class="air-name">'+esc(it.title||'')+'</div><div class="air-by">'+esc(it.author||T('rdAnon','Аноним'))+(RADIO_WAVES_UI?' · '+esc(waveName(it.wave)):(it.genre?' · '+esc(genreName(it.genre)):''))+'</div></div><button type="button" class="air-play" data-airplay aria-label="'+esc(T('rdListen2','Слушать'))+'"><svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor"><polygon points="7 4 20 12 7 20"/></svg></button></div>';
       }
       function renderFeedList(tracks){ var list=$('mtRadioList'); if(!list) return;
         if(!tracks.length){ var gsel=(window._mtRadioGenre&&window._mtRadioGenre!=='all'); list.innerHTML='<div class="r2-empty">'+esc(gsel?T('rdEmptyGenre','В этом жанре пока пусто — выбери другой жанр или «Все жанры».'):T('rdEmpty2','Пока никто не публиковал песни на эту волну. Опубликуй свою первой — во вкладке «Мои треки».'))+'</div>'; return; }
@@ -21488,6 +21494,24 @@ body.theme-light #myTracksPage .mtv2-player .v2act,html.is-vk-light:not(.dark) #
       // повторный заход в уже загруженную вкладку рисуется мгновенно, сеть освежает в фоне;
       // guard по номеру запроса: поздний ответ старой вкладки не перебивает свежую.
       var _mtRadioFeedCache={}, _mtRadioFeedReqId=0;
+      // Остальные жанры подгружаем в фон по одному (с паузой), чтобы первое переключение тоже было мгновенным.
+      var _prefetching=false;
+      function _prefetchRadioGenres(wave, genres){
+        if(_prefetching || !Array.isArray(genres) || !genres.length) return;
+        var base=rApiBase(); if(!base) return;
+        var keys=genres.map(function(g){ return g&&g.k; }).filter(function(k){ return k && !_mtRadioFeedCache[wave+'|'+k]; });
+        if(!keys.length) return;
+        _prefetching=true;
+        (function next(i){
+          if(i>=keys.length){ _prefetching=false; return; }
+          var k=keys[i], cacheKey=wave+'|'+k;
+          fetch(base+'/api/radio/feed?wave='+encodeURIComponent(wave)+'&genre='+encodeURIComponent(k),{headers:rHeaders()})
+            .then(function(r){ return r.json().catch(function(){return null;}); })
+            .then(function(d){ if(d&&d.ok&&!_mtRadioFeedCache[cacheKey]){ var tr=d.tracks||[]; _mtRadioFeedCache[cacheKey]={tracks:tr,featured:d.featured||tr[0]||null,genres:d.genres}; } })
+            .catch(function(){})
+            .then(function(){ setTimeout(function(){ next(i+1); }, 250); });
+        })(0);
+      }
       function loadRadioFeed(wave, genre){
         window._mtRadioFilter=wave;
         if(genre!==undefined) window._mtRadioGenre=genre;
@@ -21503,6 +21527,7 @@ body.theme-light #myTracksPage .mtv2-player .v2act,html.is-vk-light:not(.dark) #
             var tracks=(d&&d.ok&&d.tracks)?d.tracks:[], featured=(d&&d.featured)||tracks[0]||null, genres=d&&d.genres;
             _mtRadioFeedCache[cacheKey]={tracks:tracks,featured:featured,genres:genres};
             window._mtRadioFeed=tracks; window._mtRadioFeatured=featured; renderGenreRow(genres); renderAir(featured); renderFeedList(tracks);
+            _prefetchRadioGenres(wave, genres);
           })
           .catch(function(){ /* закон №37 */ });
       }
@@ -21510,7 +21535,7 @@ body.theme-light #myTracksPage .mtv2-player .v2act,html.is-vk-light:not(.dark) #
         var panel=$('mtPanelRadio'); if(!panel) return;
         if(!panel.dataset.rendered){
           var pills='<button type="button" class="wave-pill on" data-w="all">'+esc(T('rdWaveAll','Все волны'))+'</button>'+WAVES.map(function(w){return '<button type="button" class="wave-pill" data-w="'+w.k+'">'+esc(T(w.nk,w.n))+'</button>';}).join('');
-          panel.innerHTML='<div class="r2-live" id="mtRLive"></div><div class="wave-row" id="mtWaveRow">'+pills+'</div><div class="wave-row genre-row" id="mtGenreRow" style="display:none"></div><div id="mtAir"></div><div class="radio-glabel"><span>'+esc(T('rdTopWeek','Топ недели'))+'</span><span class="ln"></span></div><div class="tracks" id="mtRadioList"></div>';
+          panel.innerHTML='<div class="r2-live" id="mtRLive"></div><div class="wave-row" id="mtWaveRow"'+(RADIO_WAVES_UI?'':' style="display:none"')+'>'+pills+'</div><div class="wave-row genre-row" id="mtGenreRow" style="display:none"></div><div id="mtAir"></div><div class="radio-glabel"><span>'+esc(T('rdTopWeek','Топ недели'))+'</span><span class="ln"></span></div><div class="tracks" id="mtRadioList"></div>';
           panel.dataset.rendered='1';
           panel.querySelector('#mtWaveRow').addEventListener('click', function(e){ var b=e.target.closest('.wave-pill'); if(!b) return; panel.querySelectorAll('#mtWaveRow .wave-pill').forEach(function(p){p.classList.toggle('on',p===b);}); loadRadioFeed(b.getAttribute('data-w'), 'all'); });
           panel.querySelector('#mtGenreRow').addEventListener('click', function(e){ var b=e.target.closest('.wave-pill'); if(!b) return; panel.querySelectorAll('#mtGenreRow .wave-pill').forEach(function(p){p.classList.toggle('on',p===b);}); loadRadioFeed(window._mtRadioFilter||'all', b.getAttribute('data-g')); });
@@ -53774,7 +53799,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
         if (window._nativePlatform === 'ios') {
           var SystemVolume = plugin('SystemVolume');
           if (SystemVolume) {
-            var _svWatching = false, _svListenerBound = false, _svLastSet = 0;
+            var _svWatching = false, _svListenerBound = false, _svLastSet = 0, _svLastKnown = null, _svPoll = null;
             window._nativeVolumeBridge = {
               active: true,
               setVolume: function(v01) {
@@ -53790,7 +53815,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
               try {
                 SystemVolume.addListener('volumeChange', function(data) {
                   var v = data && typeof data.value === 'number' ? data.value : null;
-                  if (v != null && typeof window._mtSyncVolUI === 'function') window._mtSyncVolUI(v);
+                  if (v != null) { _svLastKnown = v; if (typeof window._mtSyncVolUI === 'function' && !window._mtVolDragging) window._mtSyncVolUI(v); }
                 });
               } catch(_) {}
             }
@@ -53805,8 +53830,22 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
                 }).catch(function() {});
                 SystemVolume.startWatching().catch(function() {});
               } catch(_) {}
+              /* Второй канал, не зависящий от KVO: пока плеер открыт, раз в полсекунды читаем системную
+                 громкость и двигаем ползунок, если её изменили кнопками (не во время драга и не сразу после
+                 своего setVolume — иначе ползунок дёргается). */
+              if (!_svPoll) _svPoll = setInterval(function() {
+                if (document.hidden || window._mtVolDragging || Date.now() - _svLastSet < 400) return;
+                try {
+                  SystemVolume.getVolume().then(function(res) {
+                    var v = res && typeof res.value === 'number' ? res.value : null;
+                    if (v == null) return;
+                    if (_svLastKnown == null || Math.abs(v - _svLastKnown) > 0.005) { _svLastKnown = v; if (typeof window._mtSyncVolUI === 'function') window._mtSyncVolUI(v); }
+                  }).catch(function() {});
+                } catch(_) {}
+              }, 500);
             }
             function _svStop() {
+              if (_svPoll) { clearInterval(_svPoll); _svPoll = null; }
               if (!_svWatching) return;
               _svWatching = false;
               try { SystemVolume.stopWatching().catch(function() {}); } catch(_) {}
@@ -56592,11 +56631,16 @@ body.theme-light #planConfirmOverlay .cf-old{-webkit-text-fill-color:#6f5a66 !im
         var subText = track.is_pending ? (isPendingStuck?(typeof t==='function'?(t('mtPendingStuckSub')||'Напишите в поддержку'):'Напишите в поддержку'):(typeof t==='function'?(t('mtPendingSub')||'~15 минут'):'~15 минут')) : [modeLabel,date].filter(Boolean).join(' · ');
         var pillHtml = track.radio_enabled&&!track.is_pending ? '<span class="track-pill live">'+(typeof t==='function'?(t('mngOnAir')||'В эфире'):'В эфире')+'</span>' : '';
         var durTxt = (track.duration && isFinite(track.duration)) ? (Math.floor(track.duration/60)+':'+('0'+Math.floor(track.duration%60)).slice(-2)) : '';
+        // Сердце в строке вернули (Алла 23.09, TestFlight 27: «лайки ушли куда-то, я бы их оставила»)
+        var isLikedRow = !!(window._mtLikedIds && window._mtLikedIds[String(track.id)]);
+        var likeHtml = (track.audio_url && !track.is_pending) ? '<button type="button" class="track-like'+(isLikedRow?' on':'')+'" aria-label="'+(typeof t==='function'?(t('rdLike')||'Нравится'):'Нравится')+'"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg></button>' : '';
         item.innerHTML = artHtml
           + '<span class="tr-b track-body"><b class="track-name">'+esc2(songTitle)+'</b><span class="track-sub">'+pillHtml+esc2(subText)+'</span></span>'
           + '<span class="tr-r" data-dur="'+durTxt+'">'+durTxt+'</span>'
+          + likeHtml
           + '<span class="track-prog"><i></i></span>';
         item.addEventListener('click', function(e) {
+          if(e.target.closest&&e.target.closest('.track-like')){ var btn=e.target.closest('.track-like'); var liked=btn.classList.toggle('on'); window._mtLikedIds=window._mtLikedIds||{}; window._mtLikedIds[String(track.id)]=liked; if(typeof window._mtPersistFavorite==='function') window._mtPersistFavorite(String(track.id), liked); e.stopPropagation(); return; }
           if(!track.audio_url||track.is_pending) return;
           if(window._mtRadioMode&&typeof window._mtExitRadio==='function') window._mtExitRadio();
           window._mtPlayTrack(idx);
@@ -57119,7 +57163,8 @@ body.theme-light #planConfirmOverlay .cf-old{-webkit-text-fill-color:#6f5a66 !im
       try {
         var _savedVol = parseFloat(localStorage.getItem('yup_player_volume'));
         audio.volume = (isFinite(_savedVol) && _savedVol >= 0 && _savedVol <= 1) ? _savedVol : 0.8;
-        if (typeof window._mtSyncVolUI === 'function') window._mtSyncVolUI(audio.volume);
+        // Натив: ползунок отражает системную громкость (мост), а не audio.volume, который iOS держит на 1
+        if (!(window._nativeVolumeBridge && window._nativeVolumeBridge.active) && typeof window._mtSyncVolUI === 'function') window._mtSyncVolUI(audio.volume);
       } catch(_) {}
 
       // Ждём canplay перед воспроизведением — не играем пока не загрузится

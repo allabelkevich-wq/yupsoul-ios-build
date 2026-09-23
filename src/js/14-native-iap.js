@@ -633,7 +633,7 @@
         if (window._nativePlatform === 'ios') {
           var SystemVolume = plugin('SystemVolume');
           if (SystemVolume) {
-            var _svWatching = false, _svListenerBound = false, _svLastSet = 0;
+            var _svWatching = false, _svListenerBound = false, _svLastSet = 0, _svLastKnown = null, _svPoll = null;
             window._nativeVolumeBridge = {
               active: true,
               setVolume: function(v01) {
@@ -649,7 +649,7 @@
               try {
                 SystemVolume.addListener('volumeChange', function(data) {
                   var v = data && typeof data.value === 'number' ? data.value : null;
-                  if (v != null && typeof window._mtSyncVolUI === 'function') window._mtSyncVolUI(v);
+                  if (v != null) { _svLastKnown = v; if (typeof window._mtSyncVolUI === 'function' && !window._mtVolDragging) window._mtSyncVolUI(v); }
                 });
               } catch(_) {}
             }
@@ -664,8 +664,22 @@
                 }).catch(function() {});
                 SystemVolume.startWatching().catch(function() {});
               } catch(_) {}
+              /* Второй канал, не зависящий от KVO: пока плеер открыт, раз в полсекунды читаем системную
+                 громкость и двигаем ползунок, если её изменили кнопками (не во время драга и не сразу после
+                 своего setVolume — иначе ползунок дёргается). */
+              if (!_svPoll) _svPoll = setInterval(function() {
+                if (document.hidden || window._mtVolDragging || Date.now() - _svLastSet < 400) return;
+                try {
+                  SystemVolume.getVolume().then(function(res) {
+                    var v = res && typeof res.value === 'number' ? res.value : null;
+                    if (v == null) return;
+                    if (_svLastKnown == null || Math.abs(v - _svLastKnown) > 0.005) { _svLastKnown = v; if (typeof window._mtSyncVolUI === 'function') window._mtSyncVolUI(v); }
+                  }).catch(function() {});
+                } catch(_) {}
+              }, 500);
             }
             function _svStop() {
+              if (_svPoll) { clearInterval(_svPoll); _svPoll = null; }
               if (!_svWatching) return;
               _svWatching = false;
               try { SystemVolume.stopWatching().catch(function() {}); } catch(_) {}

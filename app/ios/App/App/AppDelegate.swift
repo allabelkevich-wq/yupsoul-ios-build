@@ -82,7 +82,7 @@ public class SystemVolumePlugin: CAPPlugin, CAPBridgedPlugin {
 
     private var volumeView: MPVolumeView?
     private var volumeSlider: UISlider?
-    private var volumeObservation: NSKeyValueObservation?
+    private var observingVolume = false
 
     @objc func getVolume(_ call: CAPPluginCall) {
         call.resolve(["value": AVAudioSession.sharedInstance().outputVolume])
@@ -101,20 +101,37 @@ public class SystemVolumePlugin: CAPPlugin, CAPBridgedPlugin {
         call.resolve()
     }
 
+    // Классическое KVO по строковому ключу: на устройстве Swift-замыкание observe(\.outputVolume)
+    // не отдавало событий от кнопок громкости (Алла, TestFlight 27: «кнопки отдельно, бегунок отдельно»),
+    // addObserver/observeValue — проверенный Apple-путь для AVAudioSession.outputVolume.
     @objc func startWatching(_ call: CAPPluginCall) {
         try? AVAudioSession.sharedInstance().setActive(true)
-        if volumeObservation == nil {
-            volumeObservation = AVAudioSession.sharedInstance().observe(\.outputVolume, options: [.new]) { [weak self] session, _ in
-                self?.notifyListeners("volumeChange", data: ["value": session.outputVolume])
-            }
+        if !observingVolume {
+            AVAudioSession.sharedInstance().addObserver(self, forKeyPath: "outputVolume", options: [.new, .initial], context: nil)
+            observingVolume = true
         }
         call.resolve()
     }
 
     @objc func stopWatching(_ call: CAPPluginCall) {
-        volumeObservation?.invalidate()
-        volumeObservation = nil
+        if observingVolume {
+            AVAudioSession.sharedInstance().removeObserver(self, forKeyPath: "outputVolume")
+            observingVolume = false
+        }
         call.resolve()
+    }
+
+    public override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
+        if keyPath == "outputVolume" {
+            let v = AVAudioSession.sharedInstance().outputVolume
+            DispatchQueue.main.async { self.notifyListeners("volumeChange", data: ["value": v]) }
+            return
+        }
+        super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
+    }
+
+    deinit {
+        if observingVolume { AVAudioSession.sharedInstance().removeObserver(self, forKeyPath: "outputVolume") }
     }
 
     // Скрытый MPVolumeView создаётся один раз на главном потоке; его внутренний UISlider —
