@@ -1,0 +1,125 @@
+<div class="page" id="homePage">
+      <div class="gradient-bg" aria-hidden="true">
+        <div class="gradients-container">
+          <div class="g1"></div>
+          <div class="g2"></div>
+          <div class="g3"></div>
+          <div class="g4"></div>
+          <div class="g5"></div>
+          <div class="g6"></div>
+          <div id="homePageInteractive" class="interactive" aria-hidden="true"></div>
+        </div>
+      </div>
+      <!-- Верхняя панель: логотип слева, RU + профиль справа -->
+      <header id="homeTopBar" class="home-top-bar" aria-label="Шапка">
+        <span class="home-top-bar-logo"><span class="home-logo-symbol-wrap"><img src="assets/icons/logo-symbol.webp" alt="" class="home-logo-symbol" width="36" height="36" aria-hidden="true"></span><span>YupSoul <span class="logo-pipe" style="font-weight:400;opacity:0.4;">|</span> <span id="logoSubtitleMain">Музыкальный оракул</span></span></span>
+        <div class="home-top-bar-actions">
+          <div id="langSwitcher" class="lang-switcher-compact" aria-label="Язык интерфейса">
+            <button type="button" id="langSwitcherBtn" class="home-top-bar-btn lang-switcher-btn header-menu-btn" title="Язык">
+              <span id="langSwitcherIcon" aria-hidden="true"></span>
+              <span id="langSwitcherCurrent">RU</span>
+            </button>
+            <div id="langSwitcherDropdown" class="lang-dropdown" hidden>
+              <button type="button" class="lang-opt" data-lang="ru">RU</button>
+              <button type="button" class="lang-opt" data-lang="en">EN</button>
+              <button type="button" class="lang-opt" data-lang="de">DE</button>
+              <button type="button" class="lang-opt" data-lang="fr">FR</button>
+            </div>
+          </div>
+          <button type="button" id="inboxBellBtn" class="home-top-bar-btn header-menu-btn" onclick="window._openInbox&&window._openInbox()" aria-label="Уведомления" title="Уведомления" data-i18n-aria="inboxTitle" data-i18n-title="inboxTitle" style="position:relative;">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 6 2 7 2 7H4s2-1 2-7"></path><path d="M10.2 20a2 2 0 0 0 3.6 0"></path></svg>
+            <span id="inboxBadge" class="inbox-badge" hidden>0</span>
+          </button>
+          <button type="button" id="profileIconBtn" class="home-top-bar-btn header-menu-btn" onclick="goToProfileFrom('homePage')" aria-label="Профиль" title="Профиль" data-i18n-aria="myProfile" data-i18n-title="myProfile">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.6"></circle><path d="M5 20c.7-3.5 3.6-5.5 7-5.5s6.3 2 7 5.5"></path></svg>
+          </button>
+        </div>
+      </header>
+
+      <!-- Основной контент: для веб — отдельные горизонтальные блоки; для мобильных — как раньше -->
+      <main class="home-main-wrap">
+        <!-- Блок 1: герой (бренд, заголовок, CTA, typewriter) -->
+        <article id="homeHero" class="home-glass-card home-block home-block-hero">
+          <p id="homeGreeting" class="home-card-greeting" style="display:none; font-size:0.88rem; color:rgba(255,255,255,0.7); margin:0 0 6px 0;"></p>
+          <p class="home-card-brand" style="display:none">YUPSOUL</p>
+          <h1 id="homeTagline" class="home-card-title">Узнай, как звучит <span class="home-card-title-accent">твой</span> гороскоп</h1>
+          <p id="homeTeaserText" class="home-card-teaser" data-i18n-html="homeTeaserHtml">В твоей <span class="tagline-glow">дате</span> скрыт дар по рождению, раскрой его через <span class="tagline-glow">песню</span></p>
+          <p id="homeSongCounter" class="home-song-counter" style="display:none; margin:0 0 10px; font-size:0.82rem; color:rgba(255,255,255,0.55); text-align:center; letter-spacing:0.02em;">♪ <span id="homeSongCountNum">—</span> <span id="homeSongCountLabel">человек узнали себя</span></p>
+          <button type="button" id="startBtn" class="home-card-cta btn-primary">Получи свою песню</button>
+          <p id="homeIskryHint" class="home-iskry-hint" style="display:none; margin:8px 0 0; font-size:0.8rem; color:rgba(255,255,255,0.65); text-align:center; line-height:1.4;"><span id="homeIskryHintText"></span></p>
+          <!-- Quick Action пресеты -->
+          <p class="home-card-choices-head" style="margin-top:18px;" data-i18n="homeChoicesHeadMain">Попробуй сегодня</p>
+          <div class="home-card-choices-grid">
+            <button type="button" class="home-choice" data-quick-action="song_of_day" data-i18n="homeChoiceMain1">Песня дня</button>
+            <button type="button" class="home-choice" data-quick-action="who_am_i" data-i18n="homeChoiceMain2">Кто я?</button>
+            <button type="button" class="home-choice" data-quick-action="star_style" data-i18n="homeChoiceMain3">Как у звезды</button>
+            <button type="button" class="home-choice" data-quick-action="couple_song" data-i18n="homeChoiceMain4">Совместимость</button>
+          </div>
+        </article>
+
+        <!-- Правая колонка на веб: интерактивный текст (блок «ЧТО ПОПРОБУЕШЬ?» перенесён на стартовую) -->
+        <div class="home-right-col">
+          <div class="home-typewriter-wrap home-typewriter-below" id="homeTypewriterWrap" aria-live="polite">
+            <span class="home-typewriter-text" id="homeTypewriterText"></span>
+            <span class="home-typewriter-cursor" id="homeTypewriterCursor" aria-hidden="true">|</span>
+          </div>
+        </div>
+
+        <!-- Блок 3: нижняя зона — баннеры, админка, навигация -->
+        <div class="home-lower home-block">
+
+      <!-- Баннер восстановления — мягко, без давления -->
+      <div id="recoveryBanner" style="display:none;margin:0 0 var(--spacing-md) 0;background:rgba(5,150,105,0.08);border:1px solid rgba(16,185,129,0.2);border-radius:var(--radius-md);padding:var(--spacing-md) var(--spacing-lg);position:relative;">
+        <button id="recoveryDismissBtn" style="position:absolute;top:8px;right:10px;background:none;border:none;color:rgba(255,255,255,0.3);font-size:1rem;line-height:1;cursor:pointer;padding:2px 4px;min-height:unset;width:auto;box-shadow:none;animation:none;margin:0;font-weight:400;" title="Закрыть" data-i18n-title="navClose">✕</button>
+        <div id="recoveryBannerText" data-i18n-html="recoveryBannerHtml" style="font-size:0.88rem;color:rgba(209,250,229,0.85);line-height:1.5;margin-bottom:10px;padding-right:20px;">
+          <strong style="color:#6ee7b7;">Твоя заявка ждёт!</strong> Используй Искры — создай свою песню.
+        </div>
+        <button id="recoveryClaimBtn" data-i18n="recoveryClaimBtn" style="width:100%;padding:12px 24px;border-radius:12px;background:linear-gradient(135deg,#059669,#10b981);border:none;color:#fff;font-size:0.95rem;font-weight:700;cursor:pointer;font-family:inherit;">
+          Создать песню
+        </button>
+      </div>
+
+      <!-- Приглашение в сообщество (Алла 22.08): карточка-ряд по эталону showcase-download-song (.task).
+           Только VK/OK (в TG/веб сообщества для вступления нет). Скрыта, если бонус уже выдан.
+           Правила VK: §2.6.2 бонус за вступление в официальное сообщество разрешён;
+           §2.6.3 — не всплывашка при первом запуске, а спокойная карточка в потоке. -->
+      <button type="button" class="task" id="homeCommCard" style="display:none;margin:0 0 var(--spacing-md) 0;">
+        <span class="task-ic vk" id="homeCommIc"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.8 16.3c-5 0-8-3.5-8.1-9.2h2.5c.1 4.2 2 6 3.4 6.4V7.1h2.4v3.7c1.4-.15 2.9-1.8 3.4-3.7h2.4c-.4 2.3-2 3.9-3.1 4.6 1.1.6 2.9 2 3.6 4.6h-2.6c-.55-1.7-1.9-3-3.7-3.2v3.2h-.6Z"/></svg></span>
+        <span class="task-body"><b data-i18n="homeCommT">Больше о твоих возможностях</b><span data-i18n="homeCommS">Новости и подсказки — в нашем сообществе</span></span>
+        <span class="task-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
+      </button>
+
+      <!-- Искра дня (claim) переехала в «Подарки» (#giftsPage) — раздел 5 oracle-simplification-strategy. На главной её больше нет (убрана зелёная плашка). -->
+
+      <!-- Админка только из профиля (со стартовой убрано по запросу) -->
+
+      <!-- Меню в потоке (скрыто: на главной используется фиксированная панель home-app-menu) -->
+      <div class="home-nav-glass glass-container glass-container--rounded glass-container--medium" id="homeNavInFlow" style="display:none;" aria-hidden="true">
+        <div class="glass-filter" aria-hidden="true"></div>
+        <div class="glass-overlay" aria-hidden="true"></div>
+        <div class="glass-specular" aria-hidden="true"></div>
+        <nav class="glass-content home-nav" aria-label="Навигация">
+          <button type="button" class="home-nav-link glass-item" onclick="goToSoulChat()" aria-label="Разговор по душам" data-i18n-aria="navSoulChatFull"><span id="navFlowSoulChat">Оракул</span></button>
+          <button type="button" class="home-nav-link glass-item" onclick="goToHelpFrom('homePage')" aria-label="Помощь" data-i18n-aria="myHelp"><span id="navFlowHelp">Помощь</span></button>
+          <button type="button" class="home-nav-link glass-item" onclick="goToHeroesFrom('homePage')" aria-label="Контакты" data-i18n-aria="myHeroes"><span id="navFlowLab">Контакты</span></button>
+          <button type="button" class="home-nav-link glass-item" onclick="window.returnToPage='homePage';goToPage('myTracksPage');if(typeof window.loadMyTracks==='function')window.loadMyTracks(false)" aria-label="Мои треки" data-i18n-aria="navMyTracks"><span id="navFlowTracks">Плейлист</span></button>
+      </nav>
+      </div>
+
+        </div><!-- /home-lower -->
+
+
+
+      <footer class="home-footer">
+        <p class="home-footer-version">YupSoul • 2026 • v1.2.77</p>
+        <p style="margin-top:4px;">
+          <a id="footerOfferLink" href="javascript:void(0)" onclick="if(window.showLegalModal)window.showLegalModal('offer')" style="color:rgba(255,255,255,0.2);font-size:0.65rem;">Оферта</a>
+          · <a id="footerPrivacyLink" href="javascript:void(0)" onclick="if(window.showLegalModal)window.showLegalModal('privacy')" style="color:rgba(255,255,255,0.2);font-size:0.65rem;">Конфиденциальность</a>
+        </p>
+        <p id="homeSubCancelLink" style="display:none;margin-top:4px;">
+          <a id="footerSubManageLink" href="#" onclick="event.preventDefault();goToPage('profilePage');setTimeout(function(){var el=document.getElementById('profileSubManage');if(el)el.scrollIntoView({behavior:'smooth'});},300);" style="color:rgba(255,255,255,0.25);font-size:0.65rem;text-decoration:underline;">Управление пакетами</a>
+        </p>
+      </footer>
+      </main><!-- /home-main-wrap -->
+
+    </div>

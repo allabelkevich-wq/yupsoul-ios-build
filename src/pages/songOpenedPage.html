@@ -1,0 +1,84 @@
+<!-- Экран «Песня открыта» (после оплаты) — перенос design-export-fixed/showcase-song-opened.html
+     дословно (закон №46). CSS заскоуплен под #songOpenedPage в app.css, @keyframes → suo*.
+     Демо .replay удалена. Плеер/конфетти/опт-ин — контроллер в 12-synastry-tail.js.
+     Реальное аудио/скачивание/слова/опт-ин API + появление после оплаты — Фаза 3. -->
+<div class="page" id="songOpenedPage">
+  <div class="so-root playing" id="soRoot">
+    <div class="ph-stars"></div>
+    <div class="confetti-layer" id="soCfLayer"></div>
+
+    <div class="wrap">
+      <div class="burst">
+        <span class="ring-o"></span><span class="glow"></span><span class="halo"></span>
+        <span class="core"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+      </div>
+      <div class="eyebrow" data-i18n="openedEyebrow">Твоя песня открыта</div>
+      <h1 class="title" data-i18n="openedTitle">Готово — слушай целиком</h1>
+      <p class="lead" data-i18n="openedLead">Полная версия уже играет. Она твоя — скачивай, читай слова и делись с близкими.</p>
+
+      <div class="player">
+        <div class="player-top">
+          <span class="player-art"></span>
+          <span class="player-meta"><b id="soPlayTitle">Свет внутри тебя</b><span id="soPlaySub" data-i18n="openedPlaySub">Полная песня · 3:12</span></span>
+          <button class="play-btn" id="soPlayBtn" aria-label="Пауза">
+            <svg class="ic-play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+            <svg class="ic-pause" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
+          </button>
+        </div>
+        <div class="wave" id="soWave"></div>
+        <div class="times"><span id="soTCur">0:00</span><span id="soTTot">3:12</span></div>
+      </div>
+
+      <div class="cards">
+        <button class="nudge kara" id="soKaraBtn">
+          <span class="nic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></span>
+          <span class="ntx"><b data-i18n="openedKaraT">Спеть караоке</b><span data-i18n="openedKaraS">слова подсветятся в такт</span></span>
+          <span class="ngo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
+        </button>
+        <button class="nudge" id="soGiftBtn">
+          <span class="nic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-4.5-9.5-9A5.2 5.2 0 0 1 12 6a5.2 5.2 0 0 1 9.5 6c-2.5 4.5-9.5 9-9.5 9Z"/><path d="M12 6v0"/></svg></span>
+          <span class="ntx"><b data-i18n="openedNudgeT">Создать песню близкому</b><span data-i18n="openedNudgeS">подарить такую же историю</span></span>
+          <span class="ngo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
+        </button>
+        <button class="nudge" id="soPackBtn">
+          <span class="nic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5l2.1 7.4L21.5 12l-7.4 2.1L12 21.5l-2.1-7.4L2.5 12l7.4-2.1z"/></svg></span>
+          <span class="ntx"><b data-i18n="openedPackT">Ещё песни — для себя и близких</b><span data-i18n="openedPackS">пакет Искр — от 10 песен разом</span></span>
+          <span class="ngo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
+        </button>
+
+        <div class="optin" id="soOptin">
+          <div class="optin-h">
+            <span class="oic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5 19 19M19 5l-1.5 1.5M6.5 17.5 5 19"/></svg></span>
+            <b data-i18n="openedOptinT">Заглядывать к тебе по утрам?</b>
+            <span class="gift" data-i18n="openedOptinGift">3 дня в подарок</span>
+          </div>
+          <p class="optin-p" data-i18n="openedOptinP">Короткое тёплое слово от Оракула каждое утро. Можно выключить в любой момент.</p>
+          <div class="optin-row">
+            <button class="optin-yes" data-i18n="openedOptinYes">Да, присылай</button>
+            <button class="optin-no" data-i18n="openedOptinNo">Не сейчас</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="cta" id="soShareBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg> <span data-i18n="openedShare">Поделиться с близким</span></button>
+      <div class="ghosts">
+        <button class="ghost" id="soDownloadBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 11l5 4 5-4M5 21h14"/></svg> <span data-i18n="openedDownload">Скачать</span></button>
+        <button class="ghost" id="soLyricsBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg> <span data-i18n="openedLyrics">Слова песни</span></button>
+      </div>
+    </div>
+
+    <!-- Действия ПОЛУЧАТЕЛЯ шаренной песни (не владелец): В любимые / Создать свою / Слова.
+         Показывается вместо owner-.actions из _openSharedSong (07). Оплаченная → «В любимые» + ghosts;
+         запертая (отрывок 60с) → только «Создать свою песню». Без подарка/скачивания/тарифов. -->
+    <div class="actions" id="soRecipActions" hidden>
+      <button class="cta" id="soFavBtn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7-4.5-9.5-9A5.2 5.2 0 0 1 12 6a5.2 5.2 0 0 1 9.5 6c-2.5 4.5-9.5 9-9.5 9Z"/></svg> <span data-i18n="sharedSaveFav">В любимые</span></button>
+      <button class="cta" id="soCreateBtn" style="display:none"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 4.6L19 9l-4 3.3L16.2 18 12 15.3 7.8 18 9 12.3 5 9l5.1-1.4z"/></svg> <span data-i18n="sharedCreateOwn">Создать свою песню</span></button>
+      <div class="ghosts" id="soRecipGhosts">
+        <button class="ghost" id="soCreateGhost"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg> <span data-i18n="sharedCreateOwn">Создать свою песню</span></button>
+        <button class="ghost" id="soRecipLyrics"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg> <span data-i18n="openedLyrics">Слова песни</span></button>
+      </div>
+    </div>
+  </div>
+</div>

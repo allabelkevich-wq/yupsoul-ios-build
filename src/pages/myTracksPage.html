@@ -1,0 +1,290 @@
+<div class="page" id="myTracksPage">
+      <div class="page-gradient-bg" aria-hidden="true"><div class="gradients-container"><div class="g1"></div><div class="g2"></div><div class="g3"></div><div class="interactive"></div></div></div>
+      <div class="mt-aurora" aria-hidden="true"><div class="mt-aurora-band"></div><div class="mt-aurora-band"></div><div class="mt-aurora-band"></div></div>
+      <div class="mt-grain" aria-hidden="true"></div>
+      <div class="mt-list-wrap page-scroll" style="width:100%;max-width:min(50vw,600px);margin:0 auto;padding:0 18px 26px;position:relative;z-index:1;box-sizing:border-box;">
+        <!-- Header — единый стандарт шапки (Алла 25.06: .topbar как картотека/профиль).
+             Кнопка «Назад» СЛЕВА (38px кружок), поиск справа; большой заголовок ниже в .title. -->
+        <!-- Шапка плейлиста: [Назад] [вкладки Мои треки/Любимое/Радио] [Поиск] — вкладки вкомпонованы в бар (Алла 26.06). Нижний таббар не трогаем. -->
+        <header class="mt-list-header topbar" style="display:flex;align-items:center;gap:8px;justify-content:flex-start;padding:8px 16px 4px;margin:0 -18px;width:calc(100% + 36px);box-sizing:border-box;flex-shrink:0;">
+          <button type="button" id="mtBackBtn" class="profile-back-btn header-back-btn btn-nav" onclick="window._myTracksBack && window._myTracksBack()" aria-label="Назад" data-i18n-aria="navBack">←</button>
+          <div class="mt-tabs" id="mtTabs" role="tablist">
+            <span class="mt-tab-ind" id="mtTabInd"></span>
+            <button type="button" class="mt-tab on" id="mtTabTracks" role="tab" data-pane="mtPanelTracks" data-i18n="mtTabTracks">Мои треки</button>
+            <button type="button" class="mt-tab" id="mtTabLiked" role="tab" data-pane="mtPanelLiked" data-i18n="favoritesTitle">Любимые</button>
+            <button type="button" class="mt-tab" id="mtTabRadio" role="tab" data-pane="mtPanelRadio" data-i18n="mtTabRadio">Радио</button>
+          </div>
+          <button type="button" class="mt-head-search" id="mtHeadSearchBtn" onclick="window._mtToggleSearch&&window._mtToggleSearch()" aria-label="Поиск" data-i18n-aria="mtSearchAria" style="flex:none;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg></button>
+        </header>
+
+        <!-- Поиск по трекам активной вкладки: тоггл по кнопке-лупе, фильтр .mt-track-item (Алла 27.06, задача J) -->
+        <div class="mt-search-bar" id="mtSearchBar" hidden>
+          <svg class="mt-search-ic" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+          <input type="text" id="mtSearchInput" placeholder="Поиск по трекам" data-i18n-placeholder="mtSearchPh" aria-label="Поиск по трекам" data-i18n-aria="mtSearchAria" autocomplete="off" oninput="window._mtFilterTracks&&window._mtFilterTracks(this.value)">
+          <button type="button" class="mt-search-x" id="mtSearchClear" aria-label="Очистить" data-i18n-aria="helpSearchClear" onclick="var i=document.getElementById('mtSearchInput');if(i){i.value='';try{i.focus();}catch(e){}}window._mtFilterTracks&&window._mtFilterTracks('')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+        </div>
+
+        <style id="mt-search-css">
+        /* Поиск Музыки (задача J). Инпут прозрачный — бьём глоб. input{!important} (как heroes/help). */
+        #myTracksPage .mt-search-bar{display:flex;align-items:center;gap:9px;margin:6px 0 2px;padding:10px 14px;border-radius:9999px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);box-sizing:border-box}
+        #myTracksPage .mt-search-bar[hidden]{display:none}
+        #myTracksPage .mt-search-ic{flex:none;color:rgba(255,255,255,0.5)}
+        /* flex/width !important — нейтрализуем глоб. input{width !important} (иначе инпут схлопывается в 0) */
+        #myTracksPage #mtSearchInput{flex:1 1 auto !important;min-width:0 !important;width:auto !important;background:none !important;border:none !important;outline:none !important;box-shadow:none !important;color:#fff !important;font-family:inherit !important;font-size:0.95rem !important;padding:0 !important;margin:0 !important;height:auto !important;min-height:0 !important}
+        #myTracksPage #mtSearchInput::placeholder{color:rgba(255,255,255,0.45)}
+        /* width/min-height/margin/backdrop !important — нейтрализуем глоб. button{width:100%;min-height:48px;margin-top:8px;backdrop} (иначе ✕ раздувается на всю ширину) */
+        #myTracksPage .mt-search-x{flex:none !important;width:auto !important;min-width:0 !important;min-height:0 !important;margin:0 !important;background:none !important;border:none !important;box-shadow:none !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important;color:rgba(255,255,255,0.5);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;padding:2px}
+        body.theme-light #myTracksPage .mt-search-bar,html.is-vk-light:not(.dark) #myTracksPage .mt-search-bar,html.is-ok-light:not(.dark) #myTracksPage .mt-search-bar{background:rgba(255,255,255,0.6);border-color:rgba(212,149,107,0.2)}
+        body.theme-light #myTracksPage #mtSearchInput,html.is-vk-light:not(.dark) #myTracksPage #mtSearchInput,html.is-ok-light:not(.dark) #myTracksPage #mtSearchInput{color:#1a1a2e !important}
+        body.theme-light #myTracksPage #mtSearchInput::placeholder{color:rgba(26,26,46,0.45)}
+        body.theme-light #myTracksPage .mt-search-ic{color:rgba(26,26,46,0.5)}
+        body.theme-light #myTracksPage .mt-search-x{color:rgba(26,26,46,0.5) !important;background:none !important;border:none !important;box-shadow:none !important}
+        </style>
+        <script>
+        // Поиск по трекам активной вкладки (задача J, Алла 27.06). Лёгкий, без observers.
+        window._mtToggleSearch = function(){
+          var bar = document.getElementById('mtSearchBar'); if(!bar) return;
+          if(bar.hasAttribute('hidden')){
+            bar.removeAttribute('hidden');
+            var i = document.getElementById('mtSearchInput'); if(i){ try{ i.focus(); }catch(e){} }
+          } else {
+            bar.setAttribute('hidden','');
+            var inp = document.getElementById('mtSearchInput'); if(inp) inp.value='';
+            window._mtFilterTracks('');
+          }
+        };
+        window._mtFilterTracks = function(q){
+          q = (q||'').trim().toLowerCase();
+          var pane = document.querySelector('#myTracksPage .mt-pane:not([hidden])'); if(!pane) return;
+          var items = pane.querySelectorAll('.track');
+          for(var i=0;i<items.length;i++){
+            var t = items[i].querySelector('.track-name');
+            var a = items[i].querySelector('.track-sub');
+            var txt = ((t?t.textContent:'')+' '+(a?a.textContent:'')).toLowerCase();
+            items[i].style.display = (!q || txt.indexOf(q)>=0) ? '' : 'none';
+          }
+        };
+        </script>
+
+        <!-- Now Playing → полноэкранный плеер v2 (ID движка сохранены: mtNp*). Открытие/сворачивание — JS-наблюдатель. -->
+        <div id="mtNowPlaying" class="mt-now-playing mtv2-player" style="display:none;">
+          <div class="bg" aria-hidden="true"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div><div class="stars"></div></div>
+          <header class="v2ptop">
+            <button type="button" class="v2icon" id="mtNpMinBtn" aria-label="Свернуть"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+            <div class="v2ctx"><span class="v2ctx-sub" data-i18n="mtNpFromCollection">Играет из коллекции</span><span class="v2ctx-src" data-i18n="mtTabTracks">Мои треки</span></div>
+            <span class="v2icon" aria-hidden="true" style="visibility:hidden;pointer-events:none"></span>
+          </header>
+          <div class="v2stage">
+            <div class="v2pcover v2cover" id="mtNpCover"><span class="mt-cover-rings" aria-hidden="true"><i style="width:30%;height:30%"></i><i style="width:52%;height:52%"></i><i style="width:74%;height:74%"></i><i style="width:96%;height:96%"></i></span><span class="mt-cover-glyph" aria-hidden="true"><svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" opacity="0.92"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg></span></div>
+          </div>
+          <div class="v2meta">
+            <div class="v2meta-row">
+              <div class="v2meta-txt">
+                <div class="v2ptitle" id="mtNpTitle">--</div>
+                <div class="v2psub" id="mtNpArtist">YupSoul</div>
+              </div>
+              <button type="button" class="v2heart" id="mtNpHeart" aria-label="Нравится" title="Нравится"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg></button>
+              <!-- Сохранить в коллекцию (закладка) — ТОЛЬКО для радио-треков (Алла 29.06: закладку убрали из строки Радио, сохранять отсюда). display:none по умолчанию, showNowPlaying включает для is_radio. -->
+              <button type="button" class="v2heart" id="mtNpSaveBtn" aria-label="Сохранить" title="Сохранить в коллекцию" style="display:none"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></button>
+            </div>
+            <div class="v2viz" id="mtNpViz" aria-hidden="true"></div>
+          </div>
+          <div class="v2controls">
+            <div class="v2scrub-wrap">
+              <div class="v2wave" id="mtNpProgress">
+                <div class="v2scrubfill" id="mtNpProgressFill" style="display:none"></div>
+              </div>
+              <div class="v2times">
+                <span id="mtNpTimeCurrent">0:00</span>
+                <span id="mtNpTimeTotal">0:00</span>
+              </div>
+            </div>
+            <div class="controls">
+              <button type="button" class="ctrl sm" id="mtNpShuffleBtn" aria-label="Вперемешку"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"/><path d="M4 20 21 3"/><path d="M21 16v5h-5"/><path d="m15 15 6 6"/><path d="M4 4l5 5"/></svg></button>
+              <button type="button" class="ctrl" id="mtNpPrevBtn" aria-label="Предыдущий"><svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><polygon points="19 20 9 12 19 4"/><rect x="5" y="4" width="2.6" height="16" rx="1.3"/></svg></button>
+              <button type="button" class="play" id="mtNpPlayBtn" aria-label="Пауза"><svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor"><polygon points="8 5 19 12 8 19"/></svg></button>
+              <button type="button" class="ctrl" id="mtNpNextBtn" aria-label="Следующий"><svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 4 15 12 5 20"/><rect x="16.4" y="4" width="2.6" height="16" rx="1.3"/></svg></button>
+              <button type="button" class="ctrl sm" id="mtNpRepeatBtn" aria-label="Повтор"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m17 2 4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg></button>
+            </div>
+            <!-- Громкость — ВЕРБАТИМ из design-new/03.html: кнопка-динамик + кастомный .vol-track/.vol-fill/.vol-knob + .vol-pct.
+                 ID движка сохранены (mtNpVolumeBtn / mtNpVolumeIcon / mtNpVolPct); трек/заливка/бегунок — mtNpVolumeTrack/mtNpVolFill/mtNpVolKnob. -->
+            <div class="volume" role="group" aria-label="Громкость">
+              <button type="button" class="vol-btn" id="mtNpVolumeBtn" aria-label="Звук" title="Громкость" data-i18n-title="mtTooltipVolume">
+                <svg id="mtNpVolumeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>
+              </button>
+              <div class="vol-track" id="mtNpVolumeTrack"><span class="vol-fill" id="mtNpVolFill" style="width:80%"></span><span class="vol-knob" id="mtNpVolKnob" style="left:80%"></span></div>
+              <span class="vol-pct" id="mtNpVolPct">80</span>
+            </div>
+            <div class="actions">
+              <button type="button" class="act" id="mtNpLyricsBtn" style="display:none;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M16 13H8M16 17H8"/></svg><span data-i18n="mtActText">Текст</span></button>
+              <button type="button" class="act" id="mtNpAnalysisBtn" style="display:none;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5c.6 3.6 2.4 5.4 6 6-3.6.6-5.4 2.4-6 6-.6-3.6-2.4-5.4-6-6 3.6-.6 5.4-2.4 6-6Z"/></svg><span data-i18n="mtActAnalysis">Разбор</span></button>
+              <button type="button" class="act" id="mtNpDownloadBtn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span data-i18n="mtActDownload">Скачать</span></button>
+              <button type="button" class="act" id="mtNpShareBtn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg><span data-i18n="mtActShare">Поделиться</span></button>
+              <button type="button" class="act" id="mtNpBroadcastBtn" style="display:none;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="2.2" fill="currentColor" stroke="none"/><path d="M8.5 8.5a5 5 0 0 0 0 7"/><path d="M15.5 15.5a5 5 0 0 0 0-7"/><path d="M6 6a9 9 0 0 0 0 12"/><path d="M18 18a9 9 0 0 0 0-12"/></svg><span data-i18n="mtActBroadcast">В эфир</span></button>
+            </div>
+          </div><!-- /v2controls -->
+          <!-- Апселл после первой песни (закон №13): дочерний элемент плеера → видим только когда юзер слушает результат -->
+          <div id="mtUpsell" class="mt-upsell">
+            <div class="mt-upsell-title" data-i18n="mtUpsellTitle">Это только начало</div>
+            <div class="mt-upsell-text" data-i18n="mtUpsellText">Понравилось, как звучит твоя душа? Подари песню тому, кто дорог — маме, любимому, другу.</div>
+            <button type="button" class="mt-upsell-btn" onclick="goToPage('formPage')" data-i18n="mtUpsellCreate">Создать ещё</button>
+            <button type="button" class="mt-upsell-sub" onclick="goToPage('profilePage')" data-i18n="mtUpsellSub">Больше песен — можно купить пакет</button>
+          </div>
+        </div>
+
+        <div id="mtPanelTracks" class="mt-pane">
+
+        <!-- Hero коллекции (15.06, showcase-playlist) -->
+        <div id="mtHeroRow" class="mt-hero-row" style="display:none;">
+          <div class="mth-stack">
+            <span class="mth-art s1" id="mtHeroArt1"><span class="mth-art-fill" style="background:radial-gradient(120% 120% at 25% 18%,hsl(198,90%,64%),transparent 55%),linear-gradient(160deg,hsl(198,55%,18%),hsl(225,55%,10%))"></span></span>
+            <span class="mth-art s2" id="mtHeroArt2"><span class="mth-art-fill" style="background:radial-gradient(120% 120% at 25% 18%,hsl(22,92%,64%),transparent 55%),linear-gradient(160deg,hsl(22,58%,18%),hsl(350,55%,11%))"></span></span>
+            <span class="mth-art s3" id="mtHeroArt3"><span class="mth-art-fill" style="background:radial-gradient(120% 120% at 25% 18%,hsl(330,92%,70%),transparent 55%),radial-gradient(130% 130% at 82% 32%,hsl(280,85%,56%),transparent 58%),linear-gradient(160deg,hsl(320,58%,20%),hsl(268,55%,11%))"></span></span>
+          </div>
+          <div class="mth-body">
+            <span class="mth-eyebrow" data-i18n="mtHeroEyebrow">Твоя коллекция</span>
+            <h2 class="mth-title" id="mtHeroTitle">0 песен</h2>
+            <p class="mth-sub" data-i18n="mtHeroSub">Созданы по твоей дате рождения</p>
+          </div>
+        </div>
+        <div id="mtHeroCta" class="mt-hero-cta" style="display:none;">
+          <button type="button" class="mth-play-all" id="mtHeroPlayAll" data-i18n="mtHeroPlayAll"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><polygon points="7 4 20 12 7 20"/></svg> Слушать всё</button>
+          <button type="button" class="mth-shuffle" id="mtHeroShuffle" aria-label="Перемешать"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"/><path d="M4 20 21 3"/><path d="M21 16v5h-5"/><path d="m15 15 6 6"/><path d="M4 4l5 5"/></svg></button>
+        </div>
+
+        <!-- Loading -->
+        <div id="myTracksLoading" style="display:none;padding:60px 0;text-align:center;">
+          <div class="loader-wrapper" data-no-letters="1" style="width:100px;height:100px;margin:0 auto;" aria-hidden="true">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="z-index:1;position:relative;">
+              <defs><linearGradient id="noteGradLoad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#ec4899"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient></defs>
+              <path d="M9 18V5l12-2v13" stroke="url(#noteGradLoad)"/><circle cx="6" cy="18" r="3" stroke="url(#noteGradLoad)"/><circle cx="18" cy="16" r="3" stroke="url(#noteGradLoad)"/>
+            </svg>
+            <div class="loader" style="width:100px;height:100px;"></div>
+          </div>
+        </div>
+
+        <!-- Empty -->
+        <div id="myTracksEmpty" style="display:none;">
+          <div class="mt-empty">
+            <div class="mt-empty-ic" aria-hidden="true">
+              <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <defs><linearGradient id="noteGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#ec4899"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient></defs>
+                <path d="M9 18V5l12-2v13" stroke="url(#noteGrad)"/><circle cx="6" cy="18" r="3" stroke="url(#noteGrad)"/><circle cx="18" cy="16" r="3" stroke="url(#noteGrad)"/>
+              </svg>
+            </div>
+            <div class="mt-empty-title" id="mtEmptyTitleEl">Здесь появятся твои песни</div>
+            <div class="mt-empty-desc" id="mtEmptyDescEl">Создай первую — по дате рождения</div>
+            <button type="button" id="mtEmptyCtaEl" onclick="goToPage('formPage')">Создать песню</button>
+          </div>
+        </div>
+
+        <!-- Группа "Недавние" -->
+        <div class="mt-glabel" id="mtGlabel" style="display:none;"><span data-i18n="mtGlabelRecent">Недавние</span><span class="ln"></span></div>
+        <!-- Track list -->
+        <div id="myTracksList" class="mt-track-list" style="display:none;"></div>
+        <button type="button" id="myTracksLoadMore" class="mt-load-more" style="display:none;margin:12px 16px;"><span id="myTracksLoadMoreEl">Загрузить ещё</span></button>
+        <button type="button" class="mt-create" id="mtCreateBtn" onclick="window.goToPage&&goToPage('formPage')" data-i18n="mtCreateBtn"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg> Создать новую песню</button>
+        </div><!-- /mtPanelTracks -->
+        <div id="mtPanelLiked" class="mt-pane" hidden></div>
+        <div id="mtPanelRadio" class="mt-pane v2radio" hidden></div>
+      </div>
+
+      <!-- Шторка публикации в Радио (общая: публикация / управление / успех) -->
+      <div class="rsheet-back" id="rsheetBack"></div>
+      <div class="rsheet" id="rsheet" role="dialog" aria-modal="true"></div>
+
+      <!-- Mini-player (sticky bottom) -->
+      <div id="mtMiniPlayer" class="mt-mini-player" style="display:none;">
+        <div class="mt-mini-progress"><div class="mt-mini-progress-fill" id="mtMiniProgressFill"></div></div>
+        <div class="mt-mini-content">
+          <div class="mt-mini-cover" id="mtMiniCover">♪</div>
+          <div class="mt-mini-info">
+            <div class="mt-mini-title" id="mtMiniTitle">—</div>
+            <div class="mt-mini-sub" id="mtMiniSub">YupSoul</div>
+            <div class="mt-mini-duration" id="mtMiniDuration"></div>
+          </div>
+          <!-- Действия (текст/разбор/скачать/поделиться) убраны из мини-плеера (Алла 27.06):
+               они были без обработчиков (не работали) + неуместны для чужого радио-трека.
+               Мини = обложка + название + play; тап по бару раскрывает полный плеер с действиями. -->
+          <button type="button" class="mt-mini-play" id="mtMiniPlayBtn">
+            <!-- 7278954: mini-player play btn outlined too -->
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Lyrics/Analysis overlay -->
+      <div id="mtDetailOverlay" class="mt-detail-overlay" style="display:none;">
+        <div class="mt-detail-panel">
+          <div class="mt-detail-header">
+            <div class="mt-detail-header-title" id="mtDetailTitle"></div>
+            <button type="button" class="mt-detail-header-btn" id="mtDetailCopyBtn" aria-label="Копировать" title="Копировать" data-i18n-title="mtCopyBtn" data-i18n-aria="mtCopyBtn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            </button>
+            <button type="button" class="mt-detail-header-btn" id="mtDetailCloseBtn" aria-label="Закрыть" title="Закрыть" data-i18n-title="mtCloseBtn" data-i18n-aria="mtCloseBtn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          </div>
+          <div class="mt-detail-body" id="mtDetailContent"></div>
+        </div>
+      </div>
+
+      <!-- Окно «Поделиться» песней (порт showcase-player.html .share, классы msh-*) -->
+      <div id="mtShareSheet" role="dialog" aria-modal="true" aria-label="Поделиться песней">
+        <div class="msh-head">
+          <button type="button" class="msh-x" id="mshClose" aria-label="Назад" title="Назад" data-i18n-title="mtCloseBtn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button>
+          <b data-i18n="shareSheetTitle">Поделиться песней</b>
+        </div>
+        <div class="msh-body">
+          <div class="msh-card fmt-story" id="mshCard">
+            <div class="msh-bg" id="mshCardBg"></div>
+            <div class="msh-in">
+              <span class="msh-brand"><span class="bd"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></span> YupSoul</span>
+              <span class="msh-rank" id="mshCardRank" hidden></span>
+              <div class="msh-cover" id="mshCardCover"></div>
+              <span class="msh-eyebrow" data-i18n="shareEyebrow">Моя песня души</span>
+              <div class="msh-title" id="mshCardTitle">—</div>
+              <div class="msh-sub" id="mshCardSub"></div>
+              <div class="msh-cardfoot">
+                <span class="msh-qr" id="mshCardQr"></span>
+                <span class="msh-foot-tx"><b data-i18n="shareFootCreate">Создай свою песню</b><span id="mshCardDomain">yupsoul.ru</span></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="msh-fmts" id="mshFmts">
+            <button type="button" class="msh-fmt on" data-fmt="story" data-i18n="shareFmtStory">Stories</button>
+            <button type="button" class="msh-fmt" data-fmt="post" data-i18n="shareFmtPost">Пост</button>
+            <button type="button" class="msh-fmt" data-fmt="link" data-i18n="shareFmtLink">Ссылка</button>
+          </div>
+          <div class="msh-linkbox" id="mshLinkbox">
+            <input id="mshLinkInput" value="" readonly>
+            <button type="button" class="cp" id="mshCopyBtn"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2.5"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> <span data-i18n="shareCopyBtn">Копия</span></button>
+          </div>
+          <p class="msh-hint" id="mshHint" hidden><span data-i18n="shareHint">Отправь ссылку близкому — он откроет и послушает песню целиком.</span></p>
+        </div>
+        <div class="msh-footbar">
+          <button type="button" class="msh-primary" id="mshSaveBtn"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg> <span data-i18n="shareSaveImg">Сохранить картинку</span></button>
+          <div class="msh-targets">
+            <button type="button" class="msh-tg" id="mshTgLink"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8.5v7M8.5 12h7"/></svg></span> <span data-i18n="shareVkStory">В Историю</span></button>
+            <button type="button" class="msh-tg" id="mshTgStory"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 14a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z"/></svg></span> <span data-i18n="shareVkWall">На стену</span></button>
+            <button type="button" class="msh-tg" id="mshTgMore"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.6"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.6"/></svg></span> <span data-i18n="shareTgtLink">Ссылка</span></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Караоке (кнопка «Текст») — порт showcase-player.html .lyr -->
+      <div id="mtKaraoke" role="dialog" aria-modal="true" aria-label="Текст песни">
+        <div class="lyr-head">
+          <button type="button" class="hbtn" id="mtkClose" aria-label="Назад" title="Назад" data-i18n-title="mtCloseBtn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+          <div class="tt"><b data-i18n="karaokeTitle">Текст песни</b><span data-i18n="karaokeSub">Караоке · строки в такт</span></div>
+          <button type="button" class="hbtn" id="mtkShare" aria-label="Поделиться" title="Поделиться"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg></button>
+        </div>
+        <div class="lyr-scroll" id="mtkScroll"></div>
+        <div class="lyr-foot">
+          <span class="fart" id="mtkFootArt"><i></i></span>
+          <div class="ftx"><b id="mtkFootName">—</b><span id="mtkFootSub"></span></div>
+          <button type="button" class="fplay" id="mtkPlay" aria-label="Пауза"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><rect x="6.5" y="4.5" width="3.6" height="15" rx="1.2"/><rect x="13.9" y="4.5" width="3.6" height="15" rx="1.2"/></svg></button>
+        </div>
+      </div>
+    </div>

@@ -1,0 +1,88 @@
+<!-- Экран «Открыть песню целиком» — перенос design-export-fixed/showcase-song-unlock-2.html
+     дословно (закон №46). CSS заскоуплен под #songUnlockPage в app.css (метод-префиксер),
+     @keyframes переименованы (suEq/suShimmer/suSpin). Демо-панель .replay удалена.
+     Логика (промокод/paying/watchdog/открытие) — в 12-synastry-tail.js. Появление после
+     минуты-превью + реальная оплата 75★ — Фаза 2/3 (пока экран не триггерится). -->
+<div class="page" id="songUnlockPage">
+  <div class="su-root" id="suRoot" data-state="offer" data-price="first" data-platform="web">
+    <span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span>
+    <div class="ph-stars"></div>
+
+    <div class="wrap">
+      <div class="cover">
+        <span class="eqa"><span></span><span></span><span></span><span></span><span></span></span>
+        <span class="lock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span>
+      </div>
+
+      <div class="eyebrow" data-i18n="unlockEyebrow">Твоя песня</div>
+      <h1 class="title" data-i18n="unlockTitle">Это только начало</h1>
+      <p class="lead" id="suLead">Прозвучала первая минута. <b>Полная песня — около 3 минут</b>, написана по твоей дате рождения. Впереди — припев, финал и твоё имя в словах.</p>
+
+      <div class="rows">
+        <div class="ys-row">
+          <span class="ric i1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></span>
+          <span class="rtx"><b data-i18n="unlockR1t">Полная песня</b><span data-i18n="unlockR1s">около 3 минут</span></span>
+          <span class="rcheck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+        </div>
+        <div class="ys-row">
+          <span class="ric i2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 11l5 4 5-4M5 21h14"/></svg></span>
+          <span class="rtx"><b data-i18n="unlockR2t">Скачать в MP3</b><span data-i18n="unlockR2s">останется у тебя навсегда</span></span>
+          <span class="rcheck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+        </div>
+        <div class="ys-row">
+          <span class="ric i3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg></span>
+          <span class="rtx"><b data-i18n="unlockR3t">Слова песни</b><span data-i18n="unlockR3s">весь текст целиком</span></span>
+          <span class="rcheck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+        </div>
+        <div class="ys-row">
+          <span class="ric i4"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg></span>
+          <span class="rtx"><b data-i18n="unlockR4t">Поделиться с близкими</b><span data-i18n="unlockR4s">подарить эту песню</span></span>
+          <span class="rcheck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+        </div>
+        <div class="ys-row">
+          <span class="ric i5"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></span>
+          <span class="rtx"><b data-i18n="unlockR5t">Караоке по песне</b><span data-i18n="unlockR5s">петь под свои слова</span></span>
+          <span class="rcheck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+        </div>
+      </div>
+
+      <div class="promo">
+        <button class="promo-toggle" id="suPromoToggle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-6M2 8h20v4H2zM12 8v12M12 8S10 3 7.5 3 4.5 8 12 8ZM12 8s2-5 4.5-5 3 5-4.5 5Z"/></svg> <span data-i18n="unlockPromoToggle">Мне подарили промокод</span></button>
+        <div class="promo-panel">
+          <input class="promo-input" type="text" id="suPromoInput" data-i18n-placeholder="unlockPromoPh" placeholder="Введите промокод" autocomplete="off" spellcheck="false" />
+          <button class="promo-apply" id="suPromoApply" data-i18n="unlockPromoApply">Применить</button>
+          <button class="promo-cancel" id="suPromoCancel" data-i18n="cancel">Отмена</button>
+        </div>
+        <div class="promo-hint" id="suPromoHint" role="status" aria-live="polite" hidden></div>
+      </div>
+
+      <!-- КАНОН v8 (отказ 27.07): голосов на VK нет — открытие песни это цифровая
+           ценность за деньги (§5.4.1, карта T-Bank на vk.ru/m.vk.ru). -->
+      <p class="plat-note" data-i18n="unlockVkNote">Открытие оплачивается картой</p>
+      <!-- Канон v3 §5.4.1: на stub-платформах VK (натив iOS/Android) покупка недоступна — заглушка (CSS is-vk-stub) -->
+      <p id="suStubNote" data-i18n="scSubMobileHint" style="display:none;text-align:center;font-size:0.85rem;opacity:.75;">Оплата на платформе недоступна</p>
+    </div>
+
+    <div class="actions">
+      <button class="cta" id="suCtaBtn">
+        <span class="spin"></span>
+        <span class="cta-txt" data-i18n="unlockCtaOpen">Открыть целиком</span>
+        <span class="cta-price"> · <span id="suPriceVal">75</span><span id="suPriceUnit"> ★</span></span>
+      </button>
+      <!-- Способы оплаты (TG): одна кнопка «Открыть целиком» → тап → появляются методы (звёзды/карта). -->
+      <div class="su-methods" id="suMethods">
+        <button class="su-method su-method-primary" id="suMethodIskry" style="display:none"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.6 7.4L22 12l-7.4 2.6L12 22l-2.6-7.4L2 12l7.4-2.6z"/></svg> <span data-i18n="unlockPayIskry">Искрами</span><b id="suMIskryPrice"></b></button>
+        <button class="su-method" id="suMethodStars"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.2L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4z"/></svg> <span data-i18n="unlockPayStars">Звёздами</span><b id="suMStarsPrice"></b></button>
+        <button class="su-method" id="suMethodCard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2.5"/><path d="M2 10h20"/></svg> <span data-i18n="unlockPayCard">Картой</span><b id="suMCardPrice"></b></button>
+        <!-- Отключённый способ оплаты удалён (решение Аллы 27.08.2026): звёзды/карта/Искры/промокод. -->
+        <button class="su-method" id="suMethodPromo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-6M2 8h20v4H2zM12 8v12M12 8S10 3 7.5 3 4.5 8 12 8ZM12 8s2-5 4.5-5 3 5-4.5 5Z"/></svg> <span data-i18n="unlockPayPromo">Промокод</span></button>
+        <button class="su-method-back" id="suMethodBack" data-i18n="cancel">Отмена</button>
+      </div>
+      <p class="cta-sub" data-i18n="unlockCtaSub">открывается сразу</p>
+      <div class="ghosts">
+        <button class="ghost" id="suReplayBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M8 5v14l11-7z"/></svg> <span data-i18n="unlockGhReplay">Минуту ещё раз</span></button>
+        <button class="ghost" id="suBackBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg> <span data-i18n="unlockGhBack">Вернуться</span></button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,145 @@
+<div class="page" id="giftsPage">
+      <div class="ph-stars"></div>
+      <div class="bg"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div><div class="stars"></div></div>
+      <div class="help-header page-header">
+        <div class="help-header-row">
+          <button type="button" id="giftsBackBtn" class="profile-back-btn header-back-btn btn-nav" onclick="if(window.goBack)goBack();else if(window.goToPage)goToPage('homePage')" aria-label="Назад" title="Назад" data-i18n-aria="navBack" data-i18n-title="navBack">←</button>
+          <div class="help-title-wrap">
+            <div id="giftsPageTitle" class="help-title" data-i18n="giftsTitle">Подарки</div>
+            <div id="giftsPageSubtitle" class="help-subtitle" data-i18n="giftsSubtitle">Заходи каждый день — забирай Искру</div>
+          </div>
+          <div id="giftsBalancePill" class="gifts-balance-pill" style="display:none;" role="button" tabindex="0" aria-label="Баланс Искр — пополнить" data-i18n-aria="giftsBalanceTopup">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.4 7.2L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4z"/></svg>
+            <span id="giftsBalanceNum">0</span><span class="gain" id="giftsGain" aria-hidden="true"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="scroll">
+
+        <!-- ═══ ОБЪЕДИНЁННАЯ ЗОЛОТАЯ КАРТОЧКА ═══ -->
+        <div class="daily" id="daily" data-state="fresh">
+          <div class="d-row">
+            <div class="spark" id="sparkBox">
+              <span class="ring"></span>
+              <span class="core"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.6 7.4L22 12l-7.4 2.6L12 22l-2.6-7.4L2 12l7.4-2.6z"></path></svg></span>
+            </div>
+            <div class="d-mid">
+              <div class="d-eyebrow"><span data-i18n="iskraClaimTitle">Искра дня</span><span class="ser" id="iskraStreak" style="display:none;">Серия: 5</span></div>
+              <h2 id="iskraClaimText" class="s-fresh" data-i18n="iskraClaimTextCan">Сегодня тебя ждут +2 Искры</h2>
+              <h2 class="s-claimed s-opened" hidden="" data-i18n="iskraClaimedTitle">Искра у тебя ✦</h2>
+              <p class="sub s-fresh" data-i18n="iskraFreshSub">Маленький подарок за то, что ты с нами.</p>
+              <p class="sub s-claimed" data-i18n="iskraClaimedSub">Разломи печеньку — Оракул оставил тебе послание.</p>
+            </div>
+          </div>
+
+          <!-- fresh -->
+          <button class="d-btn s-fresh" id="iskraClaimBtn" onclick="claimIskra()"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.2L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4z"></path></svg><span data-i18n="iskraClaimBtn">Забрать +2 Искры</span></button>
+          <!-- сбой начисления: причина + код + повтор (эталон showcase-gifts 09.09) -->
+          <div class="d-err" role="alert"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v4.5M12 16h.01"></path></svg><span class="d-err-tx"><span data-i18n="iskraClaimErr">Искра не начислилась, баланс не изменился.</span><b id="iskraErrCode"></b></span><button type="button" id="iskraErrRetry"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M19.4 12a7.4 7.4 0 1 1-2.2-5.3"></path><path d="M19.6 3.6v3.6h-3.6"></path></g></svg><span data-i18n="iskraClaimRetry">Повторить</span></button></div>
+          <!-- claimed: открыть печеньку -->
+          <button class="d-btn ghost s-claimed" id="cookieBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 9 9c0-1.4-2-1.2-2.5-2.6-.5-1.5 1.2-2 .6-3.2C18.3 4.6 14.9 3 12 3Z"></path><circle cx="9" cy="11" r="1"></circle><circle cx="13" cy="9" r="1"></circle><circle cx="14" cy="14" r="1"></circle></svg> <span data-i18n="iskraCookieBtn">Открыть печеньку предсказаний</span></button>
+          <!-- opened: послание -->
+          <div class="cookie s-opened">
+            <div class="c-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-linecap="round"><path d="M12 3.2c2.9 3.4 2.9 6.1 0 9.2-2.9-3.1-2.9-5.8 0-9.2Z"></path><path d="M12 3.2c2.9 3.4 2.9 6.1 0 9.2-2.9-3.1-2.9-5.8 0-9.2Z" transform="rotate(60 12 12)" opacity=".84"></path><path d="M12 3.2c2.9 3.4 2.9 6.1 0 9.2-2.9-3.1-2.9-5.8 0-9.2Z" transform="rotate(120 12 12)" opacity=".66"></path><path d="M12 3.2c2.9 3.4 2.9 6.1 0 9.2-2.9-3.1-2.9-5.8 0-9.2Z" transform="rotate(180 12 12)" opacity=".54"></path><path d="M12 3.2c2.9 3.4 2.9 6.1 0 9.2-2.9-3.1-2.9-5.8 0-9.2Z" transform="rotate(240 12 12)" opacity=".66"></path><path d="M12 3.2c2.9 3.4 2.9 6.1 0 9.2-2.9-3.1-2.9-5.8 0-9.2Z" transform="rotate(300 12 12)" opacity=".84"></path><circle cx="12" cy="12" r="1.4" fill="currentColor"></circle></svg><span data-i18n="iskraCookieFrom">Послание Оракула на сегодня</span></div>
+            <p class="cmsg">«Сегодня твоя сила — в тишине. Не торопи ответ: он придёт сам, когда перестанешь искать.»</p>
+            <div class="csave"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.55" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg> <span data-i18n="iskraSaved">Сохранено в Дневник посланий</span></div>
+            <button class="cask" onclick="if(window._askOracleAboutDay)window._askOracleAboutDay()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.55" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-11.6 7.8L3 21l1.8-6.2A8.4 8.4 0 1 1 21 11.5Z"></path></svg> <span data-i18n="iskraAskDay">Спросить Оракула про это</span><span class="cask-cost"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.4 7.2L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4z"></path></svg>1</span></button>
+          </div>
+
+          <div class="d-div"></div>
+
+          <!-- серия (id-обёртка iskraWeek — для рендер-функции, без класса = без влияния на CSS) -->
+          <div id="iskraWeek">
+            <div class="s-top"><span class="l" data-i18n="giftsWeekTitle">Твоя серия</span><span class="r" id="iskraWeekStreak"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c1 3 4 4.5 4 8a4 4 0 0 1-8 0c0-1 .4-1.8 1-2.5C9 9 12 7 12 2Z"></path></svg> 5 дней подряд</span></div>
+            <div class="week" id="iskraWeekDots"></div>
+            <div class="s-goal" id="sGoal">Ещё 2 дня подряд → +10 Искр за серию 7 дней</div>
+          </div>
+
+          <div class="d-div"></div>
+
+          <!-- прогресс (id-обёртка iskraProg — для рендер-функции, без класса) -->
+          <div id="iskraProg">
+            <div class="prog-top">
+              <span class="prog-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg></span>
+              <span class="prog-tt"><b data-i18n="giftsProgTitle">До песни твоей души</b><span data-i18n="giftsProgSub">100 Искр — и она родится</span></span>
+              <span class="prog-num" id="iskraProgNum"><span>47<i>/100</i></span><small data-i18n="giftsProgLabel">на балансе</small></span>
+            </div>
+            <div class="bar"><i id="iskraProgBar" style="width:47%"></i></div>
+          </div>
+        </div>
+
+        <!-- спросить оракула -->
+        <button class="spend" id="giftsSpend" onclick="if(window.goToSoulChat)window.goToSoulChat()" style="display:none;">
+          <span class="spend-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.55" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-11.6 7.8L3 21l1.8-6.2A8.4 8.4 0 1 1 21 11.5Z"></path></svg></span>
+          <span class="spend-tx"><b data-i18n="iskraValueCta">Спросить оракула</b><span data-i18n="giftsSpendSub">Задай в диалоге любой вопрос о себе</span></span>
+          <span class="cost"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.2L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4z"></path></svg> 1</span>
+        </button>
+
+        <!-- ═══ ПОДАРИ БЛИЗКОМУ ═══ -->
+        <div class="gift" id="giftCard">
+          <div class="gift-head">
+            <span class="gift-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12v9H4v-9"></path><path d="M2 7h20v5H2z"></path><path d="M12 21V7"></path><path d="M12 7S10.5 3 8 3 5 6 7 7s5 0 5 0zM12 7s1.5-4 4-4 3 3 1 4-5 0-5 0z"></path></svg></span>
+            <span class="tx"><b data-i18n="giftCardTitle">Подари близкому</b><span data-i18n="giftCardSub">Подари свою песню — близкий услышит её</span></span>
+          </div>
+          <button class="gift-cta" id="giftCta" onclick="if(window.goToPage){goToPage('giftPayPage');setTimeout(function(){if(window._initGiftPayPage)window._initGiftPayPage();},100);}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.55" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12v9H4v-9"></path><path d="M2 7h20v5H2z"></path><path d="M12 21V7"></path><path d="M12 7S10.5 3 8 3 5 6 7 7s5 0 5 0zM12 7s1.5-4 4-4 3 3 1 4-5 0-5 0z"></path></svg> <span data-i18n="giftCardCta">Подарить песню близкому</span></button>
+        </div>
+
+        <!-- ═══ МОИ ПОДАРКИ (купленные промокоды) ═══ -->
+        <div class="mygifts" id="giftsMyGifts" style="display:none;">
+          <div class="mygifts-head">
+            <span class="mygifts-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12v9H4v-9"></path><path d="M2 7h20v5H2z"></path><path d="M12 21V7"></path><path d="M12 7S10.5 3 8 3 5 6 7 7s5 0 5 0zM12 7s1.5-4 4-4 3 3 1 4-5 0-5 0z"></path></svg></span>
+            <span class="tx"><b data-i18n="giftsMyTitle">Мои подарки</b></span>
+          </div>
+          <div class="mg-list" id="giftsMyGiftsList"></div>
+        </div>
+
+        <!-- ═══ ПРИГЛАШАЙ ДРУЗЕЙ ═══ -->
+        <div class="ref" id="giftsRefer" style="display:none;">
+          <div class="ref-head">
+            <span class="ref-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="3.4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.5a4 4 0 0 1 0 7"></path></svg></span>
+            <span class="tx"><b data-i18n="giftsRefTitle">Приглашай друзей</b><span data-i18n="giftsRefSub">Искры падают вам обоим</span></span>
+          </div>
+          <div class="ref-stats">
+            <div class="ref-stat"><b id="giftsRefInvited">0</b><span data-i18n="giftsRefStatInvited">приглашено</span></div>
+            <div class="ref-stat" id="giftsRefStatSongsCell"><b id="giftsRefSongs">0</b><span data-i18n="giftsRefStatSongs">создали песню</span></div>
+            <div class="ref-stat"><b class="gold" id="giftsRefEarned">0</b><span data-i18n="giftsRefStatEarned">Искр получено</span></div>
+          </div>
+          <button class="ref-share" id="giftsRefShareBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"></path></svg> <span data-i18n="giftsRefShare">Поделиться ссылкой</span></button>
+          <div class="ref-link"><input id="giftsRefLinkInput" value="" readonly aria-label="Реферальная ссылка"><button id="giftsRefCopyBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-linejoin="round"><path d="M14.6 7.2 21 13.6l-6.4 6.4-6.4-6.4Z"></path><path d="M9.4 3.6 15.8 10M9.4 3.6 3 10l6.4 6.4" opacity=".5"></path></g></svg><span data-i18n="giftsRefCopy">Копировать</span></button></div>
+        </div>
+
+        <!-- ═══ КВЕСТЫ (Алла 02.07: платформо-зависимые задания за Искры) ═══ -->
+        <div class="card quests" id="giftsQuests" style="display:none;">
+          <h3 data-i18n="questsTitle">Квесты</h3>
+          <div class="quest" id="questJoinCommunity">
+            <span class="q-ic" id="questJoinIc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="3.4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.5a4 4 0 0 1 0 7"></path></svg></span>
+            <span class="tx"><b data-i18n="questJoinT">Вступить в сообщество</b><span data-i18n="questJoinS">Присоединяйся к нам</span></span>
+            <button type="button" class="q-btn" id="questJoinBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.4 7.2L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4z" fill="currentColor"></path></svg><span data-i18n="questJoinBtn">+10</span></button>
+          </div>
+        </div>
+
+        <!-- что можно с искрами -->
+        <div class="card value" id="iskraValueCard" style="display:none;">
+          <h3 data-i18n="iskraValueTitle">Что можно с Искрами</h3>
+          <div class="vrow">
+            <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-11.6 7.8L3 21l1.8-6.2A8.4 8.4 0 1 1 21 11.5Z"></path></svg></span>
+            <span class="tx" data-i18n="iskraValueQuestion"><b>1 Искра</b> — задай оракулу любой вопрос о себе</span>
+          </div>
+          <div class="vrow" id="iskraValueSongRow">
+            <span class="ic pink"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg></span>
+            <span class="tx" data-i18n="iskraValueSong"><b>100 Искр</b> — родится песня твоей души</span>
+          </div>
+        </div>
+
+        <!-- нет первой песни: карточка с CTA вместо строки-подсказки (эталон showcase-gifts 09.09) -->
+        <div class="first-run" id="giftsFirstRun" hidden>
+          <span class="fr-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg></span>
+          <h2 data-i18n="giftsFirstRunTitle">Искра дня откроется после первой песни</h2>
+          <p data-i18n="giftsFirstRunSub">Каждый день — +2 Искры, за 7 дней подряд — ещё +10. Искры идут на вопросы Оракулу и на следующую песню.</p>
+          <button class="d-btn" type="button" id="giftsFirstRunCta" data-i18n="giftsFirstRunCta">Создать первую песню</button>
+        </div>
+        <div class="foot" data-i18n="giftsFoot">✦ 7 дней подряд → +10 Искр в серию ✦</div>
+        <div id="giftsEmptyHint" class="gifts-empty" style="display:none;" data-i18n="giftsEmptyHint">Создай первую песню — и здесь откроется ежедневная Искра 🤍</div>
+      </div>
+    </div>

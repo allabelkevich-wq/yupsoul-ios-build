@@ -1,0 +1,62 @@
+<div class="page" id="giftPayPage" data-page="gift-pay">
+      <div class="ph-stars"></div>
+      <div class="behind"></div>
+      <div class="scrim" onclick="if(window.goBack){goBack();}else if(window.goToPage){goToPage('giftPage');}"></div>
+      <div class="gp-sheet">
+        <button type="button" class="gp-back" aria-label="Назад" data-i18n-aria="navBack" onclick="if(window.goBack){goBack();}else if(window.goToPage){goToPage('giftPage');}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg></button>
+        <div class="grip"></div>
+        <button type="button" class="gp-close" aria-label="Закрыть" title="Закрыть" data-i18n-title="mtCloseBtn" data-i18n-aria="mtCloseBtn" onclick="if(window.goBack){goBack();}else if(window.goToPage){goToPage('profilePage');}"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+        <div class="s-scroll">
+          <div class="s-head">
+            <div class="s-eyebrow" data-i18n="gpEyebrow">Подарок близкому</div>
+            <h2 data-i18n="gpTitle">Оформление подарка</h2>
+          </div>
+          <div class="order">
+            <span class="order-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12v9H4v-9"/><path d="M2 7h20v5H2z"/><path d="M12 21V7"/><path d="M12 7S10.5 3 8 3 5 6 7 7s5 0 5 0zM12 7s1.5-4 4-4 3 3 1 4-5 0-5 0z"/></svg></span>
+            <div class="order-tx">
+              <div class="order-eyebrow" data-i18n="gpWhat">Что дарим</div>
+              <b data-i18n="gpItem">Песня души</b>
+              <div class="order-to"><span data-i18n="gpInGift">в подарок</span> → <span id="gpToName" data-i18n="gpToClose">близкому</span></div>
+            </div>
+            <span class="order-price" id="gpOrderPrice">460 ★</span>
+          </div>
+          <div class="sec" data-i18n="gpPayMethod">Способ оплаты</div>
+          <div class="methods" id="gpMethods">
+            <button type="button" class="method" data-m="stars" data-on="tg" data-amt="460 ★" data-sku="gift_song">
+              <span class="m-ic ic-stars"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.2L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4z"/></svg></span>
+              <span class="m-tx"><b data-i18n="gpMStars">Telegram Stars</b><span data-i18n="gpMStarsSub">Оплата звёздами Telegram</span></span>
+              <span class="m-amt">460 ★</span><span class="m-radio"></span>
+            </button>
+            <button type="button" class="method" data-m="card" data-on="tg web vkd" data-amt="490 ₽" data-sku="gift_song">
+              <span class="m-ic ic-card"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2.5"/><path d="M2 10h20"/></svg></span>
+              <span class="m-tx"><b data-i18n="gpMCard">Картой · T-Bank</b><span data-i18n="gpMCardSub">Visa / Mastercard / МИР</span></span>
+              <span class="m-amt">490 ₽</span><span class="m-radio"></span>
+            </button>
+            <!-- Отключённый способ оплаты удалён из продукта (решение Аллы 27.08.2026):
+                 подарок оплачивается Stars или картой. Узел удалён из DOM, а не спрятан. -->
+            <!-- КАНОН v8 (отказ 27.07): метод «Голосами VK» удалён из разметки целиком.
+                 Подарок — цифровая ценность (§5.4.1): на vk.ru/m.vk.ru он оплачивается
+                 картой (метод выше, data-on содержит vkd), на клиентах iOS/Android
+                 страница подарка закрыта. Текст про голоса убран из DOM, а не спрятан
+                 CSS: модерация читает исходник скрейпом. -->
+          </div>
+          <p class="note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> <span data-i18n="gpNote">После оплаты ты получишь промокод — отправь его близкому, он активирует подарок при создании песни.</span></p>
+        </div>
+        <div class="s-foot">
+          <button type="button" class="pay" id="gpPayBtn"><span id="gpPayLabel" data-i18n="gpPay">Оплатить</span><span style="opacity:.5">·</span><span id="gpPayAmt">460 ★</span></button>
+          <div class="secure"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> <span data-i18n="gpSecure">Безопасная оплата · промокод придёт сразу</span></div>
+        </div>
+      </div>
+      <div class="gp-done" id="gpDone">
+        <span class="g-spark" style="top:24%;left:18%;width:7px;height:7px;background:#f7cf7a;animation-delay:.1s"></span>
+        <span class="g-spark" style="top:30%;right:16%;width:5px;height:5px;background:#f7b6d6;animation-delay:.6s"></span>
+        <span class="g-spark" style="top:18%;right:30%;width:4px;height:4px;background:#f7b6d6;animation-delay:1s"></span>
+        <span class="g-spark" style="top:40%;left:12%;width:5px;height:5px;background:#f7a23a;animation-delay:1.4s"></span>
+        <div class="done-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
+        <h2 data-i18n="gpDoneTitle">Подарок готов 🤍</h2>
+        <p data-i18n="gpDoneText">Промокод на песню души — отправь близкому, он введёт его при создании.</p>
+        <div class="promo" id="gpDoneCode">YUP-····-···</div>
+        <button type="button" class="done-share" id="gpDoneShare"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.55" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg> <span data-i18n="gpDoneShare">Отправить подарок</span></button>
+        <button type="button" class="done-copy" id="gpDoneCopy" data-i18n="gpDoneCopy">Скопировать код</button>
+      </div>
+    </div>

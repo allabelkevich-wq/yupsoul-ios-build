@@ -1,0 +1,80 @@
+<div class="page ys" id="plansPage" data-page="plans">
+      <div class="ph-stars"></div>
+      <div class="head">
+        <button type="button" class="hbtn" id="plansBackBtn" aria-label="Назад" data-i18n-aria="navBack" onclick="if(window.goBack)goBack();else if(window.goToPage)goToPage('profilePage')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg></button>
+        <h1 data-i18n="plTitle">Тарифы</h1>
+        <span class="secure"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg><span data-i18n="paySecure">Защищено</span></span>
+      </div>
+      <div class="scroll">
+        <!-- баланс -->
+        <div class="balance">
+          <span class="b-ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.2L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4z"/></svg></span>
+          <span class="b-body"><span class="b-k" data-i18n="plBalance">Твой баланс</span><span class="b-v" id="plansBalanceVal">0 Искр</span></span>
+          <button type="button" class="b-top" id="plansTopupBtn" data-i18n="plTopup" onclick="if(window.goToPage){goToPage('topupPage');setTimeout(function(){if(window._initTopupPage)window._initTopupPage();},100);}">Пополнить</button>
+        </div>
+
+        <div class="sec" data-web-only data-i18n="plSubsSec">Подписки · полный доступ</div>
+        <div class="sec" data-vk-only data-i18n="plSubsSecVk">Пакеты · полный доступ</div>
+
+        <!-- Душа / Basic -->
+        <!-- КАНОН 02.07: на VK карточки видны как ПАКЕТЫ за голоса (§5.2); на OK скрыты CSS-ом (платежей нет) -->
+        <div class="plan" id="planCardBasic">
+          <div class="plan-head"><span class="plan-name" id="planBasicName" data-i18n="planBasicName">Душа</span><span class="plan-songs" data-i18n="plBasicTag">Basic</span></div>
+          <div class="plan-feat">
+            <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span id="planBasicF1" data-i18n="plBasicF1">5 треков каждый месяц</span></span>
+            <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="plBasicF2">Оракул — 50 вопросов в месяц</span></span>
+            <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="plBasicF3">История заказов</span></span>
+          </div>
+          <div class="plan-bot">
+            <button type="button" class="plan-cta" id="planBtnBasic"><span class="cta-label" id="planBtnBasicLabel" data-i18n="plBasicCta">Подключить «Душу»</span><span class="pay-dot">·</span><span class="pack-total" id="planBasicPriceEl">810 ₽<small>/мес</small></span></button>
+          </div>
+        </div>
+
+        <!-- Глубина / Plus (популярный) -->
+        <div class="plan pop" id="planCardPlus">
+          <span class="plan-flag" data-i18n="plFlag">выбирают чаще</span>
+          <div class="plan-head"><span class="plan-name" id="planPlusName" data-i18n="planPlusName">Глубина</span><span class="plan-songs" data-i18n="plPlusTag">Plus</span></div>
+          <div class="plan-feat">
+            <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span id="planPlusF1" data-i18n="plPlusF1">15 треков каждый месяц</span></span>
+            <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="plPlusF2">Оракул без лимита</span></span>
+            <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="plPlusF3">Приоритет в очереди генерации</span></span>
+          </div>
+          <div class="plan-bot">
+            <button type="button" class="plan-cta" id="planBtnPlus"><span class="cta-label" id="planBtnPlusLabel" data-i18n="plPlusCta">Подключить «Глубину»</span><span class="pay-dot">·</span><span class="pack-total" id="planPlusPriceEl">2 030 ₽<small>/мес</small></span></button>
+          </div>
+        </div>
+
+        <!-- Лаборатория / Master -->
+        <div class="plan" id="planCardMaster">
+          <div class="plan-head"><span class="plan-name" id="planMasterName" data-i18n="planMasterNameText">Лаборатория</span><span class="plan-songs" data-i18n="plLabTag">Master</span></div>
+          <div class="plan-feat">
+            <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span id="planMasterF1" data-i18n="plLabF1">30 треков каждый месяц</span></span>
+            <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="plLabF2">Картотека людей</span></span>
+            <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="plLabF3">Оракул без лимита + приоритет</span></span>
+          </div>
+          <div class="plan-bot">
+            <button type="button" class="plan-cta" id="planBtnMaster"><span class="cta-label" id="planBtnMasterLabel" data-i18n="plLabCta">Подключить «Лабораторию»</span><span class="pay-dot">·</span><span class="pack-total" id="masterPriceEl">3 250 ₽<small>/мес</small></span></button>
+          </div>
+        </div>
+
+        <div class="sec" data-i18n="plOnceSec">Разовые — без подписки</div>
+        <div class="buy">
+          <span class="bi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 17.2V5.1l11-2.1v11.2"/><ellipse cx="6.4" cy="17.4" rx="2.6" ry="2.2"/><ellipse cx="17.4" cy="15.3" rx="2.6" ry="2.2"/></svg></span>
+          <span class="bn"><b data-i18n="plBuy1">Песня о себе</b><small data-i18n="plBuy1s">Звуковой ключ по твоему узору</small></span>
+          <span class="bp" id="plansBuy1Price">100 Искр</span>
+        </div>
+        <div class="buy">
+          <span class="bi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19a5.5 5.5 0 0 1 11 0"/><circle cx="17.5" cy="9" r="2.6"/><path d="M16 19a4.5 4.5 0 0 1 5.5-4.4"/></svg></span>
+          <span class="bn"><b data-i18n="plBuy2">Песня про двоих</b><small data-i18n="plBuy2s">Совместимость по двум раскладам</small></span>
+          <span class="bp" id="plansBuy2Price">100 Искр</span>
+        </div>
+        <div class="buy">
+          <span class="bi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2.5M12 19v2.5M4.2 4.2l1.8 1.8M18 18l1.8 1.8M2.5 12H5M19 12h2.5M4.2 19.8 6 18M18 6l1.8-1.8"/></svg></span>
+          <span class="bn"><b data-i18n="plBuy3">Энергия дня</b><small data-i18n="plBuy3s">Звук конкретного момента</small></span>
+          <span class="bp" id="plansBuy3Price">100 Искр</span>
+        </div>
+
+        <p class="legal" data-web-only data-i18n-html="plLegalHtml">Любая песня — 100 Искр. Пакеты — разовая оплата на 30 дней, без автоматических списаний. Оплата картой, Stars или Искрами; промокоды — на разовые покупки. <a href="#" onclick="if(window.showLegalModal)window.showLegalModal('offer');return false">Оферта</a>.</p>
+        <p class="legal" data-vk-only data-i18n-html="plLegalVkHtml">Любая песня — 100 Искр. Пакеты и Искры — разовая покупка. <a href="#" onclick="if(window.showLegalModal)window.showLegalModal('offer');return false">Оферта</a>.</p>
+      </div>
+    </div>

@@ -1,0 +1,37 @@
+{
+  "name": "YupSoul — Музыкальный оракул",
+  "short_name": "YupSoul",
+  "description": "Персональная песня по дате, времени и месту рождения. Звуковой портрет о тебе — твои реальные качества, путь и сила.",
+  "lang": "ru",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#08071a",
+  "theme_color": "#08071a",
+  "categories": ["music", "lifestyle", "entertainment"],
+  "icons": [
+    {
+      "src": "/favicon-32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

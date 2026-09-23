@@ -1,0 +1,30 @@
+<div class="page" id="loadingPage">
+      <div class="loading-page-bg" aria-hidden="true"></div>
+      <div class="loading">
+        <div class="loader-wrapper" aria-hidden="true">
+          <span class="loader-letter">С</span>
+          <span class="loader-letter">о</span>
+          <span class="loader-letter">з</span>
+          <span class="loader-letter">д</span>
+          <span class="loader-letter">а</span>
+          <span class="loader-letter">ё</span>
+          <span class="loader-letter">м</span>
+          <div class="loader"></div>
+        </div>
+        <div class="loading-text" id="loadingTitle">Заявка принята</div>
+        <div id="loadingDesc" style="color:rgba(255,255,255,0.55);font-size:0.92rem;text-align:center;max-width:320px;line-height:1.7;margin-top:12px;">
+          Песня создаётся. Придёт в чат с ботом.<br>Можно закрыть окно.
+        </div>
+        <div id="loadingCountdown" style="margin-top:20px;color:rgba(var(--primary-rgb),0.65);font-size:0.9rem;"></div>
+        <!-- Bot-промпт перенесён на successPage -->
+        <div id="whileGeneratingUpsell" class="while-generating-upsell" style="display:none;">
+          <div class="wgu-label" data-i18n="wguLabel">Пока создаётся твоя песня</div>
+          <div class="wgu-title" data-i18n="wguTitle">Узнай что твоя дата говорит о тебе</div>
+          <div class="wgu-desc" data-i18n="daDeepDesc" style="opacity:0.62;font-size:0.8rem;line-height:1.5;margin:6px auto 10px;max-width:300px;">Глубокая расшифровка — более глубокий анализ с учётом места и времени рождения: твоя суть, сильные стороны и точки роста, ключевые темы и периоды жизни, и смысл, вложенный в песню. Словами, лично для тебя.</div>
+          <div class="wgu-price" data-i18n="wguPrice">Глубокая расшифровка — 40 Искр</div>
+          <button type="button" class="btn btn-secondary" data-i18n="wguBtn" onclick="if(typeof handleBuyDeepAnalysis==='function')handleBuyDeepAnalysis()">
+            Получить расшифровку
+          </button>
+        </div>
+      </div>
+    </div>

@@ -1,0 +1,399 @@
+# Конвейер iOS-сборки YupSoul.
+#
+# Почему в CI, а не на маке Аллы: с 28.04.2026 App Store принимает только
+# сборки на Xcode 26, а он ставится лишь на macOS 26. На рабочей машине
+# Sonoma 14.7 — локально собрать нечем. Раннер macos-26 несёт Xcode 26.6.
+#
+# Запуск ТОЛЬКО по требованию: репозиторий приватный, минуты macOS считаются
+# по курсу десять к одному, и автозапуск на каждый пуш сжигал бы квоту.
+#
+# Два способа пуска:
+#   1. Ветка-триггер (работает уже сейчас, без пуша в main):
+#        git push origin HEAD:ci/ios-build   --force   → только компиляция
+#        git push origin HEAD:ci/ios-smoke   --force   → плюс симулятор и скриншот
+#        git push origin HEAD:ci/ios-release --force   → плюс отправка в стор
+#      Состав задач читается из имени ветки. Рабочая ветка молчит.
+#   2. Кнопка «Run workflow» в Actions — станет доступна после того, как файл
+#      попадёт в main. Кнопка живёт только на главной ветке, это правило GitHub.
+#
+# Три задачи:
+#   validate — компиляция под симулятор без подписи. Работает БЕЗ аккаунта
+#              разработчика и без секретов. Отвечает на главный вопрос:
+#              собирается ли приложение вообще.
+#   smoke    — ставит на симулятор, запускает, снимает скриншот в артефакт.
+#   release  — подписанный архив и отправка в App Store Connect. Включится,
+#              когда появятся сертификат и ключ API (список секретов ниже).
+#
+# Секреты для release (завести в Settings → Secrets → Actions):
+#   IOS_CERT_P12_BASE64        сертификат Apple Distribution (.p12 → base64)
+#   IOS_CERT_PASSWORD          пароль от .p12
+#   IOS_PROFILE_BASE64         провижн-профиль App Store (.mobileprovision → base64)
+#   ASC_KEY_ID                 Key ID ключа App Store Connect API
+#   ASC_ISSUER_ID              Issuer ID
+#   ASC_KEY_P8_BASE64          сам ключ AuthKey_XXX.p8 → base64
+#   RC_IOS_KEY                 публичный SDK-ключ RevenueCat
+#
+# В validate ключ RevenueCat необязателен: без него сборка идёт, покупки просто
+# выключены. В release он обязателен — иначе в стор уехала бы сборка без покупок,
+# поэтому там скрипт зовётся с --require, и release падает на проверке секретов.
+
+name: iOS build
+
+on:
+  # Пуш в служебную ветку = запросили сборку. Рабочие claude/** не трогаем,
+  # иначе каждый коммит жёг бы четверть месячной квоты macOS-минут.
+  push:
+    branches: ['ci/ios-*']
+  workflow_dispatch:
+    inputs:
+      smoke:
+        description: 'Запустить на симуляторе и снять скриншот'
+        type: boolean
+        default: false
+      release:
+        description: 'Собрать подписанный архив и отправить в App Store Connect'
+        type: boolean
+        default: false
+      build_number:
+        description: 'Номер сборки для стора (пусто = номер прогона). Нужен в зеркале: там нумерация начинается заново, а App Store принимает только растущий номер.'
+        type: string
+        default: ''
+
+concurrency:
+  group: ios-build-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  BUNDLE_ID: com.yupsoul.app
+  SCHEME: App
+  MARKETING_VERSION: 1.0.0
+
+jobs:
+  validate:
+    name: Компиляция под симулятор
+    runs-on: macos-26
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+
+      - name: Инструменты раннера
+        run: |
+          xcodebuild -version
+          xcodebuild -showsdks | grep -i iphoneos || true
+          swift --version
+
+      - name: Синхрон src → public/index.html
+        run: npm run build:index:check
+
+      - name: Собрать app/www из реального фронта
+        env:
+          BUILD_NUMBER: ${{ inputs.build_number || vars.BUILD_BASE || github.run_number }}
+        run: node scripts/build-app-www.mjs
+
+      - name: Вшить публичный ключ RevenueCat
+        env:
+          RC_IOS_KEY: ${{ secrets.RC_IOS_KEY }}
+        run: node scripts/inject-rc-key.mjs
+
+      - name: Зависимости приложения
+        working-directory: app
+        run: npm install --ignore-scripts --no-audit --no-fund
+
+      - name: Синхронизация Capacitor
+        working-directory: app
+        run: npx cap sync ios
+
+      - name: Разрешить пакеты Swift
+        working-directory: app/ios/App/CapApp-SPM
+        run: |
+          # GitHub отдаёт бинарники Facebook SDK с перебоями (504 дважды за час,
+          # прогоны 35613035189 и 35614825810). Три попытки с паузой, потом падаем.
+          for i in 1 2 3; do swift package resolve && break; echo "попытка $i не удалась, жду 40 с"; sleep 40; done
+          swift package resolve
+
+      - name: Настройки сборки (проверка конфигурации)
+        working-directory: app/ios/App
+        run: |
+          xcodebuild -project App.xcodeproj -scheme "$SCHEME" -showBuildSettings \
+            | grep -E "PRODUCT_BUNDLE_IDENTIFIER|CODE_SIGN_ENTITLEMENTS|TARGETED_DEVICE_FAMILY|IPHONEOS_DEPLOYMENT_TARGET"
+
+      - name: Компиляция (без подписи)
+        working-directory: app/ios/App
+        run: |
+          set -o pipefail
+          xcodebuild \
+            -project App.xcodeproj \
+            -scheme "$SCHEME" \
+            -configuration Debug \
+            -sdk iphonesimulator \
+            -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO \
+            build 2>&1 | tail -40
+
+      - name: Дымовой запуск в симуляторе
+        # Запускаем только по просьбе: запуск в симуляторе дублирует локальный
+        # аудит (scripts/native-legal-audit.mjs, проверка 17 — запуск без ошибок
+        # JS на четырёх языках), а минуты macOS считаются по курсу десять к одному.
+        if: inputs.smoke
+        # Первый прогон шага — в режиме наблюдения: ошибка в самом шаге не должна
+        # срывать выпуск под дедлайн. После первого зелёного прогона строку убрать.
+        continue-on-error: true
+        # Загрузка симулятора умеет зависать наглухо (прогон 35725096226: 25 минут
+        # на bootstatus). Без своего предела шаг доедал таймаут всей задачи и
+        # уносил с собой отправку в стор, ради которой всё и затевалось.
+        timeout-minutes: 8
+        run: |
+          set -o pipefail
+          APP_PATH="$GITHUB_WORKSPACE/app/ios/App/build/Build/Products/Debug-iphonesimulator/App.app"
+          CONSOLE_LOG="$RUNNER_TEMP/app-console.log"
+          UDID=$(xcrun simctl list devices available -j | python3 -c "import json,sys; d=json.load(sys.stdin)['devices']; print(next(x['udid'] for k in sorted(d, reverse=True) if 'iOS' in k for x in d[k] if 'iPhone' in x['name']))") || true
+          if [ -z "$UDID" ]; then
+            echo "Не нашёлся доступный симулятор iPhone на раннере"
+            exit 1
+          fi
+          echo "Симулятор: $UDID"
+          xcrun simctl boot "$UDID" || true
+          xcrun simctl bootstatus "$UDID" -b
+          xcrun simctl install "$UDID" "$APP_PATH"
+          xcrun simctl launch --console-pty "$UDID" "$BUNDLE_ID" > "$CONSOLE_LOG" 2>&1 &
+          sleep 40
+          xcrun simctl io "$UDID" screenshot "$RUNNER_TEMP/boot.png"
+          xcrun simctl terminate "$UDID" "$BUNDLE_ID" || true
+          echo "----- хвост консоли приложения -----"
+          tail -60 "$CONSOLE_LOG" || true
+          if [ ! -s "$CONSOLE_LOG" ]; then
+            echo "Консоль приложения пуста — приложение не запустилось или Capacitor не печатает лог"
+            exit 1
+          fi
+          if grep -qE "STARTUP JS ERROR|SyntaxError|\[Emergency\]|Не удалось запустить" "$CONSOLE_LOG"; then
+            echo "В консоли приложения найдена ошибка запуска"
+            exit 1
+          fi
+          if ! grep -q "Инициализация приложения" "$CONSOLE_LOG"; then
+            echo "В консоли нет строки об успешной инициализации приложения — старт не подтверждён"
+            exit 1
+          fi
+
+      - name: Выложить скриншот и консоль дымового запуска
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-boot-smoke
+          path: |
+            ${{ runner.temp }}/boot.png
+            ${{ runner.temp }}/app-console.log
+          retention-days: 7
+          if-no-files-found: warn
+
+      - name: Сохранить бандл для следующих задач
+        if: inputs.smoke || contains(github.ref_name, 'smoke')
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-simulator-build
+          path: app/ios/App/build/Build/Products/Debug-iphonesimulator/App.app
+          retention-days: 3
+
+  smoke:
+    name: Прогон на симуляторе
+    needs: validate
+    if: inputs.smoke || contains(github.ref_name, 'smoke')
+    runs-on: macos-26
+    timeout-minutes: 30
+    steps:
+      - uses: actions/download-artifact@v5
+        with:
+          name: app-simulator-build
+          path: App.app
+
+      - name: Поставить, запустить, снять экран
+        run: |
+          DEV=$(xcrun simctl create ys-test com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro 2>/dev/null \
+                || xcrun simctl create ys-test com.apple.CoreSimulator.SimDeviceType.iPhone-16-Pro)
+          xcrun simctl boot "$DEV"
+          xcrun simctl bootstatus "$DEV" -b
+          xcrun simctl install "$DEV" App.app
+          xcrun simctl launch "$DEV" "$BUNDLE_ID"
+          # Фронт вшит локально, но данные тянутся по сети — даём время на первый рендер
+          for i in 1 2 3; do sleep 8; xcrun simctl io "$DEV" screenshot "shot-$i.png" || true; done
+          xcrun simctl spawn "$DEV" log collect --last 2m --output app.logarchive 2>/dev/null || true
+          xcrun simctl shutdown "$DEV" || true
+
+      - name: Выложить скриншоты и лог
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: simulator-proof
+          path: |
+            shot-*.png
+            app.logarchive
+          if-no-files-found: warn
+
+  release:
+    name: Подписанный архив и отправка в стор
+    needs: validate
+    if: inputs.release || contains(github.ref_name, 'release')
+    runs-on: macos-26
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Проверить, что секреты заведены
+        env:
+          CERT: ${{ secrets.IOS_CERT_P12_BASE64 }}
+          CERT_PW: ${{ secrets.IOS_CERT_PASSWORD }}
+          PROFILE: ${{ secrets.IOS_PROFILE_BASE64 }}
+          ASC_KEY: ${{ secrets.ASC_KEY_P8_BASE64 }}
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          RC_IOS_KEY: ${{ secrets.RC_IOS_KEY }}
+        run: |
+          # Список ровно тот, что читают шаги ниже: подпись, профиль, ключ API,
+          # выгрузка в App Store Connect и вшивание ключа RevenueCat. Без любого
+          # из них релиз либо не соберётся, либо уедет в стор нерабочим.
+          miss=""
+          [ -z "$CERT" ] && miss="$miss IOS_CERT_P12_BASE64"
+          [ -z "$CERT_PW" ] && miss="$miss IOS_CERT_PASSWORD"
+          [ -z "$PROFILE" ] && miss="$miss IOS_PROFILE_BASE64"
+          [ -z "$ASC_KEY" ] && miss="$miss ASC_KEY_P8_BASE64"
+          [ -z "$ASC_KEY_ID" ] && miss="$miss ASC_KEY_ID"
+          [ -z "$ASC_ISSUER_ID" ] && miss="$miss ASC_ISSUER_ID"
+          [ -z "$RC_IOS_KEY" ] && miss="$miss RC_IOS_KEY"
+          if [ -n "$miss" ]; then
+            echo "Не хватает секретов:$miss"
+            echo "Аккаунт разработчика ещё не открыт — задача остановлена намеренно."
+            exit 1
+          fi
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+
+      - name: Собрать app/www и вшить ключ
+        env:
+          RC_IOS_KEY: ${{ secrets.RC_IOS_KEY }}
+          BUILD_NUMBER: ${{ inputs.build_number || vars.BUILD_BASE || github.run_number }}
+        run: |
+          npm run build:index:check
+          node scripts/build-app-www.mjs
+          node scripts/inject-rc-key.mjs --require
+
+      - name: Зависимости и синхронизация
+        working-directory: app
+        run: |
+          npm install --ignore-scripts --no-audit --no-fund
+          npx cap sync ios
+
+      - name: Импортировать сертификат в связку ключей
+        env:
+          CERT_B64: ${{ secrets.IOS_CERT_P12_BASE64 }}
+          CERT_PW: ${{ secrets.IOS_CERT_PASSWORD }}
+        run: |
+          # Отдельная связка на время сборки: чужие ключи раннера не трогаем,
+          # пароль случайный и живёт только внутри этого запуска.
+          KEYCHAIN=build.keychain
+          KC_PW=$(openssl rand -hex 20)
+          security create-keychain -p "$KC_PW" $KEYCHAIN
+          security set-keychain-settings -lut 3600 $KEYCHAIN
+          security unlock-keychain -p "$KC_PW" $KEYCHAIN
+          echo "$CERT_B64" | base64 --decode > cert.p12
+          security import cert.p12 -k $KEYCHAIN -P "$CERT_PW" -T /usr/bin/codesign -T /usr/bin/security
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$KC_PW" $KEYCHAIN
+          security list-keychains -d user -s $KEYCHAIN $(security list-keychains -d user | tr -d '"')
+          rm -f cert.p12
+          security find-identity -v -p codesigning $KEYCHAIN
+
+      - name: Поставить провижн-профиль
+        env:
+          PROFILE_B64: ${{ secrets.IOS_PROFILE_BASE64 }}
+        run: |
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          echo "$PROFILE_B64" | base64 --decode > ~/Library/MobileDevice/Provisioning\ Profiles/app.mobileprovision
+          security cms -D -i ~/Library/MobileDevice/Provisioning\ Profiles/app.mobileprovision > profile.plist
+          echo "UUID: $(/usr/libexec/PlistBuddy -c 'Print :UUID' profile.plist)"
+          echo "PROFILE_NAME=$(/usr/libexec/PlistBuddy -c 'Print :Name' profile.plist)" >> $GITHUB_ENV
+          echo "TEAM_ID=$(/usr/libexec/PlistBuddy -c 'Print :TeamIdentifier:0' profile.plist)" >> $GITHUB_ENV
+
+      - name: Ключ App Store Connect API
+        env:
+          ASC_KEY_B64: ${{ secrets.ASC_KEY_P8_BASE64 }}
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+        run: |
+          mkdir -p private_keys
+          echo "$ASC_KEY_B64" | base64 --decode > "private_keys/AuthKey_${ASC_KEY_ID}.p8"
+
+      - name: Разрешить пакеты Swift (с повторами)
+        working-directory: app/ios/App
+        run: |
+          for i in 1 2 3; do
+            xcodebuild -resolvePackageDependencies -project App.xcodeproj -scheme "$SCHEME" 2>&1 | tail -5 && break
+            echo "попытка $i не удалась, жду 40 с"; sleep 40
+          done
+
+      - name: Архив
+        working-directory: app/ios/App
+        run: |
+          set -o pipefail
+          xcodebuild \
+            -project App.xcodeproj \
+            -scheme "$SCHEME" \
+            -configuration Release \
+            -sdk iphoneos \
+            -destination 'generic/platform=iOS' \
+            -archivePath "$GITHUB_WORKSPACE/App.xcarchive" \
+            MARKETING_VERSION="$MARKETING_VERSION" \
+            CURRENT_PROJECT_VERSION="${{ inputs.build_number || vars.BUILD_BASE || github.run_number }}" \
+            archive 2>&1 | tail -40
+          # Подпись НЕ передаём аргументами: xcodebuild раздал бы её всем целям,
+          # включая чужие Swift-пакеты, а они профилей не поддерживают и роняют
+          # архив (прогон 35613035189). Настройки лежат у цели App в проекте.
+
+      - name: Экспорт и отправка в App Store Connect
+        run: |
+          # destination=upload отправляет сборку сразу из xcodebuild, без altool.
+          cat > ExportOptions.plist <<PLIST
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>method</key><string>app-store-connect</string>
+            <key>destination</key><string>upload</string>
+            <key>teamID</key><string>${TEAM_ID}</string>
+            <key>signingStyle</key><string>manual</string>
+            <key>provisioningProfiles</key>
+            <dict><key>${BUNDLE_ID}</key><string>${PROFILE_NAME}</string></dict>
+            <key>uploadSymbols</key><true/>
+            <key>manageAppVersionAndBuildNumber</key><false/>
+          </dict>
+          </plist>
+          PLIST
+          set -o pipefail
+          xcodebuild -exportArchive \
+            -archivePath App.xcarchive \
+            -exportPath export \
+            -exportOptionsPlist ExportOptions.plist \
+            -authenticationKeyPath "$PWD/private_keys/AuthKey_${{ secrets.ASC_KEY_ID }}.p8" \
+            -authenticationKeyID "${{ secrets.ASC_KEY_ID }}" \
+            -authenticationKeyIssuerID "${{ secrets.ASC_ISSUER_ID }}" \
+            2>&1 | tail -40
+
+      - name: Убрать ключи с раннера
+        if: always()
+        run: |
+          rm -rf private_keys ~/Library/MobileDevice/Provisioning\ Profiles/app.mobileprovision
+          security delete-keychain build.keychain || true
+
+      - name: Выложить архив
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-archive
+          path: |
+            App.xcarchive
+            export
+          retention-days: 7
+          if-no-files-found: warn

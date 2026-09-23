@@ -1,0 +1,33 @@
+<div class="page" id="paymentThanksPage">
+      <div class="page-gradient-bg" aria-hidden="true">
+        <div class="gradients-container">
+          <div class="g1"></div>
+          <div class="g2"></div>
+          <div class="g3"></div>
+          <div class="interactive"></div>
+        </div>
+      </div>
+      <header class="page-header">
+        <div class="tagline-i18n" style="font-size:0.78rem;font-weight:400;letter-spacing:0.12em;color:rgba(var(--primary-rgb),0.5);margin:2px 0 0;text-transform:uppercase"></div>
+        <div id="paymentThanksSubtitle" class="subtitle">заявка принята</div>
+      </header>
+      <div class="section page-scroll" style="text-align:center; padding-top:40px; position:relative;">
+        <canvas id="paymentThanksFireworks" class="celebration-fireworks" aria-hidden="true"></canvas>
+        <div id="paymentThanksIcon" style="display:none;"></div>
+        <h2 id="paymentThanksTitle" data-i18n="payThanksTitle" style="position:relative;z-index:2;font-size:1.05rem;font-weight:600;margin:0 0 10px;line-height:1.3;background:linear-gradient(135deg,#fde68a,#f59e0b,#fbbf24,#fef3c7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:successTitleShimmer 4s ease-in-out infinite;background-size:200% 200%;">Оплата получена</h2>
+        <p class="success-text" id="paymentThanksMessage" data-i18n="payThanksDesc" style="margin:0 0 18px 0; font-size:0.78rem; font-weight:300; color:var(--muted); line-height:1.6; position:relative; z-index:2;">
+          Твоя песня уже генерируется. Обычно 10–15 минут.
+        </p>
+        <div id="afterFirstSongBlock" class="after-first-song-screen" style="display:none;">
+          <div class="afs-title" style="font-size:0.85rem;font-weight:400;color:rgba(255,255,255,0.6);margin-bottom:4px;" data-i18n="afsTitle">Твоя Искра зажглась</div>
+          <div class="afs-subtitle" style="font-size:0.75rem;font-weight:300;color:var(--muted);margin-bottom:14px;" data-i18n="afsSubtitle">Готова идти глубже?</div>
+          <div class="after-first-song-paths" style="gap:8px;">
+            <button type="button" class="btn btn-primary" data-i18n="afsBtnCreate">Создать ещё трек</button>
+            <button type="button" class="btn btn-secondary" data-i18n="afsBtnSoulChat">Попробовать Чат с Оракулом</button>
+            <button type="button" class="btn btn-secondary" data-i18n="afsBtnInvite">Пригласить друга</button>
+          </div>
+        </div>
+        <button id="paymentThanksBackBtn" type="button" data-goto="homePage" onclick="if(typeof goToPage==='function'){goToPage(this.getAttribute('data-goto')||'homePage')}" style="margin-bottom:12px;" data-i18n="btnGoHome">На главную</button>
+        <p id="paymentThanksHint" style="font-size:0.72rem;color:var(--muted);line-height:1.5;margin:0;">Не пришла за 20 минут? Напиши в поддержку «песня не пришла»</p>
+      </div>
+  </div>

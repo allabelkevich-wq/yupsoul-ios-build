@@ -1,0 +1,9 @@
+{
+  "name": "yupsoul-ios-build",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build:index": "node scripts/build-index.mjs",
+    "build:index:check": "node scripts/build-index.mjs --check"
+  }
+}

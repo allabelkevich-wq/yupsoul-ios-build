@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- Sign in with Apple. Обязателен по правилу Apple 4.8, когда в приложении
+	     есть сторонние входы. На нативе он единственный способ войти. -->
+	<key>com.apple.developer.applesignin</key>
+	<array>
+		<string>Default</string>
+	</array>
+	<!-- Пуши: сообщаем, что песня готова (workerSoundKey отправляет через FCM).
+	     Сборка только релизная — архив в App Store Connect из CI, отладки на
+	     устройстве нет, поэтому окружение production. -->
+	<key>aps-environment</key>
+	<string>production</string>
+</dict>
+</plist>

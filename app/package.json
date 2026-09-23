@@ -1,0 +1,26 @@
+{
+  "name": "app",
+  "version": "1.0.0",
+  "description": "Нативное приложение YupSoul (Capacitor) для App Store и Google Play. Фронт вшит из public/index.html.",
+  "main": "index.js",
+  "scripts": {
+    "build": "node ../scripts/build-app-www.mjs",
+    "cap:sync": "npm run build && npx cap sync",
+    "cap:ios": "npx cap run ios",
+    "cap:android": "npx cap run android",
+    "cap:open:ios": "npx cap open ios"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "@capacitor/android": "^8.1.0",
+    "@capacitor/cli": "^8.1.0",
+    "@capacitor/core": "^8.1.0",
+    "@capacitor/ios": "^8.1.0",
+    "@capacitor/push-notifications": "^8.0.1",
+    "@capgo/capacitor-social-login": "^8.5.7",
+    "@revenuecat/purchases-capacitor": "^13.5.0"
+  }
+}

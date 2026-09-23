@@ -1,0 +1,533 @@
+<div class="page" id="formPage">
+      <div class="page-gradient-bg" aria-hidden="true">
+        <div class="gradients-container">
+          <div class="g1"></div>
+          <div class="g2"></div>
+          <div class="g3"></div>
+          <div class="interactive"></div>
+        </div>
+      </div>
+      <div class="form-page-main-wrap">
+      <!-- Шапка = ЭТАЛОН Картотеки (Алла 12.07 «шапка в форме и кнопка назад не соответствует
+           другим страницам»): прозрачный topbar на самом верху, «Назад» 40px-кружок СЛЕВА
+           (x:12 y:12, как #heroesBackBtn), glass-полоса убрана. Заголовок переехал в большой
+           центрированный .form-title-canon ниже (как .title картотеки/профиля/помощи). -->
+      <div class="form-header-bar">
+        <button type="button" id="formBackBtn" class="profile-back-btn header-back-btn btn-nav" onclick="goBack()" aria-label="Назад" data-i18n-aria="navBack">←</button>
+        <div class="brand" style="flex:1"></div>
+        <span class="form-header-spacer" aria-hidden="true"></span>
+      </div>
+      <div class="form-title-canon"><h1 data-i18n="createSong">Создать песню</h1></div>
+        <div class="form-page-glass-card home-glass-card">
+      <div class="page-scroll">
+
+      <div class="section">
+        <div class="step-panel" data-step="1">
+          <div class="form-uiverse-corner form-uiverse-tl" aria-hidden="true"></div>
+          <div class="form-uiverse-corner form-uiverse-tr" aria-hidden="true"></div>
+          <div class="form-uiverse-corner form-uiverse-bl" aria-hidden="true"></div>
+          <div class="form-uiverse-corner form-uiverse-br" aria-hidden="true"></div>
+          <span id="formStepBadge1" class="form-step-badge"><span class="form-step-badge-text">Шаг 1</span></span>
+          <div class="mode-selector">
+            <h3>
+              <div style="width:28px;height:28px;border-radius:8px;overflow:hidden;flex-shrink:0;box-shadow:0 2px 6px rgba(0,0,0,0.25);display:flex;align-items:center;justify-content:center;"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#d3a94f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z"/></svg></div>
+              Формат песни
+            </h3>
+            <p class="mode-subtitle">Для кого создаём?</p>
+            <div class="mode-cards">
+              <button type="button" class="mode-btn mode-card btn-magic active" data-mode="single" data-effect="displace">
+                <div class="mode-card-inner" aria-hidden="true"></div>
+                <div class="mode-content-wrap">
+                  <span class="mode-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+                  <span class="mode-card-title"><span class="mode-label" data-i18n="modeSingle">Обо мне</span></span>
+                  <span class="mode-desc" data-i18n="modeSingleDesc">По дате рождения</span>
+                </div>
+              </button>
+              <button type="button" class="mode-btn mode-card btn-magic" data-mode="couple" data-effect="hue">
+                <div class="mode-card-inner" aria-hidden="true"></div>
+                <div class="mode-content-wrap">
+                  <span class="mode-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+                  <span class="mode-card-title"><span class="mode-label" data-i18n="modeCouple">Про двоих</span></span>
+                  <span class="mode-desc" data-i18n="modeCoupleDesc">Для двух людей</span>
+                </div>
+              </button>
+              <button type="button" class="mode-btn mode-card btn-magic" data-mode="transit" data-effect="transit">
+                <div class="mode-card-inner" aria-hidden="true"></div>
+                <div class="mode-content-wrap">
+                  <span class="mode-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18"/><path d="M8 14h.01"/><path d="M12 14h.01"/><path d="M16 14h.01"/><path d="M8 18h.01"/><path d="M12 18h.01"/><path d="M16 18h.01"/></svg></span>
+                  <span class="mode-card-title"><span class="mode-label" data-i18n="modeTransit">Энергия<br>дня</span></span>
+                  <span class="mode-desc" data-i18n="modeTransitDesc">О сегодняшнем дне</span>
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- VK Testers 7277231 (Windows): «Шаг 2 пропускается» — root cause:
+             бейдж «Шаг 2» был внутри #formFieldsWrap который сворачивается через
+             pfw-collapsed при заполненном профиле (см. applyProfileAccordion).
+             Юзер видел: «Шаг 1» → аккордеон «Имя · Дата» → «Шаг 3» — бейджа
+             «Шаг 2» нет. Фикс: открываем #formFieldsWrap ПОСЛЕ бейджа+title,
+             чтобы они всегда были видны независимо от collapsed-состояния полей. -->
+        <div class="step-panel" data-step="2">
+          <div class="form-uiverse-corner form-uiverse-tl" aria-hidden="true"></div>
+          <div class="form-uiverse-corner form-uiverse-tr" aria-hidden="true"></div>
+          <div class="form-uiverse-corner form-uiverse-bl" aria-hidden="true"></div>
+          <div class="form-uiverse-corner form-uiverse-br" aria-hidden="true"></div>
+          <span id="formStepBadge2" class="form-step-badge"><span class="form-step-badge-text">Шаг 2</span></span>
+          <h3 id="formYourDataTitle" class="card-title-uiverse">Твои данные</h3>
+          <p id="formDataNeededSub" class="card-subtitle-uiverse">Нужны для персонального текста песни</p>
+        <!-- «Для кого генерируем?» (мастер-тариф, скрыт у обычных) — перенесён из верха страницы
+             в Шаг 2 «Твои данные» (Алла 10.07: висел до Шага 1, вопрос задавался трижды; его место
+             здесь). Стиль — как у остальных полей шага (шкала капсулы, без inline-размеров). -->
+        <div id="forWhoWrap" style="display:none">
+          <div class="field">
+            <label id="forWhoLabel" for="forWho">Для кого генерируем?</label>
+            <select id="forWho">
+              <option value="" data-i18n="forSelfOption">Для себя</option>
+            </select>
+            <!-- Алла 11.07 (прод-разбор): кнопка из формы убрана — теперь пункт ВНУТРИ списка
+                 «Для кого генерируем?» (loadForWhoSelect добавляет option, onchange дёргает этот
+                 скрытый btn.click() — обработчик на 11-heroes:922 живёт). -->
+            <button type="button" id="forWhoAddContactBtn" class="form-nav-link" data-i18n="forWhoAddContact" style="display:none;margin-top:8px;padding:8px 4px;min-height:auto">+ Добавить контакт</button>
+          </div>
+        </div>
+        <!-- Аккордеон профиля (имя·дата) — это и есть данные Шага 2, держим ВНУТРИ рамки (Алла 15.06) -->
+        <div id="profileAccordion" style="display:none;margin-bottom:4px;">
+          <div class="pfa-header" onclick="toggleProfileAccordion()">
+            <div class="pfa-info">
+              <svg class="pfa-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="2"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              <span id="pfaName" class="pfa-name"></span>
+              <span class="pfa-sep" id="pfaSep" style="display:none">·</span>
+              <span id="pfaDate" class="pfa-date"></span>
+            </div>
+            <div class="pfa-chevron" id="pfaChevron">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+          </div>
+        </div>
+        <div id="formFieldsWrap">
+        <div class="field">
+          <label id="nameLabel" for="name" data-icon="">Имя</label>
+            <input type="text" id="name" placeholder="Имя (по желанию)" maxlength="50" aria-label="Имя" data-i18n-placeholder="phName">
+            <div class="field-hint" id="nameHint">Впишешь имя — оно прозвучит в песне.</div>
+        </div>
+        
+        <div class="field">
+          <label id="birthdateLbl" for="birthdate" data-icon="">Дата рождения</label>
+          <div id="birthdateWrap" class="birthdate-wrap">
+            <div class="date-group" role="group" aria-label="Дата рождения">
+              <select id="birthdateDay" class="date-group-day" aria-label="День"><option value="" data-i18n="selectDay">День</option></select>
+              <select id="birthdateMonth" class="date-group-month" aria-label="Месяц"><option value="" data-i18n="selectMonth">Месяц</option></select>
+              <select id="birthdateYear" class="date-group-year" aria-label="Год"><option value="" data-i18n="selectYear">Год</option></select>
+            </div>
+            <input type="date" id="birthdate" required aria-label="Дата рождения" data-i18n-title="birthDateTooltip" title="Выберите дату рождения" tabindex="-1">
+            <span id="birthdateCheck" class="birthdate-check" aria-hidden="true"></span>
+          </div>
+        </div>
+        
+        <!-- Расширенные настройки: место + время рождения — НЕОБЯЗАТЕЛЬНО, свёрнуто.
+             Заполнил → песня точнее (полный расклад по дате+месту+времени), цена та же.
+             Пусто → песня по одной дате рождения (astroLib date-only fallback). -->
+        <div class="adv-settings" id="advSettings">
+          <button type="button" class="adv-header" id="advHeader" onclick="toggleAdvSettings()" aria-expanded="false" aria-controls="advSettingsWrap">
+            <span class="adv-info">
+              <span class="adv-title" data-i18n="advSettingsTitle">Расширенные настройки</span>
+              <span class="adv-sub" data-i18n="advSettingsSub">необязательно</span>
+            </span>
+            <span class="pfa-chevron" id="advChevron">▾</span>
+          </button>
+          <div id="advSettingsWrap" class="adv-settings-wrap">
+        <p class="adv-hint" data-i18n="advSettingsHint">Необязательно. Место и время рождения делают расчёт точнее — можно пропустить.</p>
+        <div class="field">
+          <label id="birthplaceLbl" for="birthplace" data-icon="">Место рождения</label>
+          <div id="birthplaceWrap" class="birthplace-wrap">
+              <input type="text" id="birthplace" placeholder="Москва, Лондон, Нью-Йорк..." maxlength="100" autocomplete="off" aria-label="Локация рождения" data-i18n-placeholder="phBirthplace">
+              <span id="birthplaceCheck" class="birthplace-check" aria-hidden="true"></span>
+            <ul id="birthplaceSuggestions" class="birthplace-suggestions" aria-hidden="true" aria-live="polite"></ul>
+          </div>
+          <div id="birthplaceHint" class="birthplace-hint" style="display:none;font-size:0.9rem;color:rgba(var(--primary-rgb),0.85);margin-top:8px;line-height:1.5;">Начни вводить город и выбери из выпавшего списка.</div>
+        </div>
+        
+        <div class="field">
+          <label id="birthtimeLbl" data-icon="">Время рождения</label>
+          <div class="time-group" role="group" aria-label="Время рождения">
+            <input type="time" id="birthtime" aria-label="Время" data-i18n-title="birthTimeTooltip" title="Выберите время рождения" class="time-group-input">
+            <div class="checkbox time-group-checkbox">
+              <input type="checkbox" id="unknown" aria-label="Не знаю время">
+              <label for="unknown">Не знаю</label>
+            </div>
+          </div>
+          <span id="birthtimeUnknownHint" style="display:none;font-size:0.8rem;color:var(--faint);margin-top:4px;">Время неизвестно</span>
+        </div>
+          </div><!-- /advSettingsWrap -->
+        </div><!-- /adv-settings -->
+
+        <!-- «Язык песни» отсюда перенесён вниз к «Стилю музыки» (Алла 11.07: язык — свойство
+             ПЕСНИ, не человека; его место у стиля, а не в анкете). «Пол» остаётся личным полем. -->
+        <div class="field">
+          <label for="gender" id="genderLabel">Пол</label>
+          <select id="gender" required aria-label="Пол">
+              <option value="">Выбери</option>
+            <option value="male">Мужской</option>
+            <option value="female">Женский</option>
+          </select>
+        </div>
+
+        </div><!-- /formFieldsWrap -->
+
+        <!-- Аккордеон второго человека — отдельно, рядом с первым -->
+        <div id="secondPersonAccordion" style="display:none;margin-top:8px;">
+          <!-- Единый пикер «Про двоих» (Алла 05.07): переключатели режимов убраны.
+               Первый человек = «Я» + карточки, всегда виден у Master. -->
+          <!-- Пикер первого человека из Лаборатории -->
+          <!-- Batch 10.17 (отчёт 7272935 Maria Lykosova Windows): Person 1 был просто
+               маленькой подписью + дропдаун, а Person 2 — большим аккордеоном с иконкой.
+               Тестер пожаловалась на несоответствие стиля. Добавили визуальный pfa-header
+               для Person 1 (без chevron — нечего раскрывать), чтобы оба блока выглядели
+               одинаково. -->
+          <div id="pickPerson1FromLabWrap" style="display:none;margin-bottom:8px;padding:0 4px;">
+            <!-- «Карточка = кнопка» (Алла 11.07): тап по карточке открывает пикер, отдельной
+                 кнопки под ней в couple-master нет (скрыта CSS, живёт как программный триггер). -->
+            <div class="pfa-header" id="person1AccordionHeader" style="margin-bottom:8px;cursor:pointer;" onclick="if(window._p1CardTap)_p1CardTap(event)">
+              <div class="pfa-info">
+                <svg class="pfa-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="2"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                <span id="p1AccName" class="pfa-name" data-i18n="couplePerson1Label">Первый человек</span>
+              </div>
+              <div class="pfa-chevron" id="p1CardChevron">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+            </div>
+            <div style="position:relative;">
+              <button type="button" id="pickPerson1FromLabBtn" aria-haspopup="listbox" aria-expanded="false" style="width:100%;padding:10px 14px;border-radius:12px;background:rgba(var(--primary-rgb),0.12);border:1px solid rgba(var(--primary-rgb),0.3);color:var(--primary-color);font-size:0.9rem;font-weight:600;cursor:pointer;font-family:inherit;text-align:left;display:flex;align-items:center;justify-content:space-between;box-shadow:none;">
+                <span id="pickPerson1BtnText" data-i18n="couplePerson1Pick">Выбрать из Лаборатории</span>
+                <span id="pickPerson1Chevron" style="transition:transform 0.2s;">&#9662;</span>
+              </button>
+              <div id="pickPerson1Dropdown" role="listbox" style="display:none;position:absolute;top:100%;left:0;right:0;margin-top:4px;max-height:220px;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;touch-action:pan-y;border-radius:12px;background:rgba(12,10,28,0.98);border:1px solid rgba(255,255,255,0.12);box-shadow:0 8px 24px rgba(0,0,0,0.4);z-index:100;">
+                <div id="pickPerson1List"></div>
+              </div>
+            </div>
+            <!-- Алла 11.07: маленькое «Развернуть» под карточкой — раскрывает анкету для правки
+                 (например, стереть имя перед генерацией). -->
+            <div id="p1NameHint" class="pfa-mini-hint" style="display:none" data-i18n="nameHintFilled">Это имя прозвучит в песне. Сотри, если не хочешь его слышать.</div>
+            <button type="button" id="p1ExpandLink" class="pfa-expand-link" onclick="if(window._p1ExpandToggle)_p1ExpandToggle(event)" data-i18n="coupleExpandEdit">Развернуть</button>
+          </div>
+          <div class="pfa-header" onclick="if(window._p2CardTap){_p2CardTap(event)}else{toggleSecondPersonAccordion()}">
+            <div class="pfa-info">
+              <svg class="pfa-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="2"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              <span id="p2AccName" class="pfa-name" data-i18n="formSecondPerson">Второй человек</span>
+              <span class="pfa-sep" id="p2AccSep" style="display:none">·</span>
+              <span id="p2AccDate" class="pfa-date"></span>
+            </div>
+            <div class="pfa-chevron" id="p2AccChevron">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+          </div>
+          <!-- Якорь пикера второго человека — ПОД карточкой, вне сворачиваемой формы
+               (иначе свёрнутый аккордеон прятал бы раскрытый список). -->
+          <div style="position:relative;" id="p2PickerAnchor">
+            <div id="pickFromLabDropdown" role="listbox" style="display:none;position:absolute;top:0;left:0;right:0;margin-top:4px;max-height:260px;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;touch-action:pan-y;border-radius:12px;background:rgba(12,10,28,0.98);border:1px solid rgba(255,255,255,0.12);box-shadow:0 8px 24px rgba(0,0,0,0.4);z-index:100;padding-bottom:12px;">
+              <div id="pickFromLabList"></div>
+            </div>
+          </div>
+          <div id="p2NameHint" class="pfa-mini-hint" style="display:none" data-i18n="nameHintFilled">Это имя прозвучит в песне. Сотри, если не хочешь его слышать.</div>
+          <button type="button" id="p2ExpandLink" class="pfa-expand-link" onclick="if(window._p2ExpandToggle)_p2ExpandToggle(event)" data-i18n="coupleExpandEdit">Развернуть</button>
+          <div id="secondPersonFormWrap">
+            <div id="secondPersonForm" style="padding-top:8px;">
+              <div class="field" id="pickFromLabWrap" style="margin-bottom:12px;">
+                <div style="font-size:0.8rem;color:rgba(255,255,255,0.5);margin-bottom:6px;" id="pickFromLabHint">Выбери человека из Лаборатории — поля заполнятся автоматически</div>
+                <div style="position:relative;">
+                  <button type="button" id="pickFromLabBtn" aria-haspopup="listbox" aria-expanded="false" aria-label="Выбрать из Лаборатории" style="width:100%;padding:10px 14px;border-radius:12px;background:rgba(var(--primary-rgb),0.12);border:1px solid rgba(var(--primary-rgb),0.3);color:var(--primary-color);font-size:0.9rem;font-weight:600;cursor:pointer;font-family:inherit;text-align:left;display:flex;align-items:center;justify-content:space-between;box-shadow:none;">
+                    <span id="pickFromLabBtnText">Выбрать из Лаборатории</span>
+                    <span id="pickFromLabChevron" style="transition:transform 0.2s;">▾</span>
+                  </button>
+                </div>
+              </div>
+              <div class="field">
+                <label id="name2Label" for="name2" data-icon="">Имя</label>
+                <input type="text" id="name2" placeholder="Имя (по желанию)" maxlength="50" data-i18n-placeholder="phName2">
+                <div class="field-hint" id="name2Hint">Впишешь имя — оно прозвучит в песне.</div>
+              </div>
+              <div class="field">
+                <label id="birthdate2Lbl" for="birthdate2" data-icon="">Дата рождения</label>
+                <div id="birthdate2Wrap" class="birthdate-wrap">
+                  <div class="date-group" role="group" aria-label="Дата рождения второго">
+                    <select id="birthdate2Day" class="date-group-day" aria-label="День"><option value="" data-i18n="selectDay">День</option></select>
+                    <select id="birthdate2Month" class="date-group-month" aria-label="Месяц"><option value="" data-i18n="selectMonth">Месяц</option></select>
+                    <select id="birthdate2Year" class="date-group-year" aria-label="Год"><option value="" data-i18n="selectYear">Год</option></select>
+                  </div>
+                  <!-- Batch 5.33 — VK Testers ID 7259402: min/max ограничения -->
+                  <input type="date" id="birthdate2" min="1900-01-01" data-i18n-title="birthDateTooltip" title="Выберите дату рождения" tabindex="-1">
+                </div>
+              </div>
+              <div class="field">
+                <label id="birthplace2Lbl" for="birthplace2" data-icon="">Место рождения</label>
+                <div id="birthplace2Wrap" class="birthplace-wrap">
+                  <input type="text" id="birthplace2" placeholder="Москва, Лондон, Нью-Йорк..." maxlength="100" autocomplete="off" aria-label="Локация рождения второго" data-i18n-placeholder="phBirthplace">
+                  <span id="birthplace2Check" class="birthplace-check" aria-hidden="true"></span>
+                  <ul id="birthplaceSuggestions2" class="birthplace-suggestions" aria-hidden="true" aria-live="polite"></ul>
+                </div>
+                <div id="birthplace2Hint" class="birthplace-hint" style="display:none;font-size:0.9rem;color:rgba(var(--primary-rgb),0.85);margin-top:8px;line-height:1.5;">Начни вводить город и выбери из выпавшего списка.</div>
+              </div>
+              <div class="field">
+                <label id="birthtime2Lbl" data-icon="">Время рождения</label>
+                <div class="time-group" role="group">
+                  <input type="time" id="birthtime2" aria-label="Время" data-i18n-title="birthTimeTooltip" title="Выберите время рождения" class="time-group-input">
+                  <div class="checkbox time-group-checkbox">
+                    <input type="checkbox" id="unknown2" aria-label="Не знаю время">
+                    <label for="unknown2">Не знаю</label>
+                  </div>
+                </div>
+              </div>
+              <div class="field">
+                <label id="gender2Label" for="gender2" data-icon="">Пол</label>
+                <select id="gender2">
+                  <option value="">Выбери</option>
+                  <option value="female">Женский</option>
+                  <option value="male">Мужской</option>
+                </select>
+              </div>
+              <input type="hidden" id="person2Relationship">
+            </div>
+          </div>
+        </div>
+
+        <!-- Аккордеон энергии момента — отдельно, как второй человек -->
+        <!-- Batch 10.30 (отчёт 7258164 Android): «Формат выбора песни отображается
+             некорректно». На скриншоте видны 3 mode-кнопки в step 1 («Энергия дня»
+             активна) + дублирующий accordion header «Энергия дня» с часами +
+             поля «Дата события» / «Время события». Дубликат label «Энергия дня»
+             вводит в заблуждение. Фикс: скрыть accordion header (chevron+label) —
+             поля transitForm видны напрямую без collapse/expand (форма короткая,
+             accordion не нужен). Сохраняем структуру для backward compat. -->
+        <div id="transitAccordion" style="display:none;margin-top:8px;">
+          <div class="pfa-header" onclick="toggleTransitAccordion()" style="display:none;">
+            <div class="pfa-info">
+              <svg class="pfa-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><path d="M12 6v6l4 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              <span id="transitAccName" class="pfa-name">Энергия дня</span>
+              <span class="pfa-sep" id="transitAccSep" style="display:none">·</span>
+              <span id="transitAccDate" class="pfa-date"></span>
+            </div>
+            <div class="pfa-chevron" id="transitAccChevron">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+          </div>
+          <div id="transitFormWrap">
+            <div id="transitForm" style="padding-top:8px;">
+              <div class="field">
+                <label id="transitDateLbl" for="transitDate" data-icon="">Дата события</label>
+                <input type="date" id="transitDate" min="2024-01-01" max="2030-12-31" placeholder="ДД.ММ.ГГГГ" data-i18n-placeholder="phTransitDate">
+              </div>
+              <div class="field">
+                <label id="transitTimeLbl" for="transitTime" data-icon="">Время события</label>
+                <input type="time" id="transitTime" placeholder="ЧЧ:ММ" data-i18n-placeholder="phTransitTime">
+              </div>
+              <div class="field form-group location-input-wrapper">
+                <label id="transitLocationLbl" for="transitLocation" data-icon="">Город для энергии момента</label>
+                <input type="text" id="transitLocation" class="location-input" placeholder="Москва, Лондон, Нью-Йорк..." maxlength="100" autocomplete="off" data-i18n-placeholder="phBirthplace">
+                <div id="transitLocationSuggestions" class="location-suggestions" aria-live="polite"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        </div><!-- /step-panel data-step=2 -->
+
+        <div class="step-panel" data-step="3">
+          <div class="form-uiverse-corner form-uiverse-tl" aria-hidden="true"></div>
+          <div class="form-uiverse-corner form-uiverse-tr" aria-hidden="true"></div>
+          <div class="form-uiverse-corner form-uiverse-bl" aria-hidden="true"></div>
+          <div class="form-uiverse-corner form-uiverse-br" aria-hidden="true"></div>
+          <span id="formStepBadge3" class="form-step-badge"><span class="form-step-badge-text">Шаг 3</span></span>
+        <div class="field">
+          <div class="request-label">О чём будет песня?</div>
+          <!-- Успокоение-подзаголовок (поле опционально — проверено: request→NULL, песня по астро-раскладу).
+               Алла 10.07: между окном ввода и «Быстрыми запросами» рвало группу → под заголовок
+               (дизайн-скилл ui-ux: field-grouping/whitespace-balance — не разбивать группу «поле+шорткаты»). -->
+          <div class="field-hint" id="requestReassureHint" data-i18n="requestReassure">Можно оставить пустым — соберём песню по твоей дате рождения.</div>
+
+          <!-- Блок ввода: textarea + быстрые запросы -->
+          <div class="request-input-box">
+            <!-- VK Testers ID 7261250: ограничение 500 символов (был unlimited) -->
+            <textarea id="request" class="request-textarea" placeholder="Например: про смелость начать заново" aria-label="Запрос" rows="4" maxlength="500" data-i18n-placeholder="phRequest"></textarea>
+            <div class="request-quick-bar">
+              <button type="button" class="request-quick-toggle" id="quickPickerBtn" onclick="toggleQuickPicker(event)">
+                <span id="quickPickerLabel">✦ Быстрые запросы</span>
+                <svg id="quickPickerArrow" width="12" height="12" viewBox="0 0 24 24" fill="none" style="transition:transform .2s;flex-shrink:0;"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+            </div>
+            <!-- 7261249: убрал `overflow:hidden` inline — иначе scrollbar не виден -->
+            <div id="quickPickerSheet" class="request-quick-dropdown" style="display:none;border-radius:12px;">
+              <div id="quickPickerLoading" style="padding:12px 16px;color:rgba(255,255,255,0.5);font-size:13px;" data-i18n="loading">Загрузка...</div>
+            </div>
+            <div id="quickPickerHint" style="display:none;margin-top:6px;padding:6px 12px;border-radius:8px;background:rgba(255,255,255,0.08);font-size:12px;color:rgba(255,255,255,0.6);line-height:1.4;"></div>
+          </div>
+        </div>
+        <!-- Стиль песни (для всех тарифов) -->
+        <div class="field" id="styleFieldWrap" style="margin-top:14px;">
+          <!-- Переключатель стиля: идентичен mode-cards -->
+          <div class="mode-section" style="margin-top:16px;">
+            <h3 class="mode-heading" data-i18n="styleHeading">Стиль музыки</h3>
+            <p class="mode-subtitle" data-i18n="styleSubtitle">Как определить стиль?</p>
+            <div id="styleModeSwitcher" class="mode-cards">
+              <button type="button" class="mode-btn mode-card btn-magic style-mode-btn active" data-smode="manual" data-effect="displace" onclick="setStyleMode('manual')">
+                <div class="mode-card-inner" aria-hidden="true"></div>
+                <div class="mode-content-wrap">
+                  <span class="mode-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z"/></svg></span>
+                  <span class="mode-card-title"><span class="mode-label" data-i18n="styleManual">Ввести<br>вручную</span></span>
+                  <span class="mode-desc" id="styleManualDesc">Выбрать вручную</span>
+                </div>
+              </button>
+              <button type="button" class="mode-btn mode-card btn-magic style-mode-btn" data-smode="astro" data-effect="hue" onclick="setStyleMode('astro')">
+                <div class="mode-card-inner" aria-hidden="true"></div>
+                <div class="mode-content-wrap">
+                  <span class="mode-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+                  <span class="mode-card-title"><span class="mode-label" data-i18n="styleAstro">Звучание<br>планет</span></span>
+                  <span class="mode-desc" id="styleAstroDesc">Автоматически</span>
+                </div>
+              </button>
+              <button type="button" class="mode-btn mode-card btn-magic style-mode-btn" data-smode="star" data-effect="transit" onclick="setStyleMode('star')">
+                <div class="mode-card-inner" aria-hidden="true"></div>
+                <div class="mode-content-wrap">
+                  <span class="mode-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></span>
+                  <span class="mode-card-title"><span class="mode-label" data-i18n="styleStar">Как у<br>звезды</span></span>
+                  <span class="mode-desc" id="styleStarDesc">Стиль артиста</span>
+                </div>
+              </button>
+            </div>
+          </div>
+          <!-- Скрытый чекбокс astro (для совместимости) -->
+          <input type="checkbox" id="astroStyleToggle" onchange="onAstroStyleToggle()" style="display:none;">
+          <!-- Поле ввода стиля (меняет placeholder в зависимости от режима) -->
+          <input type="text" id="requestPreferredStyle" placeholder="Жанр или настроение музыки" maxlength="200" autocomplete="off" class="field-input-muted" data-i18n-placeholder="phPreferredStyle" style="padding:10px 14px;width:100%;box-sizing:border-box;text-overflow:ellipsis;">
+          <!-- Подсказка для режима звезды -->
+          <!-- VK Testers 7279198 (MacOS): унифицирован стиль подсказок Manual/Astro/Star — у всех плашка с border + bg, разные акцентные цвета. Star = pink (как brand secondary). -->
+          <div id="starStyleHint" data-i18n="starHint" style="display:none;margin-top:8px;padding:10px 14px;border-radius:12px;background:rgba(236,72,153,0.10);border:1px solid rgba(236,72,153,0.20);font-size:0.88rem;line-height:1.4;color:rgba(255,255,255,0.85);">
+            Введите имя артиста, название песни или саундтрека фильма. Мы создадим музыку в похожем стиле, уникальную для вас.
+          </div>
+          <!-- Быстрые стили (для ручного режима) -->
+          <div id="styleQuickManual" style="margin-top:8px;">
+            <div class="request-quick-bar">
+              <button type="button" class="request-quick-toggle" id="styleQuickToggle" onclick="toggleStyleQuick(event)">
+                <span id="styleQuickLabel">✦ Стили музыки</span>
+                <svg id="styleQuickArrow" width="12" height="12" viewBox="0 0 24 24" fill="none" style="transition:transform .2s;flex-shrink:0;"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+            </div>
+            <!-- VK Testers 7277227 (Windows): в списке стилей не было жанра Рок.
+                 Тестер: «любители рок-музыки не могут сгенерировать песню».
+                 Добавлен между Soul и R&B как базовый жанр. -->
+            <div class="quick-list" id="styleQuickList" style="display:none;margin-top:6px;border-radius:12px;overflow:hidden;">
+              <button type="button" class="quick-item example-btn style-quick" data-style="поп" data-i18n="stylePresetPop">Поп</button>
+              <button type="button" class="quick-item example-btn style-quick" data-style="рок" data-i18n="stylePresetRock">Рок</button>
+              <button type="button" class="quick-item example-btn style-quick" data-style="soul">Soul</button>
+              <button type="button" class="quick-item example-btn style-quick" data-style="r&b">R&B</button>
+              <button type="button" class="quick-item example-btn style-quick" data-style="рэп / hip‑hop" data-i18n="stylePresetRap">Рэп / hip‑hop</button>
+              <button type="button" class="quick-item example-btn style-quick" data-style="электронная / techno / house" data-i18n="stylePresetElectronic">Электронная / techno / house</button>
+              <button type="button" class="quick-item example-btn style-quick" data-style="ambient / медитативная" data-i18n="stylePresetAmbient">Ambient / медитативная</button>
+              <button type="button" class="quick-item example-btn style-quick" data-style="акустика / piano / ballad" data-i18n="stylePresetAcoustic">Акустика / piano / ballad</button>
+            </div>
+          </div>
+          <!-- Быстрые артисты (для режима звезды, из localStorage) -->
+          <div id="styleQuickStars" style="display:none;margin-top:8px;">
+            <div class="request-quick-bar">
+              <button type="button" class="request-quick-toggle" onclick="toggleStarQuick(event)">
+                <span data-i18n="starRecent">Недавние</span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" style="transition:transform .2s;flex-shrink:0;" id="starQuickArrow"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+            </div>
+            <!-- Batch 9.37 (отчёт 7262958, скриншот «сепаратор»): убран
+                 margin-top:6px у quick-list — он создавал визуальный
+                 разрыв между кнопкой «Недавние» и блоком списка, две
+                 тонкие границы рядом образовывали «сепаратор». Теперь
+                 список присоединяется впритык, верх не скруглён. -->
+            <div class="quick-list" id="starQuickList" style="display:none;margin-top:0;border-radius:0 0 12px 12px;overflow:hidden;border-top:none;"></div>
+          </div>
+          <!-- «Язык песни» — в секции стилей (Алла 11.07), но ВНЕ #styleQuickManual: тот
+               прячется в режимах «Звучание планет»/«Стиль артиста», унося поле языка с собой,
+               а валидация язык требует всегда → блокер «Выбери язык» без поля (инбокс #6,
+               13.07). Теперь язык — общий ребёнок #styleFieldWrap, видим во всех 3 режимах. -->
+          <div class="field" id="languageFieldWrap" style="margin-top:14px;">
+            <label for="language" id="languageLabel">Язык песни</label>
+            <select id="language" required aria-label="Язык песни и описания" data-i18n-title="formLangTooltip" title="На каком языке будет текст песни и расшифровка">
+                <option value="">Выбери</option>
+              <option value="ru">Русский</option>
+              <option value="en">English</option>
+              <option value="de">Deutsch</option>
+              <option value="fr">Français</option>
+              <option value="uk">Українська</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Голос песни: с текстом / без слов / свой текст (Алла 01.08.2026).
+             Блок стоит ПОСЛЕ языка намеренно: гайд-кольцо формы позиционирует
+             тултип шага «Язык песни» по previousElementSibling, и вставка выше
+             вернула бы наезд подсказки на кнопки стиля (отчёт Миланы 26.07).
+             Атрибут data-lmode, а НЕ data-mode: [data-mode] перехватывают три
+             глобальных делегата (замок форматов, сброс шага 3, подсветка active). -->
+        <div class="mode-section" id="lyricsModeSection" style="margin-top:16px;">
+          <h3 class="mode-heading" data-i18n="lyricsHeading">Голос песни</h3>
+          <p class="mode-subtitle" data-i18n="lyricsSubtitle">Будут ли в ней слова?</p>
+          <div id="lyricsModeSwitcher" class="mode-cards">
+            <button type="button" class="mode-btn mode-card btn-magic lyrics-mode-btn active" data-lmode="sung" data-effect="displace" onclick="setLyricsMode('sung')">
+              <div class="mode-card-inner" aria-hidden="true"></div>
+              <div class="mode-content-wrap">
+                <span class="mode-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19v3"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><rect x="9" y="2" width="6" height="13" rx="3"/></svg></span>
+                <span class="mode-card-title"><span class="mode-label" data-i18n="lyricsSung">Со<br>словами</span></span>
+                <span class="mode-desc" data-i18n="lyricsSungDesc">Споём твою песню</span>
+              </div>
+            </button>
+            <button type="button" class="mode-btn mode-card btn-magic lyrics-mode-btn" data-lmode="instrumental" data-effect="hue" onclick="setLyricsMode('instrumental')">
+              <div class="mode-card-inner" aria-hidden="true"></div>
+              <div class="mode-content-wrap">
+                <span class="mode-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 10v3"/><path d="M6 6v11"/><path d="M10 3v18"/><path d="M14 8v7"/><path d="M18 5v13"/><path d="M22 10v3"/></svg></span>
+                <span class="mode-card-title"><span class="mode-label" data-i18n="lyricsInstrumental">Только<br>музыка</span></span>
+                <span class="mode-desc" data-i18n="lyricsInstrumentalDesc">Мелодия по твоей дате</span>
+              </div>
+            </button>
+            <button type="button" class="mode-btn mode-card btn-magic lyrics-mode-btn" data-lmode="own" data-effect="transit" onclick="setLyricsMode('own')">
+              <div class="mode-card-inner" aria-hidden="true"></div>
+              <div class="mode-content-wrap">
+                <span class="mode-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 6H3"/><path d="M15 12H3"/><path d="M17 18H3"/></svg></span>
+                <span class="mode-card-title"><span class="mode-label" data-i18n="lyricsOwn">Свой<br>текст</span></span>
+                <span class="mode-desc" data-i18n="lyricsOwnDesc">Споём то, что напишешь</span>
+              </div>
+            </button>
+          </div>
+          <!-- Поле своего текста. Держим ВНЕ .field вокруг #language: гайд берёт
+               цель через closest('.field'), иначе рамка шага «Язык» распухнет. -->
+          <!-- class="field" — не косметика: padding textarea задан правилом
+               «#formPage .field textarea», без него поле шире соседнего «О чём будет песня» -->
+          <div id="customLyricsWrap" class="field" style="display:none;margin-top:10px;">
+            <div class="request-input-box">
+              <!-- 5000 — потолок Suno для модели V5_5 (у V4 было 3000). Ниже резать нечем:
+                   наши песни на 5 минут занимают ~1900 символов, запас нужен. -->
+              <textarea id="customLyrics" class="request-textarea" placeholder="Впиши свои строки — споём их" aria-label="Свой текст песни" rows="8" maxlength="5000" data-i18n-placeholder="phCustomLyrics"></textarea>
+            </div>
+            <!-- Счётчик с ориентиром: без него человек пишет четыре строки и получает трек
+                 на минуту вместо трёх (замер по 2448 готовым трекам: 3 мин ≈ 1400 символов). -->
+            <div class="field-hint" id="customLyricsCount" style="display:none;"></div>
+            <div class="field-hint" id="customLyricsHint" data-i18n="customLyricsHint">Пиши как чувствуешь. Разбивку на куплеты и припев сделаем сами. Такие песни остаются только у тебя — в общий эфир они не идут.</div>
+          </div>
+        </div>
+
+        <!-- VK Testers ID 7261246: текст ошибки сливался с фоном; добавил
+             розовый фон + контрастный текст. -->
+        <p id="submitHint" style="display:none;background:rgba(244,63,94,0.12);border:1px solid rgba(244,63,94,0.35);border-radius:12px;padding:10px 14px;color:#fda4af;font-size:0.85rem;line-height:1.4;margin:8px 0"></p>
+
+        <!-- Кнопка отправки — sticky внизу, всегда доступна -->
+        <div class="step-nav form-submit-sticky">
+          <button id="stepNext" class="btn-pay"><span class="btn-pay-text">Создать мою песню</span></button>
+          <!-- Натив VK (.is-vk-oracle): форма видна и заполняется, но генерации нет —
+               вместо кнопки заглушка (паттерн «Оплата на платформе недоступна», 2.3.9).
+               Без упоминания других платформ (§5.4.1 запрещает увод). Вне натива скрыта. -->
+          <div id="vkFormStubHint" data-i18n="vkFormStubHint" style="display:none;text-align:center;font-size:0.85rem;opacity:.75;padding:10px 0;">Генерация песен на платформе недоступна</div>
+        </div>
+      </div>
+      
+      </div><!-- /page-scroll -->
+      </div><!-- /form-page-glass-card -->
+    </div><!-- /form-page-main-wrap -->
+    </div><!-- /formPage -->
+    </div>

@@ -1,0 +1,18 @@
+<div class="page" id="adminPage">
+    <div class="page-gradient-bg" aria-hidden="true">
+      <div class="gradients-container">
+        <div class="g1"></div>
+        <div class="g2"></div>
+        <div class="g3"></div>
+        <div class="interactive"></div>
+      </div>
+    </div>
+    <div class="page-header" style="padding: max(12px, env(safe-area-inset-top)) 16px 12px; display:flex; align-items:center; gap:12px;">
+      <button type="button" class="profile-back-btn header-back-btn btn-nav" onclick="goBack()" aria-label="Назад" data-i18n-aria="navBack">←</button>
+      <h1 data-i18n="adminTitle" style="margin:0; font-size:1.1rem; font-weight:600;">Админка</h1>
+    </div>
+    <div class="page-scroll" style="padding:24px 16px 32px; text-align:center; max-width:360px; margin:0 auto;">
+      <p data-i18n="adminDesc" style="color:var(--tg-theme-hint-color); font-size:0.88rem; line-height:1.5; margin:0 0 24px 0;">Управление заявками, карта архитектуры и настройки — в веб-админке.</p>
+      <button type="button" id="adminOpenWebAdminBtn" data-i18n="adminOpenBtn" onclick="openWebAdmin()" style="width:100%; padding:14px 20px; border-radius:9999px; background:var(--primary-color); color:#fff; border:none; font-size:0.95rem; font-weight:600; cursor:pointer; font-family:inherit;">Открыть веб-админку</button>
+    </div>
+  </div>

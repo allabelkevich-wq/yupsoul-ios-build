@@ -1,0 +1,205 @@
+<div class="page" id="helpPage">
+      <div class="page-gradient-bg" aria-hidden="true">
+        <div class="gradients-container">
+          <div class="g1"></div>
+          <div class="g2"></div>
+          <div class="g3"></div>
+          <div class="interactive"></div>
+        </div>
+      </div>
+      <div class="ph-stars" aria-hidden="true"></div>
+      <div class="bg" aria-hidden="true"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div><div class="stars"></div></div>
+      <!-- Шапка = ЕДИНЫЙ СТАНДАРТ (Алла 25.06: точь-в-точь .topbar Картотеки): чистый
+           topbar [назад слева][спейсер], большой заголовок переехал в отдельный .title ниже.
+           Кнопка «Назад» в едином положении слева (38px кружок, стрелка-маска). -->
+      <div class="help-header page-header">
+        <div class="help-header-row">
+          <button type="button" id="helpBackBtn" class="profile-back-btn header-back-btn btn-nav help-back-btn" onclick="goBack()" aria-label="Назад" title="Назад" data-i18n-aria="navBack" data-i18n-title="navBack">←</button>
+          <div class="brand" style="flex:1" aria-hidden="true"></div>
+          <button type="button" id="helpProfileBtn" class="header-menu-btn btn-info" onclick="goToProfileFrom('helpPage')" aria-label="Профиль" title="Профиль" data-i18n-aria="myProfile" data-i18n-title="myProfile"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.6"></circle><path d="M5 20c.7-3.5 3.6-5.5 7-5.5s6.3 2 7 5.5"></path></svg></button>
+        </div>
+      </div>
+      <div class="page-scroll help-scroll scroll">
+        <div class="hero">
+          <span class="hero-ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><path d="M9.2 9.3a2.9 2.9 0 0 1 5.6 1c0 2-2.8 2.4-2.8 4.2"/><circle cx="12" cy="17.4" r="1" fill="currentColor" stroke="none"/></svg></span>
+          <h2 data-i18n="helpHeroTitle">Чем можем помочь?</h2>
+          <p data-i18n="helpHeroSub">Всё о YupSoul — просто и по делу. Найди ответ или напиши нам.</p>
+        </div>
+
+        <div class="search help-search">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+          <input type="text" id="helpSearchInput" placeholder="Поиск по вопросам…" aria-label="Поиск по вопросам" autocomplete="off" data-i18n-placeholder="helpSearchPh" data-i18n-aria="helpSearchAria">
+          <button type="button" class="search-x help-search-x" id="helpSearchX" hidden aria-label="Очистить" data-i18n-aria="helpSearchClear"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+        </div>
+
+        <div class="sec-t help-sec-t" id="helpSecT" data-i18n="helpFaqTitle">Частые вопросы</div>
+        <div class="faq">
+        <!-- Что такое YupSoul -->
+        <div class="qa open">
+          <button type="button" class="qa-q" onclick="this.closest('.qa').classList.toggle('open')">
+            <span class="qa-ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.2c.55 4.2 1.8 5.45 6 6-4.2.55-5.45 1.8-6 6-.55-4.2-1.8-5.45-6-6 4.2-.55 5.45-1.8 6-6Z"/></svg></span>
+            <span class="qa-tt" id="helpT1">Что такое YupSoul</span>
+            <span class="qa-chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>
+          </button>
+          <div class="qa-a"><div class="qa-a-in" id="helpB1">
+            <p>YupSoul создаёт <b>персональную песню именно для тебя</b> — на основе даты, времени и места рождения. Система анализирует твою личность и пишет песню о твоих реальных качествах, пути и силе.</p>
+            <p>Это не шаблон и не случайный текст — каждая песня уникальна и создана только для тебя.</p>
+          </div></div>
+        </div>
+
+        <!-- Что можно создать -->
+        <div class="qa">
+          <button type="button" class="qa-q" onclick="this.closest('.qa').classList.toggle('open')">
+            <span class="qa-ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 17.2V5.1l11-2.1v11.2"/><ellipse cx="6.4" cy="17.4" rx="2.6" ry="2.2"/><ellipse cx="17.4" cy="15.3" rx="2.6" ry="2.2"/></svg></span>
+            <span class="qa-tt" id="helpT2">Что можно создать</span>
+            <span class="qa-chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>
+          </button>
+          <div class="qa-a"><div class="qa-a-in" id="helpB2">
+            <p><b>Режимы создания:</b></p>
+            <ul>
+              <li><b>Песня о себе</b> — твой личный звуковой портрет: кто ты, твоя сила и внутренний путь</li>
+              <li><b>Песня для пары</b> — для двоих (влюблённых, друзей, подруг). Анализирует обе даты рождения и отражает союз</li>
+              <li><b>Энергия дня</b> — песня под конкретную дату и место. Какие возможности открываются прямо сейчас</li>
+            </ul>
+            <p><b>Стиль музыки:</b></p>
+            <ul>
+              <li><b>Свой стиль</b> — выбери жанр и настроение вручную</li>
+              <li><b>Астро-стиль</b> — система подберёт стиль на основе твоих данных</li>
+              <li><b>Как у звезды</b> — укажи любимого артиста, и песня зазвучит в его стиле</li>
+            </ul>
+            <p><b>Быстрые запросы</b> — готовые идеи: песня силы, поздравление с днём рождения, медитативная, про отпускание прошлого и другие.</p>
+            <p><b>Чат с Оракулом</b> — ИИ-ассистент, который понимает тебя на глубинном уровне. Задавай вопросы о характере, предназначении и пути.</p>
+          </div></div>
+        </div>
+
+        <!-- Сколько ждать -->
+        <div class="qa">
+          <button type="button" class="qa-q" onclick="this.closest('.qa').classList.toggle('open')">
+            <span class="qa-ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.4"/><path d="M12 7.4V12l3 1.7"/></svg></span>
+            <span class="qa-tt" id="helpT3">Сколько ждать песню</span>
+            <span class="qa-chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>
+          </button>
+          <div class="qa-a"><div class="qa-a-in" id="helpB3">
+            <p>Обычно <b>5–15 минут</b>. Бот пришлёт уведомление в чат, как только песня будет готова.</p>
+            <p>Можно закрыть приложение — результат придёт сам, ты ничего не потеряешь.</p>
+          </div></div>
+        </div>
+
+        <!-- Не знаю время рождения -->
+        <div class="qa">
+          <button type="button" class="qa-q" onclick="this.closest('.qa').classList.toggle('open')">
+            <span class="qa-ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5.6" width="16" height="14.8" rx="3.2"/><path d="M8 3.4v3.4M16 3.4v3.4M4 10.4h16"/><path d="M12 13.5l.5 1.4 1.5.1-1.15.95.38 1.45-1.23-.8-1.23.8.38-1.45L9.5 15l1.5-.1z" fill="currentColor" stroke="none"/></svg></span>
+            <span class="qa-tt" id="helpT4">Не знаю точное время рождения</span>
+            <span class="qa-chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>
+          </button>
+          <div class="qa-a"><div class="qa-a-in" id="helpB4">
+            <p>Не страшно. Отметь <b>«Время неизвестно»</b> — система создаст полноценную песню на основе остальных данных.</p>
+          </div></div>
+        </div>
+
+        <!-- Искры и оплата -->
+        <div class="qa" id="helpSec5">
+          <button type="button" class="qa-q" onclick="this.closest('.qa').classList.toggle('open')">
+            <span class="qa-ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.4l1.7 5.1c.15.45.5.8.95.95L19.8 11l-5.1 1.7c-.45.15-.8.5-.95.95L12 18.8l-1.7-5.1c-.15-.45-.5-.8-.95-.95L4.2 11l5.1-1.7c.45-.15.8-.5.95-.95z"/></svg></span>
+            <span class="qa-tt" id="helpT5">Искры и оплата</span>
+            <span class="qa-chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>
+          </button>
+          <div class="qa-a"><div class="qa-a-in" id="helpB5">
+            <p><b>Первую песню создаёшь сразу — минута звучания в подарок; понравилась — открой целиком одним лёгким платежом.</b></p>
+            <p>Получай больше Искр, приглашая друзей: поделись ссылкой из раздела «Профиль» → «Пригласи друга». Когда приглашённый друг оформляет подписку — тебе начисляются Искры.</p>
+          </div></div>
+        </div>
+
+        <!-- Оплата -->
+        <div class="qa" id="helpSec6">
+          <button type="button" class="qa-q" onclick="this.closest('.qa').classList.toggle('open')">
+            <span class="qa-ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2.6" y="5.6" width="18.8" height="12.8" rx="3.2"/><path d="M2.6 10h18.8M6 14.6h4.5"/></svg></span>
+            <span class="qa-tt" id="helpT6">Оплата и промокоды</span>
+            <span class="qa-chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>
+          </button>
+          <div class="qa-a"><div class="qa-a-in" id="helpB6">
+            <p>Дополнительные генерации оплачиваются по тарифу. Способы оплаты отображаются на экране при оформлении заявки.</p>
+            <p>Если у тебя есть <b>промокод</b> — введи его на экране оплаты. Промокоды чувствительны к регистру, вводи точно как написано.</p>
+          </div></div>
+        </div>
+
+        <!-- Чат с Оракулом и пакеты -->
+        <div class="qa" id="helpSec8">
+          <button type="button" class="qa-q" onclick="this.closest('.qa').classList.toggle('open')">
+            <span class="qa-ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11.5a7.6 7.6 0 0 1-10.5 7L4 20.2l1.7-5.5A7.6 7.6 0 1 1 20 11.5Z"/><path d="M12 8.7l.62 1.86 1.86.62-1.86.62L12 13.7l-.62-1.86-1.86-.62 1.86-.62z" fill="currentColor" stroke="none"/></svg></span>
+            <span class="qa-tt" id="helpT8">Чат с Оракулом и пакеты</span>
+            <span class="qa-chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>
+          </button>
+          <div class="qa-a"><div class="qa-a-in" id="helpB8">
+            <p><b>Чат с Оракулом</b> — разговор с твоей душой на основе твоих данных. Задавай вопросы о характере, предназначении, выборе. Открыт всем: первые 10 вопросов бесплатно, дальше 1 вопрос = 1 Искра. Подписка снимает лимит — Душа (50 вопросов/мес), Глубина и Лаборатория (без лимита). Можно купить доступ на 24 часа.</p>
+            <p><b>Пакеты</b> — Душа (5 треков + Чат с Оракулом), Глубина (15 треков + Чат с Оракулом без лимита), Лаборатория (30 треков, картотека людей, Чат с Оракулом без лимита). Получить — в разделе «Профиль» или на экране оплаты.</p>
+          </div></div>
+        </div>
+
+        <!-- Возможности для мастеров (перенесено с главной) -->
+        <div class="qa" id="helpSec9">
+          <button type="button" class="qa-q" onclick="this.closest('.qa').classList.toggle('open')">
+            <span class="qa-ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+            <span class="qa-tt" id="helpT9">…</span>
+            <span class="qa-chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>
+          </button>
+          <div class="qa-a"><div class="qa-a-in" id="helpB9">…</div></div>
+        </div>
+
+        <!-- Отзывы пользователей (перенесено с главной) -->
+        <div class="qa">
+          <button type="button" class="qa-q" onclick="this.closest('.qa').classList.toggle('open')">
+            <span class="qa-ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></span>
+            <span class="qa-tt" id="helpT10">…</span>
+            <span class="qa-chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>
+          </button>
+          <div class="qa-a"><div class="qa-a-in" id="helpB10">…</div></div>
+        </div>
+
+        <!-- Проблемы и ошибки -->
+        <div class="qa">
+          <button type="button" class="qa-q" onclick="this.closest('.qa').classList.toggle('open')">
+            <span class="qa-ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 4 1.9 18a2 2 0 0 0 1.7 3h16.8a2 2 0 0 0 1.7-3L13.7 4a2 2 0 0 0-3.4 0z"/><path d="M12 9.4v4M12 16.6h.01"/></svg></span>
+            <span class="qa-tt" id="helpT7">Что-то пошло не так</span>
+            <span class="qa-chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>
+          </button>
+          <div class="qa-a"><div class="qa-a-in" id="helpB7">
+            <p><b>Приложение закрылось или показало ошибку</b> — попробуй открыть бота заново. Незавершённые заявки восстанавливаются автоматически.</p>
+            <p><b>Оплатил, но песни нет</b> — подожди 15–20 минут (песня может ещё генерироваться). Если результата нет — напиши боту в чат: «песня не пришла» — он попробует отправить повторно. Повторную попытку можно делать раз в 10 минут. Действует в течение 30 дней после заказа. Или напиши в поддержку.</p>
+            <p><b>Промокод не принимается</b> — проверь регистр букв. Если всё верно — напиши нам с указанием кода.</p>
+          </div></div>
+        </div>
+        </div><!-- /.faq -->
+
+        <div class="empty help-empty" id="helpSearchEmpty" hidden>
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+          <p data-i18n="helpSearchEmpty">Ничего не нашлось</p>
+        </div>
+
+        <div class="actions">
+          <button type="button" class="act-support" id="helpSupportBtn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-11.6 7.8L3 21l1.8-6.2A8.4 8.4 0 1 1 21 11.5Z"/></svg> <span data-i18n="supportBtn">Написать в поддержку</span></button>
+          <button type="button" class="act-ghost" id="helpReplayTourBtn" onclick="if(window._replayTour)window._replayTour()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 4 20 12 6 20" fill="currentColor" stroke="none"/></svg> <span data-i18n="helpReplayTour">Посмотреть обучение заново</span></button>
+          <div id="helpPartnerSection">
+          <button type="button" class="act-link" onclick="goToPartnerPage()">
+            <span class="ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.2L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4z"/></svg></span>
+            <span class="tx"><b id="helpPartnerTitle">Партнёрская программа</b><span data-i18n="helpPartnerSub">Зарабатывай 20% с подписок друзей</span></span>
+            <span class="ar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></span>
+          </button>
+          </div>
+        </div>
+        <!-- §5.4.2 (отказ VK 10.07): данные по market-rules в легкодоступном месте —
+             продавец, контакты, правила оплаты/возврата (в оферте через showLegalModal) -->
+        <div class="help-legal" id="helpLegalSection">
+          <div class="hl-title" data-i18n="helpLegalTitle">Правовая информация</div>
+          <div class="hl-line" data-i18n="helpLegalSeller">Исполнитель: ИП Татауров Антон Юрьевич, ИНН 920000802153, г. Севастополь</div>
+          <div class="hl-line" data-i18n="helpLegalSupport">Поддержка: кнопка «Написать в поддержку» выше — отвечаем в течение дня</div>
+          <div class="hl-links">
+            <button type="button" class="hl-link" onclick="if(window.showLegalModal)showLegalModal('offer')" data-i18n="helpLegalOffer">Оферта: оплата, возврат, правила услуги</button>
+            <span class="hl-dot">·</span>
+            <button type="button" class="hl-link" onclick="if(window.showLegalModal)showLegalModal('privacy')" data-i18n="helpLegalPrivacy">Конфиденциальность</button>
+          </div>
+        </div>
+        <div class="foot" data-i18n="helpFoot">✦ Мы рядом — ответим в течение дня ✦</div>
+        <button type="button" id="helpBackBtnBottom" class="help-back-btn help-back-btn-bottom" onclick="goBack()" aria-label="Назад" data-i18n-aria="navBack">← Назад</button>
+      </div>
+    </div>

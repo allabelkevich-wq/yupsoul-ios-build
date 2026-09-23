@@ -1,0 +1,42 @@
+<div class="page" id="downloadSongPage">
+  <div class="ph-stars"></div>
+
+  <div class="head">
+    <button type="button" class="hbtn" id="dlSongBackBtn" aria-label="Назад" data-i18n-aria="navBack" onclick="if(window.goBack)goBack();else if(window.goToPage)goToPage('myTracksPage')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+    <h1 data-i18n="dlSongTitle">Скачать песню</h1>
+  </div>
+
+  <div class="scroll page-scroll">
+    <!-- шапка трека -->
+    <div class="track">
+      <span class="track-art"><span class="eqa"><span></span><span></span><span></span><span></span></span></span>
+      <span class="track-meta">
+        <span class="track-name" id="dlTrackName">Свет внутри тебя</span>
+        <span class="track-sub" data-i18n="dlSongTrackSub">Песня души · 2:48 · MP3</span>
+      </span>
+    </div>
+
+    <div class="eyebrow" data-i18n="dlSongEyebrow">Скачать песню</div>
+
+    <!-- тёплое сообщение (вариант B) -->
+    <div class="msg" data-i18n-html="dlSongMsg">Спасибо, что делишься 🤍 <span class="hl">Пока песня живёт у тебя на странице — скачивание открыто.</span> <span class="ret">Если решишь убрать пост — вернёмся к обычному: трек за Искры.</span></div>
+
+    <div class="sec" data-i18n="dlSongMore">Другие способы открыть</div>
+
+    <button type="button" class="task" id="dlTaskJoin">
+      <span class="task-ic vk"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.8 16.3c-5 0-8-3.5-8.1-9.2h2.5c.1 4.2 2 6 3.4 6.4V7.1h2.4v3.7c1.4-.15 2.9-1.8 3.4-3.7h2.4c-.4 2.3-2 3.9-3.1 4.6 1.1.6 2.9 2 3.6 4.6h-2.6c-.55-1.7-1.9-3-3.7-3.2v3.2h-.6Z"/></svg></span>
+      <span class="task-body"><b data-i18n="dlSongJoinT">Вступить в сообщество</b><span data-i18n="dlSongJoinS">YupSoul во ВКонтакте</span></span>
+      <span class="task-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
+    </button>
+    <button type="button" class="task" id="dlTaskReview">
+      <span class="task-ic rev"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.3 6.9.6-5.2 4.6 1.6 6.8L12 17.5 5.8 20.9l1.6-6.8L2.2 8.9l6.9-.6z"/></svg></span>
+      <span class="task-body"><b data-i18n="dlSongRevT">Оставить отзыв</b><span data-i18n="dlSongRevS">Пара тёплых слов о песне</span></span>
+      <span class="task-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
+    </button>
+  </div>
+
+  <div class="actions">
+    <button type="button" class="cta" id="dlShareBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg> <span data-i18n="dlSongCta">Поделиться песней</span></button>
+    <p class="alt-line"><span data-i18n="dlSongOrPre">или </span><button type="button" id="dlPayBtn" data-i18n-html="dlSongOrLink">открыть скачивание за <span class="spk">100</span> Искр</button></p>
+  </div>
+</div>

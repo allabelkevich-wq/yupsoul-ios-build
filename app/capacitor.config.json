@@ -1,0 +1,19 @@
+{
+  "appId": "com.yupsoul.app",
+  "appName": "YupSoul",
+  "webDir": "www",
+  "backgroundColor": "#0a0612ff",
+  "ios": {
+    "contentInset": "never",
+    "backgroundColor": "#0a0612ff",
+    "limitsNavigationsToAppBoundDomains": false
+  },
+  "android": {
+    "backgroundColor": "#0a0612ff"
+  },
+  "plugins": {
+    "PushNotifications": {
+      "presentationOptions": ["badge", "sound", "alert"]
+    }
+  }
+}

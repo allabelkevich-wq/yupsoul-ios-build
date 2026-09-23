@@ -1,0 +1,409 @@
+<div class="page ys" id="profilePage">
+      <!-- Фон референса: блобы + звёзды (штатный .page-gradient-bg скрыт через scoped CSS, оставлен для совместимости) -->
+      <div class="page-gradient-bg" aria-hidden="true">
+        <div class="gradients-container">
+          <div class="g1"></div>
+          <div class="g2"></div>
+          <div class="g3"></div>
+          <div class="interactive"></div>
+        </div>
+      </div>
+      <div class="ph-stars" aria-hidden="true"></div>
+      <div class="bg" aria-hidden="true"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div><div class="stars"></div></div>
+
+      <!-- Шапка по эталону Картотеки (#heroesPage): topbar (кнопка «Назад» СЛЕВА — единое
+           положение на всех экранах, Алла 25.06) + большой центрированный заголовок ниже.
+           Класс .profile-header сохранён (visibility-JS + scoped CSS на него завязаны),
+           но геометрия .topbar = картотека. Справа — счётчик Искр + Помощь как tb-btn. -->
+      <header class="profile-header topbar">
+        <button type="button" id="profileBackBtn" class="profile-back-btn header-back-btn btn-nav" onclick="goBack()" aria-label="Назад" title="Назад" data-i18n-aria="navBack" data-i18n-title="navBack">←</button>
+        <div class="brand" style="flex:1"></div>
+        <span class="iskry-badge" data-iskry-balance data-iskry-title="" role="button" tabindex="0" style="cursor:pointer" aria-label="Мой баланс" data-i18n-aria="profileBalanceTitle" onclick="var b=document.querySelector('#profilePage .balance');if(b){b.scrollIntoView({behavior:'smooth',block:'center'});}">0</span>
+        <button type="button" class="tb-btn btn-info" id="profileHeaderHelpBtn" onclick="goToHelpFrom('profilePage')" aria-label="Помощь" title="Помощь" data-i18n-aria="myHelp" data-i18n-title="myHelp">?</button>
+      </header>
+
+      <div class="scroll profile-scroll page-scroll">
+        <!-- Ошибка загрузки профиля / подписки -->
+        <div id="profileLoadErrorWrap" style="display:none;">
+          <div id="profileLoadErrorText">Не удалось загрузить профиль</div>
+          <button type="button" id="profileLoadRetryBtn" aria-label="Обновить">Обновить</button>
+        </div>
+
+        <!-- Идентификация: аватар + имя + план -->
+        <div class="ident">
+          <div class="av-ring" id="profileAvatarWrap" title="Изменить фото" role="button" aria-label="Изменить фото" tabindex="0">
+            <div id="profileAvatar" class="av">
+              <span id="profileAvatarInitial"></span>
+            </div>
+            <div class="profile-avatar-spinner" id="profileAvatarSpinner">…</div>
+          </div>
+          <!-- Скрытый input для выбора фото -->
+          <input type="file" id="avatarFileInput" accept="image/*" style="display:none">
+          <h2 id="profileName">…</h2>
+          <div class="badges">
+            <span id="profilePlanBadge" class="badge plan" role="button" tabindex="0" onclick="if(window.goToPage){goToPage('plansPage');setTimeout(function(){if(window._initPlansPage)window._initPlansPage();},100);}">✦ YupSoul Искатель</span>
+            <span id="profilePartnerBadge" class="badge partner" data-i18n="profilePartnerBadge" style="display:none;" role="button" tabindex="0" onclick="goToPartnerPage()">Партнёр</span>
+          </div>
+        </div>
+
+        <!-- Баланс генераций -->
+        <div class="balance">
+          <div class="balance-l">
+            <div id="profileBalanceLabel" class="lab">…</div>
+            <div id="profileCreditsCount" class="val">—</div>
+            <div id="profileBalanceHintText" class="hint">…</div>
+            <div id="profileRenewalDate" class="hint" style="display:none;margin-top:4px;font-weight:600;"></div>
+          </div>
+          <span class="balance-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></span>
+        </div>
+
+        <!-- Контакты — переехало с главной (раздел 3.1 oracle-simplification). Страница heroesPage остаётся. -->
+        <button type="button" class="link" id="contactsLink" onclick="goToHeroesFrom('profilePage')" aria-label="Контакты" data-i18n-aria="profileContactsTitle">
+          <span class="ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19a5.5 5.5 0 0 1 11 0"/><circle cx="17.5" cy="9" r="2.6"/><path d="M16 19a4.5 4.5 0 0 1 5.5-4.4"/></svg></span>
+          <span class="tx">
+            <b data-i18n="profileContactsTitle">Контакты</b>
+            <span data-i18n="profileContactsSub">Песни для близких — картотека людей</span>
+          </span>
+          <span class="ar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></span>
+        </button>
+
+        <!-- Мои данные (аккордеон — свёрнуто по умолчанию) -->
+        <div id="profileDataCard" class="acc">
+          <button class="acc-h pfa-header" onclick="profileAccordionToggle()">
+            <span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="12" cy="8" r="3.6"/><path d="M5 20c.7-3.5 3.6-5.5 7-5.5s6.3 2 7 5.5" stroke-linecap="round"/></svg></span>
+            <span class="tx pfa-info">
+              <b><span data-i18n="profileSectionMyData">Мои данные</span></b>
+              <span id="profileDataSubtitle" style="display:none;"><span id="profileDataName" class="pfa-name"></span><span id="profileDataSep" class="pfa-sep" style="display:none;"> · </span><span id="profileDataDate" class="pfa-date"></span></span>
+            </span>
+            <span class="chev pfa-chevron" id="profileDataChevron">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </span>
+          </button>
+          <!-- Скрытые span для города/времени/пола (данные хранятся, но не видны в заголовке) -->
+          <span id="profileDataCity" style="display:none;"></span>
+          <span id="profileDataCitySep" style="display:none;"></span>
+          <span id="profileDataTime" style="display:none;"></span>
+          <span id="profileDataTimeSep" style="display:none;"></span>
+          <span id="profileDataGender" style="display:none;"></span>
+          <span id="profileDataGenderSep" style="display:none;"></span>
+          <!-- Раскрывающаяся форма редактирования -->
+          <!-- VK Testers 7277116 (Windows): focus-обводка inputs обрезается справа.
+               Root cause: overflow:hidden родителя для max-height аккордеон-анимации
+               отсекает border + box-shadow у inputs шириной 100%. Добавили padding
+               2px (горизонтальный) на inner wrap — даёт зазор для border. -->
+          <div id="profileDataEditWrap" style="overflow:hidden;transition:max-height .38s cubic-bezier(.4,0,.2,1),opacity .3s ease;max-height:0;opacity:0;pointer-events:none;">
+            <div style="padding:0 15px 15px;">
+              <div class="acc-b-in" style="display:flex;flex-direction:column;gap:11px;width:100%;padding:0;">
+                <!-- Мои данные — компактная форма ДОСЛОВНО по showcase-profile.html (Алла 21.06, закон №46):
+                     Имя / Дата+Время (fld-row) / tcheck «Не знаю точное время» / Город / Сохранить.
+                     Дропдауны даты, Пол и кнопка Отмена убраны (нет в эталоне). Нативный date/time = единый
+                     инпут как в референсе; #profileEditDate/#profileEditTime/#profileEditCity сохраняют save/load-хуки. -->
+                <div class="fld">
+                  <label for="profileEditName" id="profileEditLblName">Имя</label>
+                  <input type="text" id="profileEditName" placeholder="Ваше имя" maxlength="50" autocomplete="name" data-i18n-placeholder="phProfileName">
+                </div>
+                <div class="fld-row">
+                  <div class="fld" style="flex:1">
+                    <label for="profileEditDateDisplay" id="profileEditLblDate">Дата рождения</label>
+                    <!-- Эталон: «14 марта 1996». Видимый readonly-дисплей + ПРОЗРАЧНЫЙ нативный date ПОВЕРХ него.
+                         Было: date парковался за экраном (left:-9999px) → на десктопе showPicker() открывал
+                         календарь за кадром, а браузерный autofill садился на readonly-дисплей →
+                         «клик по дате — ничего, автофил предлагает но не работает» (баг Аллы 07.07).
+                         Стало: date лежит поверх дисплея (opacity:0) — клик открывает календарь у поля,
+                         autocomplete=bday ловит autofill в НАСТОЯЩИЙ инпут → onchange синхронит дисплей. -->
+                    <div style="position:relative">
+                      <input type="text" id="profileEditDateDisplay" readonly placeholder="дд месяц гггг" data-i18n-placeholder="phDateDisplay" style="cursor:pointer;width:100%;box-sizing:border-box" tabindex="-1">
+                      <input type="date" id="profileEditDate" min="1900-01-01" autocomplete="bday" aria-label="Дата рождения" style="position:absolute;top:0;left:0;right:0;bottom:0;width:100%;height:100%;opacity:0;cursor:pointer;border:0;padding:0;margin:0" onchange="window._profileSyncDateDisplay&&window._profileSyncDateDisplay()">
+                    </div>
+                  </div>
+                  <div class="fld tfld" id="profileEditTimeFld" style="flex:0 0 108px">
+                    <label for="profileEditTime" id="profileEditLblTime">Время</label>
+                    <input type="time" id="profileEditTime">
+                  </div>
+                </div>
+                <!-- tcheck «Не знаю точное время» — реф-компонент + подсказка. onchange сохраняет Safari-фикс
+                     (VK 7277478: clear ПЕРЕД disabled + readonly) и добавляет .tmuted на поле времени. -->
+                <label class="tcheck">
+                  <input type="checkbox" id="profileEditTimeUnknown" onchange="var t=document.getElementById('profileEditTime');var tf=document.getElementById('profileEditTimeFld');if(this.checked){if(t.value)t.dataset.savedTime=t.value;try{t.blur()}catch(_){}t.value='';t.removeAttribute('value');t.setAttribute('readonly','readonly');t.disabled=true;}else{t.removeAttribute('readonly');t.disabled=false;t.removeAttribute('disabled');if(t.dataset.savedTime){t.value=t.dataset.savedTime;delete t.dataset.savedTime}try{t.focus()}catch(_){}}if(tf)tf.classList.toggle('tmuted',this.checked);">
+                  <span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+                  <span class="lbl"><span id="profileEditLblUnknownText">Не знаю точное время</span><small id="profileEditLblUnknownHint">Разбор будет по дате — без привязки ко времени</small></span>
+                </label>
+                <div class="fld">
+                  <label for="profileEditCity" id="profileEditLblCity">Город рождения</label>
+                  <div id="profileCityWrap" class="birthplace-wrap" style="position:relative;">
+                    <!-- Batch 5.28 (VK Testers ID 7258882): maxlength 100 -->
+                    <input type="text" id="profileEditCity" placeholder="Город рождения" maxlength="100" autocomplete="off" data-i18n-placeholder="phProfileCity">
+                    <span id="profileCityCheck" class="birthplace-check" aria-hidden="true"></span>
+                    <ul id="profileCitySuggestions" class="birthplace-suggestions" aria-hidden="true" aria-live="polite"></ul>
+                  </div>
+                </div>
+                <!-- Пол — сегмент со слайдером (реф-стиль, Алла 21.06). Save/load-хуки: data-gender + button.is-active. -->
+                <div class="fld">
+                  <label id="profileEditLblGender">Пол</label>
+                  <div class="gseg" id="profileEditGender" role="group" aria-label="Пол">
+                    <span class="slider" aria-hidden="true"></span>
+                    <button type="button" class="gseg-btn" data-gender="female" onclick="window._setProfileGender&amp;&amp;window._setProfileGender(this,'female')"><span data-i18n="profileEditFemale">Женский</span></button>
+                    <button type="button" class="gseg-btn" data-gender="male" onclick="window._setProfileGender&amp;&amp;window._setProfileGender(this,'male')"><span data-i18n="profileEditMale">Мужской</span></button>
+                  </div>
+                </div>
+                <button type="button" id="profileSaveBtn" class="save" onclick="profileEditSave()" data-i18n="btnSave">Сохранить</button>
+                <div id="profileEditError" style="display:none;color:#ff6b6b;font-size:0.8rem;text-align:center;"></div>
+                <div id="profileEditSuccess" style="display:none;color:#4caf50;font-size:0.8rem;text-align:center;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Промокод -->
+        <!-- Batch 10.10 (7271917 Android): chevron font-size 0.8rem/opacity:0.5
+             на Android рендерился как точка. 1.05rem / 0.75 — чёткая стрелка. -->
+        <!-- VK Testers 7271917 (Maria Lykosova Samsung Galaxy S23+ / MacBook Pro 2017):
+             «Иконки стрелок имеют экстремально маленький размер, превращаются в точку».
+             Корень: Unicode glyphs ▸/▾ рендерятся тонко на mobile WebView fallback
+             fonts. Заменено на SVG (фиксированный размер + контрастные stroke).
+             Стрелка: default rotate(-90deg)=вправо (свёрнут); rotate(0)=вниз (открыт). -->
+        <!-- Промокод: секция перенесена вниз профиля (после Разовых треков) — эталон showcase-profile. -->
+
+        <!-- Тарифы (аккордеон — сворачивается для подписчиков) -->
+        <!-- 7271917: SVG вместо Unicode ▸/▾ — гарантированный размер на mobile.
+             Тарифы по умолчанию РАЗВЁРНУТЫ (display:block) → стрелка вниз. -->
+        <div id="profileSectionPlans" class="sec-t sec-toggle clickable" role="button" tabindex="0" onclick="if(window.goToPage){goToPage('plansPage');setTimeout(function(){if(window._initPlansPage)window._initPlansPage();},100);}"><span data-i18n="profileSectionPlans">Пакеты</span> <svg id="plansChevron" class="sec-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></div>
+        <div id="profilePlansWrap" class="plan-up">
+        <div id="secondPurchaseUpsellBanner" class="second-purchase-upsell-banner card" style="margin-bottom:11px;">
+          <div class="spub-text" id="spubText" style="font-size:13px;color:var(--muted);line-height:1.45;margin-bottom:12px;">
+            У тебя уже 2 трека. <strong>Пакет Душа окупается с 3го</strong> —
+            и даёт ещё Чат с Оракулом, историю заказов и приоритет обработки.
+          </div>
+          <button type="button" id="spubBtn" class="plan-btn btn btn-primary" style="width:100%;" onclick="showPlanConfirm('plan_basic', 'Душа')">
+            Получить Душу — 810 ₽ →
+          </button>
+        </div>
+        <!-- Тарифы вынесены в отдельный экран #plansPage (закон №46, showcase-plans). -->
+
+        <!-- 18.05.2026 Алла: тонкая amber-карточка-напоминание о скором конце подписки.
+             Размещена НАД блоком управления, БЕЗ кнопок. В едином стиле страницы профиля
+             (та же типографика, тот же border-radius 14px, тот же padding 16px). -->
+        <div id="profileSubExpiringSoon" style="display:none;margin-top:11px;margin-bottom:0;background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.20);border-radius:18px;padding:14px 16px;font-size:13px;color:rgba(245,158,11,0.95);line-height:1.4;"></div>
+
+        <!-- Управление пакетами -->
+        <div id="profileSubManage" style="display:none;margin-top:11px;">
+          <div class="card" style="padding:16px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+              <div id="profileActiveSubscriptionEl" style="font-size:0.9rem;font-weight:600;color:rgba(255,255,255,0.85);">…</div>
+              <div id="profileSubPlan" style="font-size:0.82rem;font-weight:700;color:var(--primary-color);"></div>
+            </div>
+            <div id="profileSubRenew" style="font-size:0.78rem;color:rgba(255,255,255,0.45);margin-bottom:12px;"></div>
+            <div id="profileSubCard" style="font-size:0.78rem;color:rgba(255,255,255,0.45);margin-bottom:12px;display:none;"></div>
+            <button id="profileCancelSubBtn" type="button" data-i18n="profileCancelSubscription" onclick="cancelSubscription()"
+              style="display:none;width:100%;padding:10px;border-radius:9999px;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);color:rgba(239,68,68,0.8);font-size:0.82rem;cursor:pointer;font-family:inherit;font-weight:500;min-height:auto;margin:0;box-shadow:none;">Деактивировать пакет</button>
+          </div>
+        </div>
+
+        <!-- Способ оплаты (карта T-Bank) -->
+        <div id="profilePaymentMethodSection" style="display:none;">
+          <div id="profilePaymentMethodTitle" class="sec-t">Способ оплаты</div>
+          <div id="profilePaymentMethodCard" class="card" style="padding:16px;">
+            <div id="profileCardInfo" style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+              <div style="width:32px;height:32px;border-radius:8px;background:rgba(var(--primary-rgb),0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+              </div>
+              <div style="flex:1;min-width:0;">
+                <div id="profileCardPan" style="font-size:0.85rem;font-weight:600;color:rgba(255,255,255,0.85);">…</div>
+                <div id="profileCardExpiry" style="font-size:0.75rem;color:rgba(255,255,255,0.45);"></div>
+              </div>
+            </div>
+            <div id="profileCardNoCard" style="display:none;font-size:0.82rem;color:rgba(255,255,255,0.55);margin-bottom:12px;">Карта не привязана. Привяжите карту для полного управления.</div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button type="button" id="profileBindCardBtn" onclick="bindNewCard()"
+                style="flex:1;padding:10px;border-radius:9999px;background:rgba(var(--primary-rgb),0.08);border:1px solid rgba(var(--primary-rgb),0.2);color:var(--primary-color);font-size:0.82rem;cursor:pointer;font-family:inherit;font-weight:500;min-height:auto;margin:0;box-shadow:none;">
+                Привязать карту
+              </button>
+              <button type="button" id="profileUnbindCardBtn" onclick="unbindCard()" style="display:none;flex:1;padding:10px;border-radius:9999px;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);color:rgba(239,68,68,0.8);font-size:0.82rem;cursor:pointer;font-family:inherit;font-weight:500;min-height:auto;margin:0;box-shadow:none;">
+                Отвязать карту
+              </button>
+            </div>
+          </div>
+        </div>
+
+        </div><!-- /profilePlansWrap -->
+
+        <!-- Разовые треки -->
+        <div id="profileSectionTracks" class="sec-t">Разовые треки</div>
+        <p class="track-note" data-i18n="profileTracksNote">Без пакета — оплати один трек, когда захочешь.</p>
+        <div class="track-list">
+          <div class="track-item" onclick="goToPage('formPage');setTimeout(function(){var b=document.querySelector('.mode-btn[data-mode=\'single\']');if(b){b.click();}},100)">
+            <span class="track-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.6"/><path d="M5 20c.7-3.5 3.6-5.5 7-5.5s6.3 2 7 5.5"/></svg></span>
+            <div class="track-tx">
+              <b id="ptiSingleName">Для себя</b>
+              <span id="ptiSingleDesc">Твоя личность в звуке</span>
+            </div>
+            <div class="track-right"><span class="track-price" id="ptiSinglePrice">490 ₽</span><span class="track-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></span></div>
+          </div>
+          <div class="track-item" onclick="goToPage('formPage');setTimeout(function(){var b=document.querySelector('.mode-btn[data-mode=\'couple\']');if(b){b.click();}},100)">
+            <span class="track-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.5-1.5 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3 .5-4.5 2-1.5-1.5-2.7-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4 3 5.5l7 7Z"/></svg></span>
+            <div class="track-tx">
+              <b id="ptiCoupleName">Для двоих</b>
+              <span id="ptiCoupleDesc">Ваша связь и резонанс</span>
+            </div>
+            <div class="track-right"><span class="track-price" id="ptiCouplePrice">890 ₽</span><span class="track-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></span></div>
+          </div>
+          <div class="track-item" onclick="goToPage('formPage');setTimeout(function(){var b=document.querySelector('.mode-btn[data-mode=\'transit\']');if(b){b.click();}},100)">
+            <span class="track-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.5M12 19.5V22M4.5 4.5l1.8 1.8M17.7 17.7l1.8 1.8M2 12h2.5M19.5 12H22M4.5 19.5l1.8-1.8M17.7 6.3l1.8-1.8"/></svg></span>
+            <div class="track-tx">
+              <b id="ptiTransitName">Энергия дня</b>
+              <span id="ptiTransitDesc">Песня под сегодняшний день</span>
+            </div>
+            <div class="track-right"><span class="track-price" id="ptiTransitPrice">590 ₽</span><span class="track-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></span></div>
+          </div>
+        </div>
+
+        <!-- Пакеты Искр (доступны подписчикам при tracksRemaining <= 1) → отдельный экран #topupPage -->
+        <div id="iskryPacksSection" style="display:none;">
+          <div class="sec-t" data-i18n="iskryPacksTitle">Пополнить Искры</div>
+          <div class="track-list">
+            <div class="track-item" onclick="if(window.goToPage){goToPage('topupPage');setTimeout(function(){if(window._initTopupPage)window._initTopupPage();},100);}">
+              <span class="track-ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.2L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4z"/></svg></span>
+              <div class="track-tx">
+                <b data-i18n="iskryPacksTitle">Пополнить Искры</b>
+                <span data-i18n="tuEntrySub">1000 / 2000 / 5000 Искр на новые песни</span>
+              </div>
+              <div class="track-right"><span class="track-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Промокод — эталон showcase-profile: статичная секция внизу профиля (после Разовых треков).
+             Раньше была аккордеоном «У меня есть промокод» перед Пакетами + скрыта; восстановлено 1:1
+             по референсу (Алла 20.06). Flow applyProfilePromo + sanitize инпута сохранены. -->
+        <div class="sec-t" data-i18n="profilePromoSectionTitle">Промокод</div>
+        <div id="profilePromoCard" class="promo">
+          <div class="promo-head">
+            <span class="promo-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5a2 2 0 0 0 0 5V18a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1v-3.5a2 2 0 0 1 0-5V6a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1Z"/><path d="M14.5 5v14" stroke-dasharray="2 2.6"/></svg></span>
+            <div class="promo-tt"><b data-i18n="profilePromoTitle">Мне подарили промокод</b><span data-i18n="profilePromoSub">Активируй — получишь бонусные Искры</span></div>
+          </div>
+          <!-- sanitize инпута (VK Testers 7257289): maxlength 30 + pattern A-Za-z0-9- + oninput uppercase/filter. -->
+          <div class="promo-field">
+            <input type="text" id="profilePromoInput" class="promo-input" placeholder="Введите промокод" autocomplete="off" data-i18n-placeholder="phPromoInput" spellcheck="false" maxlength="30" pattern="[A-Za-z0-9-]+" inputmode="latin" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9-]/g,'').slice(0,30)">
+            <button type="button" id="profilePromoBtn" class="promo-btn" onclick="applyProfilePromo()" data-i18n="apply">Применить</button>
+          </div>
+          <div id="profilePromoResult" style="display:none;margin-top:10px;padding:10px 14px;border-radius:24px;font-size:0.75rem;font-weight:300;text-align:center;"></div>
+        </div>
+
+        <!-- Batch 10.5 (отчёт 7271036 Maria Lykosova MacOS): «Мой баланс»
+             (Искры, Получено, Потрачено, breakdown на песни/Чат) вынесен
+             в отдельную секцию ВЫШЕ реферальной — это общая статистика
+             пользователя, не специфичная для рефералов. Раньше блок был
+             внутри «Пригласи друга» — нарушение иерархии информации. -->
+        <div class="profile-balance-section profile-referral-section" id="profileMyBalanceSection" style="display:none;">
+          <div class="sec-t">
+            <span id="profileBalanceTitle" data-i18n="profileBalanceTitle">Мой баланс</span>
+          </div>
+          <div class="card">
+          <!-- Баланс Искр -->
+          <div id="profileRefEarningsBlock" class="profile-ref-earnings" style="display:none;">
+            <div class="profile-ref-earnings-row" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+              <span id="profileRefEarningsLabel" style="font-size:13px;color:var(--muted);">Ваши Искры:</span>
+              <strong id="profileRefBalance" style="font-size:18px;font-weight:700;color:var(--gold);">0</strong>
+            </div>
+            <p id="profileRefEarningsHint" style="font-size:11.5px;color:var(--faint);margin:6px 0 0;">Искры можно тратить на песни и функции</p>
+          </div>
+          <!-- Статистика Искр: Получено / Потрачено -->
+          <div id="profileIskryStatsBlock" style="display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--line);">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;text-align:center;">
+              <div>
+                <div style="font-size:10.5px;text-transform:uppercase;letter-spacing:0.06em;color:var(--faint);margin-bottom:4px;" data-i18n="iskryStatEarned">Получено</div>
+                <div id="iskryStatEarnedNum" style="font-size:21px;font-weight:700;color:var(--green);">0</div>
+              </div>
+              <div>
+                <div style="font-size:10.5px;text-transform:uppercase;letter-spacing:0.06em;color:var(--faint);margin-bottom:4px;" data-i18n="iskryStatSpent">Потрачено</div>
+                <div id="iskryStatSpentNum" style="font-size:21px;font-weight:700;color:var(--gold);">0</div>
+              </div>
+            </div>
+            <p id="iskryBreakdown" style="font-size:10.5px;color:var(--faint);text-align:center;margin:6px 0 0;"></p>
+          </div>
+          </div>
+        </div>
+
+        <!-- Пригласи друга — реф-блок ДОСЛОВНО по showcase-profile.html (Алла 21.06, закон №46):
+             восстановлен на профиле (был перенесён в Подарки 20.06; реф-эталон показывает его именно тут).
+             Данные грузит loadProfilePage: #refStatInvited/#refStatActivated/#refStatSparks + #profileRefLinkInput.
+             Копирование — собственный handler (svg сохраняется через innerHTML span, старый #profileRefCopyBtn
+             handler затирал бы svg через textContent). -->
+        <div id="profileReferralSection">
+          <div class="sec-t" data-i18n="profileInviteFriend">Пригласи друга</div>
+          <p class="ref-tagline" id="profileRefTagline" data-i18n="profileRefTagline">Приглашай друзей — получай Искры за каждого</p>
+          <div class="ref-stats">
+            <div class="ref-stat"><b id="refStatInvited">0</b><span id="profileRefInvitedLabel" data-i18n="profileRefInvited">Приглашено</span></div>
+            <div class="ref-stat"><b id="refStatActivated">0</b><span id="profileRefActivatedLabel" data-i18n="profileRefActivated">Активировано</span></div>
+            <div class="ref-stat"><b id="refStatSparks">0</b><span data-i18n="profileRefSparks">Искры</span></div>
+          </div>
+          <div class="ref-link">
+            <input id="profileRefLinkInput" value="" readonly aria-label="Реферальная ссылка" />
+            <button type="button" class="ref-copy" id="profileRefShareCopy" onclick="window._profileCopyRefLink&amp;&amp;window._profileCopyRefLink(this)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2.5"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> <span data-i18n="giftsRefCopy">Копировать</span></button>
+          </div>
+        </div>
+
+        <!-- Мои треки — скрыта до реализации
+        <div id="profileMyTracksSection" class="web-only" style="display:none;margin-top:24px;">
+          <div id="profileMyTracksTitle" class="sec-t">Мои треки</div>
+          <button type="button" id="profileMyTracksBtn" onclick="goToPage('myTracksPage');if(typeof window.loadMyTracks==='function')window.loadMyTracks(false)" style="width:100%;padding:14px 16px;border-radius:14px;background:rgba(var(--primary-rgb),0.08);border:1px solid rgba(var(--primary-rgb),0.2);color:var(--primary-color);font-size:0.9rem;font-weight:600;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px;min-height:auto;margin:0;box-shadow:none;">
+            Слушать и скачать треки
+          </button>
+        </div>
+        -->
+
+        <!-- «Подключённые сервисы» (Telegram/Google) убраны с профиля — Алла 20.06 (бесполезная фича). -->
+
+        <!-- Тема оформления — ручной переключатель.
+             Решает проблему когда Telegram/VK не передаёт правильную тему
+             (старые клиенты, iOS WebView, web-версия TG). Сохраняется в
+             localStorage('yupsoul_theme_pref'): 'auto' | 'light' | 'dark'. -->
+        <div id="profileThemeSection">
+          <div class="sec-t" data-i18n="profileSectionTheme">Тема оформления</div>
+          <div class="theme profile-theme-switcher" id="profileThemeSwitcher" data-sel="0" role="group" aria-label="Тема оформления">
+            <span class="slider" aria-hidden="true"></span>
+            <button type="button" class="profile-theme-btn on" data-theme-pref="auto" aria-pressed="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor" stroke="none"/></svg><span data-i18n="themeAuto">Авто</span></button>
+            <button type="button" class="profile-theme-btn" data-theme-pref="light" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8"/></svg><span data-i18n="themeLight">Светлая</span></button>
+            <button type="button" class="profile-theme-btn" data-theme-pref="dark" aria-pressed="false"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.8A8.5 8.5 0 0 1 11.2 3a7 7 0 1 0 9.8 9.8z"/></svg><span data-i18n="themeDark">Тёмная</span></button>
+          </div>
+        </div>
+
+        <!-- Действия -->
+        <button type="button" id="profileCreateSongBtn" class="create" aria-label="Создать новую песню" data-i18n-aria="profileCreateSong"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg> Создать свою песню</button>
+        <button type="button" id="profileHelpBtn" class="btn-ghost secondary" onclick="goToHelpFrom('profilePage')" aria-label="Открыть раздел помощи и поддержки">Помощь и поддержка</button>
+
+        <!-- Сообщество ВК (Алла 29.07): видна только на VK (CSS html.is-vk).
+             Вступление — window._vkCommunityJoinFlow (открыть группу → по возврату
+             проверка членства через /api/community/join-bonus → +10 Искр). -->
+        <!-- Ссылка, а не button: на нативных клиентах мост мог молчать, а window.open в WebView
+             блокировался — тап выглядел мёртвым (отказ ВК 24.08, скриншот 2). Навигацию по <a>
+             клиент VK открывает всегда; мост используется как улучшение (см. _vkCommunityJoinFlow). -->
+        <a id="profileVkCommunityBtn" class="btn-ghost secondary" href="https://vk.com/club237303283" target="_blank" rel="noopener" onclick="if(window._vkCommunityJoinFlow)return window._vkCommunityJoinFlow(this,event)" data-i18n="profileVkCommunity" aria-label="Открыть сообщество ВКонтакте" role="button" style="display:flex;align-items:center;justify-content:center;text-decoration:none;">Сообщество: Энергия дня — каждое утро</a>
+
+        <!-- Уведомления — §2.7.3 Правил VK Mini Apps: возможность отключить уведомления
+             прямо в приложении. Управляет напоминаниями/рассылками (reengage_optout);
+             сервисные сообщения о готовой песне — транзакционные, приходят всегда.
+             Текст ставит JS (initNotifToggle, 09) по состоянию — data-i18n не вешать. -->
+        <button type="button" id="profileNotifToggleBtn" class="btn-ghost secondary" aria-label="Включить или отключить уведомления">Отключить уведомления</button>
+
+        <!-- Удалить аккаунт — §1.1.10 Правил VK Mini Apps: свободная возможность
+             удаления аккаунта и всех данных по требованию пользователя.
+             Показывается во всех режимах (web, TG, VK) — это право пользователя. -->
+        <button type="button" id="profileDeleteAccountBtn" class="btn-ghost btn-danger secondary" aria-label="Удалить аккаунт и все данные" data-i18n="profileDeleteAccountBtn">Удалить аккаунт</button>
+
+        <!-- Админка (только для админов в Telegram) -->
+        <div id="adminLinkWrapProfile" style="display:none;margin-top:12px;text-align:center">
+          <button type="button" id="adminLinkBtnProfile" class="btn-ghost profile-admin-btn" aria-label="Перейти в админку">Админка</button>
+          <button type="button" id="analyticsLinkBtnProfile" class="btn-ghost profile-admin-btn" aria-label="Аналитика" onclick="window.open((window.BACKEND_URL||window.HEROES_API_BASE||'').replace(/\/$/,'') + '/admin/analytics', '_blank')">Аналитика</button>
+        </div>
+
+        <!-- Выход (только для веб) -->
+        <button type="button" id="profileLogoutBtn" class="btn-ghost web-only profile-logout-btn" onclick="webLogout()" style="display:none;" data-i18n="profileLogout">Выйти из аккаунта</button>
+
+        <!-- Договор публичной оферты и версия — внизу профиля -->
+        <div class="footer">
+          <a href="javascript:void(0)" onclick="if(window.showLegalModal)window.showLegalModal('offer')" class="profile-offer-link" data-i18n="profileOfferLink">Договор публичной оферты</a> · <a href="javascript:void(0)" onclick="if(window.showLegalModal)window.showLegalModal('subscription')" class="profile-offer-link" data-i18n="profileSubsLink">Пакеты</a>
+          <p class="ver" aria-hidden="true">YupSoul • 2026 • v1.2.77</p>
+        </div>
+      </div>
+    </div>

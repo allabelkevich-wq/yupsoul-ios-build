@@ -1,0 +1,42 @@
+<div class="page ys" id="topupPage" data-page="topup">
+      <div class="ph-stars"></div>
+      <div class="head">
+        <button type="button" class="hbtn" id="tuBackBtn" aria-label="Назад" data-i18n-aria="navBack" onclick="if(window.goBack)goBack();else if(window.goToPage)goToPage('profilePage')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg></button>
+        <h1 data-i18n="tuTitle">Пополнить Искры</h1>
+        <span class="secure"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg><span data-i18n="paySecure">Защищено</span></span>
+      </div>
+      <div class="scroll">
+        <div class="bal-hero">
+          <span class="bh-ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.2L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4z"/></svg></span>
+          <span class="bh-v" id="tuBalanceVal">0 Искр</span>
+          <span class="bh-k" data-i18n="tuBalance">на твоём балансе · 1 песня = 100 Искр</span>
+        </div>
+        <div class="sec" data-i18n="tuChoose">Сколько добавить</div>
+        <div class="topups" id="tuTopups">
+          <!-- КАНОН v9 (отказы VK 27.07 и ОК 29.07): ни голоса, ни ОКи. Цены во внутренних
+               валютах убраны ИЗ РАЗМЕТКИ, а не спрятаны CSS — модерация читает исходник
+               скрейпом (прецедент с крипто-маркерами). Везде одна ₽-цена, карта T-Bank.
+               Тексты «≈ N песен» на VK подменяет _vkPackTexts() на «вопросов Оракулу». -->
+          <button type="button" class="topup" data-sku="iskry_pack_1000" data-rub="1 630 ₽">
+            <span class="radio"></span><span class="ta"><b>+1000 Искр</b><small data-i18n="tuPack1k">≈ 10 песен</small></span>
+            <span class="price"><span data-web-only>1 630 ₽</span></span>
+          </button>
+          <button type="button" class="topup sel" data-sku="iskry_pack_2000" data-rub="2 450 ₽">
+            <span class="radio"></span><span class="ta"><b>+2000 Искр</b><small data-i18n="tuPack2k">≈ 20 песен</small></span>
+            <span class="save" data-i18n="tuSave2k">выгоднее</span><span class="price"><span data-web-only>2 450 ₽</span></span>
+          </button>
+          <button type="button" class="topup" data-sku="iskry_pack_5000" data-rub="5 300 ₽">
+            <span class="radio"></span><span class="ta"><b>+5000 Искр</b><small data-i18n="tuPack5k">≈ 50 песен</small></span>
+            <span class="tag" data-i18n="tuSave5k">максимум</span><span class="price"><span data-web-only>5 300 ₽</span></span>
+          </button>
+        </div>
+        <!-- Натив VK (is-vk-stub): пакеты и CTA скрыты по §5.4.1, поэтому под
+             заголовком «Сколько добавить» оставалась пустота. Показываем ту же
+             дословную заглушку, что на песне и в Soul Chat — «Оплата на платформе
+             недоступна», без подсказок где оплатить. -->
+        <p id="tuStubNote" data-i18n="scSubMobileHint" style="display:none;margin-top:26px;text-align:center;font-size:0.85rem;opacity:.75;">Оплата на платформе недоступна</p>
+      </div>
+      <div class="foot">
+        <button type="button" class="pay" id="tuCta"><span data-i18n="tuCta">Пополнить</span><span class="pay-dot">·</span><span class="pay-amt" id="tuPrice"></span></button>
+      </div>
+    </div>

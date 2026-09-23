@@ -1,0 +1,554 @@
+<div class="page" id="soulChatPage" data-state="loading">
+      <!-- Фон-подсветка = ДОСЛОВНО из showcase-chat.html (Алла 18.06: «подсветка» = эти блобы):
+           .bg .blob b1 #ec4899 / b2 #7c3aed / b3 #f97316, blur60 mix-blend:screen + звёзды -->
+      <div class="ph-stars" aria-hidden="true"></div>
+      <div class="bg" aria-hidden="true"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div><div class="stars"></div></div>
+      <!-- Градиент для иконки-аватара оракула в сообщениях (orange→pink→violet) -->
+      <svg width="0" height="0" style="position:absolute;width:0;height:0;pointer-events:none;" aria-hidden="true"><defs><linearGradient id="sc6mandalaGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f97316"/><stop offset="0.5" stop-color="#ec4899"/><stop offset="1" stop-color="#a855f7"/></linearGradient></defs></svg>
+      <div class="sc-page-main-wrap">
+        <div class="sc-page-glass-card">
+      <div id="scHeader" class="sc-header profile-header form-header-bar hd ora-v2">
+        <button type="button" class="profile-back-btn header-back-btn btn-nav rnd" onclick="goBack()" aria-label="Назад" data-i18n-aria="navBack"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg></button>
+        <div id="scOracleTabs" class="tabs">
+          <button type="button" class="sc-oracle-tab tab on is-active" data-tab="chat" onclick="switchOracleTab('chat')" data-i18n="scTabChat">Чат</button>
+          <button type="button" class="sc-oracle-tab tab" data-tab="diary" onclick="switchOracleTab('diary')" data-i18n="scTabDiary">Дневник</button>
+          <button type="button" class="sc-oracle-tab tab" data-tab="prism" onclick="switchOracleTab('prism')" data-i18n="scTabPrism">Разборы</button>
+        </div>
+        <button type="button" id="scProfileIconBtn" class="header-menu-btn btn-info rnd" onclick="window.returnToPage='soulChatPage';goToPage('profilePage')" aria-label="Профиль" data-i18n-aria="myProfile"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="8" r="4" fill="currentColor" opacity="0.9"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity="0.9"/></svg></button>
+      </div>
+
+      <div id="scGlobalLoading" style="flex:1;display:none;align-items:center;justify-content:center;color:rgba(255,255,255,0.35);font-size:0.9rem;"><span id="scGlobalLoadingText">Загружаю…</span></div>
+
+      <div id="scPromoArea" class="profile-scroll page-scroll">
+        <div class="sc-content-wrap">
+        <!-- Заголовок страницы (золотое сечение) -->
+        <header class="sc-page-hero" aria-label="Заголовок Разговор по душам" style="display:none;">
+          <h1 id="scHeroTitle" class="sc-hero-title">Разговор по душам | Чат с Оракулом</h1>
+        </header>
+
+        <!-- ═══ LAW #13 (01.04.2026): ЦЕННОСТЬ ДО PAYWALL ═══
+             Порядок элементов: описание → подробнее → (только потом) upsell-блок.
+             Пользователь ВСЕГДА сначала видит ценность Чат с Оракулом, а не
+             "Оформите подписку". ═══════════════════════════════════════════════ -->
+
+        <!-- 1. Краткое описание + кнопка «Подробнее» (ПЕРВЫМ видит пользователь) -->
+        <div class="sc-after-hero" style="margin-bottom:20px;">
+          <div id="scPromoIntro" style="font-size:0.82rem;font-weight:300;color:rgba(255,255,255,0.55);line-height:1.7;margin-bottom:16px;letter-spacing:0.01em;text-align:center;">
+            Чат с Оракулом — твой ИИ-ассистент, который понимает тебя словно лучший друг или Высшее Я. Отвечает на вопросы о характере, предназначении и пути.
+          </div>
+          <!-- Кнопка "Перейти в чат" для подписчиков -->
+          <button type="button" id="scEnterChatBtn" onclick="showChat();scLoadHistory();scrollChatToBottom();" style="display:none;width:100%;padding:14px;border-radius:9999px;background:linear-gradient(135deg,rgba(139,92,246,0.2),rgba(236,72,153,0.15));border:1px solid rgba(139,92,246,0.35);color:#fff;font-size:0.88rem;font-weight:600;cursor:pointer;font-family:inherit;margin-bottom:12px;transition:all 0.2s;letter-spacing:0.01em;" data-i18n="scGoToChat">
+            Перейти в чат →
+          </button>
+          <!-- Кнопка «Подробнее» скрыта — контент ниже (статистика, примеры) виден сразу по закону №13 -->
+          <button type="button" id="scMoreBtn" style="display:none;background:rgba(139,92,246,0.06);border:1px solid rgba(139,92,246,0.18);border-radius:24px;color:rgba(255,255,255,0.55);font-size:0.72rem;font-weight:300;letter-spacing:0.03em;cursor:pointer;padding:12px 20px;font-family:inherit;box-shadow:none;animation:none;min-height:unset;width:100%;height:44px;box-sizing:border-box;">
+            <span id="scMoreBtnText">Подробнее ↓</span>
+          </button>
+        </div>
+
+        <!-- ЦЕННОСТЬ ПЕРВЫМ (закон №13): сначала статистика и примеры вопросов,
+             только потом — блок-ошибка с CTA «Оформите подписку».
+             Раньше scPromoErrorWrap стоял до scMoreContent — пользователь сразу
+             видел paywall и не понимал ценности. Перемещён вниз 26.04.2026. -->
+
+        <!-- Расширенная инфо (статистика + примеры) — ВИДНА ПО УМОЛЧАНИЮ (закон №13):
+             пользователь сразу видит ЦЕННОСТЬ Чат с Оракулом, а не paywall. -->
+        <div id="scMoreContent" style="display:block;margin-bottom:18px;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;">
+            <div style="background:rgba(var(--primary-rgb),0.06);border:1px solid rgba(var(--primary-rgb),0.14);border-radius:14px;padding:12px;text-align:center;">
+              <div style="font-size:1.4rem;font-weight:700;color:var(--primary-color);line-height:1;">78%</div>
+              <div id="scStat1" style="font-size:0.7rem;color:rgba(255,255,255,0.5);margin-top:4px;line-height:1.4;">отмечают снижение тревоги</div>
+            </div>
+            <div style="background:rgba(var(--secondary-rgb),0.06);border:1px solid rgba(var(--secondary-rgb),0.14);border-radius:14px;padding:12px;text-align:center;">
+              <div style="font-size:1.4rem;font-weight:700;color:var(--secondary-color);line-height:1;">91%</div>
+              <div id="scStat2" style="font-size:0.7rem;color:rgba(255,255,255,0.5);margin-top:4px;line-height:1.4;">чувствуют себя понятыми</div>
+            </div>
+            <div style="background:rgba(var(--primary-rgb),0.06);border:1px solid rgba(var(--primary-rgb),0.14);border-radius:14px;padding:12px;text-align:center;">
+              <div style="font-size:1.4rem;font-weight:700;color:var(--primary-color);line-height:1;">3×</div>
+              <div id="scStat3" style="font-size:0.7rem;color:rgba(255,255,255,0.5);margin-top:4px;line-height:1.4;">быстрее находят ответ</div>
+            </div>
+            <div style="background:rgba(var(--secondary-rgb),0.06);border:1px solid rgba(var(--secondary-rgb),0.14);border-radius:14px;padding:12px;text-align:center;">
+              <div style="font-size:1.4rem;font-weight:700;color:var(--secondary-color);line-height:1;">84%</div>
+              <div id="scStat4" style="font-size:0.7rem;color:rgba(255,255,255,0.5);margin-top:4px;line-height:1.4;">возвращаются снова</div>
+            </div>
+          </div>
+          <div id="scExamplesTitle" style="font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:8px;">Примеры вопросов</div>
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <div id="scEx1" style="background:rgba(var(--primary-rgb),0.05);border:1px solid rgba(var(--primary-rgb),0.12);border-radius:10px;padding:10px 12px;font-size:0.85rem;color:rgba(255,255,255,0.7);line-height:1.5;">«Почему мне так сложно говорить о своих чувствах?»</div>
+            <div id="scEx2" style="background:rgba(var(--primary-rgb),0.05);border:1px solid rgba(var(--primary-rgb),0.12);border-radius:10px;padding:10px 12px;font-size:0.85rem;color:rgba(255,255,255,0.7);line-height:1.5;">«Какой мой главный страх и как с ним работать?»</div>
+            <div id="scEx3" style="background:rgba(var(--primary-rgb),0.05);border:1px solid rgba(var(--primary-rgb),0.12);border-radius:10px;padding:10px 12px;font-size:0.85rem;color:rgba(255,255,255,0.7);line-height:1.5;">«В чём моё предназначение и как к нему прийти?»</div>
+          </div>
+        </div>
+
+        <!-- ПРЕДЛОЖЕНИЕ ВТОРЫМ (закон №13): после ценности — мягкий CTA.
+             Блок при ошибке/отсутствии доступа — показывается ПОСЛЕ ценности. -->
+        <div id="scPromoErrorWrap" style="display:none;margin-bottom:18px;text-align:center;background:rgba(255,255,255,0.02);border:1px solid rgba(139,92,246,0.12);border-radius:24px;padding:20px 16px;">
+          <div id="scPromoErrorText" style="font-size:0.75rem;font-weight:300;color:rgba(255,255,255,0.50);line-height:1.6;margin-bottom:14px;letter-spacing:0.02em;">Получите пакет или купите доступ на сутки</div>
+          <button type="button" id="scPromoRetryBtn" style="padding:12px 20px;border-radius:24px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.10);color:rgba(255,255,255,0.45);font-size:0.72rem;font-weight:300;cursor:pointer;font-family:inherit;width:100%;height:44px;box-sizing:border-box;letter-spacing:0.02em;">Обновить</button>
+        </div>
+
+        <!-- Проверка доступа (тихий лоадер, скрывается по ответу API) -->
+        <div id="scPageLoading" style="display:block;text-align:center;padding:28px 0;">
+          <div class="loader-wrapper" style="width:80px;height:80px;margin:0 auto 10px;font-size:0.6rem;" data-letter-size="0.6rem" aria-hidden="true">
+            <span class="loader-letter">С</span><span class="loader-letter">о</span><span class="loader-letter">з</span><span class="loader-letter">д</span><span class="loader-letter">а</span><span class="loader-letter">ё</span><span class="loader-letter">м</span>
+            <div class="loader" style="width:80px;height:80px;"></div>
+          </div>
+        </div>
+
+        <!-- Бесплатная проба — ПЕРВЫМ для новых пользователей -->
+        <div id="scPageGiftWrap" style="display:none;background:rgba(16,185,129,0.04);border:1px solid rgba(16,185,129,0.20);border-radius:24px;padding:18px 16px;text-align:center;margin-bottom:14px;">
+          <div id="scGiftHeading" style="font-weight:400;color:rgba(255,255,255,0.65);margin-bottom:4px;font-size:0.78rem;">Попробуй Чат с Оракулом — 24 часа</div>
+          <div id="scGiftNote" style="font-size:0.62rem;font-weight:300;color:rgba(255,255,255,0.30);line-height:1.5;margin-bottom:14px;letter-spacing:0.02em;">Один раз для каждого пользователя</div>
+          <button id="scPageGiftBtn" type="button" style="padding:12px 20px;border-radius:24px;background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.25);color:rgba(255,255,255,0.65);font-size:0.72rem;font-weight:400;cursor:pointer;font-family:inherit;width:100%;height:44px;box-sizing:border-box;letter-spacing:0.02em;">
+            Получить 24 часа бесплатно
+          </button>
+        </div>
+
+        <!-- Тарифы — СКРЫТЫ ПО УМОЛЧАНИЮ по закону №13. Показываются через JS
+             только если: access denied + trial недоступен (или уже использован). -->
+        <div id="scPagePromo" style="display:none;">
+          <div style="background:rgba(255,255,255,0.02);border:1px solid rgba(139,92,246,0.12);border-radius:24px;padding:18px 16px;margin-bottom:14px;">
+            <div id="scSubIncluded" style="font-size:0.6rem;font-weight:300;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.30);margin-bottom:12px;text-align:center;" data-i18n="scSubIncluded">Чат с Оракулом включён в пакет</div>
+            <!-- VK Testers 7279702 + 7279698 (Maria Lykosova Android 18.05): info-строка
+                 «оформить через сайт/бот» отображалась через CSS ::after content — это
+                 hardcoded RU без i18n + цвет не адаптирован к светлой теме (белый на бежевом).
+                 Фикс: реальный HTML div с data-i18n + body.theme-light override (см. CSS ниже). -->
+            <div id="scSubMobileHint" style="display:none;font-size:0.72rem;color:rgba(255,255,255,0.7);text-align:center;line-height:1.5;margin-bottom:12px;" data-i18n="scSubMobileHint">Оплата на платформе недоступна</div>
+            <div class="sc-plans-grid">
+              <div style="padding:12px 14px;background:rgba(139,92,246,0.04);border:1px solid rgba(139,92,246,0.12);border-radius:18px;">
+                <div style="font-size:0.72rem;font-weight:400;color:rgba(255,255,255,0.75);" id="scPlanBasicName">Душа</div>
+                <div style="font-size:0.6rem;font-weight:300;color:rgba(255,255,255,0.30);margin-top:3px;line-height:1.4;" id="scPlanBasicDesc">5 треков + Чат с Оракулом</div>
+                <div style="font-size:0.72rem;font-weight:500;color:rgba(236,72,153,0.85);margin-top:6px;" id="scPlanBasicPrice">810 ₽</div>
+              </div>
+              <div style="padding:12px 14px;background:rgba(245,158,11,0.04);border:1px solid rgba(245,158,11,0.15);border-radius:18px;">
+                <div style="font-size:0.72rem;font-weight:400;color:rgba(255,255,255,0.75);" id="scPlanPlusName">Глубина</div>
+                <div style="font-size:0.6rem;font-weight:300;color:rgba(255,255,255,0.30);margin-top:3px;line-height:1.4;" id="scPlanPlusDesc">15 треков + Чат без лимита</div>
+                <div style="font-size:0.72rem;font-weight:500;color:rgba(245,158,11,0.85);margin-top:6px;" id="scPlanPlusPrice">2 030 ₽</div>
+              </div>
+              <div style="padding:12px 14px;background:rgba(16,185,129,0.04);border:1px solid rgba(16,185,129,0.12);border-radius:18px;">
+                <div style="font-size:0.72rem;font-weight:400;color:rgba(255,255,255,0.75);" id="scPlanMasterName">Лаборатория</div>
+                <div style="font-size:0.6rem;font-weight:300;color:rgba(255,255,255,0.30);margin-top:3px;line-height:1.4;" id="scPlanMasterDesc">30 треков + Чат без лимита</div>
+                <div style="font-size:0.72rem;font-weight:500;color:rgba(16,185,129,0.85);margin-top:6px;" id="scPlanMasterPrice">3 250 ₽</div>
+              </div>
+            </div>
+            <button id="scChoosePlanBtn" onclick="goToProfileFrom('soulChatPage')" style="width:100%;margin-top:14px;padding:12px 20px;border-radius:24px;background:rgba(139,92,246,0.08);border:1px solid rgba(139,92,246,0.20);color:rgba(255,255,255,0.60);font-size:0.72rem;font-weight:400;cursor:pointer;font-family:inherit;letter-spacing:0.02em;box-shadow:none;animation:none;height:44px;box-sizing:border-box;">
+              Выбрать тариф →
+            </button>
+            <div style="font-size:0.62rem;color:rgba(255,255,255,0.20);text-align:center;margin:10px 0 4px;letter-spacing:0.05em;" data-i18n="webLoginOr">или</div>
+            <button id="scQuickBuyDayBtn" type="button" style="width:100%;padding:12px 20px;border-radius:24px;background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.18);color:rgba(255,255,255,0.60);font-size:0.72rem;font-weight:400;cursor:pointer;font-family:inherit;letter-spacing:0.02em;box-shadow:none;animation:none;height:44px;box-sizing:border-box;" data-i18n="scQuickBuyDay">
+              Доступ на 24 часа — 199 ₽
+            </button>
+          </div>
+
+          <!-- Купить сутки -->
+          <div id="scPageBuyDayWrap" style="display:none;border:1px solid rgba(245,158,11,0.12);border-radius:24px;padding:18px 16px;text-align:center;background:rgba(245,158,11,0.02);">
+            <div id="scBuyDayNote" style="font-size:0.68rem;font-weight:300;color:rgba(255,255,255,0.35);margin-bottom:14px;line-height:1.5;letter-spacing:0.02em;">Не готов к пакету? Открой Чат с Оракулом на 24 часа — 30 Искр (199 ₽)</div>
+            <button id="scPageBuyDayBtn" type="button" style="width:100%;padding:12px 20px;border-radius:24px;background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.18);color:rgba(255,255,255,0.60);font-size:0.72rem;font-weight:400;cursor:pointer;font-family:inherit;box-shadow:none;animation:none;height:44px;box-sizing:border-box;letter-spacing:0.02em;">
+              Открыть Чат с Оракулом на 24ч
+            </button>
+            <!-- Пикер способа оплаты (показывается после клика на кнопку, если нет Искр) -->
+            <div id="scPayMethodPicker" style="display:none;margin-top:12px;border-top:1px solid rgba(255,255,255,0.06);padding-top:12px;">
+              <div style="font-size:0.68rem;color:rgba(255,255,255,0.35);margin-bottom:10px;font-weight:300;letter-spacing:0.02em;" data-i18n="bsChooseMethod">Выбери способ оплаты:</div>
+              <button id="scPayCardBtn" type="button" data-i18n="scPayByCardBtn" style="width:100%;padding:12px;border-radius:24px;background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.20);color:rgba(255,255,255,0.65);font-size:0.72rem;font-weight:400;cursor:pointer;font-family:inherit;height:44px;box-sizing:border-box;">
+                Картой (Т-Банк) — 199 ₽
+              </button>
+              <!-- Кнопка отключённого способа оплаты удалена из продукта (решение Аллы 27.08.2026). -->
+            </div>
+            <div id="scPageBuyDayStatus" style="display:none;font-size:0.68rem;color:rgba(var(--primary-rgb),0.7);margin-top:7px;"></div>
+          </div>
+        </div>
+        </div><!-- /sc-content-wrap -->
+      </div>
+
+      <!-- ЧАТ-ЗОНА (data-state="chat"): рефакторинг — только классы .sc-*, без inline-стилей -->
+      <div id="scChatHeader" class="sc-chat-header" style="justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.06);">
+        <button type="button" class="profile-back-btn header-back-btn btn-nav" onclick="goBack()" aria-label="Назад" data-i18n-aria="navBack">←</button>
+        <div class="sc-chat-header-title" style="flex:1 1 0;justify-content:center;min-width:0;display:flex;align-items:center;gap:8px;font-weight:500;font-size:1rem;letter-spacing:0.02em;">
+          <img src="assets/icons/logo-symbol.webp" alt="" width="28" height="28" style="border-radius:6px;" aria-hidden="true">
+          <span style="font-weight:700;color:#fff;letter-spacing:-0.02em;">YupSoul <span style="opacity:0.2;font-weight:300;">|</span> <span style="background:linear-gradient(135deg,#fff 30%,rgba(var(--primary-rgb),0.7));-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700;">Chat</span></span>
+        </div>
+        <div id="scPageTimer" class="sc-timer-badge" aria-live="polite" aria-label="Оставшееся время доступа"></div>
+        <!-- Алла 11.07: юзеры «теряли диалог» — кнопка истории была почти невидима (0.45/10.9px без
+             фона). Теперь заметная пилюля с часиками; механика scLoadHistory уже была готова. -->
+        <button type="button" id="scHistoryToggleBtn" onclick="if(typeof scOpenThreads==='function')scOpenThreads()" aria-label="История переписок" style="flex-shrink:0;display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.14);color:rgba(255,255,255,0.78);font-size:12px;font-weight:500;font-family:inherit;cursor:pointer;padding:7px 12px;border-radius:9999px;white-space:nowrap;line-height:1;transition:background .15s;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+          <span data-i18n="scHistoryToggle">История</span>
+        </button>
+      </div>
+
+      <div id="scCardPickerModal" class="sc-picker-overlay" role="dialog" aria-modal="true" aria-labelledby="scPickerTitle" onclick="if(event.target===this)scCloseCardPicker()">
+        <div class="sc-picker-sheet">
+          <div class="head">
+            <button type="button" class="hbtn" onclick="scCloseCardPicker()" aria-label="Назад" data-i18n-aria="navBack"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg></button>
+            <h1 id="scPickerTitle" data-i18n="scPickerTitle">Контекст чата</h1>
+            <button type="button" class="hbtn" onclick="scCloseCardPicker()" aria-label="Закрыть" data-i18n-aria="navClose"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+          </div>
+          <div class="scroll">
+            <p class="ctx-sub" data-i18n="ctxSub">С кем сегодня говорим — Оракул будет держать это в контексте разговора.</p>
+            <div class="seg2" id="scPickerModeTabs" role="tablist" aria-label="Режим чата">
+              <button id="scPickerTabSingle" type="button" class="on" role="tab" aria-selected="true" onclick="scSetPickerMode('single')" data-i18n="ctxModeOne">Одна карточка</button>
+              <button id="scPickerTabSynastry" type="button" role="tab" aria-selected="false" onclick="scSetPickerMode('synastry')" data-i18n="ctxModeCompat">Совместимость</button>
+            </div>
+            <p class="ctx-hint" id="scPickerHint" aria-live="polite"></p>
+            <div id="scPickerList" role="listbox"></div>
+          </div>
+          <div class="foot">
+            <div class="pair" id="scPickerPair" aria-hidden="true"></div>
+            <button id="scPickerApplyBtn" type="button" class="apply" onclick="scApplyCardPicker()" disabled>Применить</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Плашка контекста (реф showcase-chat .ctx-plank, Алла 18.06): показ при выбранном человеке -->
+      <div id="scCtxPlank" class="sc-ctx-plank" style="display:none;" aria-live="polite"></div>
+
+      <div id="scPageChat" class="sc-messages-area" aria-label="Лента диалога Чат с Оракулом">
+        <div class="sc-content-wrap ora-v2" id="scChatBody">
+        <!-- ✦ Интро-блок showcase-chat-v6: мандала + «Оракул» + подзаголовок (Алла 15.06) -->
+        <!-- Интро чата по эталону showcase-oracle (.mid): иконка приложения, заголовок,
+             подпись. Раньше здесь крутилась тонкая SVG-мандала — Алла просила именно
+             иконку. Картинка та же, что у приложения: public/icon-512.png. -->
+        <div id="scIntro" class="mid" aria-hidden="true">
+          <span class="orb"><img src="assets/icons/oracle-orb.png" alt="YupSoul" width="344" height="344" decoding="async"></span>
+          <h2 data-i18n="scIntroTitle">Спроси о себе</h2>
+          <p data-i18n="scIntroSubtitle">Оракул отвечает по твоей карте, а не общими словами.</p>
+        </div>
+        <div id="scPageNoRequest" class="sc-no-request-card" aria-live="polite">
+          <div class="sc-no-request-icon">🌙</div>
+          <div class="sc-no-request-title" id="scNoRequestTitleEl">Нужны твои данные</div>
+          <p class="sc-no-request-text" id="scNoRequestTextEl">Чат с Оракулом строит персональный разговор на основе имени и даты рождения. Заполни профиль или создай первую заявку на песню.</p>
+          <div class="sc-no-request-actions">
+            <button type="button" class="sc-action-btn-primary" id="scFillProfileBtn" onclick="goToPage('profilePage')" aria-label="Перейти к заполнению профиля">Заполнить профиль →</button>
+            <button type="button" class="sc-action-btn-ghost" id="scCreateRequestBtn" onclick="goToPage('formPage')" aria-label="Перейти к созданию заявки на песню">Создать заявку на песню →</button>
+          </div>
+        </div>
+        <div id="scPageHistory" class="sc-history chat" aria-live="polite" aria-label="История диалога Чат с Оракулом"></div>
+        <div id="scSynastryTeaser" class="sc-synastry-teaser" aria-label="Синастрия доступна в тарифе Лаборатория">
+          <p class="sc-synastry-teaser-text"><span class="sc-synastry-teaser-accent">✦</span> <span id="scSynastryTeaserText">Совместимость — диалог по двум датам рождения — доступна в тарифе Лаборатория</span></p>
+          <button type="button" class="sc-synastry-teaser-btn" id="scSynastryTeaserBtn" onclick="goToMasterPlanFrom('soulChatPage')">Открыть тариф →</button>
+        </div>
+        <div id="scPageStatus" class="sc-page-status" role="status" aria-live="polite"></div>
+        </div><!-- /sc-content-wrap -->
+      </div>
+
+      <div id="scInputArea" class="sc-input-area" aria-label="Поле ввода вопроса">
+        <!-- Счётчик пробных вопросов / режим Искр (ЗАКОН Алла 13.06) — НАД окном-композером,
+             не внутри (в эталоне счётчика в композере нет). Подписчику скрыт. -->
+        <div class="composer">
+
+        <!-- Контекст чата (как в Cursor) -->
+        <div id="scContextPills" class="sc-context-pills" style="display:none;">
+          <button id="scContextBtnA" class="sc-context-pill" onclick="scOpenCardPicker()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" style="margin-right:2px;"><path d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 11C14.2091 11 16 9.20914 16 7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7C8 9.20914 9.79086 11 12 11Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span id="scContextLabelA" style="font-weight:600;">Выбрать...</span>
+          </button>
+          <span id="scContextPlus" style="display:none;color:rgba(255,255,255,0.3);font-size:1rem;line-height:1;">+</span>
+          <button id="scContextBtnB" class="sc-context-pill" style="display:none;" onclick="scOpenCardPicker()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" style="margin-right:2px;"><path d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 11C14.2091 11 16 9.20914 16 7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7C8 9.20914 9.79086 11 12 11Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span id="scContextLabelB" style="font-weight:600;">...</span>
+          </button>
+        </div>
+
+        <!-- Контекст + история — компактный ряд (Алла 16.06) -->
+        <div id="scDockActions" class="comp-opts">
+          <button type="button" class="comp-opt" onclick="scOpenCardPicker();if(typeof scSetPickerMode==='function')scSetPickerMode('single')" aria-label="О себе"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.6"/><path d="M5 20a7 7 0 0 1 14 0"/></svg><span data-i18n="ctxSelfBtn">О себе</span></button>
+          <button type="button" class="comp-opt" onclick="scOpenCardPicker();if(typeof scSetPickerMode==='function')scSetPickerMode('synastry')" aria-label="Совместимость"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 20.3l-1.45-1.32C5.4 14.24 2 11.17 2 7.5 2 4.5 4.42 2 7.5 2c1.74 0 3.41.81 4.5 2.09C13.09 2.81 14.76 2 16.5 2 19.58 2 22 4.5 22 7.5c0 3.67-3.4 6.74-8.55 11.48L12 20.3z"/></svg><span data-i18n="ctxCompatBtn">Совместимость</span></button>
+          <button type="button" class="comp-opt sc-dock-action-hist" onclick="if(typeof scOpenThreads==='function')scOpenThreads()" aria-label="История переписок"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v5h5"/><path d="M3.05 13A9 9 0 1 0 6 5.3L3 8"/><path d="M12 7v5l3 1.5"/></svg><span data-i18n="scHistoryToggle">История</span></button>
+        </div>
+        <div class="comp-divider" aria-hidden="true"></div>
+
+        <div class="comp-field cmp">
+          <textarea id="scPageQuestion" rows="1" placeholder="Что у тебя на душе?" aria-label="Вопрос Чат с Оракулом" maxlength="1000" data-i18n-placeholder="scPlaceholder"></textarea>
+          <span id="scPageCharHint" class="sc-char-hint" aria-live="polite" aria-label="Осталось символов" style="display:none;"></span>
+          <button id="scPageSendBtn" type="button" class="send" aria-label="Отправить вопрос" disabled>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg>
+          </button>
+        </div>
+          <p id="scOracleCounter" class="sc-oracle-counter limit" style="display:none;" aria-live="polite"></p>
+        </div><!-- /sc-content-wrap -->
+      </div>
+
+      <!-- ══ Diary Pane (внутри Оракула) ══ -->
+      <div id="scDiaryPane" style="display:none;flex:1;flex-direction:column;min-height:0;overflow:hidden;">
+        <!-- Онбординг -->
+        <div id="scDiaryOnboarding" style="display:none;flex:1;min-height:0;flex-direction:column;">
+          <div class="dset-scroll">
+            <div class="dset-orb-wrap"><span class="dset-orb"><span class="dset-ball"></span></span></div>
+            <div class="dset-eyebrow" data-i18n="diarySetupEyebrow">Дневник Оракула</div>
+            <h2 class="dset-h1" data-i18n="diarySetupTitle">Настрой свой Дневник</h2>
+            <div class="dset-tline"></div>
+            <p class="dset-lead" data-i18n="diarySetupDesc">Выбери 1-3 темы. Каждое утро — персональный разбор дня.</p>
+            <div class="dset-pick-meta" id="scDiaryPickMeta"></div>
+            <div id="scDiaryTopicCards" class="dset-grid"></div>
+          </div>
+          <div class="dset-foot">
+            <button type="button" id="scDiaryStartBtn" onclick="submitDiaryOnboarding()" disabled class="dset-cta" data-i18n="diaryPickAtLeastOne">Выбери хотя бы одну тему</button>
+            <p class="dset-foot-note" data-i18n="diaryFootNote">Разбор приходит утром — можно изменить темы в любой момент</p>
+          </div>
+        </div>
+        <!-- Контент (today + лента) -->
+        <!-- Экран дневника по эталону showcase-oracle (секция .s-diary): заголовок,
+             карточка «сегодня», лента прошлых разборов, выбор тем и строка доставки.
+             Серия дней переехала внутрь карточки «сегодня» — отдельной плашки в эталоне нет. -->
+        <div id="scDiaryContent" class="ora-v2" style="display:none;overflow-y:auto;flex:1;padding:16px;">
+          <h1 class="h1" data-i18n="diaryHeadTitle">Дневник</h1>
+          <p class="h1-sub" data-i18n="diaryHeadSub">Короткий разбор каждый день — на твою карту и на текущий день</p>
+          <div id="scDiaryTodayCard" style="display:none;"></div>
+          <div id="scDiaryWaiting" style="display:none;text-align:center;padding:30px 16px;">
+            <div style="font-size:1.8rem;margin-bottom:10px;">⏳</div>
+            <p class="h1-sub" data-i18n="diaryFirstArrival">Твой первый разбор придёт в выбранное время</p>
+          </div>
+          <div class="sec-t" id="scDiaryFeedHead" style="display:none;"><b data-i18n="diaryFeedEarlier">Раньше</b><span id="scDiaryFeedCount"></span></div>
+          <div id="scDiaryFeedList" class="feed"></div>
+          <div id="scDiaryLoadMore" style="display:none;text-align:center;padding:12px;">
+            <button type="button" class="backchip" onclick="loadMoreDiaryFeed()" data-i18n="btnMore">Ещё</button>
+          </div>
+          <div class="sec-t"><b data-i18n="diaryThemesTitle">О чём присылать</b><span data-i18n="diaryThemesHint">1–3 темы</span></div>
+          <div id="scDiaryThemes" class="themes"></div>
+          <div class="pick" id="scDiaryPick" style="display:none;"></div>
+          <button type="button" id="scDiaryEnableBtn" class="today-ask sc-diary-ask" style="display:none;" onclick="submitDiaryFromThemes()"></button>
+          <p id="scDiaryEnableNote" class="h1-sub" style="display:none;text-align:center;margin-top:8px;" data-i18n="diaryFootNote">Разбор приходит утром — можно изменить темы в любой момент</p>
+        </div>
+        <!-- Настройки -->
+        <div id="scDiarySettings" style="display:none;padding:20px 16px;overflow-y:auto;flex:1;">
+          <!-- Batch 10.1 (отчёт 7267377 Дарья Данилович, Samsung Galaxy S23):
+               Кнопка «← Назад» справа от заголовка ломалась на узких Android-
+               экранах (стрелка и подпись расходились на 2 строки). Перенесли
+               на левую сторону и оформили как стандартную круглую back-btn —
+               единый стиль с остальными страницами. -->
+          <!-- VK Testers #7257166 ПЕРЕОТКРЫТ-3 (Алина Windows VK web 19.05):
+               прошлые 2 фикса (margin 6px, 14px) не сработали — тестер видит
+               заголовок впритык к ←. Корень: на VK web iframe `gap:10px` мог
+               не применяться (старый flexbox gap support). Усиление на 3 уровнях:
+               (1) gap 16px (вместо 10px) — больший базовый отступ;
+               (2) inline margin-left 16px на h3 (вместо 10px);
+               (3) CSS правило выше уже даёт margin-left:14px !important —
+                   с padding 4px на parent total ≥ 30px видимого пространства. -->
+          <!-- VK Testers #7257166 ПЕРЕОТКРЫТ-4 (Алина 19.05): margin-left
+               не помогает — на VK web iframe заголовок всё равно прилегает.
+               Batch 10.209: меняем layout на стандартный header-паттерн:
+               back-btn слева, заголовок ПО ЦЕНТРУ через space-between +
+               spacer справа (равный ширине back-btn). Так гарантированное
+               расстояние ~150px между ← и текстом. -->
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:16px;">
+            <button type="button" id="diarySettingsBackBtn" class="profile-back-btn header-back-btn btn-nav" aria-label="Назад" data-i18n-aria="navBack" onclick="var p=document.getElementById('scDiarySettings');if(p)p.style.display='none';var d=document.getElementById('scDiaryContent');if(d)d.style.display='block';if(typeof switchOracleTab==='function')switchOracleTab('diary');">←</button>
+            <h3 id="diarySettingsTitle" style="color:#fff;font-size:0.95rem;margin:0;flex:1;text-align:center;">Настройки</h3>
+            <div style="width:40px;height:40px;flex-shrink:0;" aria-hidden="true"></div>
+          </div>
+          <!-- Batch 10.29 (отчёт 7256676 Windows): чекбокс и label расходились
+               по краям строки. Корень: глобальный CSS на `label{display:flex}`
+               (line 3229) перебивал inline `display:inline-flex` где-то в
+               cascade и заставлял label растягиваться на width:100% с пустотой
+               между элементами. Фикс: !important на inline-flex + max-width
+               по content (fit-content) — label не растягивается. -->
+          <label style="display:inline-flex !important;align-items:center !important;gap:8px !important;cursor:pointer;margin-bottom:14px;line-height:1.3;width:fit-content;max-width:100%;justify-content:flex-start !important;">
+            <input type="checkbox" id="scDiaryEnabledToggle" style="width:16px;height:16px;accent-color:var(--primary-color);margin:0;flex-shrink:0;">
+            <span style="color:#fff;font-size:0.88rem;" data-i18n="diaryReceiveDaily">Получать ежедневные разборы</span>
+          </label>
+          <div style="margin-bottom:14px;">
+            <label style="color:rgba(255,255,255,0.5);font-size:0.78rem;display:block;margin-bottom:5px;" data-i18n="diaryTopics">Темы</label>
+            <div id="scDiarySettingsTopics" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
+          </div>
+          <div style="margin-bottom:14px;">
+            <label style="color:rgba(255,255,255,0.5);font-size:0.78rem;display:block;margin-bottom:5px;" data-i18n="diaryDeliveryTime">Время доставки</label>
+            <input type="time" id="scDiarySettingsTime" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:8px 12px;color:#fff;font-size:0.85rem;width:100%;box-sizing:border-box;">
+          </div>
+          <button type="button" onclick="saveDiarySettings()" data-i18n="btnSave" style="width:100%;padding:11px;border-radius:9999px;border:1px solid rgba(var(--primary-rgb),0.3);background:rgba(var(--primary-rgb),0.1);color:var(--primary-color);font-size:0.88rem;cursor:pointer;">Сохранить</button>
+        </div>
+        <!-- Paywall -->
+        <div id="scDiaryPaywall" style="display:none;flex:1;min-height:0;flex-direction:column;">
+          <div class="dpw-wrap">
+            <span class="dpw-eyebrow"><span class="dpw-dot"></span><span data-i18n="diaryPwEyebrow">3 дня пробного — позади</span></span>
+            <div class="dpw-msg">
+              <div class="dpw-msg-top">
+                <span class="dpw-msg-av"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"/><path d="M5 8c2.5 1.5 4 4 4 4s-1.5 2.5-4 4"/><path d="M19 8c-2.5 1.5-4 4-4 4s1.5 2.5 4 4"/></svg></span>
+                <div class="dpw-msg-id">
+                  <div class="dpw-msg-from" data-i18n="diaryPwMsgFrom">YupSoul · твоя настройка</div>
+                  <div class="dpw-msg-time" data-i18n="diaryPwMsgTime">сегодня утром</div>
+                </div>
+              </div>
+              <div class="dpw-msg-body" id="diaryPwMsgBody">Доброе утро. Сегодня день про <b>опору и спокойные решения</b>. Важный разговор лучше не торопить до обеда — после он пойдёт легче.</div>
+              <span class="dpw-msg-pin"><svg viewBox="0 0 24 24"><path d="M12 2l2.4 7.2L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4z"/></svg><span data-i18n="diaryPwMsgPin">Опора дня: тёплый разговор с близким</span></span>
+            </div>
+            <h2 class="dpw-h" data-i18n="diaryPwH">Понравилось начинать день вот так?</h2>
+            <p class="dpw-sub" data-i18n="diaryPwSub">Это твой Дневник. Каждое утро в Telegram — личное сообщение с настройкой именно на твой день. Пробные дни закончились — продолжим вместе.</p>
+            <div class="dpw-feats">
+              <div class="dpw-feat">
+                <span class="dpw-fic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M17 8 12 3 7 8"/><path d="M12 3v12"/><rect x="3" y="15" width="18" height="6" rx="2"/></svg></span>
+                <div class="dpw-ftx"><b data-i18n="diaryPwFeat1Title">Приходит в личку</b><span data-i18n="diaryPwFeat1Desc">Каждое утро, в выбранное тобой время</span></div>
+              </div>
+              <div class="dpw-feat">
+                <span class="dpw-fic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M18.4 5.6 17 7M7 17l-1.4 1.4"/><circle cx="12" cy="12" r="3.4"/></svg></span>
+                <div class="dpw-ftx"><b data-i18n="diaryPwFeat2Title">Настройка по твоей дате</b><span data-i18n="diaryPwFeat2Desc">Не общий гороскоп — разбор лично для тебя</span></div>
+              </div>
+              <div class="dpw-feat">
+                <span class="dpw-fic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 11.5A9 9 0 1 1 12 3a7 7 0 0 0 8.8 8.5z"/></svg></span>
+                <div class="dpw-ftx"><b data-i18n="diaryPwFeat3Title">Темы — на твой выбор</b><span data-i18n="diaryPwFeat3Desc">Любовь, дело, энергия, отношения</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="dpw-foot">
+            <div class="dpw-plan" data-i18n="diaryPwPlan">Входит в пакеты Глубина и Лаборатория</div>
+            <button type="button" class="dpw-cta" onclick="showPlanConfirm('plan_plus','Глубина')" data-i18n="diaryPwCta">Продолжить дневник</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ Prism Pane (таб «Разборы», 14 астро-призм) ══ -->
+      <div id="scPrismPane" class="sc-prism-pane" style="display:none;">
+        <div id="scPrismCatalog" class="ora-v2">
+        <!-- шапка и список рендерятся в renderPrismCatalog() -->
+        <div id="scPrismIntro">
+          <div class="sc-prism-title" data-i18n="scPrismTitle">Разборы твоей карты</div>
+          <div class="sc-prism-subtitle" data-i18n="scPrismSubtitle">Выбери тему — получишь разбор в один заход</div>
+        </div>
+
+        <!-- ══ Аскеза: вход в практику. Разборы читают, практику делают 21 день ══ -->
+        <button type="button" id="scAskezaEntry" class="sc-askeza-entry ask" style="display:none;">
+          <span class="ask-ic"><svg viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.8c1.7 2.4 1.7 4.6 0 7-1.7-2.4-1.7-4.6 0-7Z"/><path d="M17.2 7.2c.2 2.9-1 4.8-3.5 6 .2-2.9 1.4-4.8 3.5-6Z"/><path d="M6.8 7.2c2.1 1.2 3.3 3.1 3.5 6-2.5-1.2-3.7-3.1-3.5-6Z"/><path d="M4.4 14.6c4.5-2.2 10.7-2.2 15.2 0"/><path d="M7 18.4c3.2-1.3 6.8-1.3 10 0" opacity=".45"/></g></svg></span>
+          <span class="ask-b">
+            <span class="l" data-i18n="askezaEntryLabel">Что ты держишь</span>
+            <b data-i18n="askezaEntryTitle">Твоя аскеза на 21 день</b>
+            <span class="s" id="scAskezaEntryNote" data-i18n="askezaEntryNote">Практика вместо чтения</span>
+          </span>
+          <span class="go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
+        </button>
+        <div id="scPrismList" aria-label="Список разборов">
+          <!-- заполняется renderPrismCatalog() -->
+          <div class="sc-prism-loading" data-i18n="scPrismLoadingCatalog" style="color:rgba(255,255,255,0.5);text-align:center;padding:32px 16px;font-size:0.85rem;">Загружаю разборы…</div>
+        </div>
+        </div>
+        <!-- Результат выбранной призмы -->
+        <div id="scPrismResult" class="sc-prism-result" style="display:none;" role="region" aria-live="polite"></div>
+
+        <!-- ══ Экран практики: ядро, запрет, действие, 21 клетка, срыв ══ -->
+        <div id="scAskezaScreen" class="sc-askeza" style="display:none;" role="region" aria-live="polite">
+          <button type="button" id="scAskezaBack" class="sc-askeza-back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg><span data-i18n="askezaBack">К разборам</span></button>
+
+          <div class="sc-askeza-head">
+            <div class="sc-askeza-eyebrow" data-i18n="askezaEyebrow">Практика · 21 день</div>
+            <h3 class="sc-askeza-title" id="scAskezaTitle">Аскеза</h3>
+            <!-- что такое аскеза — одной строкой до выбора: без неё список планет не читается (11.09) -->
+            <p class="sc-askeza-lead" data-i18n="askezaWhatIs">Одно правило на 21 день: каждый день одно дело и один запрет. Вечером отмечаешь день.</p>
+          </div>
+
+          <!-- где я в практике: день N из 21 + полоса (эталон showcase-askeza 09.09) -->
+          <div class="ask-status" id="askStatus"><span id="askStatusDay"></span><i><b id="askStatusBar"></b></i><span id="askStatusLeft"></span></div>
+
+          <!-- финал 21-го дня -->
+          <div class="ask-final" id="askFinal">
+            <div class="seal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5.6 12.4l4 4L18.6 7.6"></path></svg></div>
+            <div class="l" data-i18n="askezaFinalLabel">21 день позади</div>
+            <h2 id="askFinalTitle" data-i18n="askezaFinalTitle">Практика завершена</h2>
+            <div class="row">
+              <div><div class="n" id="askFinalTotal">0</div><span class="s" data-i18n="askezaTotalLabel">всего удержано</span></div>
+              <div><div class="n" id="askFinalStreak">0</div><span class="s" data-i18n="askezaFinalStreak">лучшая серия</span></div>
+              <div><div class="n" id="askFinalMissed">0</div><span class="s" data-i18n="askezaFinalMissed">пропуска</span></div>
+            </div>
+            <div class="ask-final-check" id="askFinalOutcomeWrap" style="display:none;">
+              <div class="l2" data-i18n="askezaFinalCheck">Сверь, что изменилось</div>
+              <p id="askFinalOutcome"></p>
+            </div>
+            <p data-i18n="askezaFinalNext">Дальше — следующая тема из списка.</p>
+          </div>
+
+          <!-- Что важно проработать: считается по карте, а не назначается одинаково всем -->
+          <div class="sc-askeza-picker" id="scAskezaPicker" style="display:none;">
+            <div class="sc-askeza-sub" data-i18n="askezaPickerLabel">Что важно проработать</div>
+            <div class="sc-askeza-hint" data-i18n="askezaPickerHint">Первая — там, где сейчас тяжелее всего. Взять можно любую, но одну.</div>
+            <div id="scAskezaPickerList"></div>
+          </div>
+
+          <!-- одно действие дня + отметка -->
+          <div class="ask-today" id="askToday">
+            <div class="l" id="askTodayLabel"></div>
+            <b id="askTodayText"></b>
+            <button type="button" class="sc-askeza-cta" id="askMark" data-i18n="askezaMarkBtn">Отметить день удержанным</button>
+          </div>
+
+          <div class="sc-askeza-core">
+            <div class="sc-askeza-core-label" data-i18n="askezaCoreLabel">Что держать</div>
+            <p class="sc-askeza-core-text" id="scAskezaCore"></p>
+          </div>
+
+          <!-- что изменится за 21 день: та же строка, что на карточке выбора -->
+          <div class="sc-askeza-outcome" id="scAskezaOutcomeWrap" style="display:none;">
+            <div class="sc-askeza-sub" data-i18n="askezaOutcomeLabel">Что изменится</div>
+            <p id="scAskezaOutcome"></p>
+          </div>
+
+          <div class="sc-askeza-why" id="scAskezaWhyWrap" style="display:none;">
+            <div class="sc-askeza-sub" data-i18n="askezaWhyLabel">Почему эта твоя</div>
+            <p id="scAskezaWhy"></p>
+          </div>
+
+          <div class="sc-askeza-rule sc-askeza-do">
+            <div class="sc-askeza-rule-tag" data-i18n="askezaDoLabel">Делать</div>
+            <ul id="scAskezaAction"></ul>
+          </div>
+
+          <div class="sc-askeza-rule sc-askeza-dont">
+            <div class="sc-askeza-rule-tag" data-i18n="askezaBanLabel">Нельзя</div>
+            <ul id="scAskezaBan"></ul>
+          </div>
+
+          <div class="sc-askeza-track" id="scAskezaTrackWrap" style="display:none;">
+            <div class="sc-askeza-sub" data-i18n="askezaTrackLabel">Двадцать один день</div>
+            <div class="sc-askeza-hint" data-i18n="askezaTrackHint">Отметь вечером, если день удержан</div>
+            <div class="sc-askeza-grid" id="scAskezaGrid"></div>
+            <div class="sc-askeza-stats">
+              <div><div class="sc-askeza-stat-n" id="scAskezaStreak">0</div><div class="sc-askeza-stat-l" data-i18n="askezaStreakLabel">подряд с начала</div></div>
+              <div><div class="sc-askeza-stat-n" id="scAskezaTotal">0</div><div class="sc-askeza-stat-l" data-i18n="askezaTotalLabel">всего удержано</div></div>
+            </div>
+          </div>
+
+          <div class="sc-askeza-beats" id="scAskezaBeatsWrap" style="display:none;">
+            <div class="sc-askeza-sub" data-i18n="askezaBeatsLabel">Где сломает</div>
+            <div id="scAskezaBeats"></div>
+          </div>
+
+          <div class="sc-askeza-fail">
+            <span class="sc-askeza-fail-tag" data-i18n="askezaFailLabel">Срыв</span>
+            <span id="scAskezaFail"></span>
+          </div>
+          <p class="sc-askeza-rule-note" data-i18n="askezaFailRule">Один пропуск — идёшь дальше. Два подряд — начинаешь сначала.</p>
+
+          <div class="ask-foot" id="askFoot">
+            <button type="button" id="scAskezaStart" class="btn sc-askeza-cta" data-i18n="askezaStartBtn">Начать практику</button>
+            <p class="note" id="askCtaNote" data-i18n="askezaCtaNote">21 день · один пропуск можно, два подряд — сначала</p>
+            <button type="button" id="scAskezaRestart" class="btn sc-askeza-ghost" style="display:none;" data-i18n="askezaRestartBtn">Начать заново</button>
+            <button type="button" id="askFinalCta" class="btn sc-askeza-cta" style="display:none;" data-i18n="askezaFinalCta">Выбрать следующую</button>
+          </div>
+        </div>
+      </div>
+
+        </div><!-- /sc-page-glass-card -->
+
+      <!-- ════ ПЕЙВОЛЛ: пакет вопросов / Искр (VK-пакеты, 15.06) ════ -->
+      <div class="pw" id="scPaywall" hidden>
+        <div class="pw-card">
+          <div class="pw-grab"></div>
+          <button class="pw-x" id="scPwX" aria-label="Закрыть"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+          <div class="pw-yupik"></div>
+          <div class="pw-teaser">
+            <div class="pw-teaser-bubble">Я чувствую, что за этим вопросом прячется что-то большее…</div>
+            <span class="pw-teaser-lock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> <span id="scPwTeaserLockTxt"></span></span>
+          </div>
+          <h2 class="pw-title" id="scPwTitle"></h2>
+          <p class="pw-sub" id="scPwSubText"></p>
+          <div class="pw-seg" id="scPwSeg">
+            <button class="on" data-pk="q" id="scPwSegQ"></button>
+            <button data-pk="iskry" id="scPwSegIskry"></button>
+          </div>
+          <div class="pw-packs" id="scPwPacks"></div>
+          <!-- Канон v3 §5.4.1: на stub-платформах VK вместо пакетов/CTA — заглушка (CSS is-vk-stub) -->
+          <div id="scPwStubHint" data-i18n="scSubMobileHint" style="display:none;text-align:center;font-size:0.85rem;opacity:.75;padding:8px 0;">Оплата на платформе недоступна</div>
+          <button class="pw-cta" id="scPwCta"><span id="scPwCtaLabel"></span> · <span id="scPwCtaPrice"></span></button>
+          <button class="pw-day" id="scPwDay"></button>
+          <button class="pw-subscribe" id="scPwSubscribe"></button>
+          <p class="pw-foot" id="scPwFoot"></p>
+        </div>
+      </div>
+
+      </div><!-- /sc-page-main-wrap -->
+    </div>

@@ -1,0 +1,6 @@
+node_modules/
+app/node_modules/
+app/www/
+app/ios/App/build/
+app/ios/App/App/public/
+.DS_Store

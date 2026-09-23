@@ -1,0 +1,51 @@
+<!-- Лид-магнит «Кто ты на самом деле» (Алла 13.07). Экран живёт ВНУТРИ аппа →
+     работает на VK/TG/web/OK одинаково. Никаких упоминаний Telegram/сайта —
+     иначе VK-модерация отклонит (закон 01.07). Мост к продукту — внутренний
+     переход на форму песни. Расчёт детерминированный (Атмакарака), без LLM. -->
+<div class="page ys" id="archetypePage">
+      <div class="page-gradient-bg" aria-hidden="true">
+        <div class="gradients-container"><div class="g1"></div><div class="g2"></div><div class="g3"></div><div class="interactive"></div></div>
+      </div>
+      <div class="form-header-bar">
+        <button type="button" id="archBackBtn" class="profile-back-btn header-back-btn btn-nav" onclick="goBack()" aria-label="Назад" data-i18n-aria="navBack">←</button>
+        <div class="brand" style="flex:1"></div>
+        <span class="form-header-spacer" aria-hidden="true"></span>
+      </div>
+      <div class="form-title-canon"><h1 data-i18n="archTitle">Кто ты на самом деле</h1></div>
+
+      <div class="page-scroll">
+        <div class="section">
+          <!-- Ввод -->
+          <div class="arch-intro" id="archIntro">
+            <p class="arch-lead" data-i18n="archLead">В твоей дате рождения есть планета, которую в астрологии называют показателем Души. Она и держит твой характер. Назови дату — покажу.</p>
+            <div class="field" style="margin-top:14px;">
+              <label for="archDate" data-i18n="archDateLabel">Дата рождения</label>
+              <input type="date" id="archDate" aria-label="Дата рождения">
+            </div>
+            <p id="archHint" class="arch-hint" style="display:none"></p>
+            <button type="button" id="archGoBtn" class="btn-pay" style="margin-top:12px;">
+              <span class="btn-pay-text" data-i18n="archGo">Показать мой архетип</span>
+            </button>
+          </div>
+
+          <!-- Результат -->
+          <div class="arch-result" id="archResult" style="display:none">
+            <div class="arch-card">
+              <span class="arch-eyebrow" data-i18n="archEyebrow">Показатель Души</span>
+              <h2 class="arch-name" id="archName"></h2>
+              <p class="arch-essence" id="archEssence"></p>
+              <div class="arch-rows">
+                <div class="arch-row"><span class="arch-row-k" data-i18n="archGift">Твой дар</span><span class="arch-row-v" id="archGift"></span></div>
+                <div class="arch-row"><span class="arch-row-k" data-i18n="archShadow">Твоя тень</span><span class="arch-row-v" id="archShadow"></span></div>
+              </div>
+              <div class="arch-meta" id="archMeta"></div>
+            </div>
+            <p class="arch-bridge" data-i18n="archBridge">Это — словами. А теперь послушай, как это звучит: песня соберётся по этой же дате.</p>
+            <button type="button" id="archToSongBtn" class="btn-pay" style="margin-top:10px;">
+              <span class="btn-pay-text" data-i18n="archToSong">Собрать мою песню</span>
+            </button>
+            <button type="button" id="archAgainBtn" class="btn-ghost-lite" data-i18n="archAgain">Другая дата</button>
+          </div>
+        </div>
+      </div>
+</div>
