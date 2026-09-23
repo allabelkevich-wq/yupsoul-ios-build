@@ -571,9 +571,23 @@
               var num = parseFloat(m.replace(/[^\d.,]/g, '').replace(/\s/g, '').replace(',', '.'));
               var tracks = parseInt((typeof PLAN_TRACKS !== 'undefined' && PLAN_TRACKS[c[2]]) || '0', 10);
               var cur = (m.match(/[₽$€]/) || ['₽'])[0];
-              // «162 ₽ за песню»; в валюте стора знак впереди — «$2 за песню», а не «2 $ за песню» (натив, аудит 23.09)
-              var perAmt = (num && tracks) ? Math.round(num / tracks) : 0;
-              setText(card.querySelector('.plan-price .per-song'), perAmt ? tl('plPerSong', '{p} ₽ за песню').replace('{p} ₽', cur === '₽' ? perAmt + ' ₽' : cur + perAmt).replace('{p}', perAmt) : '');
+              // «162 ₽ за песню» — рубли целым числом. В валюте стора целое округление врало
+              // (TestFlight 30, Алла: «Глубина» 24,99/15 = 1,67 показывалась как «$2», как и «Душа») —
+              // считаем с копейками в формате устройства (Intl, код валюты из стора), иначе «$1.67».
+              var perStr = '';
+              if (num && tracks) {
+                var perRaw = num / tracks;
+                if (cur === '₽') perStr = Math.round(perRaw) + ' ₽';
+                else {
+                  var NATIVE_SKU = { plan_basic: 'soul_basic_sub', plan_plus: 'soul_plus_sub', plan_master: 'master_monthly' };
+                  var ni = (window._nativePriceNumBySku || {})[NATIVE_SKU[c[2]]];
+                  try {
+                    if (ni && ni.cur) perStr = new Intl.NumberFormat(window._currentLang || 'en', { style: 'currency', currency: ni.cur, maximumFractionDigits: 2 }).format(ni.price / tracks);
+                  } catch (_) { perStr = ''; }
+                  if (!perStr) perStr = cur + perRaw.toFixed(2).replace(/\.00$/, '');
+                }
+              }
+              setText(card.querySelector('.plan-price .per-song'), perStr ? tl('plPerSong', '{p} ₽ за песню').replace('{p} ₽', perStr).replace('{p}', perStr) : '');
               card.classList.toggle('sel', c[0] === sel);
             });
             var card = $(sel), lbl = card && card.querySelector('.cta-label'), pm = '';

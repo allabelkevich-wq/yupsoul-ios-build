@@ -49335,9 +49335,23 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
               var num = parseFloat(m.replace(/[^\d.,]/g, '').replace(/\s/g, '').replace(',', '.'));
               var tracks = parseInt((typeof PLAN_TRACKS !== 'undefined' && PLAN_TRACKS[c[2]]) || '0', 10);
               var cur = (m.match(/[₽$€]/) || ['₽'])[0];
-              // «162 ₽ за песню»; в валюте стора знак впереди — «$2 за песню», а не «2 $ за песню» (натив, аудит 23.09)
-              var perAmt = (num && tracks) ? Math.round(num / tracks) : 0;
-              setText(card.querySelector('.plan-price .per-song'), perAmt ? tl('plPerSong', '{p} ₽ за песню').replace('{p} ₽', cur === '₽' ? perAmt + ' ₽' : cur + perAmt).replace('{p}', perAmt) : '');
+              // «162 ₽ за песню» — рубли целым числом. В валюте стора целое округление врало
+              // (TestFlight 30, Алла: «Глубина» 24,99/15 = 1,67 показывалась как «$2», как и «Душа») —
+              // считаем с копейками в формате устройства (Intl, код валюты из стора), иначе «$1.67».
+              var perStr = '';
+              if (num && tracks) {
+                var perRaw = num / tracks;
+                if (cur === '₽') perStr = Math.round(perRaw) + ' ₽';
+                else {
+                  var NATIVE_SKU = { plan_basic: 'soul_basic_sub', plan_plus: 'soul_plus_sub', plan_master: 'master_monthly' };
+                  var ni = (window._nativePriceNumBySku || {})[NATIVE_SKU[c[2]]];
+                  try {
+                    if (ni && ni.cur) perStr = new Intl.NumberFormat(window._currentLang || 'en', { style: 'currency', currency: ni.cur, maximumFractionDigits: 2 }).format(ni.price / tracks);
+                  } catch (_) { perStr = ''; }
+                  if (!perStr) perStr = cur + perRaw.toFixed(2).replace(/\.00$/, '');
+                }
+              }
+              setText(card.querySelector('.plan-price .per-song'), perStr ? tl('plPerSong', '{p} ₽ за песню').replace('{p} ₽', perStr).replace('{p}', perStr) : '');
               card.classList.toggle('sel', c[0] === sel);
             });
             var card = $(sel), lbl = card && card.querySelector('.cta-label'), pm = '';
@@ -53440,6 +53454,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           try {
             await Purchases.purchasePackage({ aPackage: pkg });
           } catch (e) {
+            _refreshStorePrices();
             // Отмена пользователем — не ошибка приложения, молча выходим.
             if (e && (e.code === '1' || e.userCancelled || /cancel/i.test(e.message || ''))) {
               await _dropOrder(sku, orderReqId);
@@ -53449,6 +53464,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
             await _dropOrder(sku, orderReqId);
             return { ok: false, error: 'purchase_failed' };
           }
+          _refreshStorePrices();
 
           // Чек валидирует RevenueCat, товар выдаёт вебхук. Ждём, пока сервер
           // увидит начисление, и только потом рисуем результат.
@@ -53625,6 +53641,15 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           });
         }
         window._nativeApplyPrices = _nativeApplyPrices;
+
+        /* Окно покупки — момент, когда человек входит в App Store (или меняет аккаунт), а вместе с ним
+           меняется и витрина стора: цены, снятые до входа, могут быть с другой витрины (TestFlight 30,
+           Алла: в приложении 24,99 $, в окне покупки USD 29.99 — цена той же позиции с НДС её витрины).
+           После любого исхода покупки сбрасываем свой кэш и просим цены у стора заново. */
+        function _refreshStorePrices() {
+          _priceBySku = null;
+          setTimeout(function() { try { _nativeApplyPrices(); } catch (_) {} }, 400);
+        }
 
         /* Движок и i18n переписывают те же узлы, поэтому идём следом за ними:
            после их прохода, после смены экрана и один отложенный проход на старте

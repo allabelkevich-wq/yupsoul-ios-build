@@ -256,6 +256,7 @@
           try {
             await Purchases.purchasePackage({ aPackage: pkg });
           } catch (e) {
+            _refreshStorePrices();
             // Отмена пользователем — не ошибка приложения, молча выходим.
             if (e && (e.code === '1' || e.userCancelled || /cancel/i.test(e.message || ''))) {
               await _dropOrder(sku, orderReqId);
@@ -265,6 +266,7 @@
             await _dropOrder(sku, orderReqId);
             return { ok: false, error: 'purchase_failed' };
           }
+          _refreshStorePrices();
 
           // Чек валидирует RevenueCat, товар выдаёт вебхук. Ждём, пока сервер
           // увидит начисление, и только потом рисуем результат.
@@ -441,6 +443,15 @@
           });
         }
         window._nativeApplyPrices = _nativeApplyPrices;
+
+        /* Окно покупки — момент, когда человек входит в App Store (или меняет аккаунт), а вместе с ним
+           меняется и витрина стора: цены, снятые до входа, могут быть с другой витрины (TestFlight 30,
+           Алла: в приложении 24,99 $, в окне покупки USD 29.99 — цена той же позиции с НДС её витрины).
+           После любого исхода покупки сбрасываем свой кэш и просим цены у стора заново. */
+        function _refreshStorePrices() {
+          _priceBySku = null;
+          setTimeout(function() { try { _nativeApplyPrices(); } catch (_) {} }, 400);
+        }
 
         /* Движок и i18n переписывают те же узлы, поэтому идём следом за ними:
            после их прохода, после смены экрана и один отложенный проход на старте
