@@ -1,4 +1,4 @@
-<div class="page" id="successPage">
+<div class="page" id="successPage" data-variant="ok">
       <div class="ph-stars"></div>
       <div class="stars"></div>
       <div class="confetti-layer" id="cfLayer" aria-hidden="true"></div>
@@ -6,20 +6,34 @@
         <div class="burst rv">
           <span class="rays"></span><span class="ring-o"></span><span class="ring-i"></span><span class="glow"></span>
           <span class="halo"></span><span class="halo h2"></span>
-          <span class="tw" style="top:6px;left:30px;width:13px;height:13px;animation-delay:.2s"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.2L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4z"/></svg></span>
-          <span class="tw" style="top:34px;right:14px;width:10px;height:10px;animation-delay:1s"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.2L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4z"/></svg></span>
-          <span class="tw" style="bottom:18px;left:16px;width:9px;height:9px;animation-delay:1.7s"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.2L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4z"/></svg></span>
+          <span class="tw" style="top:6px;left:30px;width:13px;height:13px;animation-delay:.2s"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.2c0 5.36-4.44 9.8-9.8 9.8 5.36 0 9.8 4.44 9.8 9.8 0-5.36 4.44-9.8 9.8-9.8-5.36 0-9.8-4.44-9.8-9.8Z"/></svg></span>
+          <span class="tw" style="top:34px;right:14px;width:10px;height:10px;animation-delay:1s"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.2c0 5.36-4.44 9.8-9.8 9.8 5.36 0 9.8 4.44 9.8 9.8 0-5.36 4.44-9.8 9.8-9.8-5.36 0-9.8-4.44-9.8-9.8Z"/></svg></span>
+          <span class="tw" style="bottom:18px;left:16px;width:9px;height:9px;animation-delay:1.7s"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.2c0 5.36-4.44 9.8-9.8 9.8 5.36 0 9.8 4.44 9.8 9.8 0-5.36 4.44-9.8 9.8-9.8-5.36 0-9.8-4.44-9.8-9.8Z"/></svg></span>
           <span class="core"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+          <span class="lim-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></span>
         </div>
-        <div class="eyebrow rv" data-i18n="successEyebrow">Оплата получена</div>
-        <h1 id="successTitle" class="title rv">Готово — твоя<br>песня рождается</h1>
+        <div class="eyebrow rv"><span class="v-ok" data-i18n="successEyebrow">Оплата получена</span><span class="v-lim" id="successLimitEyebrow">Пакет «Душа»</span></div>
+        <h1 id="successTitle" class="title rv"><span class="v-ok">Готово — твоя<br>песня рождается</span><span class="v-lim" data-i18n-html="successLimitTitle">Песни пакета<br>закончились</span></h1>
         <div class="t-line rv"></div>
-        <p id="successDesc" class="lead rv">Спасибо тебе! <b>Песня души</b> уже создаётся — появится во вкладке «Плейлист» примерно через 15 минут.</p>
+        <p id="successDesc" class="lead rv"><span class="v-ok">Спасибо тебе! <b>Песня души</b> уже создаётся — появится во вкладке «Плейлист» через 10–15 минут.</span><span class="v-lim" id="successLimitLead" data-i18n="successLimitLead">Песни пакета уже созданы. Продли пакет или возьми песню отдельно.</span></p>
         <div class="receipt rv">
           <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></span>
           <span class="tx"><b data-i18n="successReceiptName">Песня души</b><span data-i18n="successReceiptSub">уже в работе</span></span>
         </div>
+        <!-- CD 19.09: чек заказа (заполняет suCdInit; .receipt скрыт CSS) -->
+        <div class="order rv" id="successOrder" style="display:none !important">
+      <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></span>
+      <span class="tx"><b id="successOrderTitle"></b><span id="successOrderSub"></span></span>
+      <span class="sum" id="successOrderSum"></span>
+    </div>
+        <!-- CD 19.09: вариант «песни пакета закончились» (data-variant="limit"); заполняет showTrackLimitPage -->
+        <div class="lim-opts v-lim">
+          <button type="button" class="lim-opt pick" id="limOptUpgrade" data-u="su"><span class="tx"><b id="limOptUpgradeT">Перейти на «Глубину»</b><span id="limOptUpgradeSub"></span></span><span class="pr" id="limOptUpgradePr"></span></button>
+          <button type="button" class="lim-opt" id="limOptSingle" data-u="su"><span class="tx"><b data-i18n="limOptSingle">Купить одну песню</b><span data-i18n="limOptSingleSub">вне пакета</span></span><span class="pr" id="limOptSinglePr"></span></button>
+          <button type="button" class="lim-opt" id="limOptSparks" data-u="su"><span class="tx"><b data-i18n="limOptSparks">Оплатить Искрами</b><span id="limOptSparksSub"></span></span><span class="pr spark"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.2c0 5.36-4.44 9.8-9.8 9.8 5.36 0 9.8 4.44 9.8 9.8 0-5.36 4.44-9.8 9.8-9.8-5.36 0-9.8-4.44-9.8-9.8Z"/></svg><span id="limOptSparksPr">100</span></span></button>
+        </div>
         <div class="making rv" id="successMakingBlock">
+          <div class="eta"><span data-i18n="successEtaLabel">Собирается</span><b data-i18n="successEtaTime">10–15 минут</b></div>
           <div id="successMakingWork">
             <div class="making-top"><span class="dot"></span> <span data-i18n="successMaking">Оракул пишет твою мелодию…</span></div>
             <div class="making-bar"><i></i></div>
@@ -36,18 +50,31 @@
           <div class="step" data-step><span class="step-ic"><span class="ring"></span><span class="spin"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span class="step-lbl" data-i18n="genStage3">Подбираю нужные слова</span></div>
           <div class="step" data-step><span class="step-ic"><span class="ring"></span><span class="spin"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span class="step-lbl" data-i18n="genStage4">Составляю звуковую композицию</span></div>
         </div>
+        <!-- CD 19.09: апселл «Глубокая расшифровка» — переехал с удалённой loadingPage (D11); показывает suCdInit через showWhileGeneratingUpsell -->
+        <div id="whileGeneratingUpsell" class="while-generating-upsell rv" style="display:none;">
+          <div class="wgu-label" data-i18n="wguLabel">Пока создаётся твоя песня</div>
+          <div class="wgu-title" data-i18n="wguTitle">Узнай что твоя дата говорит о тебе</div>
+          <div class="wgu-desc" data-i18n="daDeepDesc">Глубокая расшифровка — более глубокий анализ с учётом места и времени рождения: твоя суть, сильные стороны и точки роста, ключевые темы и периоды жизни, и смысл, вложенный в песню. Словами, лично для тебя.</div>
+          <div class="wgu-price" data-i18n="wguPrice">Глубокая расшифровка — 40 Искр (290 ₽)</div>
+          <button type="button" class="btn btn-secondary" data-i18n="wguBtn" onclick="if(typeof handleBuyDeepAnalysis==='function')handleBuyDeepAnalysis()">Получить расшифровку</button>
+        </div>
+        <!-- CD 19.09: помощь при задержке -->
+        <div class="help rv" id="successHelp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4.5M12 16h.01"/></svg><span><b data-i18n="successHelpT">Тишина дольше 20 минут?</b> <span data-i18n="successHelpBody">Напиши боту «песня не пришла» — разберёмся и вернём Искры, если что-то сломалось.</span></span></div>
 
         <div class="suggest" id="suggest">
           <div class="suggest-h" data-i18n="csWhileWaiting">Пока ждёшь песню</div>
           <div class="sgrid">
-            <button class="scard" type="button" onclick="if(typeof _leaveSuccessTo==='function'){_leaveSuccessTo('myTracksPage')}else{window.returnToPage='homePage';goToPage('myTracksPage')}if(typeof window.loadMyTracks==='function')window.loadMyTracks(false)"><span class="sic v1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></span><b data-i18n="csMyTracks">Мои треки</b></button>
+            <button class="scard" type="button" id="successShareBtn" onclick="if(typeof shareApp==='function')shareApp()"><span class="sic v1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg></span><b data-i18n="successShareShort">Поделиться</b></button>
             <button class="scard" type="button" onclick="if(typeof _leaveSuccessTo==='function'){_leaveSuccessTo('soulChatPage')}else{window.returnToPage='homePage';goToPage('soulChatPage')}if(typeof initSoulChatPage==='function')setTimeout(initSoulChatPage,300)"><span class="sic v2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-11.6 7.8L3 21l1.8-6.2A8.4 8.4 0 1 1 21 11.5Z"/></svg></span><b data-i18n="homeChoice3">Чат с Оракулом</b></button>
             <button class="scard" type="button" id="newKeyBtn"><span class="sic v3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg></span><b data-i18n="csNewSong">Ещё песню</b></button>
           </div>
         </div>
       </div>
       <div class="actions">
-        <button type="button" class="cta" id="successShareBtn" onclick="if(typeof shareApp==='function')shareApp()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg> <span data-i18n="successShare">Поделиться с близким</span></button>
+        <!-- CD 19.09: primary — Плейлист (D5); «Поделиться» — плитка в «Пока ждёшь» -->
+
+        <button type="button" class="cta v-ok" id="successPlaylistBtn" onclick="if(typeof _leaveSuccessTo==='function'){_leaveSuccessTo('myTracksPage')}else{window.returnToPage='homePage';goToPage('myTracksPage')}if(typeof window.loadMyTracks==='function')window.loadMyTracks(false)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg> <span data-i18n="successGoPlaylist">Открыть Плейлист</span></button>
+        <button type="button" class="cta v-lim" id="successLimitCta"><span id="successLimitCtaTx"></span></button>
         <div id="successPayActions" class="success-cross-sell" style="display:none"></div>
         <!-- Гарантированный выход на главную (закон: терминальные экраны оплаты/успеха
              ОБЯЗАНЫ давать выход на главную за ≤1 нажатие). Стиль .ghost — из эталона. -->

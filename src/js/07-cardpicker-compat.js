@@ -194,12 +194,12 @@
         if (!container) return;
         container.innerHTML = '';
         var L = _scPickerItems();
-        if (L.length === 0) {
-          // VK Testers 7272221: класс вместо inline hardcoded white — адаптируется
-          // под theme-light / is-vk-light / is-ok-light через CSS overrides.
-          container.innerHTML = '<div class="sc-picker-empty">' + (typeof t === 'function' ? t('noCardsYet') : 'Нет завершённых карточек') + '</div>';
-          return;
-        }
+        var modal = document.getElementById('scCardPickerModal');
+        var hasCards = (window._scUserCards || []).length > 0;
+        // Состояние списка для CSS эталона: one / compat / empty (нет ни одной карточки, кроме своей)
+        if (modal) modal.dataset.ctx = !hasCards ? 'empty' : (window._scPickerMode === 'synastry' ? 'compat' : 'one');
+        var cnt = document.getElementById('scPickerCount'); if (cnt) cnt.textContent = String(L.length);
+        if (!hasCards) return; // блок .ctx-empty показывает CSS по data-ctx="empty"
         L.forEach(function(item) {
           var btn = document.createElement('button');
           btn.type = 'button';
@@ -210,6 +210,7 @@
           av.style.background = _scAvBg(item.hue);
           av.textContent = (item.name || '?').trim().charAt(0).toUpperCase();
           btn.appendChild(av);
+          var slotEl = document.createElement('span'); slotEl.className = 'slot-n'; btn.appendChild(slotEl); // номер слота в «Совместимости»
           // тело: верхняя строка (имя + рел-бейдж) + дата · место
           var textWrap = document.createElement('span');
           textWrap.className = 'person-body';
@@ -247,26 +248,16 @@
           checkEl.className = 'person-pick';
           checkEl.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
           btn.appendChild(textWrap);
+          if (item.me) { // своя карточка в режиме правки заперта
+            btn.classList.add('locked');
+            var lockEl = document.createElement('span'); lockEl.className = 'lock-tag';
+            lockEl.textContent = _scPickerTl('ctxLockTag', 'нельзя удалить');
+            btn.appendChild(lockEl);
+          }
           btn.appendChild(checkEl);
           btn.setAttribute('data-id', item.id);
           btn.addEventListener('click', function() { scTogglePickerCard(item.id); });
           container.appendChild(btn);
-
-          // Убрать человека прямо здесь (Алла 04.09.2026): раньше за этим надо было
-          // идти в Контакты и раскрывать карточку. Себя удалить нельзя.
-          if (!item.me && item.rel !== '__self__' && item.id) {
-            var delBtn = document.createElement('button');
-            delBtn.type = 'button';
-            delBtn.className = 'person-del';
-            delBtn.setAttribute('data-id', item.id);
-            delBtn.setAttribute('aria-label', (typeof t === 'function' ? (t('heroDeleteBtn') || 'Удалить') : 'Удалить'));
-            delBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M6 6l1 14h10l1-14"/></svg>';
-            delBtn.addEventListener('click', function(e) {
-              e.stopPropagation();
-              scDeletePickerPerson(item, delBtn);
-            });
-            btn.appendChild(delBtn);
-          }
         });
         // «Добавить человека» — пунктирная карточка (реф .person-add).
         // Открывает картотеку (Контакты), где можно завести нового человека.
@@ -291,71 +282,71 @@
 
       // Клик по карточке: single → выбор ровно одного; synastry → toggle, максимум
       // два (старейший выдавливается). _scPickerSel — единый массив выбранных id.
-      // Удаление человека из пикера. Модалка — тот же .yup-del-modal-*, что в
-      // картотеке (Safari-квирк с inline-стилями уже обойдён там классами).
-      async function scDeletePickerPerson(item, btn) {
-        var name = item.name || (typeof t === 'function' ? (t('thisHero') || 'этого героя') : 'этого героя');
-        var msg = (typeof t === 'function' ? (t('confirmDeleteHero') || 'Удалить «{name}»?').replace('{name}', name) : 'Удалить «' + name + '»?');
-        var ok = await new Promise(function(resolve) {
-          var existing = document.getElementById('_pickerDelConfirm');
-          if (existing) existing.remove();
-          var ov = document.createElement('div');
-          ov.id = '_pickerDelConfirm';
-          ov.className = 'yup-del-modal-overlay';
-          var card = document.createElement('div');
-          card.className = 'yup-del-modal-card';
-          var text = document.createElement('div');
-          text.className = 'yup-del-modal-text';
-          text.textContent = msg;
-          var actions = document.createElement('div');
-          actions.className = 'yup-del-modal-actions';
-          var btnOk = document.createElement('button');
-          btnOk.type = 'button';
-          btnOk.className = 'yup-del-modal-btn-danger';
-          btnOk.textContent = (typeof t === 'function' ? (t('btnDelete') || 'Удалить') : 'Удалить');
-          var btnCancel = document.createElement('button');
-          btnCancel.type = 'button';
-          btnCancel.className = 'yup-del-modal-btn-cancel';
-          btnCancel.textContent = (typeof t === 'function' ? (t('confirmCancel') || 'Отмена') : 'Отмена');
-          actions.appendChild(btnOk); actions.appendChild(btnCancel);
-          card.appendChild(text); card.appendChild(actions);
-          ov.appendChild(card);
-          document.body.appendChild(ov);
-          var done = function(v) { try { ov.remove(); } catch(_) {} resolve(v); };
-          btnOk.onclick = function() { done(true); };
-          btnCancel.onclick = function() { done(false); };
-          ov.onclick = function(e) { if (e.target === ov) done(false); };
-        });
-        if (!ok) return;
-        if (!window._ensureOnline()) return;
-        btn.disabled = true;
-        btn.style.opacity = '0.5';
-        var base = (window.BACKEND_URL || window.HEROES_API_BASE || '').replace(/\/$/, '');
-        try {
-          var resp = await fetchWithTimeout(base + '/api/heroes/' + encodeURIComponent(item.id), {
-            method: 'DELETE', headers: (typeof getAuthHeaders === 'function' ? getAuthHeaders() : {})
-          }, 20000);
-          if (resp.ok || resp.status === 204) {
-            // Снимаем выбор с удалённого и чистим кэш, иначе он вернётся при следующем открытии.
-            try {
-              if (window._scPickerSelected) delete window._scPickerSelected[item.id];
-              if (Array.isArray(window.heroesCache)) {
-                window.heroesCache = window.heroesCache.filter(function(c) { return c.id !== item.id; });
-              }
-            } catch (_) {}
-            if (typeof window.loadHeroesList === 'function') { try { window.loadHeroesList(); } catch (_) {} }
-            scBuildPickerList();
-            if (typeof scSyncPicker === 'function') scSyncPicker();
-          } else {
-            btn.disabled = false; btn.style.opacity = '';
-          }
-        } catch (e) {
-          console.warn('[Picker] delete', e);
-          btn.disabled = false; btn.style.opacity = '';
-        }
+      // ═══ CD 19.09 · Контекст чата (docs/DESIGN-HANDOFF-1909.md, экран 8): режим правки «Изменить → Удалить» ═══
+      // Заменяет пер-строчную кнопку .person-del (Алла 04.09): на таче она была пустой пилюлей (показывалась
+      // только по hover) и била в DELETE /api/heroes/client:<uuid> — с префиксом виртуального контекста,
+      // которого heroesApi не знает (/api/user/cards отдаёт id "client:"+clients.id) — удаление не срабатывало.
+      function _scPickerTl(k, fb, v) { var s = (typeof t === 'function') ? t(k, v) : null; return (s && s !== k) ? s : fb; }
+      function _scCardWord(n) {
+        var lang = (typeof currentLang !== 'undefined' ? currentLang : (window._currentLang || 'ru'));
+        if (lang === 'ru') { var m10 = n % 10, m100 = n % 100; return (m10 === 1 && m100 !== 11) ? _scPickerTl('ctxCardWord1', 'карточку') : (m10 >= 2 && m10 <= 4 && (m100 < 10 || m100 >= 20)) ? _scPickerTl('ctxCardWord2', 'карточки') : _scPickerTl('ctxCardWord5', 'карточек'); }
+        return n === 1 ? _scPickerTl('ctxCardWord1', 'card') : _scPickerTl('ctxCardWord5', 'cards');
       }
-
+      function _scPickerEditReset() {
+        window._scPickerEdit = false; window._scPickerArmed = false; window._scPickerEditSel = [];
+        var m = document.getElementById('scCardPickerModal'); if (m) m.removeAttribute('data-edit');
+        var l = document.getElementById('scPickerEditLbl'); if (l) l.textContent = _scPickerTl('ctxEdit', 'Изменить');
+      }
+      function scPickerToggleEdit() {
+        var m = document.getElementById('scCardPickerModal'); if (!m) return;
+        if (window._scPickerEdit) { _scPickerEditReset(); scSyncPicker(); return; }
+        window._scPickerEdit = true; window._scPickerArmed = false; window._scPickerEditSel = [];
+        m.setAttribute('data-edit', '1');
+        var l = document.getElementById('scPickerEditLbl'); if (l) l.textContent = _scPickerTl('ctxDone', 'Готово');
+        scSyncPicker();
+      }
+      window.scPickerToggleEdit = scPickerToggleEdit;
+      function scPickerDelCancel() {
+        if (window._scPickerArmed) { window._scPickerArmed = false; scSyncPicker(); return; }
+        _scPickerEditReset(); scSyncPicker();
+      }
+      window.scPickerDelCancel = scPickerDelCancel;
+      // Первое нажатие — взвод («Да, удалить N карточки»), второе — удаление. Подтверждение в самой кнопке, без модалки (эталон).
+      async function scPickerDelete() {
+        var ids = (window._scPickerEditSel || []).slice();
+        if (!ids.length) return;
+        if (!window._scPickerArmed) { window._scPickerArmed = true; scSyncPicker(); return; }
+        if (!window._ensureOnline()) return;
+        var btn = document.getElementById('scPickerDelBtn'); if (btn) btn.disabled = true;
+        var base = (window.BACKEND_URL || window.HEROES_API_BASE || '').replace(/\/$/, '');
+        var removed = [];
+        for (var i = 0; i < ids.length; i++) {
+          var hid = String(ids[i]).replace(/^client:/, ''); // clients.id — без префикса виртуального контекста
+          try {
+            var resp = await fetchWithTimeout(base + '/api/heroes/' + encodeURIComponent(hid), { method: 'DELETE', headers: (typeof getAuthHeaders === 'function' ? getAuthHeaders() : {}) }, 20000);
+            if (resp.ok || resp.status === 204) removed.push(ids[i]);
+          } catch (e) { console.warn('[Picker] delete', e); }
+        }
+        if (removed.length) {
+          window._scUserCards = (window._scUserCards || []).filter(function(c) { return removed.indexOf(c.id) < 0; });
+          try { if (Array.isArray(window.heroesCache)) window.heroesCache = window.heroesCache.filter(function(c) { return removed.indexOf('client:' + c.id) < 0; }); } catch (_) {}
+          if (removed.indexOf(window._scLastRequestId) >= 0 || removed.indexOf(window._scRequestId2) >= 0) { window._scLastRequestId = null; window._scRequestId2 = null; window._scPickerSelA = null; }
+          window._scPickerSel = (window._scPickerSel || []).filter(function(id) { return removed.indexOf(id) < 0; });
+          if (typeof window.loadHeroesList === 'function') { try { window.loadHeroesList(); } catch (_) {} }
+        }
+        _scPickerEditReset();
+        scBuildPickerList(); scSyncPicker();
+        if (removed.length) scUpdateCardPickerLabel();
+      }
+      window.scPickerDelete = scPickerDelete;
       function scTogglePickerCard(id) {
+        if (window._scPickerEdit) { // режим правки: мультивыбор на удаление, своя карточка не выбирается
+          var eit = _scPickerFind(id); if (!eit || eit.me) return;
+          var es = window._scPickerEditSel || (window._scPickerEditSel = []);
+          var ei = es.indexOf(id); if (ei >= 0) es.splice(ei, 1); else es.push(id);
+          window._scPickerArmed = false;
+          scSyncPicker(); return;
+        }
         var sel = window._scPickerSel || (window._scPickerSel = []);
         var at = sel.indexOf(id);
         if (window._scPickerMode === 'synastry') {
@@ -367,19 +358,35 @@
         scSyncPicker();
       }
 
-      // Подсветка выбранных + хинт + футер (пара) + текст/состояние кнопки.
+      // Подсветка выбранных + хинт + футер (пара) + текст/состояние кнопки; режим правки — кнопка «Удалить».
       function scSyncPicker() {
         var sel = window._scPickerSel || [];
         var container = document.getElementById('scPickerList');
+        var _t = function(k, f, v) { return (typeof t === 'function' && t(k, v)) || f; };
+        var note = document.getElementById('scPickerApplyNote');
+        if (window._scPickerEdit) {
+          var es = window._scPickerEditSel || [], n = es.length, armed = !!window._scPickerArmed;
+          if (container) container.querySelectorAll('.person').forEach(function(el) {
+            el.classList.toggle('sel', es.indexOf(el.getAttribute('data-id')) >= 0);
+            var s0 = el.querySelector('.slot-n'); if (s0) s0.textContent = '';
+          });
+          var d = document.getElementById('scPickerDelBtn'), dl = document.getElementById('scPickerDelLbl'), dn = document.getElementById('scPickerDelNote'), dc = document.getElementById('scPickerDelCancel');
+          if (d) { d.disabled = !n; d.classList.toggle('arm', armed && n > 0); }
+          if (dl) dl.textContent = !n ? _t('ctxDel', 'Удалить') : (armed ? _t('ctxDelArm', 'Да, удалить {n} {word}', { n: n, word: _scCardWord(n) }) : _t('ctxDelN', 'Удалить · {n}', { n: n }));
+          if (dn) dn.textContent = !n ? _t('ctxDelNoteEmpty', 'Выбери карточки, которые нужно убрать') : (armed ? _t('ctxDelNoteArm', 'Это не отменить — даты рождения удалятся насовсем') : es.map(function(id) { var it = _scPickerFind(id); return it ? it.name : ''; }).join(', '));
+          if (dc) dc.textContent = armed ? _t('ctxDelCancelArm', 'Не удалять') : _t('ctxDone', 'Готово');
+          return;
+        }
         if (container) {
           container.querySelectorAll('.person').forEach(function(el) {
-            el.classList.toggle('sel', sel.indexOf(el.getAttribute('data-id')) >= 0);
+            var k = sel.indexOf(el.getAttribute('data-id'));
+            el.classList.toggle('sel', k >= 0);
+            var s1 = el.querySelector('.slot-n'); if (s1) s1.textContent = (k >= 0 && window._scPickerMode === 'synastry') ? String(k + 1) : '';
           });
         }
         var hint = document.getElementById('scPickerHint');
         var pair = document.getElementById('scPickerPair');
         var applyBtn = document.getElementById('scPickerApplyBtn');
-        var _t = function(k, f, v) { return (typeof t === 'function' && t(k, v)) || f; };
         if (window._scPickerMode === 'synastry') {
           if (hint) hint.innerHTML = _t('ctxHintPickTwo', '<b>Выбери двоих</b> — Оракул разберёт их совместимость.') + (sel.length ? (' ' + sel.length + '/2') : '');
           var a = sel[0] != null ? _scPickerFind(sel[0]) : null;
@@ -394,6 +401,7 @@
               pair.classList.add('show');
             } else { pair.classList.remove('show'); pair.innerHTML = ''; }
           }
+          if (note) note.textContent = sel.length === 2 ? _t('ctxNotePair', 'Оракул будет держать обе карточки в контексте') : (sel.length === 1 ? _t('ctxNoteHalf', 'Выбрана одна — нужна вторая') : _t('ctxNoteEmptyPair', 'Выбери две карточки, чтобы продолжить'));
         } else {
           if (pair) { pair.classList.remove('show'); pair.innerHTML = ''; }
           var one = sel.length === 1 ? _scPickerFind(sel[0]) : null;
@@ -402,10 +410,12 @@
             applyBtn.disabled = sel.length !== 1;
             applyBtn.textContent = one ? _t('ctxApplyOne', 'Применить · {name}', { name: one.name }) : _t('ctxApply', 'Применить');
           }
+          if (note) note.textContent = one ? _t('ctxNoteOne', 'Оракул будет держать эту карточку в контексте') : _t('ctxNoteEmpty', 'Выбери карточку, чтобы продолжить');
         }
       }
 
       function scSetPickerMode(mode) {
+        _scPickerEditReset();
         window._scPickerMode = mode;
         var tabSingle = document.getElementById('scPickerTabSingle');
         var tabSyn = document.getElementById('scPickerTabSynastry');
@@ -444,12 +454,15 @@
           document.body.style.overflow = 'hidden';
         } catch (_) {}
         modal.classList.add('is-visible');
+        // Подсказка страницы (#pageHint) висит поверх модалки на первом визите — прячем (аудит 23.09)
+        try { var _ph = document.getElementById('pageHint'); if (_ph) _ph.style.display = 'none'; } catch (_) {}
         // Перезапускаем текущий режим чтобы отрисовать актуальный список
         scSetPickerMode(window._scPickerMode || 'single');
       }
       window.scOpenCardPicker = scOpenCardPicker;
 
       function scCloseCardPicker() {
+        _scPickerEditReset();
         var modal = document.getElementById('scCardPickerModal');
         if (modal) modal.classList.remove('is-visible');
         // Восстанавливаем body overflow

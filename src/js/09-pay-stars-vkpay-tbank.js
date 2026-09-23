@@ -265,6 +265,8 @@
       var PLAN_STARS = { plan_basic: '760 Stars', plan_plus: '1 910 Stars', plan_master: '3 060 Stars' };
       var PLAN_RUB_FALLBACK = { soul_basic_sub: 810, soul_plus_sub: 2030, master_monthly: 3250 };
       var PLAN_NAMES = { plan_basic: 'Душа', plan_plus: 'Глубина', plan_master: 'Лаборатория' };
+      // таблицы нужны и вне этого замыкания (экран «песни пакета закончились» на successPage)
+      window.PLAN_PRICES = PLAN_PRICES; window.PLAN_TRACKS = PLAN_TRACKS; window.PLAN_NAMES = PLAN_NAMES;
       // ═══ СИСТЕМА ИСКР ═══
       var ISKRY_PRICES = {
         single_song: 100,
@@ -1026,6 +1028,17 @@
         var saveEl = document.getElementById('payOvUpsellSave');
         var totalEl = document.getElementById('payOvUpsellTotal');
         var _tlu = function(k, fb) { return (typeof t === 'function' && t(k)) || fb; };
+        // Натив: цену называет Apple на своём экране покупки. Рублёвый апселл
+        // здесь — вторая цена рядом с встроенной покупкой (правило 3.1.1),
+        // прямой отказ на ревью. Детект и по классу: html.is-native ставится в
+        // bootstrap синхронно, а флаг мог не успеть — та же гонка, из-за которой
+        // ₽ протекли на нативный клиент ВК 02.07.
+        var _upNative = window._isNativeApp
+          || document.documentElement.classList.contains('is-native');
+        if (_upNative) {
+          block.style.display = 'none';
+          return;
+        }
         // VK: пакет-доступ (5 песен) в ГОЛОСАХ (₽ запрещены на VK — §5.2/§5.4).
         // Детект и по DOM-классу: html.is-vk ставится в bootstrap СИНХРОННО — env-флаги
         // могли не успеть (гонка → скрин Аллы 02.07: ₽ на нативном клиенте).
@@ -1072,7 +1085,8 @@
         }
         goToPage('profilePage');
         setTimeout(function() {
-          var planSection = document.getElementById('profileSectionPlans');
+          // CD 19.09 · профиль: секции-аккордеона «Пакеты» больше нет — скроллим к кошельку (строка пакета)
+          var planSection = document.getElementById('profileSectionPlansLink') || document.getElementById('profileSectionPlans');
           if (planSection) planSection.scrollIntoView({ behavior: 'smooth' });
         }, 300);
       }
@@ -2263,6 +2277,9 @@
         var enabled = true;
         function _ntl(k, fb) { return (typeof t === 'function' ? t(k) : '') || fb; }
         function label() {
+          // CD 19.09 · профиль: строка «Уведомления» + тумблер (эталон); текстовая кнопка — запасной вид
+          var sw = document.getElementById('profileNotifSw');
+          if (sw) { sw.classList.toggle('on', enabled); btn.setAttribute('aria-pressed', String(enabled)); return; }
           btn.textContent = enabled ? _ntl('profileNotifDisable', 'Отключить уведомления') : _ntl('profileNotifEnable', 'Включить уведомления');
         }
         label();
@@ -2281,6 +2298,16 @@
           if (!base || (typeof hasAuth === 'function' && !hasAuth())) return;
           var next = !enabled;
           enabled = next; label(); btn.disabled = true;
+          // Натив (App Store): тот же тумблер управляет локальным уведомлением «Искра дня».
+          // Разрешение не дали → тумблер возвращается в выключенное состояние, без текста
+          // об ошибке (закон №37) — существующий POST ниже не трогаем.
+          if (window._isNativeApp) {
+            if (next && typeof window._nativeEnableDailyNotif === 'function') {
+              window._nativeEnableDailyNotif().then(function (ok) { if (!ok) { enabled = false; label(); } });
+            } else if (!next && typeof window._nativeDisableDailyNotif === 'function') {
+              window._nativeDisableDailyNotif();
+            }
+          }
           fetch(base + '/api/reengage-optout', { method: 'POST', headers: Object.assign({ 'Content-Type': 'application/json' }, (typeof getAuthHeaders === 'function' ? getAuthHeaders() : {})), body: JSON.stringify({ enabled: next }) })
             .then(function (r) { return r.json().catch(function () { return {}; }); })
             .then(function (d) { if (!d || d.ok !== true) { enabled = !next; label(); } else { synced = true; } })

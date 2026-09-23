@@ -408,6 +408,9 @@
               // Сразу показать/скрыть бейдж партнёра в профиле
               var _pBadge = document.getElementById('profilePartnerBadge');
               if (_pBadge) _pBadge.style.display = window._isPartner ? 'inline-flex' : 'none';
+              // CD 19.09 · профиль: вместо бейджа у имени — строка «Партнёрский кабинет»
+              var _pBtn = document.getElementById('profilePartnerBtn');
+              if (_pBtn) _pBtn.style.display = window._isPartner ? '' : 'none';
               // Re-engagement рассылки (Алла 21.06): не-подписанным, кто тур уже прошёл — предложить рассылку.
               // Новым юзерам тур сам ведёт к согласию (TOUR_KEY ещё не 'true') — здесь не дублируем.
               try {
@@ -1138,7 +1141,8 @@
         var switchers = [
           { btn: 'langSwitcherBtn', dropdown: 'langSwitcherDropdown', current: 'langSwitcherCurrent' },
           { btn: 'startLangSwitcherBtn', dropdown: 'startLangSwitcherDropdown', current: 'startLangSwitcherCurrent' },
-          { btn: 'heroesLangBtn', dropdown: 'heroesLangDropdown', current: 'heroesLangCurrent' }
+          { btn: 'heroesLangBtn', dropdown: 'heroesLangDropdown', current: 'heroesLangCurrent' },
+          { btn: 'profileLangBtn', dropdown: 'profileLangDropdown', current: 'profileLangCurrent' } // CD 19.09 · профиль
         ];
         var allDropdowns = [];
         function closeAllDropdowns() { allDropdowns.forEach(function(d) { if (d) d.setAttribute('hidden', ''); }); }
@@ -2823,7 +2827,7 @@
           var _chip = document.getElementById('scChartChip');
           if (_chip) _chip.addEventListener('click', function() {
             if (typeof goToPage === 'function') goToPage('profilePage');
-            setTimeout(function() { var el = document.getElementById('profileDataCard'); if (el && el.scrollIntoView) el.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 350);
+            setTimeout(function() { var el = document.getElementById('profileMeBtn') || document.getElementById('profileDataCard'); /* CD 19.09: карточка «я» вместо аккордеона */ if (el && el.scrollIntoView) el.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 350);
           });
         }
 

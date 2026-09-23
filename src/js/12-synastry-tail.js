@@ -480,6 +480,9 @@
 
         // Опт-ин Оракула («Да, присылай») — POST /api/daily-oracle/onboarding (закон №37: провал — тихо).
         window.enableOracleOptin = function(){
+          // Приложение App Store: рассылка Оракула идёт в Телеграм/ВК, у Apple-входа их нет —
+          // без этого «Да, присылай» на айфоне не давало ничего. Утреннее уведомление ставит сам телефон.
+          try { if (window._isNativeApp && typeof window._nativeEnableDailyNotif === 'function') window._nativeEnableDailyNotif(); } catch(_) {}
           var apiBase = (window.BACKEND_URL || window.HEROES_API_BASE || '').replace(/\/$/, '');
           if (!apiBase) return;
           if (window._isVkMiniApp && window.vkBridge) { try{ vkBridge.send('VKWebAppAllowMessagesFromGroup', { group_id: 237303283 }).then(function(){ if (window._vkSaveNotifyConsent) window._vkSaveNotifyConsent(); }).catch(function(){}); }catch(_){} }
@@ -980,7 +983,7 @@
 
       document.querySelectorAll('.preview-nav button').forEach(function(button) {
         button.addEventListener('click', function() {
-          var pageMap = { 'home': 'homePage', 'form': 'formPage', 'payment': 'paymentPage', 'loading': 'loadingPage', 'success': 'successPage', 'heroes': 'heroesPage', 'login': null };
+          var pageMap = { 'home': 'homePage', 'form': 'formPage', 'payment': 'paymentPage', 'loading': 'successPage', 'success': 'successPage', 'heroes': 'heroesPage', 'login': null };
           document.querySelectorAll('.preview-nav button').forEach(function(btn) { btn.classList.remove('active'); });
           this.classList.add('active');
           var page = button.getAttribute('data-page');

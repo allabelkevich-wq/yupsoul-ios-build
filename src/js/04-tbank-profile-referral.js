@@ -460,7 +460,14 @@
           var _setPlanBtnText = function(btn, txt) {
             if (!btn) return;
             var lbl = btn.querySelector('.cta-label');
-            if (lbl) lbl.textContent = txt; else btn.textContent = txt;
+            if (lbl) {
+              // applyTranslations перетирает текст по data-i18n — состояние подписчика («Действует до…»,
+              // «Перейти на…») держим без ключа, исходный ключ храним в data-i18n-orig (аудит 23.09:
+              // «Активен» откатывался обратно на «Подключить»).
+              if (lbl.hasAttribute('data-i18n')) lbl.setAttribute('data-i18n-orig', lbl.getAttribute('data-i18n'));
+              lbl.removeAttribute('data-i18n');
+              lbl.textContent = txt;
+            } else btn.textContent = txt;
           };
           // Сбрасываем все карточки тарифов в исходное состояние
           var allPlanCards = ['planCardFree','planCardBasic','planCardPlus','planCardMaster'];
@@ -471,11 +478,15 @@
           };
           allPlanCards.forEach(function(id) {
             var card = document.getElementById(id);
-            if (card) card.classList.remove('current');
+            if (card) { card.classList.remove('current'); var _ct = card.querySelector('.cur-tag'); if (_ct) _ct.remove(); }
           });
           Object.values(allPlanBtns).forEach(function(b) {
             var btn = document.getElementById(b.btnId);
-            if (btn) { _setPlanBtnText(btn, b.origText); btn.disabled = false; btn.style.opacity = ''; }
+            if (btn) {
+              _setPlanBtnText(btn, b.origText); btn.disabled = false; btn.style.opacity = ''; btn.classList.remove('ghost-cur');
+              var _l = btn.querySelector('.cta-label');
+              if (_l && _l.getAttribute('data-i18n-orig')) _l.setAttribute('data-i18n', _l.getAttribute('data-i18n-orig'));
+            }
           });
 
           var subActive = subData && subData.subscription_active;
@@ -588,7 +599,25 @@
               }
               // Не показываем ссылку "Отменить" — уже отменена
             } else {
-              if (activeBtn) { _setPlanBtnText(activeBtn, (typeof t === 'function' ? t('planStatusActive') : 'Активен')); activeBtn.disabled = true; activeBtn.style.opacity = '0.5'; }
+              if (activeBtn) {
+                // Эталон showcase-plans.html, состояние «подписчик»: тег «Твой пакет» у владеемой строки,
+                // её кнопка — призрачная «Действует до {дата}», у старших пакетов — «Перейти на …» (аудит 23.09).
+                var _ph = activeCard && activeCard.querySelector('.plan-head');
+                if (_ph && !_ph.querySelector('.cur-tag')) {
+                  var _tag = document.createElement('span'); _tag.className = 'cur-tag';
+                  _tag.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="plCurTag">' + (typeof t === 'function' ? t('plCurTag') : 'Твой пакет') + '</span>';
+                  var _nm = _ph.querySelector('.plan-name');
+                  if (_nm && _nm.nextSibling) _ph.insertBefore(_tag, _nm.nextSibling); else _ph.appendChild(_tag);
+                }
+                activeBtn.classList.add('ghost-cur');
+                _setPlanBtnText(activeBtn, renewDateStr
+                  ? (typeof t === 'function' ? (t('plCurrentUntil', { date: renewDateStr }) || ('Действует до ' + renewDateStr)) : ('Действует до ' + renewDateStr))
+                  : (typeof t === 'function' ? t('planStatusActive') : 'Активен'));
+                activeBtn.disabled = true; activeBtn.style.opacity = '';
+                var _tier = { planCardBasic: 1, planCardPlus: 2, planCardMaster: 3 }[pm.cardId] || 0;
+                if (_tier < 2) _setPlanBtnText(document.getElementById('planBtnPlus'), typeof t === 'function' ? t('plUpgradeToPlus') : 'Перейти на «Глубину»');
+                if (_tier < 3) _setPlanBtnText(document.getElementById('planBtnMaster'), typeof t === 'function' ? t('plUpgradeToMaster') : 'Перейти на «Лабораторию»');
+              }
               // Отмена пакета — ТОЛЬКО в #profileSubManage (профиль). На карточку plansPage
               // НЕ инжектим: карточки переехали в #plansPage, ссылка налезала на эталон-CTA (фикс 27.06).
             }
@@ -2044,4 +2073,47 @@
             setTimeout(function() { shareBtn.textContent = typeof t === 'function' ? t('btnShare') : 'Поделиться'; }, 2000);
           }
         });
+      })();
+
+      // ═══ CD 19.09 · Профиль (docs/DESIGN-HANDOFF-1909.md, экран 10): зеркала узлов движка для кошелька ═══
+      // «N из M песен» и полоса — из #profileCreditsCount («used / limit», пишет loadProfilePage); подпись Искр —
+      // из баланса; «Пакета нет» — когда #profileSubManage скрыт; счётчик контактов — heroesCache.
+      (function pfCdInit() {
+        var page = document.getElementById('profilePage');
+        if (!page) return;
+        var $ = function (id) { return document.getElementById(id); };
+        function tl(k, fb, v) { var s = (typeof t === 'function') ? t(k, v) : null; return (s && s !== k) ? s : fb; }
+        function songsWord(n) {
+          var lang = (typeof currentLang !== 'undefined' ? currentLang : (window._currentLang || 'ru'));
+          if (lang === 'ru') { var m10 = n % 10, m100 = n % 100; return (m10 === 1 && m100 !== 11) ? tl('plSongsWord1', 'песню') : (m10 >= 2 && m10 <= 4 && (m100 < 10 || m100 >= 20)) ? tl('plSongsWord2', 'песни') : tl('plSongsWord5', 'песен'); }
+          return n === 1 ? tl('plSongsWord1', 'song') : tl('plSongsWord5', 'songs');
+        }
+        function setText(el, v) { if (el && el.textContent !== v) el.textContent = v; }
+        var syncing = false, queued = false;
+        function sync() {
+          if (syncing) return;
+          syncing = true;
+          try {
+            var m = String(($('profileCreditsCount') || {}).textContent || '').match(/(\d+)\s*\/\s*(\d+)/);
+            var used = m ? parseInt(m[1], 10) : 0, limit = m ? parseInt(m[2], 10) : 0, left = Math.max(0, limit - used);
+            setText($('pfSongsLeft'), String(left));
+            setText($('pfSongsOf'), limit ? tl('pfOfSongs', 'из {n} {songs}', { n: limit, songs: songsWord(limit) }) : '');
+            var bar = $('pfSongsBar'); if (bar) bar.style.width = (limit ? Math.round(left / limit * 100) : 0) + '%';
+            var sub = $('profileSubManage'), noPack = $('pfNoPack');
+            if (noPack) noPack.style.display = (sub && sub.style.display !== 'none') ? 'none' : '';
+            var bal = typeof getIskryBalance === 'function' ? (getIskryBalance() || 0) : 0, n = Math.floor(bal / 100);
+            setText($('pfIskrySub'), n > 0 ? tl('pfIskryEnough', 'Хватит на {n} {songs}', { n: n, songs: songsWord(n) }) : tl('pfIskryNone', 'Пока не хватает'));
+            setText($('pfContactsCount'), Array.isArray(window.heroesCache) ? String(window.heroesCache.length) : '');
+            // карта не привязана: движок прячет строку #profileCardInfo, но рамка .w-card остаётся пустой
+            var _ci = $('profileCardInfo'), _sec = $('profilePaymentMethodSection');
+            if (_ci && _sec) _sec.classList.toggle('pf-card-empty', getComputedStyle(_ci).display === 'none');
+          } finally { syncing = false; }
+        }
+        function schedule() { if (queued) return; queued = true; requestAnimationFrame(function () { queued = false; sync(); }); }
+        new MutationObserver(function () { if (!syncing) schedule(); })
+          .observe(page, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: ['style'] });
+        new MutationObserver(function () { if (document.body.dataset.page === 'profilePage') schedule(); })
+          .observe(document.body, { attributes: true, attributeFilter: ['data-page'] });
+        window._pfCdSync = sync;
+        sync();
       })();

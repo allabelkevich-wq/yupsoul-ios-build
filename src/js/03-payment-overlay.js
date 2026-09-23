@@ -49,7 +49,7 @@
         if (window._ysTrack) window._ysTrack('page_view', { from: document.body.dataset.page || null, virtual: true });
         if (window._ysTrack) window._ysTrack('payment_start', { free_trial: !!freeTrialAvailable });
         
-        ov.style.display = 'block';
+        ov.style.display = 'flex'; // CD 19.09: flex-колонка, скроллит только .scroll
         ov.style.visibility = 'visible';
         ov.style.pointerEvents = 'auto';
         if (tg && tg.expand) try { tg.expand(); } catch(e) {}
@@ -106,6 +106,7 @@
         // Расшифровка (deep_analysis_addon) под гейт не попадает.
         var _poSongSku = ['single_song', 'couple_song', 'transit_energy_song'].indexOf(pendingPaymentSku || 'single_song') !== -1;
         var _poIskryNeedPack = _poSongSku && !(window._cachedProfile && window._cachedProfile.has_purchased_package);
+        var _poNative = window._isNativeApp || document.documentElement.classList.contains('is-native');
         if (_poVkCtx) {
           // Канон v7 (§5.2.3): на VK цифровые ценности за Искры не продаются —
           // ни кнопки «Оплатить Искрами», ни подсказки про нехватку Искр. Песня
@@ -147,7 +148,7 @@
             if (_itZero) {
               _itZero.textContent = _currentIskryBal > 0
                 ? _tl('iskryNotEnough', 'У тебя {current} Искр. Нужно ещё {needed}').replace('{current}', _currentIskryBal).replace('{needed}', _neededIskry - _currentIskryBal)
-                : ((window._isVkMiniApp || window._appEnv === 'vk')
+                : ((window._isVkMiniApp || window._appEnv === 'vk' || _poNative)
                     // КАНОН v5 §6.12: на VK промокоды запрещены — текст без «введи промокод».
                     ? _tl('iskryNeedTopupVk', 'Для оплаты Искрами нужно {needed}. Пополни баланс.')
                     : _tl('iskryNeedTopup', 'Для оплаты Искрами нужно {needed}. Пополни баланс или введи промокод ниже.')).replace('{needed}', _neededIskry);
@@ -177,6 +178,19 @@
             freeClaimBtn.removeAttribute('aria-disabled');
             freeClaimBtn.title = '';
           }
+        }
+        // Натив (App Store), аудит 23.09: на айфоне висело «490 ₽» без единой кнопки — тупик и
+        // правило 3.1.1. Здесь песня оплачивается только Искрами, а Искры покупаются встроенной
+        // покупкой: primary подвала — «Оплатить Искрами», а если Искр не хватает или пакета
+        // ещё не было — «Пополнить Искры» → topupPage. Тап по цене-якорю не должен дёргать
+        // скрытую кнопку карты.
+        var _poNtu = document.getElementById('payOvNativeTopupBtn');
+        if (_poNtu) _poNtu.style.display = 'none';
+        if (_poNative) {
+          var _poIskryOk = !_poIskryNeedPack && _currentIskryBal >= _neededIskry;
+          if (_poNtu && !isAnalysisPayment) _poNtu.style.display = _poIskryOk ? 'none' : '';
+          var _poPb = document.getElementById('payOvPriceBlock');
+          if (_poPb) { _poPb.onclick = null; _poPb.removeAttribute('role'); _poPb.removeAttribute('tabindex'); _poPb.style.cursor = 'default'; }
         }
         
         // Stars — только Telegram, VK Pay — только VK
@@ -309,7 +323,7 @@
           crossSell.style.display = '';
         }
         // Заголовок — ТОЧНО как в эталоне showcase-success.html (innerHTML: содержит <br>).
-        if (stEl) stEl.innerHTML = (typeof t === 'function' ? t('successReadyTitle') : 'Готово — твоя<br>песня рождается');
+        _suHead(stEl, (typeof t === 'function' ? t('successReadyTitle') : 'Готово — твоя<br>песня рождается'));
         // Analytics: song generation requested (funnel step)
         if (window._ysTrack) window._ysTrack('song_generated', { source: window._appEnv || 'telegram' });
         if (window._ysTrack) {
@@ -321,7 +335,7 @@
         // Описание — ТОЧНО как в эталоне (innerHTML: содержит 🤍 и <b>). Старая ветка web/TG
         // («Перейти в бот» / whereTrack / bot-status) УДАЛЕНА: в эталоне действия — «Спросить
         // Оракула» + «Поделиться» (cta/ghost уже в разметке successPage.html), кнопки бота нет.
-        if (sdEl) sdEl.innerHTML = (typeof t === 'function' ? t('successReadyLead') : 'Спасибо тебе! <b>Песня души</b> уже создаётся — появится во вкладке «Плейлист» примерно через 15 минут.');
+        _suHead(sdEl, (typeof t === 'function' ? t('successReadyLead') : 'Спасибо тебе! <b>Песня души</b> уже создаётся — появится во вкладке «Плейлист» примерно через 15 минут.'));
         goToPage('successPage'); // page-show hook → _initGenStages: reveal + этапы + салют (один раз на оплату)
         // Вкус (первая песня, бесплатно) НЕ должен показывать «Оплата получена» — юзер ничего не платил (закон №1).
         // Меняем и data-i18n (чтобы applyTranslations не вернул «Оплата получена»), и текст сразу. Платные флоу opts нет → «Оплата получена».
@@ -335,59 +349,101 @@
         // (реклама удалена — Алла 02.07: «мы не берём себе такую рекламу»)
       }
 
-      // ── Страница "Лимит исчерпан" — с CTA для оплаты ──
+      // ── Страница «Песни пакета закончились» (эталон showcase-success.html, data-variant="limit") ──
       function showTrackLimitPage() {
         hidePaymentOverlay();
         _setSuccessMode(false); // режим оплаты: прячем этапы/подсказки/CTA генерации
-        var stEl = document.getElementById('successTitle');
-        var sdEl = document.getElementById('successDesc');
+        var page = document.getElementById('successPage');
         var botBtn = document.getElementById('openBotBtn');
         var mtBtn = document.getElementById('successMyTracksBtn');
         var hintEl = document.getElementById('successHint');
         var crossSell = document.getElementById('successPayActions');
-        var linksDiv = document.querySelector('#successPage .success-links');
         var newKeyBtn = document.getElementById('newKeyBtn');
         var profileBtn = document.getElementById('successToProfileBtn');
-
         /* _tl — глобальная, определена рядом с t() */
+        function _set(id, txt) { var el = document.getElementById(id); if (el) el.textContent = txt; }
+        // _tl(k, fb) подстановку не делает — подставляем сами, как в showExpiredSubscriptionScreen
+        function _ph(key, fb, vals) {
+          var out = _tl(key, fb);
+          Object.keys(vals || {}).forEach(function (k) { out = out.split('{' + k + '}').join(vals[k]); });
+          return out;
+        }
 
-        // Заголовок и описание
-        if (stEl) stEl.textContent = _tl('trackLimitTitle', 'Лимит исчерпан');
-        if (sdEl) sdEl.innerHTML = _tl('trackLimitMsg', 'Лимит треков на этот месяц исчерпан.')
-          + '<br><br><span class="success-desc-note">'
-          + _tl('trackLimitHint', 'Обнови тариф или купи песню отдельно.')
-          + '</span>';
+        var tariff = window.userTariff || 'basic';
+        var cur = 'plan_' + tariff;
+        var next = tariff === 'basic' ? 'plan_plus' : (tariff === 'plus' ? 'plan_master' : '');
+        var NAMES = window.PLAN_NAMES || { plan_basic: 'Душа', plan_plus: 'Глубина', plan_master: 'Лаборатория' };
+        var PRICES = window.PLAN_PRICES || { plan_basic: '810 ₽', plan_plus: '2 030 ₽', plan_master: '3 250 ₽' };
+        var TRACKS = window.PLAN_TRACKS || { plan_basic: '5', plan_plus: '15', plan_master: '30' };
+        function planName(key) {
+          var k = { plan_basic: 'planBasicName', plan_plus: 'planPlusName', plan_master: 'planMasterNameText' }[key];
+          return k ? _tl(k, NAMES[key] || '') : (NAMES[key] || '');
+        }
+        // цена одной песни: живые рубли T-Bank → фиксированный рублёвый fallback
+        var singlePrice = (typeof _tbankPrices !== 'undefined' && _tbankPrices && _tbankPrices.single_song)
+          ? (String(_tbankPrices.single_song) + ' ₽')
+          : ((typeof DEFAULT_PRICES !== 'undefined' && DEFAULT_PRICES.single_song)
+              ? (DEFAULT_PRICES.single_song.price + ' ' + DEFAULT_PRICES.single_song.currency) : '490 ₽');
+        var needIskry = (typeof ISKRY_PRICES !== 'undefined' && ISKRY_PRICES.single_song) ? ISKRY_PRICES.single_song : 100;
+        var balIskry = typeof getIskryBalance === 'function' ? (getIskryBalance() || 0) : 0;
 
-        // Скрываем: "Перейти в бот", "Мои треки", "Не пришла через 20 мин?"
+        if (page) page.dataset.variant = 'limit';
+        _set('successLimitEyebrow', _ph('successLimitEyebrow', 'Пакет «{plan}»', { plan: planName(cur) }));
+        var limitN = parseInt(TRACKS[cur] || '0', 10);
+        var leadEl = document.getElementById('successLimitLead');
+        if (leadEl) leadEl.textContent = limitN > 0
+          ? _ph('successLimitLeadN', '{used} из {limit} песен пакета уже созданы. Продли пакет или возьми песню отдельно.', { used: limitN, limit: limitN })
+          : _tl('successLimitLead', 'Песни пакета уже созданы. Продли пакет или возьми песню отдельно.');
+
+        // три варианта: апгрейд пакета (если есть куда) · песня отдельно · Искры (если хватает)
+        var opts = [];
+        var upEl = document.getElementById('limOptUpgrade');
+        if (upEl) {
+          if (next) {
+            upEl.style.removeProperty('display');
+            _set('limOptUpgradeT', _ph('limOptUpgrade', 'Перейти на пакет «{plan}»', { plan: planName(next) }));
+            _set('limOptUpgradeSub', _ph('limOptUpgradeSub', '{n} треков · Оракул без лимита', { n: TRACKS[next] || '' }));
+            _set('limOptUpgradePr', PRICES[next] || '');
+            opts.push({ el: upEl,
+              cta: _ph('limCta', 'Перейти на пакет «{plan}» · {price}', { plan: planName(next), price: PRICES[next] || '' }),
+              run: function () { if (typeof showPlanConfirm === 'function') showPlanConfirm(next, planName(next)); } });
+          } else upEl.style.setProperty('display', 'none', 'important');
+        }
+        var sgEl = document.getElementById('limOptSingle');
+        if (sgEl) {
+          _set('limOptSinglePr', singlePrice);
+          opts.push({ el: sgEl,
+            cta: _ph('limCtaSingle', 'Купить песню · {price}', { price: singlePrice }),
+            run: function () { showTrackLimitPaySingle(); } });
+        }
+        var spEl = document.getElementById('limOptSparks');
+        if (spEl) {
+          if (balIskry >= needIskry) {
+            spEl.style.removeProperty('display');
+            _set('limOptSparksSub', _ph('limOptSparksSub', 'у тебя {n}', { n: balIskry }));
+            _set('limOptSparksPr', needIskry);
+            opts.push({ el: spEl,
+              cta: _ph('limCtaSparks', 'Оплатить Искрами · {n}', { n: needIskry }),
+              run: function () { showTrackLimitPaySingle('iskry'); } });
+          } else spEl.style.setProperty('display', 'none', 'important');
+        }
+
+        var ctaBtn = document.getElementById('successLimitCta');
+        var picked = opts[0] || null;
+        function paint() {
+          opts.forEach(function (o) { o.el.classList.toggle('pick', o === picked); });
+          _set('successLimitCtaTx', picked ? picked.cta : '');
+          if (ctaBtn) ctaBtn.style.display = picked ? '' : 'none';
+        }
+        opts.forEach(function (o) { o.el.onclick = function () { picked = o; paint(); }; });
+        if (ctaBtn) ctaBtn.onclick = function () { if (picked && picked.run) picked.run(); };
+        paint();
+
+        // прод-узлы вне эталона: старый кросс-селл и кнопки «в бот»/«мои треки» в этом варианте не нужны
+        if (crossSell) { crossSell.innerHTML = ''; crossSell.style.setProperty('display', 'none', 'important'); }
         if (botBtn) botBtn.style.display = 'none';
         if (mtBtn) mtBtn.style.display = 'none';
         if (hintEl) hintEl.style.display = 'none';
-
-        // Заменяем "Пока ждёшь песню" на кнопки оплаты
-        if (crossSell) {
-          var iskryBal = typeof getIskryBalance === 'function' ? getIskryBalance() : 0;
-          var iskryText = iskryBal >= 100
-            ? '<button type="button" class="success-cs-btn" onclick="showTrackLimitPaySingle(\'iskry\')" style="background:linear-gradient(135deg,rgba(236,72,153,0.15),rgba(167,139,250,0.15));border-color:rgba(236,72,153,0.3);">' + _tl('trackLimitPayIskry', 'Оплатить Искрами') + ' (' + iskryBal + ')</button>'
-            : '';
-          // Upgrade button — primary CTA, dynamic text based on current plan
-          var upgradeBtn = '';
-          var currentTariff = window.userTariff || 'basic';
-          if (currentTariff === 'basic') {
-            upgradeBtn = '<button type="button" class="success-cs-btn" onclick="if(typeof showPlanConfirm===\'function\')showPlanConfirm(\'plan_plus\',\'Глубина\')" style="background:linear-gradient(135deg,rgba(var(--primary-rgb),0.2),rgba(var(--secondary-rgb),0.15));border-color:rgba(var(--primary-rgb),0.35);font-weight:600;">' + _tl('trackLimitUpgradeToPlus', 'Перейти на Глубина — 15 треков') + '</button>';
-          } else if (currentTariff === 'plus') {
-            upgradeBtn = '<button type="button" class="success-cs-btn" onclick="if(typeof showPlanConfirm===\'function\')showPlanConfirm(\'plan_master\',\'Лаборатория\')" style="background:linear-gradient(135deg,rgba(var(--primary-rgb),0.2),rgba(var(--secondary-rgb),0.15));border-color:rgba(var(--primary-rgb),0.35);font-weight:600;">' + _tl('trackLimitUpgradeToMaster', 'Перейти на Лаборатория — 30 треков') + '</button>';
-          }
-          // master — no upgrade button (highest plan)
-
-          crossSell.innerHTML = '<div class="success-cs-divider"></div>'
-            + '<div class="success-cs-title">' + _tl('trackLimitActionsTitle', 'Что дальше?') + '</div>'
-            + upgradeBtn
-            + '<button type="button" class="success-cs-btn" onclick="showTrackLimitPaySingle()" style="background:linear-gradient(135deg,rgba(130,100,230,0.15),rgba(180,120,255,0.1));border-color:rgba(130,100,230,0.3);">' + _tl('trackLimitBuySingle', 'Купить одну песню') + '</button>'
-            + iskryText;
-          crossSell.style.display = '';
-        }
-
-        // Нижние ссылки: убираем "Создать ещё одну песню", оставляем "В профиль"
         if (newKeyBtn) newKeyBtn.style.display = 'none';
         if (profileBtn) profileBtn.textContent = _tl('trackLimitBackToProfile', 'Вернуться в профиль');
 
@@ -420,6 +476,7 @@
         var hint = typeof t === 'function' ? (t('trackLimitResubmitHint') || 'Заполни форму и отправь — откроется экран оплаты.') : 'Заполни форму и отправь — откроется экран оплаты.';
         if (typeof showToast === 'function') showToast(hint);
       }
+      window.showTrackLimitPage = showTrackLimitPage;
       window.showTrackLimitPaySingle = showTrackLimitPaySingle;
 
       // ── Страница "Пакет использован" — с CTA для реактивации ──
@@ -464,11 +521,11 @@
         }
 
         // Title and description
-        if (stEl) stEl.textContent = _tl('subExpiredTitle', 'Пакет использован');
+        _suHead(stEl, _tl('subExpiredTitle', 'Пакет использован'));
         var msgFallback = 'Твой план \u00AB' + planName + '\u00BB завершился ' + expiryStr;
         var msgText = _tl('subExpiredMsg', msgFallback);
         msgText = msgText.replace('{planName}', planName).replace('{date}', expiryStr);
-        if (sdEl) sdEl.innerHTML = msgText;
+        _suHead(sdEl, msgText);
 
         // Hide default buttons
         if (botBtn) botBtn.style.display = 'none';
@@ -558,7 +615,13 @@
       // Каждые ~7с следующая стадия становится active; последняя остаётся крутиться
       // («Составляю звуковую композицию») — реальная генерация ~10-15 мин.
       // Переключение successPage: режим генерации (этапы + «Пока ждёшь») ↔ режим оплаты (лимит/пакет).
+      // Текст «обычного» варианта пишем внутрь span.v-ok: сам #successTitle/#successDesc
+      // держит ещё и span.v-lim (эталонный вариант «песни пакета закончились»).
+      function _suHead(el, html) { if (!el) return; var box = el.querySelector('.v-ok') || el; box.innerHTML = html; }
+      window._suHead = _suHead;
       function _setSuccessMode(gen) {
+        var _suPage = document.getElementById('successPage');
+        if (_suPage) _suPage.dataset.variant = 'ok'; /* вариант «лимит» ставит showTrackLimitPage после вызова */
         // .steps/.cta/.ghost имеют display:...!important в CSS — обычный inline их не перебьёт,
         // поэтому в режиме оплаты прячем через setProperty(...,'important'), а в режиме генерации
         // снимаем inline (removeProperty) — элемент возвращается к своему CSS-значению.
@@ -968,7 +1031,7 @@
               && !document.documentElement.classList.contains('is-vk-pay');
             if (_pdVkStub) {
               priceDisplay.textContent = '';
-            } else if (_pdVkAny) {
+            } else if (_pdVkAny || window._isNativeApp || document.documentElement.classList.contains('is-native')) {
               var _pdSku = sku || (typeof getCurrentSku === 'function' ? getCurrentSku() : '');
               var _pdIskry = (typeof ISKRY_PRICES !== 'undefined' && ISKRY_PRICES[_pdSku]) || 100;
               var _pdIu = (typeof window.iskryPlural === 'function') ? window.iskryPlural(_pdIskry) : ((typeof t === 'function' ? t('iskryUnit') : '') || 'Искр');
@@ -1299,3 +1362,114 @@
         }
       }
       window.cancelSubscription = cancelSubscription;
+
+      // ═══ CD 19.09 · Оплата песни (docs/DESIGN-HANDOFF-1909.md, экран 1) ═══
+      // Подвал с одним primary, состояния «идёт оплата» / «сбой», строка «Оплатить Искрами».
+      // Движок не переписан: подвал и строки — зеркала его кнопок (#payOvCardBtn / #payOvFreeClaimBtn /
+      // #payOvVkPayBtn) и #payOvStatus; синхронизация — MutationObserver, записи только при изменении.
+      (function poCdInit() {
+        var ov = document.getElementById('paymentOverlay');
+        if (!ov) return;
+        var $ = function (id) { return document.getElementById(id); };
+        var cta = $('poFootCta'), ctaLbl = cta ? cta.querySelector('.lbl') : null;
+        var note = ov.querySelector('.po-foot .note .lbl');
+        var waitEl = ov.querySelector('.po-wait span'), errEl = ov.querySelector('.po-err span');
+        var card = $('payOvCardBtn'), free = $('payOvFreeClaimBtn'), vk = $('payOvVkPayBtn'), ntu = $('payOvNativeTopupBtn');
+        var status = $('payOvStatus'), row = $('payOvIskryMethod'), sub = $('payOvIskrySub'), vkSub = $('payOvVkSub');
+        var primary = null, syncing = false, queued = false;
+        // Видимость по намерению движка (inline display) + видимость предков (CSS): сами кнопки
+        // #payOvCardBtn / #payOvFreeClaimBtn спрятаны нашим CSS — их показывает подвал.
+        function shown(el) {
+          if (!el || el.style.display === 'none') return false;
+          if (el.hasAttribute('data-web-only') && document.documentElement.classList.contains('is-native')) return false;
+          for (var n = el.parentElement; n && n !== ov; n = n.parentElement) {
+            if (n.style.display === 'none' || getComputedStyle(n).display === 'none') return false;
+          }
+          return true;
+        }
+        function tl(k, fb) { var v = typeof t === 'function' ? t(k) : null; return (v && v !== k) ? v : fb; }
+        function setText(el, v) { if (el && el.textContent !== v) el.textContent = v; }
+        function setHtml(el, v) { if (el && el.innerHTML !== v) el.innerHTML = v; }
+        function sync() {
+          if (syncing) return;
+          syncing = true;
+          try {
+            // 1. primary подвала: карта → Искры → «Пополнить Искры» (vk.ru / m.vk.ru); ничего не видно → подвала нет
+            primary = shown(card) ? card : shown(free) ? free : shown(vk) ? vk : shown(ntu) ? ntu : null;
+            ov.classList.toggle('po-has-cta', !!primary);
+            ov.classList.toggle('po-iskry-ok', shown(free));
+            // 2. состояние — из #payOvStatus движка (setPaymentStatus: класс error = сбой, иначе ожидание)
+            var st = 'confirm';
+            if (status && status.style.display !== 'none' && status.textContent.trim()) {
+              st = status.classList.contains('error') ? 'fail' : status.classList.contains('ok') ? 'ok' : status.classList.contains('warn') ? 'warn' : 'wait';
+            }
+            if (ov.dataset.pay !== st) ov.dataset.pay = st;
+            setText(waitEl, (st === 'wait' || st === 'ok' || st === 'warn') ? status.textContent : '');
+            setText(errEl, st === 'fail' ? status.textContent : '');
+            // 3. подпись primary и строка под ним
+            if (primary) {
+              if (st === 'fail') setText(ctaLbl, tl('payFailCta', 'Выбрать другой способ'));
+              else if (st === 'wait') setText(ctaLbl, tl('payWaitCta', 'Ждём оплату…'));
+              else if (primary === vk || primary === ntu) setText(ctaLbl, (primary.querySelector('.m-title') || primary).textContent);
+              else setHtml(ctaLbl, primary.innerHTML);
+              var dis = st !== 'fail' && !!primary.disabled;
+              if (cta && cta.disabled !== dis) cta.disabled = dis;
+            }
+            setText(note, st === 'fail' ? tl('payFailNote', 'Деньги не списаны')
+              : st === 'wait' ? tl('payWaitNote', 'Не закрывай экран')
+              : tl('payFootNote', 'Спишется один раз · песня придёт за 10–15 минут'));
+            // 4. суммы у способов: Искры (цена песни · баланс) и VK «Пополнить Искры»
+            var sku = (typeof pendingPaymentSku !== 'undefined' && pendingPaymentSku) || 'single_song';
+            var need = (typeof ISKRY_PRICES !== 'undefined' && ISKRY_PRICES[sku]) || 100;
+            var bal = typeof getIskryBalance === 'function' ? (getIskryBalance() || 0) : 0;
+            if (row) { var rv = shown(free) ? '' : 'none'; if (row.style.display !== rv) row.style.display = rv; }
+            if (sub) setText(sub, (free && free.disabled) ? free.textContent
+              : tl('payIskrySub', '{n} Искр · у тебя {bal}').replace('{n}', need).replace('{bal}', bal));
+            if (vkSub) setText(vkSub, tl('bsTopupIskrySub', 'Песня стоит {n} Искр').replace('{n}', need));
+            var ntuSub = $('payOvNativeTopupSub');
+            if (ntuSub) setText(ntuSub, tl('bsTopupIskrySub', 'Песня стоит {n} Искр').replace('{n}', need));
+          } finally { syncing = false; }
+        }
+        function schedule() {
+          if (queued) return;
+          queued = true;
+          requestAnimationFrame(function () { queued = false; sync(); });
+        }
+        new MutationObserver(function () { if (!syncing) schedule(); })
+          .observe(ov, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: ['style', 'class', 'disabled', 'data-state'] });
+        if (cta) cta.addEventListener('click', function () {
+          if (ov.dataset.pay === 'fail') {
+            // «Выбрать другой способ»: снимаем статус сбоя, показываем способы
+            if (typeof setPaymentStatus === 'function') setPaymentStatus('');
+            var mb = $('payOvMethodsBlock');
+            if (mb && mb.scrollIntoView) mb.scrollIntoView({ block: 'start', behavior: 'smooth' });
+            return;
+          }
+          if (ov.dataset.pay === 'wait') return;
+          if (primary) primary.click();
+        });
+        if (row && free) row.addEventListener('click', function () { if (!free.disabled) free.click(); });
+        // Натив: «Пополнить Искры» — запоминаем заявку, закрываем оплату, ведём в пополнение.
+        // После покупки пакета Искр модуль 14 зовёт window._poNativeResumePayment → та же заявка снова на оплате.
+        if (ntu) ntu.addEventListener('click', function () {
+          window._poNativeResume = { requestId: pendingPaymentRequestId, sku: pendingPaymentSku };
+          hidePaymentOverlay();
+          if (typeof goToPage === 'function') {
+            goToPage('topupPage');
+            setTimeout(function () { if (window._initTopupPage) window._initTopupPage(); }, 100);
+          }
+        });
+        window._poNativeResumePayment = function (rs) {
+          if (!rs || !rs.requestId) return;
+          pendingPaymentRequestId = rs.requestId;
+          pendingPaymentSku = rs.sku || pendingPaymentSku;
+          showPaymentOverlay();
+        };
+        // чем платили — для чека на экране успеха (suCdInit)
+        [[card, 'card'], [free, 'iskry'], [$('payOvStarsBtn'), 'stars'], [$('payOvPromoConfirmBtn'), 'promo'], [vk, 'iskry']].forEach(function (p) {
+          if (p[0]) p[0].addEventListener('click', function () { window._poLastMethod = p[1]; }, true);
+        });
+        if (cta) cta.addEventListener('click', function () { if (primary === card) window._poLastMethod = 'card'; else if (primary === free) window._poLastMethod = 'iskry'; }, true);
+        window._poCdSync = sync;
+        sync();
+      })();

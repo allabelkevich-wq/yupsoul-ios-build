@@ -5,8 +5,14 @@ import Capacitor
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
+    // Плеер: SystemVolumePlugin регистрируется один раз (applicationDidBecomeActive
+    // может вызываться повторно при каждом возврате приложения на передний план).
+    private var systemVolumePluginRegistered = false
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        // Плеер: категория playback — песня продолжает играть при блокировке экрана и в фоне
+        // (вместе с UIBackgroundModes=audio в Info.plist) и не глохнет от переключателя «без звука».
+        try? AVAudioSession.sharedInstance().setCategory(.playback, mode: .default)
         // Override point for customization after application launch.
         return true
     }
@@ -27,6 +33,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationDidBecomeActive(_ application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+        if !systemVolumePluginRegistered,
+           let vc = window?.rootViewController as? CAPBridgeViewController,
+           let bridge = vc.bridge {
+            bridge.registerPluginInstance(SystemVolumePlugin())
+            systemVolumePluginRegistered = true
+        }
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
@@ -56,4 +68,83 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return ApplicationDelegateProxy.shared.application(application, continue: userActivity, restorationHandler: restorationHandler)
     }
 
+}
+
+import MediaPlayer
+import AVFoundation
+
+// Плеер — громкость по кнопкам айфона (Алла 23.09): на iOS WebKit audio.volume из JS
+// не задаётся (Apple, "Safari HTML5 Audio and Video Guide": «the volume property is not
+// settable in JavaScript»). Системную громкость читаем через AVAudioSession.outputVolume
+// (+ KVO для live-слежения за кнопками громкости), а меняем через скрытый MPVolumeView —
+// единственный официальный способ программно подвинуть системный уровень звука на iOS.
+@objc(SystemVolumePlugin)
+public class SystemVolumePlugin: CAPPlugin, CAPBridgedPlugin {
+    public let identifier = "SystemVolumePlugin"
+    public let jsName = "SystemVolume"
+    public let pluginMethods: [CAPPluginMethod] = [
+        CAPPluginMethod(name: "getVolume", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "setVolume", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "startWatching", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "stopWatching", returnType: CAPPluginReturnPromise)
+    ]
+
+    private var volumeView: MPVolumeView?
+    private var volumeSlider: UISlider?
+    private var volumeObservation: NSKeyValueObservation?
+
+    @objc func getVolume(_ call: CAPPluginCall) {
+        call.resolve(["value": AVAudioSession.sharedInstance().outputVolume])
+    }
+
+    @objc func setVolume(_ call: CAPPluginCall) {
+        guard let value = call.getFloat("value") else {
+            call.reject("value required")
+            return
+        }
+        DispatchQueue.main.async {
+            self.withHiddenVolumeSlider { slider in
+                slider?.value = value
+            }
+        }
+        call.resolve()
+    }
+
+    @objc func startWatching(_ call: CAPPluginCall) {
+        try? AVAudioSession.sharedInstance().setActive(true)
+        if volumeObservation == nil {
+            volumeObservation = AVAudioSession.sharedInstance().observe(\.outputVolume, options: [.new]) { [weak self] session, _ in
+                self?.notifyListeners("volumeChange", data: ["value": session.outputVolume])
+            }
+        }
+        call.resolve()
+    }
+
+    @objc func stopWatching(_ call: CAPPluginCall) {
+        volumeObservation?.invalidate()
+        volumeObservation = nil
+        call.resolve()
+    }
+
+    // Скрытый MPVolumeView создаётся один раз на главном потоке; его внутренний UISlider —
+    // единственный API, которым можно физически подвинуть системную громкость с iOS 13+.
+    private func withHiddenVolumeSlider(_ completion: @escaping (UISlider?) -> Void) {
+        if let slider = volumeSlider {
+            completion(slider)
+            return
+        }
+        guard let hostView = self.bridge?.viewController?.view else {
+            completion(nil)
+            return
+        }
+        let view = MPVolumeView(frame: CGRect(x: -1000, y: -1000, width: 40, height: 40))
+        view.alpha = 0.01
+        hostView.addSubview(view)
+        volumeView = view
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+            let slider = view.subviews.first(where: { $0 is UISlider }) as? UISlider
+            self.volumeSlider = slider
+            completion(slider)
+        }
+    }
 }

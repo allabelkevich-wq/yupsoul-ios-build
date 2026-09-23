@@ -176,12 +176,12 @@
         </button>
       </div>
 
-      <div id="scCardPickerModal" class="sc-picker-overlay" role="dialog" aria-modal="true" aria-labelledby="scPickerTitle" onclick="if(event.target===this)scCloseCardPicker()">
+      <div id="scCardPickerModal" class="sc-picker-overlay" role="dialog" aria-modal="true" aria-labelledby="scPickerTitle" data-ctx="one" onclick="if(event.target===this)scCloseCardPicker()">
         <div class="sc-picker-sheet">
           <div class="head">
-            <button type="button" class="hbtn" onclick="scCloseCardPicker()" aria-label="Назад" data-i18n-aria="navBack"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg></button>
+            <button type="button" class="hbtn" id="scPickerBack" onclick="scCloseCardPicker()" aria-label="Назад" data-i18n-aria="navBack"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg></button>
             <h1 id="scPickerTitle" data-i18n="scPickerTitle">Контекст чата</h1>
-            <button type="button" class="hbtn" onclick="scCloseCardPicker()" aria-label="Закрыть" data-i18n-aria="navClose"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+            <button type="button" class="ctx-edit" id="scPickerEditBtn" onclick="scPickerToggleEdit()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4.5a1.5 1.5 0 0 1 1.5-1.5h5A1.5 1.5 0 0 1 16 4.5V6M6 6l1 14a1.6 1.6 0 0 0 1.6 1.5h6.8A1.6 1.6 0 0 0 17 20l1-14"/></svg><span id="scPickerEditLbl">Изменить</span></button>
           </div>
           <div class="scroll">
             <p class="ctx-sub" data-i18n="ctxSub">С кем сегодня говорим — Оракул будет держать это в контексте разговора.</p>
@@ -190,11 +190,22 @@
               <button id="scPickerTabSynastry" type="button" role="tab" aria-selected="false" onclick="scSetPickerMode('synastry')" data-i18n="ctxModeCompat">Совместимость</button>
             </div>
             <p class="ctx-hint" id="scPickerHint" aria-live="polite"></p>
+            <div class="ctx-count"><span data-i18n="ctxListLabel">Твои карточки</span><i id="scPickerCount"></i></div>
             <div id="scPickerList" role="listbox"></div>
+            <div class="ctx-empty">
+              <span class="empty-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="3.4"/><path d="M19 8v6M22 11h-6"/></svg></span>
+              <b data-i18n="ctxEmptyT">Пока есть только твоя карточка</b>
+              <span data-i18n="ctxEmptyS">Добавь дату рождения близкого — Оракул сможет говорить о нём и разбирать вашу совместимость.</span>
+              <button type="button" class="empty-cta" data-i18n="ctxEmptyCta" onclick="scAddPersonFromPicker()">Добавить карточку</button>
+            </div>
           </div>
           <div class="foot">
             <div class="pair" id="scPickerPair" aria-hidden="true"></div>
             <button id="scPickerApplyBtn" type="button" class="apply" onclick="scApplyCardPicker()" disabled>Применить</button>
+            <p class="apply-note" id="scPickerApplyNote"></p>
+            <button class="del" id="scPickerDelBtn" type="button" disabled onclick="scPickerDelete()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4.5a1.5 1.5 0 0 1 1.5-1.5h5A1.5 1.5 0 0 1 16 4.5V6M6 6l1 14a1.6 1.6 0 0 0 1.6 1.5h6.8A1.6 1.6 0 0 0 17 20l1-14"/></svg><span id="scPickerDelLbl">Удалить</span></button>
+            <p class="del-note" id="scPickerDelNote"></p>
+            <button class="del-cancel" id="scPickerDelCancel" type="button" onclick="scPickerDelCancel()">Готово</button>
           </div>
         </div>
       </div>
@@ -261,7 +272,7 @@
           <textarea id="scPageQuestion" rows="1" placeholder="Что у тебя на душе?" aria-label="Вопрос Чат с Оракулом" maxlength="1000" data-i18n-placeholder="scPlaceholder"></textarea>
           <span id="scPageCharHint" class="sc-char-hint" aria-live="polite" aria-label="Осталось символов" style="display:none;"></span>
           <button id="scPageSendBtn" type="button" class="send" aria-label="Отправить вопрос" disabled>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
           </button>
         </div>
           <p id="scOracleCounter" class="sc-oracle-counter limit" style="display:none;" aria-live="polite"></p>
@@ -531,7 +542,7 @@
           <button class="pw-x" id="scPwX" aria-label="Закрыть"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
           <div class="pw-yupik"></div>
           <div class="pw-teaser">
-            <div class="pw-teaser-bubble">Я чувствую, что за этим вопросом прячется что-то большее…</div>
+            <div class="pw-teaser-bubble" data-i18n="pwTeaserBubble">Я чувствую, что за этим вопросом прячется что-то большее…</div>
             <span class="pw-teaser-lock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> <span id="scPwTeaserLockTxt"></span></span>
           </div>
           <h2 class="pw-title" id="scPwTitle"></h2>

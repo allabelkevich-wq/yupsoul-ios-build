@@ -453,7 +453,7 @@
     body.theme-light #mtEmptyTitleEl { color: #1a1a2e !important; }
     body.theme-light #mtEmptyDescEl { color: rgba(26,26,46,0.5) !important; }
     /* Batch 9.38: исключаем back-btn / nav из стилизации myTracksPage */
-    body.theme-light #myTracksPage button:not(.profile-back-btn):not(.header-back-btn):not(.btn-nav):not(.header-menu-btn):not(.btn-info):not(.mth-play-all):not(.mth-shuffle):not(.mt-tab):not(.track-like):not(.track-more):not(.mt-create):not(.mt-play-btn):not(.mt-rate-btn):not(.mt-mini-btn):not(.r-hero):not(.r-card):not(.wave-pill):not(.rchip):not(.rt-like):not(.rt-save):not(.track-pub):not(.air-play):not(.rbtn-primary):not(.rbtn-ghost):not(.rsw) { background: rgba(250,245,235,0.7) !important; border: 1px solid rgba(212,149,107,0.2) !important; color: #1a1a2e !important; }
+    body.theme-light #myTracksPage button:not(.profile-back-btn):not(.header-back-btn):not(.btn-nav):not(.header-menu-btn):not(.btn-info):not(.mth-play-all):not(.mth-shuffle):not(.mt-tab):not(.track-like):not(.track-more):not(.mt-create):not(.mt-play-btn):not(.mt-rate-btn):not(.mt-mini-btn):not(.r-hero):not(.r-card):not(.wave-pill):not(.rchip):not(.rt-like):not(.rt-save):not(.track-pub):not(.air-play):not(.rbtn-primary):not(.rbtn-ghost):not(.rsw):not(.act):not(.mt-upsell-btn) { background: rgba(250,245,235,0.7) !important; border: 1px solid rgba(212,149,107,0.2) !important; color: #1a1a2e !important; }
     /* ── Фоны страниц: переопределение --g-bg для светлой темы ── */
     /* Молочный фон на всех страницах (как на плейлисте) */
     /* Batch 7.6 (ID 7258728 Кузнецова Windows): «Не отображается фоновое изображение на главной».
@@ -1298,18 +1298,6 @@
     html.is-vk-light #successBotHintText { color: rgba(26,26,46,0.65) !important; }
     body.theme-light #successBotHintText b,
     html.is-vk-light #successBotHintText b { color: #1a1a2e !important; }
-
-    body.theme-light #loadingPage,
-    html.is-vk-light #loadingPage {
-      background: #faf8f2 !important;
-      --loading-g-bg1: #faf8f2 !important;
-      --loading-g-bg2: #f5f0ea !important;
-      --g-bg1: #faf8f2 !important;
-      --g-bg2: #f5f0ea !important;
-      --g-blob-opacity: 0.08;
-      --g-blob-mid: 0.04;
-      --g-blob-edge: 0.02;
-    }
     body.theme-light #loadingTitle,
     html.is-vk-light #loadingTitle { color: #1a1a2e !important; }
     body.theme-light #loadingDesc,
@@ -2235,7 +2223,7 @@
     .page{position:fixed !important;inset:0 !important;display:none !important;flex-direction:column !important;overflow:hidden;visibility:hidden;opacity:0;pointer-events:none;z-index:0 !important;transition:none !important}
     .page.active{position:fixed !important;inset:0 !important;display:flex !important;visibility:visible !important;opacity:1 !important;pointer-events:auto !important;z-index:1000 !important;width:100% !important;height:100% !important;min-width:100vw !important;min-height:100vh !important;transform:none !important;clip-path:none !important;max-width:none !important;max-height:none !important}
     /* Единственный источник навигации (ЗАКОН №15): видимость по data-page */
-    body[data-page="homePage"] #homePage,body[data-page="helpPage"] #helpPage,body[data-page="profilePage"] #profilePage,body[data-page="heroesPage"] #heroesPage,body[data-page="myTracksPage"] #myTracksPage,body[data-page="formPage"] #formPage,body[data-page="loadingPage"] #loadingPage,body[data-page="successPage"] #successPage,body[data-page="soulChatPage"] #soulChatPage,body[data-page="paymentThanksPage"] #paymentThanksPage,body[data-page="adminPage"] #adminPage{position:fixed !important;inset:0 !important;width:100% !important;height:100% !important;min-width:100vw !important;min-height:100vh !important;transform:none !important;clip-path:none !important;max-width:none !important;max-height:none !important;display:flex !important;visibility:visible !important;opacity:1 !important;pointer-events:auto !important;z-index:1000 !important}
+    body[data-page="homePage"] #homePage,body[data-page="helpPage"] #helpPage,body[data-page="profilePage"] #profilePage,body[data-page="heroesPage"] #heroesPage,body[data-page="myTracksPage"] #myTracksPage,body[data-page="formPage"] #formPage,body[data-page="successPage"] #successPage,body[data-page="soulChatPage"] #soulChatPage,body[data-page="paymentThanksPage"] #paymentThanksPage,body[data-page="adminPage"] #adminPage{position:fixed !important;inset:0 !important;width:100% !important;height:100% !important;min-width:100vw !important;min-height:100vh !important;transform:none !important;clip-path:none !important;max-width:none !important;max-height:none !important;display:flex !important;visibility:visible !important;opacity:1 !important;pointer-events:auto !important;z-index:1000 !important}
     .page .gradient-bg,.page .page-gradient-bg{display:none !important}
     html.web-loading .page{display:none !important;transition:none}
     #onboardingPage{z-index:10000 !important}
@@ -4229,13 +4217,13 @@
       #homePage .home-right-col .home-typewriter-wrap.home-typewriter-below{min-height:3.5em !important;padding:6px 0 2px !important}
       #homePage .home-typewriter-wrap.home-typewriter-below .home-typewriter-text{font-size:0.82rem !important;line-height:1.45 !important}
       #homePage #homeHero .home-card-choices-head,#homePage .home-block-choices .home-card-choices-head{margin-top:16px !important;margin-bottom:8px !important;font-size:0.65rem !important}
-      #homePage #homeHero .home-choice,#homePage .home-block-choices .home-choice{padding:10px 12px !important;font-size:0.8rem !important;min-height:42px !important}
+      #homePage #homeHero .home-choice,#homePage .home-block-choices .home-choice{padding:10px 12px !important;font-size:0.8rem !important;min-height:44px !important}
       #homePage #homeHero #homeChoiceHint.home-card-hint,#homePage .home-block-choices #homeChoiceHint.home-card-hint{font-size:0.78rem !important;margin-top:8px !important}
       #homePage .home-lower{max-width:100% !important;padding-top:16px !important;padding-bottom:max(24px,env(safe-area-inset-bottom)) !important}
       #homePage .home-nav-glass{max-width:100% !important}
       #homePage .home-nav .home-nav-link.glass-item{font-size:0.7rem !important;padding:8px 4px !important}
       #homePage #homeTopBar .home-top-bar-logo,
-      #webLoginScreen .home-top-bar-logo{font-size:0.7rem !important;white-space:nowrap !important;overflow:hidden !important;text-overflow:ellipsis !important}
+      #webLoginScreen .home-top-bar-logo{font-size:0.58rem !important;white-space:nowrap !important;overflow:hidden !important;text-overflow:ellipsis !important}
     }
     @media (max-width:360px){
       #homePage .home-main-wrap{padding:calc(env(safe-area-inset-top) + 44px) 10px calc(env(safe-area-inset-bottom) + 8px + 52px) !important}
@@ -4300,7 +4288,7 @@
     .mode-content-wrap button,.mode-content-wrap .btn,.mode-content-wrap .mode-btn,.mode-content-wrap [role="button"]{pointer-events:auto !important}
     #webLoginScreen .home-top-bar{position:fixed !important;top:0 !important;left:0 !important;right:0 !important;z-index:150 !important;display:flex !important;flex-direction:row !important;justify-content:space-between !important;align-items:center !important;width:100% !important;padding:max(12px,env(safe-area-inset-top,0px)) 20px 8px !important;margin:0 !important;pointer-events:none !important;box-sizing:border-box !important;border:none !important;box-shadow:none !important;background:transparent !important;min-height:auto !important}
     #webLoginScreen .home-top-bar-logo{pointer-events:auto !important;font-size:1.25rem !important;font-weight:800 !important;letter-spacing:-0.03em !important;color:#fff !important;flex-shrink:1 !important;min-width:0 !important;display:inline-flex !important;align-items:center !important;gap:8px !important;overflow:hidden !important;white-space:nowrap !important;text-overflow:ellipsis !important}
-    @media (max-width:480px){#webLoginScreen .home-top-bar-logo{font-size:0.7rem !important}}
+    @media (max-width:480px){#webLoginScreen .home-top-bar-logo{font-size:0.58rem !important}}
     #webLoginScreen .home-logo-symbol-wrap{display:inline-block !important;width:36px !important;height:36px !important;border-radius:50% !important;overflow:hidden !important;flex-shrink:0 !important}
 #webLoginScreen .home-logo-symbol-wrap .home-logo-symbol{width:100% !important;height:100% !important;object-fit:cover !important;object-position:center !important;display:block !important;transform:scale(1.28) !important;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.4)) drop-shadow(0 0 8px rgba(255,255,255,0.15)) !important}
     #botGatePage .gate-logo-symbol-wrap{display:inline-block !important;width:48px !important;height:48px !important;border-radius:50% !important;overflow:hidden !important;flex-shrink:0 !important}
@@ -4386,6 +4374,14 @@
     .start-reviews-track{display:flex !important;gap:10px;animation:scrollStartReviews 28s linear infinite;width:max-content;will-change:transform}
     .start-reviews-track:hover{animation-play-state:paused}
     @media (max-width:480px){.start-reviews{width:100%;overflow-x:auto !important;overflow-y:hidden !important;-webkit-overflow-scrolling:touch;scroll-snap-type:x mandatory;scrollbar-width:none;-ms-overflow-style:none;touch-action:pan-x pan-y !important;position:relative}.start-reviews::-webkit-scrollbar{display:none}.start-reviews .start-reviews-track{animation:none !important;padding:0 4px}.start-review{scroll-snap-align:start}}
+    /* Приложение из стора (Capacitor, html.is-native): ручной drag-scroll выше выглядел сломанным —
+       карточки обрезаны и стоят на месте (Алла 22.09 на iPhone). Возвращаем бегущую строку, как на
+       десктопе/Telegram-web. Специфичность выше правила max-width:480px (доп. html.is-native),
+       поэтому побеждает на любой ширине. Telegram/VK на телефонах — НЕ трогаем, ждём решения Аллы. */
+    html.is-native .start-reviews{overflow:hidden !important;scroll-snap-type:none !important}
+    html.is-native .start-reviews .start-reviews-track{animation:scrollStartReviews 28s linear infinite !important}
+    /* WCAG 2.2.2: у кого «уменьшить движение» — анимации всё равно не должно быть, даже на нативе. */
+    @media (prefers-reduced-motion: reduce){html.is-native .start-reviews .start-reviews-track{animation:none !important}}
     .start-review{flex-shrink:0;width:170px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:8px 10px;backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
     .start-review-stars{color:#ffd700;font-size:0.6rem;letter-spacing:1px}
     /* VK Testers 7261442 (Мунасиб Моллаев Windows): обрезание отзывов
@@ -4741,21 +4737,11 @@
        снимаем дорогой live backdrop-blur у фикс. мини-плеера (24px-блюр фикс-бара пересчитывается над
        движущимся контентом каждый кадр = главный источник лагов скролла при проигрывании). В покое
        стекло возвращается. Фон делаем непрозрачным на время скролла, чтобы бар не просвечивал без блюра. */
-    html.mt-scrolling .mt-mini-player{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:rgba(18,12,30,0.92)!important}
-    html.mt-scrolling body.theme-light .mt-mini-player{background:rgba(255,255,255,0.95)!important}
-    .mt-mini-progress{height:2px;background:rgba(255,255,255,0.06);position:relative}
-    .mt-mini-progress-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--primary-color),var(--secondary-color));transition:width 0.15s linear}
-    .mt-mini-content{display:flex;align-items:center;gap:10px;padding:8px 12px}
-    .mt-mini-cover{width:42px;height:42px;border-radius:8px;flex-shrink:0;background:linear-gradient(135deg,rgba(var(--primary-rgb),0.15),rgba(var(--secondary-rgb),0.1));display:flex;align-items:center;justify-content:center;font-size:1rem;color:rgba(var(--primary-rgb),0.5);overflow:hidden}
-    .mt-mini-cover img{width:100%;height:100%;object-fit:cover;border-radius:8px}
-    .mt-mini-info{flex:1;min-width:0}
-    .mt-mini-title{font-size:0.82rem;font-weight:500;color:rgba(255,255,255,0.92);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:-0.01em}
-    .mt-mini-sub{font-size:0.68rem;color:rgba(255,255,255,0.38);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:400}
+    html.mt-scrolling .mt-mini-player,html.mt-scrolling #mtMiniPlayer .mini-in{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:rgba(18,12,30,0.92)!important}
+    html.mt-scrolling body.theme-light .mt-mini-player,html.mt-scrolling body.theme-light #mtMiniPlayer .mini-in{background:rgba(255,255,255,0.95)!important}
     .mt-mini-actions{display:flex;gap:6px;align-items:center}
     .mt-mini-action-btn{width:36px!important;height:36px!important;min-height:36px!important;min-width:36px!important;border-radius:50%!important;background:rgba(255,255,255,0.08)!important;backdrop-filter:blur(12px)!important;-webkit-backdrop-filter:blur(12px)!important;border:1px solid rgba(255,255,255,0.12)!important;color:rgba(255,255,255,0.7)!important;display:flex!important;align-items:center!important;justify-content:center!important;cursor:pointer;transition:all 0.2s;padding:0!important;margin:0!important;box-shadow:inset 0 1px 0 rgba(255,255,255,0.15),0 2px 8px rgba(0,0,0,0.2)!important;animation:none!important}
     .mt-mini-action-btn:active{background:rgba(255,255,255,0.18)!important;color:#fff!important;transform:scale(0.92)}
-    .mt-mini-play{width:46px!important;height:46px!important;min-height:46px!important;min-width:46px!important;border-radius:50%!important;background:rgba(255,255,255,0.12)!important;backdrop-filter:blur(16px)!important;-webkit-backdrop-filter:blur(16px)!important;border:1.5px solid rgba(255,255,255,0.2)!important;display:flex!important;align-items:center!important;justify-content:center!important;cursor:pointer;flex-shrink:0;transition:all 0.2s;padding:0!important;margin:0!important;box-shadow:inset 0 1px 0 rgba(255,255,255,0.2),0 4px 16px rgba(0,0,0,0.3)!important;animation:none!important}
-    .mt-mini-play:active{transform:scale(0.9);background:rgba(255,255,255,0.22)!important}
     /* Detail overlay (Расшифровка/Разбор) — полноэкранный reading-лист в канве
        (Алла 21.06: «не в общей канве, не скроллится»). Был liquid-glass bottom-sheet —
        обрезался на VK/широком экране и не скроллил. Теперь full-screen, theme-aware,
@@ -4784,8 +4770,6 @@
     body.theme-light .mt-detail-body,html.is-vk-light:not(.dark) .mt-detail-body,html.is-ok-light:not(.dark) .mt-detail-body{color:#3a2330}
     body.theme-light #mtDetailOverlay .mt-detail-header-btn,html.is-vk-light:not(.dark) #mtDetailOverlay .mt-detail-header-btn,html.is-ok-light:not(.dark) #mtDetailOverlay .mt-detail-header-btn{background:rgba(74,38,46,.05) !important;border-color:rgba(74,38,46,.13) !important;color:#241526 !important}
     body.theme-light .mt-detail-body::-webkit-scrollbar-thumb,html.is-vk-light:not(.dark) .mt-detail-body::-webkit-scrollbar-thumb,html.is-ok-light:not(.dark) .mt-detail-body::-webkit-scrollbar-thumb{background:rgba(74,38,46,.25)}
-    /* Duration display in mini-player */
-    .mt-mini-duration{font-size:0.62rem;color:rgba(255,255,255,0.3);white-space:nowrap;font-variant-numeric:tabular-nums;letter-spacing:0.02em;min-width:0}
     #myTracksPage .mt-hero{position:relative;flex-shrink:0;margin-bottom:20px;padding:28px 24px;border-radius:1rem;background:rgba(30,30,40,0.5);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid rgba(55,65,81,0.8);z-index:1}
     #myTracksPage .mt-hero .corner-tl,#myTracksPage .mt-hero .corner-tr,#myTracksPage .mt-hero .corner-bl,#myTracksPage .mt-hero .corner-br{position:absolute;width:40px;height:40px;pointer-events:none}
     /* ── Hero collection (showcase-playlist, 15.06) ── */
@@ -4982,17 +4966,6 @@
     #helpPage .help-header{position:sticky;top:0;z-index:50;background:transparent !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important;border:none !important;box-shadow:none !important;padding:8px 16px 14px;flex-shrink:0}
     #helpPage .help-header-row{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;pointer-events:auto}
     #helpPage .help-header-spacer{width:44px;min-width:44px;height:44px;flex-shrink:0}
-    #loadingPage{align-items:center;justify-content:center;--loading-g-bg1:#1a1a2e;--loading-g-bg2:#0f0f1e;--loading-g-c1:18,113,255;--loading-g-c2:107,74,255;--loading-g-c3:100,100,255;--loading-g-c4:50,160,220;--loading-g-c5:80,47,122;--loading-g-ci:140,100,255;--loading-g-blend:hard-light}
-    #loadingPage .loading-page-bg{position:absolute;inset:0;z-index:0;background:linear-gradient(40deg,var(--loading-g-bg1),var(--loading-g-bg2));overflow:hidden;pointer-events:none;visibility:visible;isolation:isolate}
-    #loadingPage .loading-page-bg .gradients-container{position:absolute;inset:0;width:100%;height:100%;filter:blur(40px);-webkit-filter:blur(40px);transform:translateZ(0)}
-    #loadingPage .loading-page-bg .g1,#loadingPage .loading-page-bg .g2,#loadingPage .loading-page-bg .g3,#loadingPage .loading-page-bg .g4,#loadingPage .loading-page-bg .g5{position:absolute;width:80%;height:80%;top:10%;left:10%;mix-blend-mode:var(--loading-g-blend);opacity:1;transform:translateZ(0);will-change:transform}
-    #loadingPage .loading-page-bg .g1{background:radial-gradient(circle,rgba(var(--loading-g-c1),0.8) 0,rgba(var(--loading-g-c1),0) 50%);animation:gV 30s ease infinite}
-    #loadingPage .loading-page-bg .g2{background:radial-gradient(circle,rgba(var(--loading-g-c2),0.8) 0,rgba(var(--loading-g-c2),0) 50%);transform-origin:calc(50% - 400px);animation:gC 20s reverse infinite}
-    #loadingPage .loading-page-bg .g3{background:radial-gradient(circle,rgba(var(--loading-g-c3),0.8) 0,rgba(var(--loading-g-c3),0) 50%);top:30%;left:-30%;transform-origin:calc(50% + 400px);animation:gC 40s linear infinite}
-    #loadingPage .loading-page-bg .g4{background:radial-gradient(circle,rgba(var(--loading-g-c4),0.8) 0,rgba(var(--loading-g-c4),0) 50%);animation:gH 40s ease infinite;opacity:0.7}
-    #loadingPage .loading-page-bg .g5{background:radial-gradient(circle,rgba(var(--loading-g-c5),0.8) 0,rgba(var(--loading-g-c5),0) 50%);width:160%;height:160%;top:-30%;left:-30%;transform-origin:calc(50% - 800px) calc(50% + 200px);animation:gC 20s ease infinite}
-    #loadingPage .loading-page-bg .interactive{position:absolute;background:radial-gradient(circle,rgba(var(--loading-g-ci),0.8) 0,rgba(var(--loading-g-ci),0) 50%);mix-blend-mode:var(--loading-g-blend);width:100%;height:100%;top:-50%;left:-50%;opacity:0.7;pointer-events:none}
-    #loadingPage .loading{position:relative;z-index:1}
     #successPage,.page#paymentThanksPage{flex-direction:column}
     /* Страница успеха — избранный вариант: градиент, блобы, карточка день/ночь */
     #successPage{--success-g-bg1:#1a1a2e;--success-g-bg2:#0f0f1e;--success-g-c1:18,113,255;--success-g-c2:107,74,255;--success-g-c3:100,100,255;--success-g-c4:50,160,220;--success-g-c5:80,47,122;--success-g-ci:140,100,255;--success-g-blend:hard-light}
@@ -5192,7 +5165,7 @@
     .help-support-btn{width:100% !important;max-width:100% !important;padding:12px 20px;border-radius:24px !important;background:rgba(255,255,255,0.03) !important;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.10) !important;color:rgba(255,255,255,0.50) !important;font-size:0.78rem !important;font-weight:300;letter-spacing:0.02em;cursor:pointer;font-family:inherit;margin-top:4px;transition:border-color .2s,background .2s;animation:none !important;box-shadow:0 0 16px rgba(255,255,255,0.05) !important;height:48px;box-sizing:border-box !important;text-align:center !important}
     .help-support-btn:hover{border-color:rgba(249,115,22,0.5) !important;background:rgba(28,25,45,0.75) !important;color:#fff !important}
     /* Минималистичные pill-кнопки — глобальный стиль для всех action-кнопок */
-    .page:not(#homePage):not(#webLoginScreen):not(#myTracksPage):not(#downloadSongPage):not(.ys) button:not([data-u]):not(.sc-askeza-entry):not(.sc-askeza-planet):not(.sc-askeza-cell):not(.th):not(.fi):not(.seed):not(.sc-askeza-cta):not(.sc-askeza-ghost):not(.sc-askeza-back):not(.profile-back-btn):not(.header-back-btn):not(.btn-nav):not(.header-menu-btn):not(.btn-info):not(.mode-btn):not(.home-app-menu-btn):not(.lang-switcher-btn):not(.lang-opt):not(.onboarding-btn):not(.hca-btn):not(.mt-rate-btn):not(.mt-play-btn):not(.mt-mini-btn):not(.stories-close):not(.mode-info):not(.request-quick-toggle):not(.quick-item):not(.pick-from-lab-option):not(.pick-p1-option):not(.cs-option):not(.quick-picker-btn):not(.example-btn):not(.request-help-toggle):not(.style-mode-btn):not(.ppc-info):not([class*="star-"]):not(.sc-synastry-teaser-btn):not(.profile-link-service-btn):not(.profile-ref-copy-btn):not(.profile-ref-share-btn):not(.profile-theme-btn):not(.sc-picker-card-item):not(.sc-picker-apply-btn):not(.sc-picker-tab):not(.sc-prism-card):not(.sc-copy-btn):not(.sc-dock-action):not(.sc-send-btn-icon):not(.comp-opt):not(.send):not(.qa-card):not(.person):not(.person-add):not(.apply):not(#scPickerTabSingle):not(#scPickerTabSynastry):not(.sc-oracle-tab):not(.tab):not(.hbtn):not(.pcard):not(.pw-pack):not([data-pk]):not(.chart-chip):not(.sc-qa-card):not(.sc-dock-chip):not(.sc-context-pill):not(.entry):not(.oracle-topic-card):not(.sc-diary-ask):not(.sc-diary-continue):not(.mt-upsell-btn):not(.r-hero):not(.r-card):not(.mt-upsell-sub):not(.help-support-btn):not(.help-act-partner):not(.help-section-title):not(.act-support):not(.act-ghost):not(.act-link):not(.qa-q):not(.iskra-claim-btn):not(.iskra-value-cta):not(.gifts-spend):not(.grf-share):not(.grf-copy):not(.vol-btn):not(.pa-legal-link):not(.pa-submit):not(.pa-cta):not(.wave-pill):not(.rchip):not(.rt-like):not(.rt-save):not(.track-pub):not(.air-play):not(.rbtn-primary):not(.rbtn-ghost):not(.rsw):not(.save):not(.acc-h):not(.add):not(.ha):not(.hero-main):not(.zero-cta):not(.nav-btn):not(.dlv):not(.dedi-chip):not(.recip):not(.recip-add):not(.couple-src-btn):not(.cta):not(.ghost):not(.plan-btn):not(.link):not(.cs-display):not(.gender-btn):not(.promo-apply):not(.promo-toggle):not(.dset-cta):not(.dset-topic):not(.dpw-cta):not(.success-cs-btn):not(.copy):not(.btn-pay):not(.share):not(.btn-ghost):not(.tap):not(.scard):not(.notify-btn){border-radius:9999px !important;font-weight:300 !important;font-size:0.78rem !important;letter-spacing:0.02em !important;box-shadow:none !important}
+    .page:not(#homePage):not(#webLoginScreen):not(#myTracksPage):not(#downloadSongPage):not(.ys) button:not([data-u]):not(.sc-askeza-entry):not(.sc-askeza-planet):not(.sc-askeza-cell):not(.th):not(.fi):not(.seed):not(.sc-askeza-cta):not(.sc-askeza-ghost):not(.sc-askeza-back):not(.profile-back-btn):not(.header-back-btn):not(.btn-nav):not(.header-menu-btn):not(.btn-info):not(.mode-btn):not(.home-app-menu-btn):not(.lang-switcher-btn):not(.lang-opt):not(.onboarding-btn):not(.hca-btn):not(.mt-rate-btn):not(.mt-play-btn):not(.mt-mini-btn):not(.stories-close):not(.mode-info):not(.request-quick-toggle):not(.quick-item):not(.pick-from-lab-option):not(.pick-p1-option):not(.cs-option):not(.quick-picker-btn):not(.example-btn):not(.request-help-toggle):not(.style-mode-btn):not(.ppc-info):not([class*="star-"]):not(.sc-synastry-teaser-btn):not(.profile-link-service-btn):not(.profile-ref-copy-btn):not(.profile-ref-share-btn):not(.profile-theme-btn):not(.ctx-edit):not(.del):not(.del-cancel):not(.empty-cta):not(.sc-prism-card):not(.sc-copy-btn):not(.sc-dock-action):not(.sc-send-btn-icon):not(.comp-opt):not(.send):not(.qa-card):not(.person):not(.person-add):not(.apply):not(#scPickerTabSingle):not(#scPickerTabSynastry):not(.sc-oracle-tab):not(.tab):not(.hbtn):not(.pcard):not(.pw-pack):not([data-pk]):not(.chart-chip):not(.sc-qa-card):not(.sc-dock-chip):not(.sc-context-pill):not(.entry):not(.oracle-topic-card):not(.sc-diary-ask):not(.sc-diary-continue):not(.mt-upsell-btn):not(.r-hero):not(.r-card):not(.mt-upsell-sub):not(.help-support-btn):not(.help-act-partner):not(.help-section-title):not(.act-support):not(.act-ghost):not(.act-link):not(.qa-q):not(.iskra-claim-btn):not(.iskra-value-cta):not(.gifts-spend):not(.grf-share):not(.grf-copy):not(.vol-btn):not(.pa-legal-link):not(.pa-submit):not(.pa-cta):not(.wave-pill):not(.rchip):not(.rt-like):not(.rt-save):not(.track-pub):not(.air-play):not(.rbtn-primary):not(.rbtn-ghost):not(.rsw):not(.save):not(.acc-h):not(.add):not(.ha):not(.hero-main):not(.zero-cta):not(.nav-btn):not(.dlv):not(.dedi-chip):not(.recip):not(.recip-add):not(.couple-src-btn):not(.cta):not(.ghost):not(.plan-btn):not(.link):not(.cs-display):not(.gender-btn):not(.promo-apply):not(.promo-toggle):not(.dset-cta):not(.dset-topic):not(.dpw-cta):not(.success-cs-btn):not(.copy):not(.btn-pay):not(.share):not(.btn-ghost):not(.tap):not(.scard):not(.notify-btn){border-radius:9999px !important;font-weight:300 !important;font-size:0.78rem !important;letter-spacing:0.02em !important;box-shadow:none !important}
     /* .plan-modal-cta УБРАНА из этой pill-группы (Алла 03.07): это полноширинная CTA подписки в модалке
        тарифа (.plan-modal-cta.gold/.pink, 5144+), а не мелкая пилюля-нав. Группа плющила её в серую
        пилюлю поверх золото/розового градиента (0.68rem + серый фон). Теперь градиент применяется. */
@@ -5795,7 +5768,7 @@
     body.theme-light #songOpenedPage .player-meta b{color:#241526}
     #songOpenedPage .player-meta span{font-size:11.5px;color:var(--muted)}
     #songOpenedPage .play-btn{flex:none;width:46px;height:46px;border-radius:50%;border:none;display:grid;place-items:center;color:#fff;background:var(--cta);box-shadow:0 12px 26px -12px var(--cta-glow)}
-    #songOpenedPage .play-btn svg{width:20px;height:20px}
+    #songOpenedPage .play-btn svg{width:20px !important;height:20px !important;max-width:none !important} /* общее img,svg{max-width:100%;height:auto} сжимало паузу до 4px (замер 23.09) */
     #songOpenedPage .play-btn .ic-pause{display:none}
     #songOpenedPage .so-root.playing .play-btn .ic-play{display:none}
     #songOpenedPage .so-root.playing .play-btn .ic-pause{display:block}
@@ -5826,9 +5799,16 @@
     body.theme-light #songOpenedPage .optin-h b{color:#241526}
     #songOpenedPage .optin-h .gift{margin-left:auto;font-size:10px;font-weight:600;color:var(--spark);white-space:nowrap}
     body.theme-light #songOpenedPage .optin-h .gift{color:#b3791a}
-    #songOpenedPage .optin-p{display:none}
+    /* Пояснение показываем (Алла 23.09: «прошлый текст нравился больше»; в эталоне абзац спрятан, без него карточка непонятна). Стиль — как подпись .lead/.times экрана. */
+    #songOpenedPage .optin-p{display:block;margin:6px 0 0;font-size:12px !important;line-height:1.4;color:var(--muted) !important} /* общее p{font-size:.85rem !important} и светлый блэнкет цвета перебивали (замер 23.09) */
+    body.theme-light #songOpenedPage .optin-p{color:rgba(36,21,38,.62) !important}
+    body.theme-light #songOpenedPage .optin-h .gift{color:#b3791a !important}
+    body.theme-light #songOpenedPage .eyebrow{color:#c43d7e !important}
     #songOpenedPage .optin-row{display:flex;gap:8px;margin-top:9px}
     #songOpenedPage .optin-row button{flex:1;padding:9px;border-radius:9999px;font-size:12px;font-weight:600;border:1px solid var(--line-2)}
+    /* iOS: при тапе по «Да, присылай» вокруг кнопки вспыхивал чёрный квадрат (Алла 23.09, TestFlight 25) — системная подсветка тапа и слой затухания карточки. */
+    #songOpenedPage .optin-row button{-webkit-tap-highlight-color:transparent;-webkit-backface-visibility:hidden;outline:none}
+    #songOpenedPage .optin{-webkit-backface-visibility:hidden;transform:translateZ(0)}
     #songOpenedPage .optin-yes{border:none !important;color:#fff;background:var(--cta);box-shadow:0 10px 22px -12px var(--cta-glow)}
     #songOpenedPage .optin-no{background:var(--surface);color:var(--text)}
     #songOpenedPage .actions{position:relative;z-index:5;flex:none;padding:10px 26px calc(16px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:8px;background:linear-gradient(180deg,transparent,rgba(6,4,9,.92) 24%)}
@@ -6094,44 +6074,6 @@
       border-top: 1px solid rgba(255,255,255,0.12) !important;
       color: rgba(255,255,255,0.92) !important;
     }
-    html.dark .sc-picker-tab,
-    body.theme-dark .sc-picker-tab {
-      color: rgba(255,255,255,0.70) !important;
-      background: transparent !important;
-    }
-    html.dark .sc-picker-tab.is-active,
-    body.theme-dark .sc-picker-tab.is-active {
-      background: rgba(236,72,153,0.20) !important;
-      color: #ffffff !important;
-      border: 1px solid rgba(236,72,153,0.50) !important;
-    }
-    html.dark .sc-picker-card-item,
-    body.theme-dark .sc-picker-card-item {
-      background: rgba(255,255,255,0.05) !important;
-      border: 1px solid rgba(255,255,255,0.12) !important;
-    }
-    /* Подсветка выбранной карточки в тёмной теме. Без этого companion-правила
-       общий dark-override выше (с !important) перебивал .is-selected (без
-       !important) → выбранная и невыбранная карточки выглядели одинаково,
-       пользователь не видел факт выбора до нажатия «Применить». Закон №29. */
-    html.dark .sc-picker-card-item.is-selected,
-    body.theme-dark .sc-picker-card-item.is-selected {
-      background: rgba(var(--primary-rgb),0.22) !important;
-      border: 1px solid rgba(var(--primary-rgb),0.6) !important;
-      color: #ffffff !important;
-    }
-    html.dark .sc-picker-section-label,
-    html.dark .sc-picker-title,
-    body.theme-dark .sc-picker-section-label,
-    body.theme-dark .sc-picker-title {
-      color: rgba(255,255,255,0.85) !important;
-    }
-    html.dark .sc-picker-close,
-    body.theme-dark .sc-picker-close {
-      background: rgba(255,255,255,0.06) !important;
-      border: 1px solid rgba(255,255,255,0.10) !important;
-      color: rgba(255,255,255,0.75) !important;
-    }
     /* VK Testers 7256641 ПЕРЕОТКРЫТ (Онуфриенко dark): тема сбрасывается при переходе
        в documents и возвращается обратно. Корень — landing.html со своими стилями
        устанавливает свой background. Force html.dark #legalModal background. */
@@ -6363,7 +6305,7 @@
       h1, .header-title { font-size: 1.1rem !important; }
       h2, .section-title { font-size: 0.95rem !important; }
       p, .text-content, .profile-field { font-size: 0.85rem !important; }
-      button, .btn { font-size: 0.9rem !important; padding: 10px 16px !important; }
+      button:not(:where(#songOpenedPage *, #songUnlockPage *, #giftPage *, #giftPayPage *, #giftRedeemPage *, #compatResultPage *)), .btn:not(:where(#songOpenedPage *, #songUnlockPage *, #giftPage *, #giftPayPage *, #giftRedeemPage *, #compatResultPage *)) { font-size: 0.9rem !important; padding: 10px 16px !important; }
     }
     button, .btn, .profile-back-btn, .header-menu-btn, .action-button {
       min-width: 40px !important;
@@ -6539,7 +6481,7 @@
     }
     #formPage .mode-card-icon svg { color: #d3a94f; }
     body.theme-light #formPage .mode-card-icon svg { color: #a97b2f; }
-    button, .btn, .action-button, .card-button {
+    button:not(:where(#songOpenedPage *, #songUnlockPage *, #giftPage *, #giftPayPage *, #giftRedeemPage *, #compatResultPage *)), .btn:not(:where(#songOpenedPage *, #songUnlockPage *, #giftPage *, #giftPayPage *, #giftRedeemPage *, #compatResultPage *)), .action-button, .card-button {
       min-width: 0 !important;
       min-height: 44px !important;
       padding: 12px 20px !important;
@@ -6641,7 +6583,7 @@
       html, body { font-size: 15px !important; }
       #app, .app-container { padding: 10px !important; min-width: 0 !important; }
       .card, .profile-card { min-width: 0 !important; padding: 14px !important; }
-      button, .btn { min-width: 80px !important; min-height: 40px !important; font-size: 0.9rem !important; }
+      button:not(:where(#songOpenedPage *, #songUnlockPage *, #giftPage *, #giftPayPage *, #giftRedeemPage *, #compatResultPage *)), .btn:not(:where(#songOpenedPage *, #songUnlockPage *, #giftPage *, #giftPayPage *, #giftRedeemPage *, #compatResultPage *)) { min-width: 80px !important; min-height: 40px !important; font-size: 0.9rem !important; }
       #startBtn, .main-action-btn { min-width: 0 !important; width: 100% !important; font-size: 1rem !important; }
       .format-buttons, .mode-buttons, .mode-cards, .song-format-buttons { gap: 8px !important; }
       #formPage .step-panel[data-step="1"] .mode-cards { flex-wrap: nowrap !important; }
@@ -7307,6 +7249,11 @@
     #formPage .request-input-box .request-quick-bar .request-quick-toggle {
       border-top: none !important;
     }
+    /* То же самое для бара «Стили музыки» под подсказкой стиля — осталась лишняя линия-разделитель,
+       которую сняли только у .request-input-box выше (визуальный аудит на iPhone, Алла 22.09). */
+    #formPage #styleQuickManual .request-quick-bar {
+      border-top: none !important;
+    }
     /* Кнопки «Быстрые запросы» и «Стили музыки» — прозрачное стекло, с тонкой розовой обводкой. */
     #formPage .request-quick-toggle {
       /* Единый прозрачный glass-канон (Алла 03.07) — раньше тёмно-пинковый rgba(22,20,38,0.12)
@@ -7584,18 +7531,6 @@
     body.theme-light #helpPage * { color: #1a1a2e !important; }
     body.theme-light #helpPage .help-support-btn { color: #ec4899 !important; }
     body.theme-light #soulChatPage * { color: #1a1a2e !important; }
-    /* Контекст-модалка: элементы с белым текстом на цветном/градиентном фоне —
-       исключения из общего `#soulChatPage *{color:#1a1a2e}` (иначе тёмный текст
-       на розовом). Реф showcase-chat-context: аватары, бейдж «это ты», сердце пары,
-       активный таб и кнопка «Применить» — всегда белый текст. (Алла 16.06) */
-    body.theme-light #scCardPickerModal .sc-pci-av,
-    body.theme-light #scCardPickerModal .sc-pci-me-badge,
-    body.theme-light #scCardPickerModal .sc-pci-pair-av,
-    body.theme-light #scCardPickerModal .sc-pci-pair-heart,
-    body.theme-light #scCardPickerModal .sc-pci-pair-heart svg,
-    body.theme-light #scCardPickerModal #scPickerModeTabs .sc-picker-tab.is-active,
-    body.theme-light #scCardPickerModal .sc-picker-apply-btn:not(:disabled) { color: #fff !important; }
-    body.theme-light #scCardPickerModal .sc-picker-apply-btn:disabled { color: var(--faint) !important; }
     body.theme-light #scQuickBuyDayBtn { color: #ec4899 !important; }
     body.theme-light #scChoosePlanBtn { color: #ec4899 !important; }
     /* Стартовая/webLogin */
@@ -8337,18 +8272,6 @@
     html.is-vk-light:not(.dark) .sc-drain-switch,
     html.is-ok-light:not(.dark) .sc-drain-switch { border-top-color: rgba(26,26,46,0.1) !important; }
 
-    /* Убрать человека прямо в пикере Лаборатории. Размеры взяты у соседа .person-pick
-       (23px), кружок — как у него: строка карточки уже плотная, второй прямоугольник
-       её бы утяжелил. Приглушена, пока карточку не тронули — действие редкое. */
-    .person-del { flex: none; width: 26px; height: 26px; margin-left: 2px; display: inline-flex; align-items: center; justify-content: center; padding: 0; cursor: pointer; font-family: inherit; -webkit-appearance: none; appearance: none;
-      border: 1px solid rgba(236,72,153,0.28); background: rgba(236,72,153,0.07); color: rgba(249,168,212,0.9);
-      border-radius: 50% !important; opacity: 0.55; transition: opacity .15s, border-color .15s, background .15s; }
-    .person-del svg { width: 14px; height: 14px; }
-    .person:hover .person-del, .person-del:focus-visible { opacity: 1; }
-    .person-del:hover { border-color: rgba(236,72,153,0.55); background: rgba(236,72,153,0.14); }
-    .person-del:disabled { cursor: default; }
-    html.is-vk-light:not(.dark) .person-del,
-    html.is-ok-light:not(.dark) .person-del { color: rgba(190,24,93,0.85) !important; border-color: rgba(190,24,93,0.3) !important; }
 
     .sc-askeza-picker { display: flex; flex-direction: column; }
     #scAskezaPickerList { display: flex; flex-direction: column; gap: 8px; }
@@ -8880,7 +8803,6 @@ body.theme-light #soulChatPage .sc-askeza-cell.is-missed,
     #soulChatPage #scDiaryPane { animation: scContentFadeIn 0.3s ease forwards; }
     @keyframes scContentFadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-    #loadingPage .loading{color:rgba(209,213,219,0.9) !important;gap:28px}
     /* Generating animation — reusable across all pages */
     .loader-wrapper{position:relative;display:flex;align-items:center;justify-content:center;width:180px;height:180px;font-family:var(--font-app,'Inter',sans-serif);font-size:1.2em;font-weight:300;color:#fff;border-radius:50%;background:transparent;user-select:none}
     .loader-wrapper .loader{position:absolute;top:0;left:0;width:100%;aspect-ratio:1/1;border-radius:50%;background:transparent;animation:loader-rotate 2s linear infinite;z-index:0}
@@ -9224,9 +9146,14 @@ body.theme-light #soulChatPage .sc-askeza-cell.is-missed,
        Мистическая палитра, стеклянные кнопки по умолчанию
        ============================================ */
 
-    button,
-    .btn,
-    [role="button"] {
+    /* Экраны, перенесённые из эталонов дословно (закон №46), из общей пилюли исключены:
+       их кнопки (градиентная CTA, кнопка воспроизведения, «Да, присылай», призрачные)
+       описаны собственным CSS без !important, и общее правило красило их в серое,
+       меняло шрифт и отступы (Алла 23.09, TestFlight 25: «дизайн страницы явно поехал»).
+       Форму-пилюлю эти экраны держат сами. */
+    button:not(:where(#songOpenedPage *, #songUnlockPage *, #giftPage *, #giftPayPage *, #giftRedeemPage *, #compatResultPage *)),
+    .btn:not(:where(#songOpenedPage *, #songUnlockPage *, #giftPage *, #giftPayPage *, #giftRedeemPage *, #compatResultPage *)),
+    [role="button"]:not(:where(#songOpenedPage *, #songUnlockPage *, #giftPage *, #giftPayPage *, #giftRedeemPage *, #compatResultPage *)) {
       /* Эталон формы кнопок — пилюля. Алла 31.05.2026 запретила прямоугольные
          кнопки. Карточки/инпуты/мод-селекторы держат свой radius (спецификой). */
       border-radius: 9999px !important;
@@ -9248,22 +9175,22 @@ body.theme-light #soulChatPage .sc-askeza-cell.is-missed,
       backdrop-filter: blur(12px) !important; -webkit-backdrop-filter: blur(12px) !important;
       -webkit-backdrop-filter: blur(12px) !important;
     }
-    button:hover,
-    .btn:hover,
-    [role="button"]:hover {
+    button:not(:where(#songOpenedPage *, #songUnlockPage *, #giftPage *, #giftPayPage *, #giftRedeemPage *, #compatResultPage *)):hover,
+    .btn:not(:where(#songOpenedPage *, #songUnlockPage *, #giftPage *, #giftPayPage *, #giftRedeemPage *, #compatResultPage *)):hover,
+    [role="button"]:not(:where(#songOpenedPage *, #songUnlockPage *, #giftPage *, #giftPayPage *, #giftRedeemPage *, #compatResultPage *)):hover {
       background: rgba(255, 255, 255, 0.1) !important;
       border-color: rgba(255, 255, 255, 0.2) !important;
       box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
     }
-    button:active,
-    .btn:active,
-    [role="button"]:active {
+    button:not(:where(#songOpenedPage *, #songUnlockPage *, #giftPage *, #giftPayPage *, #giftRedeemPage *, #compatResultPage *)):active,
+    .btn:not(:where(#songOpenedPage *, #songUnlockPage *, #giftPage *, #giftPayPage *, #giftRedeemPage *, #compatResultPage *)):active,
+    [role="button"]:not(:where(#songOpenedPage *, #songUnlockPage *, #giftPage *, #giftPayPage *, #giftRedeemPage *, #compatResultPage *)):active {
       transform: scale(0.98) !important;
       background: rgba(255, 255, 255, 0.08) !important;
     }
-    button:disabled,
-    .btn:disabled,
-    [role="button"]:disabled {
+    button:not(:where(#songOpenedPage *, #songUnlockPage *, #giftPage *, #giftPayPage *, #giftRedeemPage *, #compatResultPage *)):disabled,
+    .btn:not(:where(#songOpenedPage *, #songUnlockPage *, #giftPage *, #giftPayPage *, #giftRedeemPage *, #compatResultPage *)):disabled,
+    [role="button"]:not(:where(#songOpenedPage *, #songUnlockPage *, #giftPage *, #giftPayPage *, #giftRedeemPage *, #compatResultPage *)):disabled {
       background: rgba(255, 255, 255, 0.03) !important;
       border-color: rgba(255, 255, 255, 0.06) !important;
       color: rgba(255, 255, 255, 0.4) !important;
@@ -9678,9 +9605,9 @@ body.theme-light #soulChatPage .sc-askeza-cell.is-missed,
     }
 
     @media (max-width: 480px) {
-      button,
-      .btn,
-      [role="button"] {
+      button:not(:where(#songOpenedPage *, #songUnlockPage *, #giftPage *, #giftPayPage *, #giftRedeemPage *, #compatResultPage *)),
+      .btn:not(:where(#songOpenedPage *, #songUnlockPage *, #giftPage *, #giftPayPage *, #giftRedeemPage *, #compatResultPage *)),
+      [role="button"]:not(:where(#songOpenedPage *, #songUnlockPage *, #giftPage *, #giftPayPage *, #giftRedeemPage *, #compatResultPage *)) {
         padding: 13px 24px !important;
         min-height: 50px !important;
         font-size: 0.9rem !important;
@@ -10035,7 +9962,7 @@ body.theme-light #soulChatPage .sc-askeza-cell.is-missed,
       html, body { font-size: 15px !important; }
       #app, .app-container { padding: 10px !important; min-width: 0 !important; }
       .card, .profile-card { min-width: 0 !important; padding: 14px !important; }
-      button, .btn { min-width: 80px !important; min-height: 42px !important; font-size: 0.9rem !important; }
+      button:not(:where(#songOpenedPage *, #songUnlockPage *, #giftPage *, #giftPayPage *, #giftRedeemPage *, #compatResultPage *)), .btn:not(:where(#songOpenedPage *, #songUnlockPage *, #giftPage *, #giftPayPage *, #giftRedeemPage *, #compatResultPage *)) { min-width: 80px !important; min-height: 42px !important; font-size: 0.9rem !important; }
     }
     /* Глобальное отключение анимаций убрано: из-за него на страницах с анимацией (loading, success, главная) был «серый экран».
        Уважение к prefers-reduced-motion остаётся в @media (prefers-reduced-motion: reduce) выше. */
@@ -10962,6 +10889,59 @@ body.theme-light #soulChatPage .sc-askeza-cell.is-missed,
     body.theme-light #scCardPickerModal .rel.self,html.is-vk-light:not(.dark) #scCardPickerModal .rel.self{color:#be185d !important}
     body.theme-light #scCardPickerModal .person-name,html.is-vk-light:not(.dark) #scCardPickerModal .person-name{color:#241526 !important}
     body.theme-light #scCardPickerModal .apply:disabled,html.is-vk-light:not(.dark) #scCardPickerModal .apply:disabled{background:#fff !important;border-color:var(--line-2) !important;color:var(--faint) !important}
+    /* ═══ CD 19.09 · Контекст чата — эталон design-export-fixed/showcase-chat-context.html (docs/DESIGN-HANDOFF-1909.md, экран 8).
+       !important на всех объявлениях: прод-блок пикера выше целиком на !important (закон №29). ═══ */
+    #soulChatPage #scCardPickerModal .hbtn{width:44px !important;height:44px !important} /* (2,1,0): стена #soulChatPage .hbtn{42px} в шаблоне позже в каскаде */
+    #scCardPickerModal .seg2 button{min-height:44px !important}
+    #scCardPickerModal .person-date{white-space:nowrap !important;overflow:hidden !important;text-overflow:ellipsis !important}
+    #scCardPickerModal .person-place{color:var(--muted) !important}
+    #scCardPickerModal .scroll{-webkit-mask:linear-gradient(180deg,#000 calc(100% - 26px),transparent) !important;mask:linear-gradient(180deg,#000 calc(100% - 26px),transparent) !important}
+    #scCardPickerModal .foot{position:relative !important;z-index:2 !important;background:var(--bg,#0a0612) !important;box-shadow:0 -16px 26px -22px rgba(0,0,0,.8) !important}
+    body.theme-light #scCardPickerModal .foot{background:#faf5ec !important;box-shadow:0 -16px 26px -24px rgba(74,38,46,.4) !important}
+    /* Подложка самой модалки в светлой теме — эталон .theme-light --bg:#faf5ec. Общее правило .sc-picker-overlay (старый пикер быстрых вопросов, ~строка 1108) красило её в тёмное — «лоскутный» экран (аудит 23.09). */
+    body.theme-light #scCardPickerModal.sc-picker-overlay,html.is-vk-light:not(.dark) #scCardPickerModal.sc-picker-overlay,body.theme-light #scCardPickerModal .sc-picker-sheet,html.is-vk-light:not(.dark) #scCardPickerModal .sc-picker-sheet{background:#faf5ec !important}
+    #scCardPickerModal .ctx-count{display:flex !important;align-items:center !important;justify-content:space-between !important;gap:10px !important;margin:0 2px 10px !important}
+    #scCardPickerModal .ctx-count span{font-size:11px !important;font-weight:600 !important;letter-spacing:.08em !important;text-transform:uppercase !important;color:var(--muted) !important;white-space:nowrap !important}
+    #scCardPickerModal .ctx-count i{flex:none !important;font-style:normal !important;font-size:11.5px !important;font-weight:600 !important;color:var(--muted) !important;font-variant-numeric:tabular-nums !important}
+    #scCardPickerModal .apply-note{display:block !important;margin:8px 0 0 !important;text-align:center !important;font-size:11.5px !important;line-height:1.4 !important;color:var(--muted) !important}
+    #scCardPickerModal .ctx-empty{display:none !important;flex-direction:column !important;align-items:center !important;text-align:center !important;gap:4px !important;margin:6px 0 0 !important;padding:26px 18px 22px !important;border-radius:20px !important;border:1px dashed var(--line-2,rgba(255,255,255,.16)) !important;background:var(--surface,rgba(255,255,255,.06)) !important}
+    #scCardPickerModal[data-ctx="empty"] .ctx-empty{display:flex !important}
+    #scCardPickerModal[data-ctx="empty"] #scPickerList,#scCardPickerModal[data-ctx="empty"] .ctx-count{display:none !important}
+    #scCardPickerModal .ctx-empty b{margin-top:10px !important;font-size:15px !important;font-weight:600 !important;letter-spacing:-.01em !important}
+    #scCardPickerModal .ctx-empty span{font-size:12.5px !important;line-height:1.45 !important;color:var(--muted) !important;max-width:30ch !important;text-wrap:pretty !important}
+    #scCardPickerModal .ctx-empty .empty-ic{width:48px !important;height:48px !important;border-radius:50% !important;display:grid !important;place-items:center !important;color:#e0991a !important;border:1px solid rgba(247,200,115,.4) !important;background:rgba(247,200,115,.08) !important}
+    #scCardPickerModal .ctx-empty .empty-ic svg{width:22px !important;height:22px !important}
+    #scCardPickerModal .ctx-empty .empty-cta{width:auto !important;margin-top:14px !important;min-height:44px !important;padding:0 18px !important;border-radius:9999px !important;border:1px solid rgba(247,200,115,.4) !important;background:rgba(247,200,115,.1) !important;color:#f7cf7a !important;font-size:13.5px !important;font-weight:600 !important}
+    body.theme-light #scCardPickerModal .ctx-empty .empty-cta{color:#a76a10 !important;border-color:rgba(199,138,29,.42) !important;background:rgba(199,138,29,.12) !important}
+    #scCardPickerModal .ctx-edit{flex:none !important;width:auto !important;display:inline-flex !important;align-items:center !important;gap:6px !important;min-height:44px !important;padding:0 13px !important;border-radius:9999px !important;border:1px solid var(--line-2,rgba(255,255,255,.16)) !important;background:rgba(255,255,255,.06) !important;color:var(--text) !important;font-size:13px !important;font-weight:600 !important;white-space:nowrap !important}
+    #scCardPickerModal .ctx-edit svg{width:15px !important;height:15px !important}
+    #scCardPickerModal[data-edit] .ctx-edit{color:#ffb4a6 !important;border-color:rgba(220,80,60,.42) !important;background:rgba(220,80,60,.14) !important}
+    body.theme-light #scCardPickerModal[data-edit] .ctx-edit{color:#8a3a2a !important;border-color:rgba(200,80,60,.4) !important;background:rgba(200,80,60,.1) !important}
+    #scCardPickerModal[data-edit] .seg2,#scCardPickerModal[data-edit] .ctx-hint,#scCardPickerModal[data-edit] .person-add,#scCardPickerModal[data-edit] .apply,#scCardPickerModal[data-edit] .apply-note,#scCardPickerModal[data-edit] .pair{display:none !important}
+    #scCardPickerModal[data-edit] .person-pick{border-radius:7px !important;border-color:rgba(255,140,120,.55) !important;box-shadow:none !important}
+    #scCardPickerModal[data-edit] .person.sel{border-color:transparent !important;background:linear-gradient(135deg,rgba(220,80,60,.18),rgba(220,80,60,.07)) !important;box-shadow:0 14px 30px -22px rgba(200,60,40,.6),0 0 0 1.5px rgba(220,80,60,.45) !important;transform:none !important}
+    #scCardPickerModal[data-edit] .person.sel .person-av{box-shadow:0 8px 18px -10px rgba(0,0,0,.6),inset 0 0 0 1px rgba(255,255,255,.18) !important}
+    #scCardPickerModal[data-edit] .person.sel .person-pick{border-color:transparent !important;background:linear-gradient(135deg,#ff9d86,#d9432a) !important;box-shadow:0 6px 14px -6px rgba(200,60,40,.7) !important}
+    #scCardPickerModal[data-edit] .person.sel .person-pick svg{color:#fff !important}
+    #scCardPickerModal[data-edit] .person.locked{opacity:.5 !important;pointer-events:none !important}
+    #scCardPickerModal[data-edit] .person.locked .person-pick{display:none !important}
+    #scCardPickerModal .lock-tag{display:none !important;flex:none !important;font-size:10.5px !important;font-weight:600 !important;color:var(--muted) !important;white-space:nowrap !important}
+    #scCardPickerModal[data-edit] .person.locked .lock-tag{display:block !important}
+    #scCardPickerModal .del{display:none !important;align-items:center !important;justify-content:center !important;gap:8px !important;width:100% !important;min-height:47px !important;padding:14px !important;border-radius:9999px !important;border:1px solid rgba(220,80,60,.42) !important;background:rgba(220,80,60,.16) !important;color:#ffb4a6 !important;font-size:15px !important;font-weight:600 !important;font-family:var(--sans,inherit) !important}
+    #scCardPickerModal .del svg{width:16px !important;height:16px !important}
+    #scCardPickerModal .del:disabled{opacity:.5 !important;cursor:not-allowed !important}
+    #scCardPickerModal .del.arm{background:linear-gradient(135deg,#e2563a,#c0392b) !important;border-color:transparent !important;color:#fff !important;box-shadow:0 13px 30px -14px rgba(200,60,40,.7) !important}
+    #scCardPickerModal[data-edit] .del{display:flex !important}
+    body.theme-light #scCardPickerModal .del{color:#8a3a2a !important;border-color:rgba(200,80,60,.4) !important;background:rgba(200,80,60,.1) !important}
+    body.theme-light #scCardPickerModal .del.arm{color:#fff !important}
+    #scCardPickerModal .del-note{display:none !important;margin:8px 0 0 !important;text-align:center !important;font-size:11.5px !important;line-height:1.4 !important;color:var(--muted) !important}
+    #scCardPickerModal[data-edit] .del-note{display:block !important}
+    #scCardPickerModal .del-cancel{display:none !important;width:100% !important;min-height:44px !important;margin:8px 0 0 !important;border:none !important;background:none !important;color:var(--muted) !important;font-size:13.5px !important;font-weight:600 !important;font-family:var(--sans,inherit) !important;border-radius:9999px !important}
+    #scCardPickerModal[data-edit] .del-cancel{display:block !important}
+    #scCardPickerModal .slot-n{position:absolute !important;left:44px !important;top:9px !important;width:18px !important;height:18px !important;border-radius:50% !important;display:none !important;place-items:center !important;font-size:10px !important;font-weight:700 !important;color:#3a2305 !important;background:linear-gradient(135deg,#f7cf7a,#e0991a) !important;box-shadow:0 4px 10px -4px rgba(247,179,72,.8) !important}
+    #scCardPickerModal[data-ctx="compat"] .person.sel .slot-n{display:grid !important}
+    #scCardPickerModal[data-edit] .person.sel .slot-n{display:none !important} /* (1,3,0) как у правила compat выше: в правке номера слотов не нужны — иначе пустой кружок */
+    #scCardPickerModal[data-ctx="empty"] .ctx-edit{display:none !important} /* нечего править, когда есть только своя карточка (Хик) */
     /* VK Testers 7279786 (Марина 18.05 web-версия): «не полностью отображается
        кнопка Применить». На VK desktop iframe Mini App высота ~620-700px.
        max-height:82vh + content-box (default) + padding 20+40 = sheet может
@@ -10974,89 +10954,6 @@ body.theme-light #soulChatPage .sc-askeza-cell.is-missed,
        Корень: flex:1 на title + flex-shrink:0 на close + gap=12 на Windows иногда
        создаёт визуальное смещение из-за font rendering. Добавили min-width:0
        чтобы title не растягивал контейнер. */
-    .sc-picker-header{display:flex;align-items:center;gap:11px;margin-bottom:16px}
-    /* кнопки шапки пикера = реф .hbtn (42px круг), НЕ base button{width:100%} (стр4264) —
-       иначе «назад» растягивалась на всю ширину и давила заголовок/крестик за экран (Алла 18.06) */
-    #scCardPickerModal .sc-picker-hbtn{flex:none !important;width:42px !important;min-width:42px !important;height:42px !important;border-radius:50% !important;padding:0 !important;margin:0 !important;display:grid !important;place-items:center !important;background:rgba(255,255,255,.06) !important;border:1px solid var(--line-2,rgba(255,255,255,.16)) !important;min-height:0 !important;box-shadow:none !important}
-    #scCardPickerModal .sc-picker-title{flex:1 1 auto !important;text-align:left !important}
-    .sc-picker-title{flex:1 1 auto;min-width:0;font-size:1rem;font-weight:700;color:var(--sc-accent);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-    /* Batch 10.13 (7272197): фиксированные размеры 32x32 + flex-shrink:0,
-       чтобы кнопка Закрыть не растягивалась на MacOS Safari. */
-    /* Крестик закрытия — круг 28×28 как .sc-prism-result-close. !important на геометрии,
-       т.к. глобальное button{} (radius 9999px, width 100%, min-height 48) и медиа-правило
-       button{min-height:40px!important} иначе превращают его в овальную плашку. */
-    .sc-picker-close{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.10);color:rgba(255,255,255,0.75);font-size:0.85rem;cursor:pointer;padding:0!important;line-height:1;transition:color var(--sc-transition),background var(--sc-transition);flex-shrink:0;width:28px!important;height:28px!important;min-width:28px!important;min-height:28px!important;border-radius:50%!important;display:inline-flex;align-items:center;justify-content:center;font-family:inherit;margin-top:0!important}
-    .sc-picker-close:active{color:var(--sc-text-primary)}
-    .sc-picker-tabs{display:flex;gap:8px;margin-bottom:16px;background:rgba(255,255,255,0.04);border-radius:var(--sc-radius-btn);padding:4px}
-    /* white-space:nowrap!important — глобальный reset `button{white-space:normal!important}`
-       перебивал таб → метка переносилась на 2 строки и таб кривился по высоте.
-       !important держит одну строку (защищает и длинные локали Kompatibilität/
-       Compatibilité). Закон №19/№29. */
-    /* padding/font с !important — иначе медиа-правило button,.btn{padding:10px 16px!important;
-       font-size:0.9rem!important} раздувает вкладки и обрезает «Совместимость». */
-    .sc-picker-tab{flex:1;padding:9px 8px!important;border-radius:9px;font-size:0.8rem!important;font-weight:600!important;font-family:inherit;cursor:pointer;border:none;transition:background var(--sc-transition),color var(--sc-transition);color:var(--sc-text-muted);background:transparent;white-space:nowrap!important;overflow:hidden;text-overflow:ellipsis;min-height:unset!important}
-    .sc-picker-tab.is-active{background:rgba(var(--primary-rgb),0.2);color:var(--sc-accent);border:1px solid var(--sc-accent-border)}
-    /* VK Testers 7272221: --sc-text-muted = rgba(255,255,255,0.35) — невидим
-       в светлых темах. Явный color override для tab/section-label/close в light. */
-    body.theme-light .sc-picker-tab,
-    html.is-vk-light .sc-picker-tab,
-    html.is-ok-light .sc-picker-tab{color:rgba(26,26,46,0.55)}
-    body.theme-light #scPickerModeTabs .sc-picker-tab.is-active,
-    html.is-vk-light #scPickerModeTabs .sc-picker-tab.is-active,
-    html.is-ok-light #scPickerModeTabs .sc-picker-tab.is-active{color:var(--primary-color)!important;background:rgba(var(--primary-rgb),0.12)!important;border:1px solid rgba(var(--primary-rgb),0.4)!important}
-    body.theme-light .sc-picker-tabs,
-    html.is-vk-light .sc-picker-tabs,
-    html.is-ok-light .sc-picker-tabs{background:rgba(26,26,46,0.04)}
-    body.theme-light .sc-picker-section-label,
-    html.is-vk-light .sc-picker-section-label,
-    html.is-ok-light .sc-picker-section-label{color:rgba(26,26,46,0.55)}
-    body.theme-light .sc-picker-close,
-    html.is-vk-light .sc-picker-close,
-    html.is-ok-light .sc-picker-close{background:rgba(0,0,0,0.05)!important;border:1px solid rgba(0,0,0,0.10)!important;color:rgba(26,26,46,0.75)!important}
-    .sc-picker-pane{flex:1;overflow-y:auto;touch-action:pan-y;overscroll-behavior:contain;display:none;flex-direction:column;gap:8px;min-height:0}
-    .sc-picker-pane.is-active{display:flex}
-    .sc-picker-section-label{font-size:0.72rem;color:var(--sc-text-muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.06em}
-    .sc-picker-list{display:flex;flex-direction:column;gap:6px;flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;touch-action:pan-y;overscroll-behavior:contain;scrollbar-width:none;padding:2px 2px 4px}
-    .sc-picker-list::-webkit-scrollbar{width:0;display:none}
-    /* VK Testers 7272221 (MacOS, dark theme): кнопки в окне «Контекст чата»
-       рендерились через inline cssText с hardcoded rgba(255,255,255,*) — становились
-       невидимы на светлом sheet-фоне в любой из 3 light-scope (theme-light, is-vk-light,
-       is-ok-light). Теперь стили через классы, видимость гарантирована во всех темах. */
-    /* Карточка человека в пикере. Дизайн выровнен по hero-card («Контакты»):
-       стекло + крупное скругление + иерархия имя/дата. Без аватара (выбор Аллы
-       16.05.2026). Галочка ✓ справа = явный индикатор выбора. */
-    /* border-radius!important: глобальное button{9999px!important} иначе сделало бы эту
-       широкую карточку-кнопку «стадионом». Карточка списка = скруглённый прямоугольник. */
-    .sc-picker-card-item{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:14px 16px;border-radius:16px!important;font-family:inherit;cursor:pointer;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.05);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);transition:background 0.18s,border-color 0.18s;box-sizing:border-box}
-    .sc-pci-text{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
-    .sc-pci-name{font-size:1rem;font-weight:600;color:rgba(255,255,255,0.92);line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .sc-pci-meta{font-size:0.77rem;color:rgba(255,255,255,0.45);line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .sc-pci-check{flex-shrink:0;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.72rem;color:#fff;background:var(--primary-color);opacity:0;transform:scale(0.5);transition:opacity 0.18s,transform 0.18s}
-    .sc-picker-card-item.is-selected{border-color:rgba(var(--primary-rgb),0.5);background:rgba(var(--primary-rgb),0.13)}
-    .sc-picker-card-item.is-selected .sc-pci-name{font-weight:700}
-    .sc-picker-card-item.is-selected .sc-pci-check{opacity:1;transform:scale(1)}
-    .sc-picker-card-item:active{background:rgba(255,255,255,0.08)}
-    body.theme-light .sc-picker-card-item,
-    html.is-vk-light .sc-picker-card-item,
-    html.is-ok-light .sc-picker-card-item{background:rgba(26,26,46,0.05);border-color:rgba(26,26,46,0.12);color:#1a1a2e}
-    body.theme-light .sc-pci-name,
-    html.is-vk-light .sc-pci-name,
-    html.is-ok-light .sc-pci-name{color:#1a1a2e}
-    body.theme-light .sc-pci-meta,
-    html.is-vk-light .sc-pci-meta,
-    html.is-ok-light .sc-pci-meta{color:rgba(26,26,46,0.5)}
-    body.theme-light .sc-picker-card-item.is-selected,
-    html.is-vk-light .sc-picker-card-item.is-selected,
-    html.is-ok-light .sc-picker-card-item.is-selected{background:rgba(var(--primary-rgb),0.12);border-color:rgba(var(--primary-rgb),0.4);color:var(--primary-color)}
-    .sc-picker-empty{font-size:0.82rem;text-align:center;padding:12px 0;color:rgba(255,255,255,0.55)}
-    body.theme-light .sc-picker-empty,
-    html.is-vk-light .sc-picker-empty,
-    html.is-ok-light .sc-picker-empty{color:rgba(26,26,46,0.55)}
-    /* VK Testers 7279786 (Марина 18.05): flex-shrink:0 чтобы кнопка не
-       сжималась при недостатке места в flex column. apply-btn ВСЕГДА видна
-       целиком — pane выше сжимается и скроллится, но кнопка остаётся фикс. */
-    .sc-picker-apply-btn{flex-shrink:0;margin-top:16px;width:100%;padding:14px;border-radius:13px;background:linear-gradient(135deg,rgba(var(--primary-rgb),0.28),rgba(var(--secondary-rgb),0.18));border:1px solid var(--sc-accent-border);color:var(--sc-accent);font-size:0.92rem;font-weight:700;font-family:inherit;cursor:pointer;transition:background var(--sc-transition),transform var(--sc-transition)}
-    .sc-picker-apply-btn:active{transform:scale(0.98);background:linear-gradient(135deg,rgba(var(--primary-rgb),0.38),rgba(var(--secondary-rgb),0.28))}
     /* ═══ Контекст чата — дизайн showcase-chat-context-3 (Алла 17.06) — 1:1 ═══
        Скоуп #scCardPickerModal, классы из старого пикера (исключены из глобальных
        pill/clamp-бомб) → переопределяем ТОЛЬКО внешний вид, разметку/логику не трогаем. */
@@ -11083,47 +10980,6 @@ body.theme-light #soulChatPage .sc-askeza-cell.is-missed,
        `#soulChatPage .head` (шаблон, padding-left:16px) при равной специфичности бьёт
        `#scCardPickerModal .head` по порядку — поднимаем специфичность через .sc-picker-sheet. */
     #scCardPickerModal .sc-picker-sheet .head{padding-left:20px !important;padding-right:20px !important}
-    #scCardPickerModal .sc-picker-sub{margin:0 2px 12px;font-size:0.82rem;line-height:1.45;color:var(--sc-text-muted)}
-    /* сегмент-контрол режима: ТРЕК на всю ширину (выровнен по карточкам — без бокового
-       «острова-зазора», Алла 17.06), но активная заливка — ПРЕМИУМ-пилюля с подсветкой,
-       ОБНИМАЕТ текст и центрирована в своей половине (не плоская заливка во всю половину).
-       2-id скоуп (#scCardPickerModal #scPickerModeTabs) бьёт правило 1-id .sc-pmt-track. */
-    #scCardPickerModal #scPickerModeTabs .sc-pmt-track{display:grid !important;grid-template-columns:1fr 1fr !important;gap:5px !important;width:100% !important;max-width:100% !important;box-sizing:border-box !important}
-    #scCardPickerModal #scPickerModeTabs .sc-picker-tab{width:100% !important;flex:none !important;min-width:0 !important;display:flex !important;align-items:center !important;justify-content:center !important;padding:0 !important;background:none !important;border:none !important}
-    #scCardPickerModal #scPickerModeTabs .sc-picker-tab .sc-tab-pill{display:inline-flex !important;align-items:center !important;justify-content:center !important;width:auto !important;padding:8px 16px !important;border-radius:9999px !important;box-sizing:border-box !important}
-    #scCardPickerModal .sc-picker-hint{margin:0 2px 12px;font-size:0.78rem;line-height:1.45;color:var(--sc-text-muted);min-height:16px}
-    #scCardPickerModal .sc-picker-hint b{color:#ec4899;font-weight:600}
-    /* карточка человека: аватар + (имя + рел-бейдж) + дата · место + gold-галочка */
-    #scCardPickerModal .sc-picker-list{gap:9px}
-    #scCardPickerModal .sc-picker-card-item{gap:12px;padding:12px 14px;border-radius:16px!important;border:1px solid rgba(255,255,255,0.09);background:linear-gradient(150deg,rgba(255,255,255,0.06),rgba(255,255,255,0.022));box-shadow:0 10px 26px -22px rgba(0,0,0,0.7)}
-    #scCardPickerModal .sc-pci-av{flex:none;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-size:0.95rem;font-weight:600;color:#fff;box-shadow:0 8px 18px -10px rgba(0,0,0,0.6),inset 0 0 0 1px rgba(255,255,255,0.18)}
-    #scCardPickerModal .sc-pci-text{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
-    #scCardPickerModal .sc-pci-top{display:flex;align-items:center;gap:8px;min-width:0}
-    #scCardPickerModal .sc-pci-name{font-size:0.95rem;font-weight:600;letter-spacing:-0.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:0 1 auto;min-width:0}
-    #scCardPickerModal .sc-pci-rel{flex:none;white-space:nowrap;font-size:0.66rem;font-weight:600;color:var(--sc-text-muted);padding:2px 9px;border-radius:9999px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.09)}
-    #scCardPickerModal .sc-pci-rel.self{color:#f3b6d6;background:rgba(236,72,153,0.14);border-color:rgba(236,72,153,0.32);display:inline-flex;align-items:center;gap:4px}
-    #scCardPickerModal .sc-pci-meta{font-size:0.75rem;color:var(--sc-text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    #scCardPickerModal .sc-pci-place{color:rgba(255,255,255,0.42)}
-    #scCardPickerModal .sc-pci-check{flex:none;width:23px;height:23px;border-radius:50%;border:2px solid rgba(247,200,115,0.42);background:none;opacity:1;transform:none;box-shadow:inset 0 0 0 3px rgba(247,200,115,0.06);display:grid;place-items:center;color:#3a2305}
-    #scCardPickerModal .sc-pci-check svg{width:13px;height:13px;opacity:0;transform:scale(0.6);transition:opacity .18s,transform .18s}
-    #scCardPickerModal .sc-picker-card-item.is-selected{border-color:transparent;background:linear-gradient(135deg,rgba(247,200,115,0.15),rgba(236,72,153,0.1) 60%,rgba(249,115,22,0.06));box-shadow:0 18px 34px -20px rgba(247,179,72,0.5),0 0 0 1.5px rgba(247,200,115,0.5)}
-    #scCardPickerModal .sc-picker-card-item.is-selected .sc-pci-check{border-color:transparent;background:linear-gradient(135deg,#f7cf7a,#e0991a);box-shadow:0 6px 14px -6px rgba(247,179,72,0.7)}
-    #scCardPickerModal .sc-picker-card-item.is-selected .sc-pci-check svg{opacity:1;transform:scale(1)}
-    /* «Добавить человека» — пунктирная карточка */
-    #scCardPickerModal .sc-pci-add{border:1px dashed rgba(247,200,115,0.34)!important;background:rgba(247,200,115,0.04);box-shadow:none;color:var(--sc-text-muted)}
-    #scCardPickerModal .sc-pci-add-ic{flex:none;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;color:#e0991a;border:1px solid rgba(247,200,115,0.4);background:rgba(247,200,115,0.08)}
-    #scCardPickerModal .sc-pci-add-ic svg{width:18px;height:18px}
-    #scCardPickerModal .sc-pci-add-tx{font-size:0.88rem;font-weight:600}
-    /* CTA Применить — сплошная пилюля (реф .apply) */
-    #scCardPickerModal .sc-picker-apply-btn{border-radius:9999px!important;background:linear-gradient(135deg,#ec4899,#f97316);border:none;color:#fff;box-shadow:0 13px 30px -14px rgba(236,72,153,0.5)}
-    #scCardPickerModal .sc-picker-apply-btn:disabled{background:linear-gradient(150deg,rgba(247,200,115,0.12),rgba(236,72,153,0.06));border:1px solid rgba(247,200,115,0.22);box-shadow:none}
-    /* светлая тема — новые элементы (3 light-scope) */
-    body.theme-light #scCardPickerModal .sc-picker-card-item,html.is-vk-light #scCardPickerModal .sc-picker-card-item,html.is-ok-light #scCardPickerModal .sc-picker-card-item{background:#fff;border-color:rgba(74,38,46,0.1)}
-    body.theme-light #scCardPickerModal .sc-pci-rel,html.is-vk-light #scCardPickerModal .sc-pci-rel,html.is-ok-light #scCardPickerModal .sc-pci-rel{background:rgba(24,12,34,0.05);color:#6f5a66;border-color:rgba(74,38,46,0.1)}
-    body.theme-light #scCardPickerModal .sc-pci-rel.self,html.is-vk-light #scCardPickerModal .sc-pci-rel.self,html.is-ok-light #scCardPickerModal .sc-pci-rel.self{color:#be185d;background:rgba(236,72,153,0.1)}
-    body.theme-light #scCardPickerModal .sc-pci-place,html.is-vk-light #scCardPickerModal .sc-pci-place,html.is-ok-light #scCardPickerModal .sc-pci-place{color:#9a8088}
-    body.theme-light #scCardPickerModal .sc-pci-add,html.is-vk-light #scCardPickerModal .sc-pci-add,html.is-ok-light #scCardPickerModal .sc-pci-add{background:rgba(199,138,29,0.05)}
-    body.theme-light #scCardPickerModal .sc-picker-sub,body.theme-light #scCardPickerModal .sc-picker-hint{color:#6f5a66}
     .sc-messages-area{display:none;flex:1;overflow-y:auto;touch-action:pan-y;overscroll-behavior:contain;padding:16px 16px 40px 16px;flex-direction:column;gap:10px;background:transparent;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,0.2) transparent;position:relative;z-index:1;scroll-behavior:smooth;}
     /* Счётчик пробных вопросов оракула (ЗАКОН Алла 13.06) — theme-safe */
     .sc-oracle-counter{font-size:0.72rem;color:rgba(255,255,255,0.5);text-align:center;padding:2px 0 8px;letter-spacing:0.02em}
@@ -11226,7 +11082,7 @@ body[data-page="soulChatPage"] #soulChatPage,
   body[data-page="heroesPage"] #heroesPage,
   body[data-page="myTracksPage"] #myTracksPage,
   body[data-page="formPage"] #formPage,
-  body[data-page="loadingPage"] #loadingPage,
+  
   body[data-page="successPage"] #successPage,
   body[data-page="soulChatPage"] #soulChatPage,
   body[data-page="paymentThanksPage"] #paymentThanksPage,
@@ -13788,6 +13644,22 @@ html.is-ok-light:not(.dark) #homeCommCard .task-body b { color: #241526 !importa
     html.is-native #suStubNote,
     html.is-native #tuStubNote,
     html.is-native #scPwStubHint { display: none !important; }
+
+    /* Оплата песни на нативе (аудит 23.09): рублёвый апселл пакета, подсказка «≈ ₽ картой»,
+       ссылка на оплату и «Я уже оплатил» (HOT/T-Bank) — это веб. Нативный путь: Искры,
+       а Искры покупаются встроенной покупкой (правило 3.1.1). */
+    html.is-native #payOvUpsellBlock,
+    html.is-native #payOvPriceHint,
+    html.is-native #payOvLinkRow,
+    html.is-native #payOvCheckBtn { display: none !important; }
+    /* Элементы только нативной сборки (например «Пополнить Искры» в оплате песни). */
+    html:not(.is-native) [data-native-only] { display: none !important; }
+    /* Реф-блок «Пригласи друга» на экране Подарков — как и в профиле, в сторе выключен (аудит 23.09). */
+    html.is-native #giftsRefer { display: none !important; }
+    /* Суточный доступ к Оракулу (199 ₽ картой) — веб; товара под него в сторе нет → предложение, кнопку и «или» перед ней прячем (аудит 23.09: тупик «Выбери способ оплаты» без кнопок) */
+    html.is-native #scPageBuyDayWrap,
+    html.is-native #scQuickBuyDayBtn,
+    html.is-native #soulChatPage [data-i18n="webLoginOr"] { display: none !important; }
 
     /* Пакеты на нативе продаются встроенной покупкой (тип Non-Renewing
        Subscription — автопродления у нас нет). Карточки видны, цену на них

@@ -43,6 +43,52 @@
            разрешении пакетов. Версии под Capacitor 8 у того плагина нет. */
         var SocialLogin = plugin('SocialLogin');
 
+        /* ── Локальное уведомление «Искра дня» (App Store, закон 3.1.1 — сторонний push
+           недоступен, шлём через ОС самого устройства). Фиксированный id: schedule всегда
+           через cancel того же id — без дублей записи при повторном включении/переустановке. */
+        var LocalNotif = plugin('LocalNotifications');
+        var DAILY_NOTIF_ID = 7601;
+        var DAILY_NOTIF_OPTIN_KEY = 'ys_native_daily_notif';
+
+        function _dailyNotifCancel() {
+          if (!LocalNotif) return Promise.resolve();
+          return LocalNotif.cancel({ notifications: [{ id: DAILY_NOTIF_ID }] }).catch(function(){});
+        }
+
+        // Разрешение → schedule; отказ в разрешении НЕ показываем как ошибку (закон №37) —
+        // вызывающий код (тумблер/согласие) сам решает, что делать при false.
+        window._nativeEnableDailyNotif = async function() {
+          if (!LocalNotif) return false;
+          try {
+            var perm = await LocalNotif.checkPermissions();
+            if (perm.display !== 'granted') perm = await LocalNotif.requestPermissions();
+            if (perm.display !== 'granted') return false;
+            await _dailyNotifCancel();
+            await LocalNotif.schedule({ notifications: [{
+              id: DAILY_NOTIF_ID,
+              title: (typeof t === 'function' && t('obChipNotifyIskra')) || 'Искра дня',
+              body: (typeof t === 'function' && t('notifLocalIskraBody')) || 'Загляни — тебя ждёт Искра дня.',
+              schedule: { on: { hour: 9, minute: 0 }, repeats: true, allowWhileIdle: true }
+            }] });
+            try { localStorage.setItem(DAILY_NOTIF_OPTIN_KEY, '1'); } catch(_) {}
+            return true;
+          } catch(_) { return false; }
+        };
+
+        window._nativeDisableDailyNotif = async function() {
+          await _dailyNotifCancel();
+          try { localStorage.setItem(DAILY_NOTIF_OPTIN_KEY, '0'); } catch(_) {}
+        };
+
+        // Идемпотентный reschedule на каждом старте: у ранее согласившегося юзера
+        // переустановка/обновление приложения сбрасывает запланированные ОС-уведомления —
+        // cancel+schedule внутри _nativeEnableDailyNotif чинит это без дублей.
+        (function _rescheduleDailyNotifOnStart() {
+          try {
+            if (localStorage.getItem(DAILY_NOTIF_OPTIN_KEY) === '1') window._nativeEnableDailyNotif();
+          } catch(_) {}
+        })();
+
         /* SKU нашего бэкенда → Product ID в App Store Connect / Google Play.
            Идентификаторы обязаны совпадать с товарами в сторе и в RevenueCat. */
         var PRODUCT_BY_SKU = {
@@ -300,21 +346,28 @@
           try {
             var offerings = await Purchases.getOfferings();
             var all = (offerings && offerings.all) || {};
-            var byProduct = {};
+            var byProduct = {}, numByProduct = {};
             Object.keys(all).forEach(function(k) {
               ((all[k] && all[k].availablePackages) || []).forEach(function(p) {
                 var pr = p && p.product;
-                if (pr && pr.identifier && pr.priceString) byProduct[pr.identifier] = pr.priceString;
+                if (pr && pr.identifier && pr.priceString) {
+                  byProduct[pr.identifier] = pr.priceString;
+                  /* Число и валюта — для «цена за песню» в пакетах Искр (эталон 19.09:
+                     «выбор становится арифметикой»). Считаем сами из цены стора. */
+                  if (typeof pr.price === 'number' && pr.currencyCode) numByProduct[pr.identifier] = { price: pr.price, cur: pr.currencyCode };
+                }
               });
             });
-            var map = {};
+            var map = {}, num = {};
             Object.keys(PRODUCT_BY_SKU).forEach(function(sku) {
               var ps = byProduct[PRODUCT_BY_SKU[sku]];
               if (ps) map[sku] = ps;
+              if (numByProduct[PRODUCT_BY_SKU[sku]]) num[sku] = numByProduct[PRODUCT_BY_SKU[sku]];
             });
             if (!Object.keys(map).length) return null;
             _priceBySku = map;
             window._nativePriceBySku = map;
+            window._nativePriceNumBySku = num;
             return map;
           } catch (e) {
             console.warn('[native] цены из стора не пришли', e);
@@ -357,6 +410,34 @@
               box.appendChild(slot);
             }
             if (slot.textContent !== ps) slot.textContent = ps;
+            /* «цена за песню» (эталон 19.09): веб пишет её в .per из data-rub, а .per на нативе
+               скрыт (data-web-only). Считаем из цены стора: цена / песни в пакете, в валюте
+               покупателя, тем же суффиксом «/песня», что и веб (ключ tuPerSong без «{p} ₽»). */
+            var numInfo = (window._nativePriceNumBySku || {})[btn.getAttribute('data-sku')];
+            var skuId = btn.getAttribute('data-sku') || '';
+            // ISKRY_PACK_INFO объявлен в другом замыкании (модуль 10) и отсюда не виден — число песен
+            // берём из самого SKU: iskry_pack_1000 → 10 песен (1 песня = 100 Искр, константа проекта).
+            var packInfo = (typeof ISKRY_PACK_INFO !== 'undefined' && ISKRY_PACK_INFO[skuId]) || null;
+            var songs = (packInfo && packInfo.songs) || (parseInt((skuId.match(/(\d+)/) || [])[1], 10) / 100) || 0;
+            var small = btn.querySelector('.ta small');
+            if (numInfo && songs && small) {
+              var perTxt = '';
+              try {
+                var lang = (typeof getLang === 'function' ? getLang() : (document.documentElement.lang || 'en')) || 'en';
+                var fmt = new Intl.NumberFormat(lang, { style: 'currency', currency: numInfo.cur, maximumFractionDigits: 2 });
+                var sfx = (typeof t === 'function' ? t('tuPerSong') : '') || '';
+                sfx = (sfx && sfx !== 'tuPerSong') ? sfx.replace(/^.*?₽/, '') : '/song';
+                perTxt = fmt.format(numInfo.price / songs) + sfx;
+              } catch (_) { perTxt = ''; }
+              var perSlot = small.querySelector('[data-native-per]');
+              if (!perSlot) {
+                perSlot = document.createElement('span');
+                perSlot.className = 'per';
+                perSlot.setAttribute('data-native-per', '');
+                small.appendChild(perSlot);
+              }
+              if (perSlot.textContent !== perTxt) perSlot.textContent = perTxt;
+            }
           });
         }
         window._nativeApplyPrices = _nativeApplyPrices;
@@ -461,11 +542,46 @@
           var suRoot = document.getElementById('suRoot');
           var res = await window._nativeBuy(sku, opts);
           if (res && res.ok) {
-            if (typeof window.loadMe === 'function') { try { window.loadMe(); } catch(_) {} }
-            if (sku === 'song_unlock' && typeof window.goToPage === 'function') {
-              try { window.goToPage('songOpenedPage'); } catch(_) {}
+            var _lm = null;
+            if (typeof window.loadMe === 'function') { try { _lm = window.loadMe(); } catch(_) {} }
+            if (sku === 'song_unlock') {
+              /* Экран «Песня открыта» заполняет та же функция, что в вебе и Телеграме
+                 (openSongOpened: название, волна, кнопка, звук, блоки владельца). Раньше здесь
+                 был голый goToPage — экран открывался «сырым»: пустой круг вместо кнопки,
+                 оба набора кнопок, тишина (Алла 23.09, TestFlight 25, после покупки через Apple).
+                 Трек подтягиваем свежим из my-tracks по номеру заявки, как при возврате с T-Bank. */
+              var _rid = opts && opts.requestId ? String(opts.requestId) : null;
+              var _openSo = function(row) {
+                try {
+                  if (typeof window.openSongOpened === 'function') window.openSongOpened(row ? { track: row, requestId: _rid } : (_rid ? { requestId: _rid } : {}));
+                  else if (typeof window.goToPage === 'function') window.goToPage('songOpenedPage');
+                } catch(_) {}
+              };
+              var _apiBase = (window.BACKEND_URL || window.HEROES_API_BASE || '').replace(/\/$/, '');
+              if (_rid && _apiBase) {
+                var _h = (typeof getAuthHeaders === 'function') ? getAuthHeaders() : {};
+                fetch(_apiBase + '/api/my-tracks?limit=50&offset=0', { headers: _h })
+                  .then(function(r){ return r.json().catch(function(){ return {}; }); })
+                  .then(function(j){
+                    var list = (j && (j.tracks || j.data || j.items)) || (Array.isArray(j) ? j : []);
+                    var row = null;
+                    for (var i = 0; i < list.length; i++) if (String(list[i].id) === _rid) { row = list[i]; break; }
+                    if (row) window._songUnlockTrack = row;
+                    _openSo(row);
+                  })
+                  .catch(function(){ _openSo(null); });
+              } else {
+                _openSo(null);
+              }
             } else if (suRoot) {
               suRoot.dataset.state = 'offer';
+            }
+            /* Пополнение из оплаты песни: Искры куплены — возвращаем человека к той же заявке
+               (начатое доводим до конца, а не бросаем на экране пополнения). Ждём свежий баланс. */
+            if (/^iskry_pack_/.test(sku) && window._poNativeResume && typeof window._poNativeResumePayment === 'function') {
+              var _rs = window._poNativeResume; window._poNativeResume = null;
+              try { if (_lm && _lm.then) await _lm; } catch(_) {}
+              setTimeout(function() { try { window._poNativeResumePayment(_rs); } catch(_) {} }, 350);
             }
             if (PACK_SKUS[sku]) {
               /* Доступ открылся — перерисовываем экраны, которые его читают:
@@ -502,4 +618,90 @@
             if (tries < 10) setTimeout(tick, 1200);
           })();
         })();
+
+        /* ── Громкость плеера по кнопкам айфона (Алла 23.09) ─────────────────
+           На iOS WebKit audio.volume из JS не задаётся (Apple, "Safari HTML5
+           Audio and Video Guide": «the volume property is not settable in
+           JavaScript»). Системную громкость меняем/читаем через нативный
+           плагин SystemVolume (MPVolumeView + AVAudioSession, AppDelegate.swift).
+           Слайдер плеера (index.template.html, #mtNpVolumeTrack) сам проверяет
+           window._nativeVolumeBridge в apply() — здесь только поставляем мост
+           и дёргаем getVolume/startWatching/stopWatching по открытию/закрытию
+           полного плеера (window._v2OpenPlayer/_v2Minimize). Вне iOS-натива
+           или если плагин недоступен — window._nativeVolumeBridge не создаётся,
+           слайдер продолжает работать через audio.volume как раньше. */
+        if (window._nativePlatform === 'ios') {
+          var SystemVolume = plugin('SystemVolume');
+          if (SystemVolume) {
+            var _svWatching = false, _svListenerBound = false, _svLastSet = 0;
+            window._nativeVolumeBridge = {
+              active: true,
+              setVolume: function(v01) {
+                var now = Date.now();
+                if (now - _svLastSet < 50) return; // не чаще раза в 50мс
+                _svLastSet = now;
+                try { SystemVolume.setVolume({ value: v01 }); } catch(_) {}
+              }
+            };
+            function _svBindListener() {
+              if (_svListenerBound) return;
+              _svListenerBound = true;
+              try {
+                SystemVolume.addListener('volumeChange', function(data) {
+                  var v = data && typeof data.value === 'number' ? data.value : null;
+                  if (v != null && typeof window._mtSyncVolUI === 'function') window._mtSyncVolUI(v);
+                });
+              } catch(_) {}
+            }
+            function _svStart() {
+              _svBindListener();
+              if (_svWatching) return;
+              _svWatching = true;
+              try {
+                SystemVolume.getVolume().then(function(res) {
+                  var v = res && typeof res.value === 'number' ? res.value : null;
+                  if (v != null && typeof window._mtSyncVolUI === 'function') window._mtSyncVolUI(v);
+                }).catch(function() {});
+                SystemVolume.startWatching().catch(function() {});
+              } catch(_) {}
+            }
+            function _svStop() {
+              if (!_svWatching) return;
+              _svWatching = false;
+              try { SystemVolume.stopWatching().catch(function() {}); } catch(_) {}
+            }
+            /* Плеер (index.template.html) грузится раньше этого модуля в документе,
+               но window._v2OpenPlayer/_v2Minimize уже определены синхронно там же —
+               оборачиваем один раз, тем же приёмом, что hookPrices/wrapPaymentEntries выше. */
+            (function wirePlayerOpenClose() {
+              var tries = 0;
+              (function tick() {
+                tries++;
+                var open = window._v2OpenPlayer, min = window._v2Minimize;
+                if (typeof open === 'function' && !open.__svWrapped) {
+                  var wrappedOpen = function() { var r = open.apply(this, arguments); _svStart(); return r; };
+                  wrappedOpen.__svWrapped = true;
+                  window._v2OpenPlayer = wrappedOpen;
+                }
+                if (typeof min === 'function' && !min.__svWrapped) {
+                  var wrappedMin = function() { var r = min.apply(this, arguments); _svStop(); return r; };
+                  wrappedMin.__svWrapped = true;
+                  window._v2Minimize = wrappedMin;
+                }
+                var done = window._v2OpenPlayer && window._v2OpenPlayer.__svWrapped && window._v2Minimize && window._v2Minimize.__svWrapped;
+                if (!done && tries < 20) setTimeout(tick, 500);
+              })();
+            })();
+            /* Плеер может закрыться не через «Свернуть» (уход со страницы, остановка трека —
+               ветка MutationObserver в шаблоне прячет #mtNowPlaying напрямую) — тогда
+               наблюдатель громкости в нативе остался бы висеть. Гасим по факту скрытия. */
+            (function watchPlayerHidden() {
+              var el = document.getElementById('mtNowPlaying');
+              if (!el || typeof MutationObserver !== 'function') return;
+              new MutationObserver(function() {
+                try { if (_svWatching && getComputedStyle(el).display === 'none') _svStop(); } catch(_) {}
+              }).observe(el, { attributes: true, attributeFilter: ['style', 'class'] });
+            })();
+          }
+        }
       })();

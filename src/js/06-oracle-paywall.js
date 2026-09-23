@@ -35,10 +35,12 @@
           || document.documentElement.classList.contains('is-vk')
           || document.body.classList.contains('in-vk');
         var _pwIsOk = window._isOkMiniApp === true || window._appEnv === 'ok';
+        // Натив (App Store): «доступ на сутки — 199 ₽» и «пакет с картой» — веб; здесь только встроенная покупка (3.1.1, аудит 23.09)
+        var _pwIsNative = window._isNativeApp || document.documentElement.classList.contains('is-native');
         var dayEl = document.getElementById('scPwDay');
-        if (dayEl) dayEl.innerHTML = (_pwIsVk || _pwIsOk) ? '' : (tl('pwDay', 'Или') + ' <b>' + tl('pwDayAccess', 'доступ на сутки') + '</b> — 199 ₽');
+        if (dayEl) dayEl.innerHTML = (_pwIsVk || _pwIsOk || _pwIsNative) ? '' : (tl('pwDay', 'Или') + ' <b>' + tl('pwDayAccess', 'доступ на сутки') + '</b> — 199 ₽');
         var subEl = document.getElementById('scPwSubscribe');
-        if (subEl) subEl.innerHTML = (_pwIsVk || _pwIsOk) ? '' : (tl('pwSubscribe', 'Хочешь автопополнение?') + ' <u>' + tl('pwSubscribeLink', 'Получить пакет с картой') + '</u> ' + tl('pwSubscribeWhere', '(где доступно)'));
+        if (subEl) subEl.innerHTML = (_pwIsVk || _pwIsOk || _pwIsNative) ? '' : (tl('pwSubscribe', 'Хочешь автопополнение?') + ' <u>' + tl('pwSubscribeLink', 'Получить пакет с картой') + '</u> ' + tl('pwSubscribeWhere', '(где доступно)'));
       }
 
       function _scPwRender() {
@@ -55,15 +57,20 @@
         // → пейволл был вечно на русском для EN/DE/FR). Фолбэк если ключа нет.
         var tl = function(k, fb) { try { if (typeof t === 'function') { var v = t(k); if (v && v !== k) return v; } } catch(_) {} return fb || k; };
         var arr = SC_PW_PACKS[_scPwKind] || [], h = '';
+        // Натив (App Store): цена только из стора (RevenueCat priceString), ₽ показывать нельзя (3.1.1, аудит 23.09)
+        var _pwNative = window._isNativeApp || document.documentElement.classList.contains('is-native');
+        var _pwPrice = function(pk) { if (isVkStub) return ''; if (_pwNative) return ((window._nativePriceBySku || {})[pk.sku]) || ''; return pk.p; };
         for (var i = 0; i < arr.length; i++) {
           var pk = arr[i];
           var isOk = window._isOkMiniApp === true || window._appEnv === 'ok';
           // КАНОН v8: VK-money = ₽ (как web); OK = ₽-витрина; клиенты iOS/Android — пусто.
-          var price = isVkStub ? '' : pk.p;
+          var price = _pwPrice(pk);
+          // Названия и описания пакетов — по ключам (были захардкожены по-русски и на EN/DE/FR — аудит 23.09)
+          var pkN = tl('pwPk_' + _scPwKind + '_' + i + '_n', pk.n), pkD = tl('pwPk_' + _scPwKind + '_' + i + '_d', pk.d);
           h += '<button class="pw-pack' + (i === _scPwSel ? ' sel' : '') + '" data-i="' + i + '">'
             + (pk.pop ? '<span class="pw-pack-badge">' + _escHtml(tl('pwBadgePopular', pk.pop)) + '</span>' : '')
             + '<span class="pw-pack-radio"></span>'
-            + '<span class="pw-pack-tx"><b>' + _escHtml(pk.n) + '</b><span>' + _escHtml(pk.d) + '</span></span>'
+            + '<span class="pw-pack-tx"><b>' + _escHtml(pkN) + '</b><span>' + _escHtml(pkD) + '</span></span>'
             + '<span class="pw-pack-price">' + _escHtml(price) + '</span></button>';
         }
         var packsEl = document.getElementById('scPwPacks');
@@ -75,11 +82,11 @@
         if (_sI) _sI.classList.toggle('on', _scPwKind === 'iskry');
         var priceEl = document.getElementById('scPwCtaPrice');
         var _pwOk = window._isOkMiniApp === true || window._appEnv === 'ok';
-        if (priceEl) priceEl.textContent = isVkStub ? '' : (arr[_scPwSel] ? arr[_scPwSel].p : '');
+        if (priceEl) priceEl.textContent = arr[_scPwSel] ? _pwPrice(arr[_scPwSel]) : '';
         var subEl2 = document.getElementById('scPwSubscribe');
-        if (subEl2) subEl2.style.display = (isVk || _pwOk) ? 'none' : '';
+        if (subEl2) subEl2.style.display = (isVk || _pwOk || _pwNative) ? 'none' : '';
         var dayEl2 = document.getElementById('scPwDay');
-        if (dayEl2) dayEl2.style.display = (isVk || _pwOk) ? 'none' : '';
+        if (dayEl2) dayEl2.style.display = (isVk || _pwOk || _pwNative) ? 'none' : '';
         // CSS-страховка: на VK/OK пейволл невидим, пока цены не записаны по платформе
         var _pwRoot = document.getElementById('scPaywall');
         if (_pwRoot) _pwRoot.classList.add('pw-prices-ready');

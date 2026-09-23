@@ -9,7 +9,7 @@
         <!-- баланс -->
         <div class="balance">
           <span class="b-ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.2L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4z"/></svg></span>
-          <span class="b-body"><span class="b-k" data-i18n="plBalance">Твой баланс</span><span class="b-v" id="plansBalanceVal">0 Искр</span></span>
+          <span class="b-body"><span class="b-k"><span data-i18n="plBalance">Твой баланс</span><i id="plBalanceSongs"></i></span><span class="b-v" id="plansBalanceVal">0 Искр</span></span>
           <button type="button" class="b-top" id="plansTopupBtn" data-i18n="plTopup" onclick="if(window.goToPage){goToPage('topupPage');setTimeout(function(){if(window._initTopupPage)window._initTopupPage();},100);}">Пополнить</button>
         </div>
 
@@ -19,7 +19,8 @@
         <!-- Душа / Basic -->
         <!-- КАНОН 02.07: на VK карточки видны как ПАКЕТЫ за голоса (§5.2); на OK скрыты CSS-ом (платежей нет) -->
         <div class="plan" id="planCardBasic">
-          <div class="plan-head"><span class="plan-name" id="planBasicName" data-i18n="planBasicName">Душа</span><span class="plan-songs" data-i18n="plBasicTag">Basic</span></div>
+          <!-- CD 19.09: компактная строка выбора — радио, имя, цена и ₽ за песню (заполняет plCdInit) -->
+          <div class="plan-top"><span class="radio" aria-hidden="true"></span><div class="plan-head"><span class="plan-name" id="planBasicName" data-i18n="planBasicName">Душа</span><span class="plan-songs" data-i18n="plBasicTag">Basic</span></div><div class="plan-price"><b></b><span class="per"></span><span class="per-song"></span></div></div>
           <div class="plan-feat">
             <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span id="planBasicF1" data-i18n="plBasicF1">5 треков каждый месяц</span></span>
             <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="plBasicF2">Оракул — 50 вопросов в месяц</span></span>
@@ -32,8 +33,8 @@
 
         <!-- Глубина / Plus (популярный) -->
         <div class="plan pop" id="planCardPlus">
-          <span class="plan-flag" data-i18n="plFlag">выбирают чаще</span>
-          <div class="plan-head"><span class="plan-name" id="planPlusName" data-i18n="planPlusName">Глубина</span><span class="plan-songs" data-i18n="plPlusTag">Plus</span></div>
+          <!-- CD 19.09: компактная строка выбора — радио, имя, цена и ₽ за песню (заполняет plCdInit) -->
+          <div class="plan-top"><span class="radio" aria-hidden="true"></span><div class="plan-head"><span class="plan-name" id="planPlusName" data-i18n="planPlusName">Глубина</span><span class="plan-flag" data-i18n="plFlag">выбирают чаще</span><span class="plan-songs" data-i18n="plPlusTag">Plus</span></div><div class="plan-price"><b></b><span class="per"></span><span class="per-song"></span></div></div>
           <div class="plan-feat">
             <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span id="planPlusF1" data-i18n="plPlusF1">15 треков каждый месяц</span></span>
             <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="plPlusF2">Оракул без лимита</span></span>
@@ -46,7 +47,8 @@
 
         <!-- Лаборатория / Master -->
         <div class="plan" id="planCardMaster">
-          <div class="plan-head"><span class="plan-name" id="planMasterName" data-i18n="planMasterNameText">Лаборатория</span><span class="plan-songs" data-i18n="plLabTag">Master</span></div>
+          <!-- CD 19.09: компактная строка выбора — радио, имя, цена и ₽ за песню (заполняет plCdInit) -->
+          <div class="plan-top"><span class="radio" aria-hidden="true"></span><div class="plan-head"><span class="plan-name" id="planMasterName" data-i18n="planMasterNameText">Лаборатория</span><span class="plan-songs" data-i18n="plLabTag">Master</span></div><div class="plan-price"><b></b><span class="per"></span><span class="per-song"></span></div></div>
           <div class="plan-feat">
             <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span id="planMasterF1" data-i18n="plLabF1">30 треков каждый месяц</span></span>
             <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="plLabF2">Картотека людей</span></span>
@@ -77,4 +79,8 @@
         <p class="legal" data-web-only data-i18n-html="plLegalHtml">Любая песня — 100 Искр. Пакеты — разовая оплата на 30 дней, без автоматических списаний. Оплата картой, Stars или Искрами; промокоды — на разовые покупки. <a href="#" onclick="if(window.showLegalModal)window.showLegalModal('offer');return false">Оферта</a>.</p>
         <p class="legal" data-vk-only data-i18n-html="plLegalVkHtml">Любая песня — 100 Искр. Пакеты и Искры — разовая покупка. <a href="#" onclick="if(window.showLegalModal)window.showLegalModal('offer');return false">Оферта</a>.</p>
       </div>
-    </div>
+          <div class="foot">
+        <button type="button" class="cta" id="plansFootCta"><span class="lbl"></span></button>
+        <p class="note"><span data-i18n="plFootNote">Разовая оплата на 30 дней, без автосписаний</span></p>
+      </div>
+</div>

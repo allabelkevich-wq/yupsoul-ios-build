@@ -436,3 +436,283 @@
           input.value = ''; // сбрасываем для повторного выбора
         });
       })();
+
+      // ═══ CD 19.09 · Пакет и пополнение (docs/DESIGN-HANDOFF-1909.md, экран 2) ═══
+      // Шторка: способы видны сразу (D7), подзаголовок «пакет — что входит», суммы у способов, применённый промокод
+      // в чеке, состояние «ждём оплату». Движок (showPlanConfirm, промокод) не переписан — зеркала через MutationObserver.
+      (function cfCdInit() {
+        var ov = document.getElementById('planConfirmOverlay');
+        if (!ov || typeof window.showPlanConfirm !== 'function') return;
+        var $ = function (id) { return document.getElementById(id); };
+        function tl(k, fb) { var v = typeof t === 'function' ? t(k) : null; return (v && v !== k) ? v : fb; }
+        function setText(el, v) { if (el && el.textContent !== v) el.textContent = v; }
+        function setHtml(el, v) { if (el && el.innerHTML !== v) el.innerHTML = v; }
+        var origPrice = '', syncing = false, queued = false, waitTimer = null;
+        // Строка способа: <span>подпись</span><span class="m-amt">сумма</span>. Движок при частичной скидке пишет
+        // textContent «Оплатить картой — 1 522 ₽» и стирает спаны — собираем обратно, сумма берётся после « — ».
+        function method(btn, amt) {
+          if (!btn) return;
+          var amtEl = btn.querySelector('.m-amt');
+          if (!amtEl) {
+            var parts = btn.textContent.trim().split(' — ');
+            btn.innerHTML = '';
+            var lbl = document.createElement('span'); lbl.textContent = parts[0];
+            amtEl = document.createElement('span'); amtEl.className = 'm-amt'; amtEl.textContent = parts.slice(1).join(' — ');
+            btn.appendChild(lbl); btn.appendChild(amtEl);
+          }
+          if (amt != null) setText(amtEl, amt);
+        }
+        function esc(s) { return String(s || '').replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+        function sync() {
+          if (syncing) return;
+          syncing = true;
+          try {
+            var name = ($('planConfirmPlanName') || {}).textContent || '', desc = ($('planConfirmDesc') || {}).textContent || '';
+            setHtml($('cfSubPlan'), name ? '<b>«' + esc(name.replace(/^«|»$/g, '')) + '»</b>' + (desc ? ' — ' + esc(desc) : '') : esc(desc));
+            var price = ($('planConfirmPrice') || {}).textContent || '';
+            method($('planConfirmCardBtn'), price.replace(tl('perMonth', '/мес'), '').trim()); // в строке способа — только сумма, как в эталоне
+            method($('planConfirmStarsBtn'), null);
+            var st = $('planPromoStatus'), ok = !!(st && st.classList.contains('success') && st.textContent.trim());
+            if (ok) { if (ov.dataset.promo !== 'ok') ov.dataset.promo = 'ok'; setText($('cfDisc'), st.textContent.trim()); setText($('cfOld'), origPrice !== price ? origPrice : ''); }
+            else { if (ov.dataset.promo) delete ov.dataset.promo; setText($('cfDisc'), ''); setText($('cfOld'), ''); }
+            var wait = ov.querySelector('.pay-wait span');
+            setText(wait, ov.dataset.pay === 'wait' ? tl('payWaitSheet', 'Ждём подтверждение оплаты…') : '');
+            if (ov.style.display === 'none' && ov.dataset.pay) { ov.dataset.pay = ''; clearTimeout(waitTimer); }
+          } finally { syncing = false; }
+        }
+        function schedule() { if (queued) return; queued = true; requestAnimationFrame(function () { queued = false; sync(); }); }
+        new MutationObserver(function () { if (!syncing) schedule(); })
+          .observe(ov, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: ['style', 'class'] });
+        var orig = window.showPlanConfirm;
+        window.showPlanConfirm = function (planKey) {
+          var r = orig.apply(this, arguments);
+          try {
+            ov.dataset.pay = ''; clearTimeout(waitTimer);
+            if (ov.dataset.promo) delete ov.dataset.promo;
+            origPrice = ($('planConfirmPrice') || {}).textContent || '';
+            method($('planConfirmStarsBtn'), (typeof PLAN_STARS !== 'undefined' && PLAN_STARS[planKey]) || '');
+            // D7: способы сразу, «Подтвердить и оплатить» не нужен; промокод остаётся видимым (в отличие от _cfMethods(true))
+            var m = $('planConfirmMethodsBlock'), mb = $('planConfirmMainBtn');
+            if (m) m.style.display = 'flex';
+            if (mb) mb.style.display = 'none';
+            sync();
+          } catch (e) { console.warn('[cfCd]', e); }
+          return r;
+        };
+        ['planConfirmCardBtn', 'planConfirmStarsBtn'].forEach(function (id) {
+          var b = $(id);
+          if (!b) return;
+          b.addEventListener('click', function () {
+            ov.dataset.pay = 'wait';
+            clearTimeout(waitTimer);
+            waitTimer = setTimeout(function () { if (ov.dataset.pay === 'wait') ov.dataset.pay = ''; }, 60000);
+            schedule();
+          }, true);
+        });
+        window._cfCdSync = sync;
+      })();
+
+      // Пополнение Искр: цена за песню у каждого пакета и строка под CTA «+N Искр = M песен».
+      (function tuCdInit() {
+        var page = document.getElementById('topupPage');
+        if (!page) return;
+        function tl(k, fb) { var v = typeof t === 'function' ? t(k) : null; return (v && v !== k) ? v : fb; }
+        function setText(el, v) { if (el && el.textContent !== v) el.textContent = v; }
+        var syncing = false, queued = false;
+        function info(b) { return (b && typeof ISKRY_PACK_INFO !== 'undefined' && ISKRY_PACK_INFO[b.dataset.sku]) || null; }
+        function sync() {
+          if (syncing) return;
+          syncing = true;
+          try {
+            page.querySelectorAll('.topup').forEach(function (b) {
+              var i = info(b), per = b.querySelector('.per');
+              var rub = parseInt(String(b.dataset.rub || '').replace(/[^0-9]/g, ''), 10);
+              if (per && i && i.songs && rub) setText(per, tl('tuPerSong', '{p} ₽/песня').replace('{p}', Math.round(rub / i.songs)));
+            });
+            var i = info(page.querySelector('.topup.sel'));
+            setText(document.getElementById('tuFootNote'), i ? tl('tuFootNote', '+{n} Искр = {songs} песен · разовая оплата, Искры не сгорают').replace('{n}', i.iskry).replace('{songs}', i.songs) : '');
+          } finally { syncing = false; }
+        }
+        function schedule() { if (queued) return; queued = true; requestAnimationFrame(function () { queued = false; sync(); }); }
+        new MutationObserver(function () { if (!syncing) schedule(); })
+          .observe(page, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: ['class'] });
+        window._tuCdSync = sync;
+        sync();
+      })();
+
+      // ═══ CD 19.09 · Пакеты (docs/DESIGN-HANDOFF-1909.md, экран 3) ═══
+      // Карточки — компактные строки с радио; состав раскрыт у выбранной; один primary в липком подвале
+      // ведёт на кнопку выбранной карточки (движок: showPlanConfirm). Цены/тексты — зеркала того, что пишет
+      // движок (loadRubPrices → #planBasicPriceEl…, _initPlansPage → #plansBuy*Price), синхронизация — MutationObserver.
+      (function plCdInit() {
+        var page = document.getElementById('plansPage');
+        if (!page) return;
+        var $ = function (id) { return document.getElementById(id); };
+        function tl(k, fb) { var v = typeof t === 'function' ? t(k) : null; return (v && v !== k) ? v : fb; }
+        function setText(el, v) { if (el && el.textContent !== v) el.textContent = v; }
+        var CARDS = [['planCardBasic', 'planBasicPriceEl', 'plan_basic'], ['planCardPlus', 'planPlusPriceEl', 'plan_plus'], ['planCardMaster', 'masterPriceEl', 'plan_master']];
+        var sel = 'planCardPlus', syncing = false, queued = false;
+        function songsWord(n) {
+          var lang = window._currentLang || 'ru';
+          if (lang === 'ru') { var m10 = n % 10, m100 = n % 100; return (m10 === 1 && m100 !== 11) ? tl('plSongsWord1', 'песню') : (m10 >= 2 && m10 <= 4 && (m100 < 10 || m100 >= 20)) ? tl('plSongsWord2', 'песни') : tl('plSongsWord5', 'песен'); }
+          return n === 1 ? tl('plSongsWord1', 'song') : tl('plSongsWord5', 'songs');
+        }
+        function money(txt) { return String(txt || '').split(' · ')[0].trim(); }
+        function sync() {
+          if (syncing) return;
+          syncing = true;
+          try {
+            var per = tl('perMonth', ' · 30 дней').replace(/^\s*·\s*/, '').trim();
+            CARDS.forEach(function (c) {
+              var card = $(c[0]); if (!card) return;
+              var m = money(($(c[1]) || {}).textContent);
+              setText(card.querySelector('.plan-price b'), m);
+              setText(card.querySelector('.plan-price .per'), m ? '· ' + per : '');
+              var num = parseFloat(m.replace(/[^\d.,]/g, '').replace(/\s/g, '').replace(',', '.'));
+              var tracks = parseInt((typeof PLAN_TRACKS !== 'undefined' && PLAN_TRACKS[c[2]]) || '0', 10);
+              var cur = (m.match(/[₽$€]/) || ['₽'])[0];
+              // «162 ₽ за песню»; в валюте стора знак впереди — «$2 за песню», а не «2 $ за песню» (натив, аудит 23.09)
+              var perAmt = (num && tracks) ? Math.round(num / tracks) : 0;
+              setText(card.querySelector('.plan-price .per-song'), perAmt ? tl('plPerSong', '{p} ₽ за песню').replace('{p} ₽', cur === '₽' ? perAmt + ' ₽' : cur + perAmt).replace('{p}', perAmt) : '');
+              card.classList.toggle('sel', c[0] === sel);
+            });
+            var card = $(sel), lbl = card && card.querySelector('.cta-label'), pm = '';
+            CARDS.forEach(function (c) { if (c[0] === sel) pm = money(($(c[1]) || {}).textContent); });
+            // Владеемый пакет: подвал повторяет призрачную кнопку («Действует до …») и не нажимается (эталон, аудит 23.09)
+            var isCur = !!(card && card.classList.contains('current'));
+            setText(page.querySelector('#plansFootCta .lbl'), lbl ? (isCur ? lbl.textContent.trim() : lbl.textContent.trim() + (pm ? ' · ' + pm : '')) : '');
+            var footBtn = $('plansFootCta'); if (footBtn && footBtn.disabled !== isCur) footBtn.disabled = isCur;
+            // Подписчик выбирает другой пакет: зачёта остатка в системе нет (createOrRefreshSubscription — новая
+            // подписка на 30 дней с сегодняшнего дня), поэтому честная подпись под кнопкой вместо «остаток зачтётся» из эталона
+            var hasCur = !!page.querySelector('.plan.current');
+            setText(page.querySelector('.foot .note span'), (hasCur && !isCur) ? tl('plUpgradeNote', 'Новый пакет начнётся сразу и действует 30 дней · разовая оплата') : tl('plFootNote', 'Разовая оплата на 30 дней, без автосписаний'));
+            var bal = typeof getIskryBalance === 'function' ? (getIskryBalance() || 0) : 0, n = Math.floor(bal / 100);
+            setText($('plBalanceSongs'), n > 0 ? tl('plBalanceSongs', 'хватит на {n} {songs}').replace('{n}', n).replace('{songs}', songsWord(n)) : tl('plBalanceNone', 'пока не хватает на песню'));
+            // разовые: движок пишет «100 Искр · 490 ₽» — Искры крупно, деньги мелко «или 490 ₽» (на VK/OK/нативе движок денег не пишет)
+            ['plansBuy1Price', 'plansBuy2Price', 'plansBuy3Price'].forEach(function (id) {
+              var el = $(id); if (!el || el.querySelector('small')) return;
+              var parts = el.textContent.split(' · ');
+              if (parts.length < 2) return;
+              el.textContent = parts[0].trim();
+              var sm = document.createElement('small'); sm.textContent = tl('plOrMoney', 'или {p}').replace('{p}', parts.slice(1).join(' · ').trim());
+              el.appendChild(sm);
+            });
+            var f = page.querySelector('.foot');
+            if (f && f.offsetHeight) page.style.setProperty('--foot', (f.offsetHeight + 8) + 'px');
+          } finally { syncing = false; }
+        }
+        function schedule() { if (queued) return; queued = true; requestAnimationFrame(function () { queued = false; sync(); }); }
+        new MutationObserver(function () { if (!syncing) schedule(); })
+          .observe(page, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: ['class', 'style'] });
+        page.addEventListener('click', function (e) {
+          var card = e.target.closest('.plan');
+          if (!card || !page.contains(card) || e.target.closest('.plan-cta')) return;
+          sel = card.id; sync();
+        });
+        var foot = $('plansFootCta');
+        if (foot) foot.addEventListener('click', function () { var b = $(sel) && $(sel).querySelector('.plan-cta'); if (b) b.click(); });
+        window.addEventListener('resize', schedule);
+        if (typeof window._initPlansPage === 'function') {
+          var orig = window._initPlansPage;
+          window._initPlansPage = function () { var r = orig.apply(this, arguments); schedule(); return r; };
+        }
+        window._plCdSync = sync;
+        sync();
+      })();
+
+      // ═══ CD 19.09 · Оплата прошла (docs/DESIGN-HANDOFF-1909.md, экран 5) ═══
+      // Чек заказа (что оплачено, чем, сколько), срок «10–15 минут» (D8), помощь при задержке, primary «Открыть Плейлист» (D5),
+      // салют Искрами вместо бумажек, подвал-дымка с резервом --foot и однократным peek. Движок (reveal/этапы/режимы) не переписан.
+      (function suCdInit() {
+        var page = document.getElementById('successPage');
+        if (!page) return;
+        var $ = function (id) { return document.getElementById(id); };
+        function tl(k, fb) { var v = typeof t === 'function' ? t(k) : null; return (v && v !== k) ? v : fb; }
+        function setText(el, v) { if (el && el.textContent !== v) el.textContent = v; }
+        var SPK = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.2c0 5.36-4.44 9.8-9.8 9.8 5.36 0 9.8 4.44 9.8 9.8 0-5.36 4.44-9.8 9.8-9.8-5.36 0-9.8-4.44-9.8-9.8Z"/></svg>';
+        // Салют — как в эталоне: вспышка из печати, три ореола, 12 лучей, 26 Искр веером и 26 Искр, всплывающих снизу
+        window._successSalute = function () {
+          var l = $('cfLayer'); if (!l) return;
+          l.innerHTML = '';
+          if (window.matchMedia && matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+          var cols = ['#f7c873', '#fff0cf', '#f0b45c'];
+          var seal = page.querySelector('.burst') || page.querySelector('.wrap');
+          var y0 = seal ? (seal.getBoundingClientRect().top - page.getBoundingClientRect().top + seal.offsetHeight / 2) : 150;
+          var fl = document.createElement('i'); fl.className = 'flash'; fl.style.setProperty('--y', y0 + 'px'); l.appendChild(fl);
+          [0, .12, .26].forEach(function (dd) { var hl = document.createElement('i'); hl.className = 'halo'; hl.style.cssText = '--y:' + y0 + 'px;--d:' + dd + 's'; l.appendChild(hl); });
+          for (var a2 = 0; a2 < 12; a2++) {
+            var rr = document.createElement('i'); rr.className = 'ray';
+            rr.style.cssText = '--y:' + y0 + 'px;--a:' + (a2 * 30 + (Math.random() * 8 - 4)) + 'deg;--len:' + (110 + Math.random() * 90).toFixed(0) + 'px;--d:' + (Math.random() * .1).toFixed(2) + 's';
+            l.appendChild(rr);
+          }
+          for (var k = 0; k < 26; k++) {
+            var ang = (Math.PI * 2 * k) / 26 + (Math.random() - .5) * .22, R = 130 + Math.random() * 150;
+            var e = document.createElement('i'); e.className = 'bs'; e.innerHTML = SPK;
+            e.style.cssText = '--y:' + y0 + 'px;--c:' + cols[k % 3] + ';--sz:' + (10 + Math.random() * 14).toFixed(1) + 'px;--dx:' + (Math.cos(ang) * R).toFixed(0) + 'px;--dy:' + (Math.sin(ang) * R * .86).toFixed(0) + 'px;--s2:' + (.5 + Math.random() * .7).toFixed(2) + ';--rot:' + (Math.random() * 240 - 120).toFixed(0) + 'deg;--dur:' + (1.2 + Math.random() * .8).toFixed(2) + 's;--del:' + (Math.random() * .12).toFixed(2) + 's';
+            l.appendChild(e); (function (el) { requestAnimationFrame(function () { el.classList.add('go'); }); })(e);
+          }
+          for (var i = 0; i < 26; i++) {
+            var c = document.createElement('i'); c.className = 'cf'; c.innerHTML = SPK;
+            c.style.cssText = 'left:' + (6 + Math.random() * 88) + '%;--c:' + cols[i % 3] + ';--sz:' + (7 + Math.random() * 10).toFixed(1) + 'px;--op:' + (.5 + Math.random() * .45).toFixed(2) + ';--dur:' + (4.5 + Math.random() * 3).toFixed(2) + 's;--del:' + (Math.random() * 1.8).toFixed(2) + 's;--dx:' + (Math.random() * 60 - 30).toFixed(0) + 'px;--rot:' + (Math.random() * 360 - 180).toFixed(0) + 'deg';
+            l.appendChild(c); (function (el) { requestAnimationFrame(function () { el.classList.add('go'); }); })(c);
+          }
+          setTimeout(function () { if (l.firstChild && l.querySelector('.flash') === fl) l.innerHTML = ''; }, 9000);
+        };
+        // Чек: название заказа — из шапки оверлея оплаты, способ — из последнего нажатия / pending_payment_type, сумма — из цены оверлея
+        function fillOrder() {
+          var box = $('successOrder'); if (!box) return;
+          var pay = $('successPayActions');
+          // .order держит display:flex !important (правило эталона) — обычный инлайн его НЕ перебьёт,
+          // поэтому прячем через setProperty(...,'important'), иначе без данных остаётся пустая рамка
+          if (pay && getComputedStyle(pay).display !== 'none') { box.style.setProperty('display', 'none', 'important'); return; } // режим лимита — чека нет
+          var title = ($('payOvCardTitle') || {}).textContent || '';
+          var method = window._poLastMethod || '';
+          if (!method) { try { var pp = JSON.parse(localStorage.getItem('pending_payment_type') || '{}'); method = pp.type === 'tbank' || pp.type === 'card' ? 'card' : pp.type === 'stars' ? 'stars' : ''; } catch (_) {} }
+          var sum = '';
+          if (method === 'card' || method === 'stars') sum = ($('payOvPriceDisplay') || {}).textContent || '';
+          else if (method === 'iskry') sum = (($('payOvFreeClaimBtn') || {}).textContent || '').split(' — ').slice(1).join(' — ');
+          var subKey = { card: 'successOrderSubCard', stars: 'successOrderSubStars', iskry: 'successOrderSubIskry', promo: 'successOrderSubPromo' }[method];
+          if (!title || !subKey) { box.style.setProperty('display', 'none', 'important'); return; }
+          setText($('successOrderTitle'), title);
+          setText($('successOrderSub'), tl(subKey, ''));
+          setText($('successOrderSum'), sum);
+          box.style.removeProperty('display');
+        }
+        var pay = $('successPayActions');
+        var wrap = page.querySelector('.wrap'), act = page.querySelector('.actions');
+        function hint() {
+          if (!act || !wrap) return;
+          var f = act.offsetHeight; if (f) page.style.setProperty('--foot', f + 'px');
+          var can = wrap.scrollHeight - wrap.clientHeight > 24 && wrap.scrollTop < 8;
+          page.classList.toggle('can-scroll', can);
+          if (can && !page._peeked) peek();
+        }
+        function peek() {
+          if (window.matchMedia && matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+          page._peeked = true;
+          var t0 = null, stop = false, D = 1100;
+          function cancel() { stop = true; }
+          wrap.addEventListener('touchstart', cancel, { once: true, passive: true });
+          wrap.addEventListener('wheel', cancel, { once: true, passive: true });
+          setTimeout(function () {
+            requestAnimationFrame(function step(ts) {
+              if (stop) return;
+              if (!t0) t0 = ts;
+              var p = Math.min(1, (ts - t0) / D), e = Math.sin(p * Math.PI);
+              wrap.scrollTop = 44 * e * e;
+              if (p < 1) requestAnimationFrame(step); else { wrap.scrollTop = 0; page.classList.remove('can-scroll'); }
+            });
+          }, 1500);
+        }
+        if (wrap) wrap.addEventListener('scroll', function () { if (wrap.scrollTop > 60) page.classList.remove('can-scroll'); }, { passive: true });
+        window.addEventListener('resize', hint);
+        new MutationObserver(function () {
+          if (document.body.dataset.page !== 'successPage') return;
+          page._peeked = false;
+          fillOrder();
+          if (typeof showWhileGeneratingUpsell === 'function' && !(pay && getComputedStyle(pay).display !== 'none')) showWhileGeneratingUpsell();
+          requestAnimationFrame(function () { requestAnimationFrame(hint); });
+          setTimeout(hint, 1800); // после reveal (.rv) высоты меняются
+        }).observe(document.body, { attributes: true, attributeFilter: ['data-page'] });
+        window._suCdFill = fillOrder;
+      })();

@@ -777,6 +777,10 @@
                 var _chatEl2 = document.getElementById('scPageChat');
                 if (_chatEl2 && _chatEl2.lastElementChild) _chatEl2.lastElementChild.insertAdjacentHTML('beforeend', _giftBtnHtml);
               } catch(_) {}
+              // Решение 23.09 (эталон showcase-oracle-paywall.html): сразу показываем шторку с пакетами —
+              // на нативе с ценами стора и встроенной покупкой. Подсказка с «Забрать Искру» остаётся
+              // в ленте как бесплатный путь после закрытия шторки (закон 13.06 — ценность и мягкое предложение).
+              try { if (typeof window.scPwShow === 'function') window.scPwShow('q'); } catch(_) {}
               return;
             }
             var answer = (json && json.data && json.data.answer) || (json && json.answer) || null;
@@ -962,10 +966,6 @@
         }
         // Метка времени навигации — защита от спонтанных VK back-событий (порт фикса 9.35 на прод)
         try { window._lastNavAt = Date.now(); } catch(_) {}
-        // Остановить поллинг генерации при уходе с loadingPage
-        if (document.body.dataset.page === 'loadingPage' && pageId !== 'loadingPage' && typeof window.stopGenerationPolling === 'function') {
-          window.stopGenerationPolling();
-        }
         // Batch 8.15 (7263771 Android Средний): «Аудио продолжает играть при переходе
         // из плеера в другие разделы». При уходе с myTracksPage останавливаем audio.
         try {
@@ -1000,6 +1000,10 @@
         if (pageId === 'myTracksPage' && typeof window._markTracksAsSeen === 'function') window._markTracksAsSeen();
         // Этап 1: вход на Плейлист — всегда вкладка «Мои треки», без торчащего плеера/шторки.
         if (pageId === 'myTracksPage' && typeof window._mtResetView === 'function') setTimeout(window._mtResetView, 0);
+        // Пакеты/пополнение: баланс, цены и переводы — при любом входе, не только с кнопок профиля
+        // (аудит 23.09: прямой переход на EN оставлял «0 Искр»/«100 Искр» по-русски)
+        if (pageId === 'plansPage' && typeof window._initPlansPage === 'function') setTimeout(window._initPlansPage, 0);
+        if (pageId === 'topupPage' && typeof window._initTopupPage === 'function') setTimeout(window._initTopupPage, 0);
         var menu = document.getElementById('homeAppMenu');
         if (menu) menu.querySelectorAll('.home-app-menu-btn').forEach(function(btn){ btn.classList.toggle('active', btn.getAttribute('data-nav') === pageId); });
         if (window._previewMode) document.documentElement.classList.remove('web-loading');
@@ -1173,12 +1177,6 @@
           // (снимает замок форматов couple/transit сразу, без перезапуска приложения).
           if (typeof loadMe === 'function') { try { loadMe(); } catch(_) {} }
         }
-        if (pageId === 'loadingPage') {
-          if (typeof showWhileGeneratingUpsell === 'function') showWhileGeneratingUpsell();
-          if (typeof startGenerationPolling === 'function' && window._pendingGenerationRequestId) {
-            startGenerationPolling(window._pendingGenerationRequestId);
-          }
-        }
         // paymentPage теперь overlay — здесь ничего не делаем
         // Soul Chat блок удалён со successPage — initSoulChat вызывать не нужно
         // oracleFeedPage removed — diary is inside soulChatPage tabs
@@ -1218,7 +1216,7 @@
           document.querySelectorAll('.preview-nav button').forEach(function(btn) {
             btn.classList.remove('active');
           });
-          var pageMap = { 'homePage': 'home', 'formPage': 'form', 'paymentPage': 'payment', 'loadingPage': 'loading', 'successPage': 'success', 'heroesPage': 'heroes', 'paymentThanksPage': 'payment' };
+          var pageMap = { 'homePage': 'home', 'formPage': 'form', 'paymentPage': 'payment', 'successPage': 'success', 'heroesPage': 'heroes', 'paymentThanksPage': 'payment' };
           var activeBtn = document.querySelector('.preview-nav button[data-page="' + (pageMap[pageId] || '') + '"]');
           if (activeBtn) activeBtn.classList.add('active');
         }
@@ -1336,7 +1334,7 @@
               if (homeBtn) homeBtn.classList.add('active');
             }
           } else {
-            var pageIdFromParam = { loading: 'loadingPage', success: 'successPage', form: 'formPage', home: 'homePage', soulChatPage: 'soulChatPage', helpPage: 'helpPage', profilePage: 'profilePage' }[pageParam];
+            var pageIdFromParam = { loading: 'successPage', success: 'successPage', form: 'formPage', home: 'homePage', soulChatPage: 'soulChatPage', helpPage: 'helpPage', profilePage: 'profilePage' }[pageParam];
             if (pageIdFromParam) {
               goToPage(pageIdFromParam);
               if (pageIdFromParam === 'soulChatPage') {
@@ -2978,6 +2976,15 @@
           // (сброс Шага 3 при смене формата), он не должен срабатывать по запертой кнопке.
           if ((_m === 'couple' || _m === 'transit') && window._modeLocksActive === true) {
             e.stopImmediatePropagation();
+            // Во время гайда по форме на шаге «Формат» (Алла 22.09) не редиректим на пополнение —
+            // человека резко уносило без объяснения. Показываем подсказку «пока доступен один
+            // формат» на месте тултипа, переход дальше — только по «Дальше ✓». stopImmediatePropagation
+            // оставляем и в этой ветке: без него сработает listener сброса Шага 3 (ниже по файлу)
+            // на моде, которая фактически не стала активной (setMode здесь не вызывался).
+            if (typeof window._formGuideActiveStep === 'function' && window._formGuideActiveStep() === 1) {
+              if (typeof window._formGuideShowLockedHint === 'function') window._formGuideShowLockedHint();
+              return;
+            }
             if (typeof goToPage === 'function') goToPage('topupPage');
             return;
           }
@@ -3056,10 +3063,12 @@
           ];
         }
         function hostFor(i) { var s = STEPS()[i]; return (s && s.host) || document.querySelector('#formPage .page-scroll'); }
-        function renderTip(i) {
+        function renderTip(i, overrideTxt) {
           var s = STEPS()[i];
           if (!tipEl) return;
-          var txt = (s && s.tip) || '';
+          // overrideTxt (Алла 22.09): показать другой текст на ТЕКУЩЕМ шаге, не трогая STEPS()
+          // — нужно для «locked»-подсказки на запертом формате (см. window._formGuideShowLockedHint).
+          var txt = overrideTxt || (s && s.tip) || '';
           if (!txt && !OPTIONAL[i]) { tipEl.style.display = 'none'; return; }
           tipEl.style.display = '';
           tipEl.textContent = '';
@@ -3103,10 +3112,17 @@
           guideEl.classList.add('show');
         }
         var _glueRaf = null, _movedAt = 0;
+        // Порог 700 (было) оставлял окно 540-700мс БЕЗ покадровой докоррекции: явный place()
+        // едет к цели ~520мс (длительность CSS-transition кольца), scrollIntoView стартует в 540мс
+        // (см. schedule() ниже) — а _glueTick подхватывал докоррекцию только после 700мс. При
+        // быстром прощёлкивании «Дальше ✓» (Алла 22.09: обрывки контура внизу экрана на шаге
+        // «Язык песни») это измерено живьём: кольцо отставало от цели до -566px, пока не
+        // «доезжало» кадр-в-кадр. 560 — сразу за 520мс переезда кольца, почти без зазора
+        // до старта scrollIntoView (540мс), сам перелёт (0-520мс) не трогаем.
         function _glueTick() {
           _glueRaf = null;
           if (done || paused || !guideEl || !guideEl.classList.contains('show')) return;
-          if (Date.now() - _movedAt > 700) { guideEl.classList.add('no-anim'); place(cur); }
+          if (Date.now() - _movedAt > 560) { guideEl.classList.add('no-anim'); place(cur); }
           _glueRaf = requestAnimationFrame(_glueTick);
         }
         function schedule(i) {
@@ -3322,6 +3338,16 @@
           wire(); go(Math.max(cur, 1));
         };
         window._stopFormGuide = function() { hideRing(); };
+        // Геттер активного шага гида — нужен СНАРУЖИ IIFE обработчику клика на запертый .mode-btn
+        // (Алла 22.09: «Про двоих»/«Энергия дня» резко уносили на пополнение без объяснения прямо
+        // во время гайда на шаге «Формат»). -1 — гид не активен/на паузе/завершён.
+        window._formGuideActiveStep = function() { return (!done && !paused && guideEl && guideEl.classList.contains('show')) ? cur : -1; };
+        // Вместо редиректа на пополнение — подсказка «пока доступен один формат» на месте тултипа
+        // текущего шага, кнопка «Дальше ✓» остаётся (OPTIONAL[cur] уже true для шага «Формат»).
+        window._formGuideShowLockedHint = function() {
+          if (done || paused || !guideEl || !guideEl.classList.contains('show')) return;
+          renderTip(cur, T('guideTipFormatLocked', 'Пока доступна песня о себе. «Про двоих» и «Энергия дня» откроются вместе с пакетом'));
+        };
       })();
 
 
@@ -3591,7 +3617,10 @@
       // Загрузить кнопки при старте и закешировать
       (function() {
         var mode = 'single';
-        fetch('/api/quick-buttons').then(function(r){ return r.json(); }).then(function(d) {
+        // На нативе (Capacitor WebView) origin не yupsoul.ru — голый '/api/...' уходил в локальную
+        // схему WebView и молча падал, #quickPickerSheet навсегда пустой (Алла нашла на iPhone, 22.09).
+        var apiBase = (window.BACKEND_URL || window.HEROES_API_BASE || '').replace(/\/$/, '');
+        fetch(apiBase + '/api/quick-buttons').then(function(r){ return r.json(); }).then(function(d) {
           if (d.success && d.data) {
             window._quickButtonsCache = d.data;
             // Определяем текущий режим
@@ -4070,8 +4099,22 @@
             }
             updatePaymentUiFromCatalog();
             setPaymentStatus('', '');
+          } else if (response.status === 401) {
+            // Сессия истекла (веб/PWA: токен живёт 7 дней) — это не сбой генерации.
+            // Раньше падало в общий else и показывало текст Оракула «Оракул задумался»,
+            // человек жал кнопку и ничего не происходило (Алла 22.09, прод, айфон).
+            isSubmitting = false;
+            showSubmitHint(typeof t === 'function' ? (t('errSessionExpired') || 'Нужно войти заново — сессия устарела.') : 'Нужно войти заново — сессия устарела.');
+            if (typeof window.showWebLoginScreen === 'function' && !window._isTelegramApp) {
+              setTimeout(function(){ try { window.showWebLoginScreen(); } catch (_) {} }, 1200);
+            }
+            return;
           } else if (response.status === 403) {
             isSubmitting = false;
+            if (result && result.error_code === 'errAccountBlocked') {
+              showSubmitHint((typeof t === 'function' && t('errAccountBlocked')) || result.error);
+              return;
+            }
             if (result && result.track_limit_reached) {
               // Специальная страница "Лимит исчерпан" — НЕ показываем "Пока ждёшь песню"
               showTrackLimitPage();
@@ -4084,7 +4127,9 @@
             // Никаких технических сообщений пользователю (ЗАКОН #8)
             var _rlKey = typeof t === 'function' ? t('rateLimitError') : '';
             var _rlFallback = (_rlKey && _rlKey !== 'rateLimitError') ? _rlKey : 'Подожди немного и попробуй снова.';
-            var _genericErr = 'Оракул задумался. Спроси ещё раз — я рядом.';
+            // Текст Оракула на форме песни читался как «ответ чата» и ничего не объяснял —
+            // у формы свой ключ (Алла 22.09: «появляется окно оракул задумался, а экрана нет»).
+            var _genericErr = (typeof t === 'function' && t('errSubmitRetry')) || 'Не получилось отправить заявку. Попробуй ещё раз.';
             // Ярослав admin 17.05 (Закон №20): для status=400 backend возвращает
             // error_code → локализуем на frontend конкретное сообщение вместо
             // generic «Что-то пошло не так». Особенно важно для errHeroIncomplete
