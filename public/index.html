@@ -8015,11 +8015,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     /* VK Testers 7260801 ПЕРЕОТКРЫТ (Глазунова dark): иконки в Мои треки плохо видны.
        Универсальный bump для SVG icons в плеере + миниплеере + action btns. */
-    html.dark #myTracksPage button:not(.track-like):not(.mth-play-all) svg,
+    html.dark #myTracksPage button:not(.track-like):not(.mth-play-all):not(.hbtn):not(.mt-detail-header-btn) svg,
     html.dark #myTracksPage .mt-np-action-btn svg,
     html.dark #myTracksPage .mt-mini-action-btn svg,
     html.dark #myTracksPage .mt-now-icon-btn svg,
-    body.theme-dark #myTracksPage button:not(.track-like):not(.mth-play-all) svg,
+    body.theme-dark #myTracksPage button:not(.track-like):not(.mth-play-all):not(.hbtn):not(.mt-detail-header-btn) svg,
     body.theme-dark #myTracksPage .mt-np-action-btn svg,
     body.theme-dark #myTracksPage .mt-mini-action-btn svg {
       fill: rgba(255,255,255,0.92) !important;
@@ -14156,7 +14156,7 @@ html.is-vk-light #soulChatPage .sc-send-btn-icon:disabled svg path {
     border-color: rgba(244,63,94,0.35) !important;
   }
   /* 7260801 — иконки в Мои треки (download/lyrics/share) */
-  body:not(.theme-light):not(.is-vk-light) #myTracksPage button:not(.track-like):not(.mth-play-all) svg,
+  body:not(.theme-light):not(.is-vk-light) #myTracksPage button:not(.track-like):not(.mth-play-all):not(.hbtn):not(.mt-detail-header-btn) svg,
   body:not(.theme-light):not(.is-vk-light) #myTracksPage .mt-now-icon-btn svg {
     fill: rgba(255,255,255,0.85) !important;
     color: rgba(255,255,255,0.85) !important;
@@ -14165,13 +14165,13 @@ html.is-vk-light #soulChatPage .sc-send-btn-icon:disabled svg path {
   /* VK Testers 7260801 ПЕРЕОТКРЫТ-2 (Тамара MacOS 16.05): прошлый fix покрывал
      только тёмную тему. На светлой теме SVG fill наследовал белый/светлый цвет
      от родителя → невидимы на кремовом фоне rgba(250,245,235). Override SVG. */
-  body.theme-light #myTracksPage button:not(.track-like):not(.mth-play-all) svg,
+  body.theme-light #myTracksPage button:not(.track-like):not(.mth-play-all):not(.hbtn):not(.mt-detail-header-btn) svg,
   body.theme-light #myTracksPage .mt-track-item-play svg,
   body.theme-light #myTracksPage .mt-now-icon-btn svg,
   body.theme-light #myTracksPage .mt-np-action-btn svg,
   body.theme-light #myTracksPage .mt-mini-action-btn svg,
   body.theme-light #myTracksPage .mt-now-controls svg,
-  html.is-vk-light #myTracksPage button:not(.track-like):not(.mth-play-all) svg,
+  html.is-vk-light #myTracksPage button:not(.track-like):not(.mth-play-all):not(.hbtn):not(.mt-detail-header-btn) svg,
   html.is-vk-light #myTracksPage .mt-track-item-play svg,
   html.is-vk-light #myTracksPage .mt-now-icon-btn svg,
   html.is-vk-light #myTracksPage .mt-np-action-btn svg,
@@ -20060,8 +20060,10 @@ body.theme-light #partnerDashPage .btn-pay{color:#2a1c06 !important;background:l
     #myTracksPage .mtv2-player .act svg{width:20px;height:20px;color:#f5f1fb}
     /* Иконки набора 1 (мягкий) — плитки как вариант B, решение Аллы 23.09.
        Стекло вместо яркой заливки — решение Аллы 23.09 (второй заход). */
-    #myTracksPage .mtv2-player .act .act-ic{width:48px;height:48px;border-radius:16px;background:linear-gradient(155deg,rgba(247,207,122,.22),rgba(236,72,153,.13));border:1px solid rgba(247,207,122,.34);box-shadow:none;display:grid;place-items:center}
-    #myTracksPage .mtv2-player .act .act-ic svg{width:24px;height:24px;color:#fbf3e4}
+    /* Плитки действий — нейтральное стекло, как круглые кнопки управления (.ctrl). Золотисто-розовая заливка
+       от 16.06 читалась как «золотистые иконки не из дизайн-системы» (Алла, TestFlight 26). */
+    #myTracksPage .mtv2-player .act .act-ic{width:48px;height:48px;border-radius:16px;background:linear-gradient(160deg,rgba(255,255,255,.09),rgba(255,255,255,.03));border:1px solid rgba(255,255,255,.16);box-shadow:none;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);display:grid;place-items:center}
+    #myTracksPage .mtv2-player .act .act-ic svg{width:24px;height:24px;color:#f5f1fb}
     @media(hover:hover){#myTracksPage .mtv2-player .act:hover{color:#f5f1fb !important}#myTracksPage .mtv2-player .act:hover svg{filter:drop-shadow(0 4px 12px rgba(236,72,153,.45))}}
     #myTracksPage .mtv2-player .act:active{transform:scale(.92)}
     #myTracksPage .mtv2-player .act > span{display:block;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -20075,7 +20077,7 @@ body.theme-light #partnerDashPage .btn-pay{color:#2a1c06 !important;background:l
     body.theme-light #myTracksPage .mtv2-player .play,html.is-vk-light:not(.dark) #myTracksPage .mtv2-player .play{color:#fff !important}
     body.theme-light #myTracksPage .mtv2-player .act,html.is-vk-light:not(.dark) #myTracksPage .mtv2-player .act{color:#6f5a66 !important}
     body.theme-light #myTracksPage .mtv2-player .act svg,html.is-vk-light:not(.dark) #myTracksPage .mtv2-player .act svg{color:#241526}
-    body.theme-light #myTracksPage .mtv2-player .act .act-ic,html.is-vk-light:not(.dark) #myTracksPage .mtv2-player .act .act-ic{background:linear-gradient(155deg,rgba(247,207,122,.4),rgba(236,72,153,.19));border-color:rgba(157,104,16,.32)}
+    body.theme-light #myTracksPage .mtv2-player .act .act-ic,html.is-vk-light:not(.dark) #myTracksPage .mtv2-player .act .act-ic{background:linear-gradient(160deg,rgba(24,12,34,.05),rgba(24,12,34,.02));border-color:rgba(74,38,46,.16)}
     body.theme-light #myTracksPage .mtv2-player .act .act-ic svg,html.is-vk-light:not(.dark) #myTracksPage .mtv2-player .act .act-ic svg{color:#6b3d0a}
     #myTracksPage .mtv2-player .v2tbtn{width:54px !important;height:54px !important;min-height:0 !important;border-radius:50% !important;display:grid !important;place-items:center;cursor:pointer;padding:0 !important;color:#f5f1fb !important;border:1px solid rgba(255,255,255,.16) !important;background:linear-gradient(160deg,rgba(255,255,255,.09),rgba(255,255,255,.03)) !important;backdrop-filter:blur(10px) !important;-webkit-backdrop-filter:blur(10px) !important;box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 10px 22px -12px rgba(0,0,0,.6) !important;transition:transform .12s,border-color .2s,background .2s;animation:none !important}
     #myTracksPage .mtv2-player .v2tbtn svg{width:28px;height:28px}
@@ -20128,7 +20130,10 @@ body.theme-light #partnerDashPage .btn-pay{color:#2a1c06 !important;background:l
     #myTracksPage.v2npmin{z-index:1150 !important}
     /* Визуал карточки (border-radius/фон/рамка/тень) перенесён на .mini-in (23.09, из беты,
        см. блок «мини-плеер» ниже) — тут остаётся ТОЛЬКО позиция/видимость над таббаром, не трогать. */
-    #myTracksPage.v2npmin #mtMiniPlayer{display:block !important;left:50% !important;right:auto !important;bottom:calc(76px + env(safe-area-inset-bottom) + 14px) !important;top:auto !important;transform:translateX(-50%) !important;width:min(452px,calc(100% - 24px)) !important;padding:0 !important}
+    #myTracksPage.v2npmin #mtMiniPlayer{display:block !important;left:50% !important;right:auto !important;bottom:calc(76px + env(safe-area-inset-bottom) + 14px) !important;top:auto !important;transform:translateX(-50%) !important;width:min(452px,calc(100% - 24px)) !important;padding:0 !important;background:none !important;border:0 !important;box-shadow:none !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important}
+    /* Внешний контейнер — старый sticky-бар на всю ширину (.mt-mini-player: фон, рамка сверху, блюр, тень). Визуал теперь у скруглённой .mini-in;
+       без обнуления на iOS сквозь пилюлю просвечивала прямоугольная подложка с обрезанными углами (Алла, TestFlight 26, скриншот). */
+    html.mt-scrolling #myTracksPage.v2npmin #mtMiniPlayer{background:none !important}
     /* Когда мини-плеер виден (v2npmin = плавающая пилюля над таббаром) — резервируем место под
        него в списке, иначе последние треки залипают под плеером и их не доскроллить до конца
        (особенно в Радио, где песен мало; Android — Алла 25.06). Перебивает глоб. mobile-правило
@@ -20249,11 +20254,12 @@ body.theme-light #partnerDashPage .btn-pay{color:#2a1c06 !important;background:l
     #myTracksPage .mini-b{flex:1 !important;min-width:0 !important;display:flex !important;flex-direction:column !important}
     #myTracksPage .mini-b b{font-size:13.5px !important;font-weight:600 !important;white-space:nowrap !important;overflow:hidden !important;text-overflow:ellipsis !important;color:var(--text) !important}
     #myTracksPage .mini-b span{font-size:11.5px !important;color:var(--muted) !important;font-variant-numeric:tabular-nums !important}
-    #myTracksPage .mini-play{flex:none !important;width:44px !important;height:44px !important;border-radius:50% !important;display:grid !important;place-items:center !important;color:var(--gold) !important;border:1px solid rgba(247,207,122,.34) !important;background:rgba(247,207,122,.1) !important;padding:0 !important;margin:0 !important;box-shadow:none !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important;cursor:pointer}
+    /* Кнопка мини-плеера — то же стекло, что круглые кнопки плеера (решение Аллы 23.09: иконки на полупрозрачном стекле, золото — только там, где осознанно) */
+    #myTracksPage .mini-play{flex:none !important;width:44px !important;height:44px !important;border-radius:50% !important;display:grid !important;place-items:center !important;color:#f5f1fb !important;border:1px solid rgba(255,255,255,.16) !important;background:linear-gradient(160deg,rgba(255,255,255,.09),rgba(255,255,255,.03)) !important;backdrop-filter:blur(10px) !important;-webkit-backdrop-filter:blur(10px) !important;padding:0 !important;margin:0 !important;box-shadow:none !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important;cursor:pointer}
     #myTracksPage .mini-play svg{width:18px !important;height:18px !important}
     body.theme-light #myTracksPage .mini-in,html.is-vk-light:not(.dark) #myTracksPage .mini-in,html.is-ok-light:not(.dark) #myTracksPage .mini-in{background:rgba(255,255,255,.94) !important;border-color:rgba(199,138,29,.26) !important;box-shadow:0 22px 44px -28px rgba(74,38,46,.5) !important}
     body.theme-light #myTracksPage .mini-bar,html.is-vk-light:not(.dark) #myTracksPage .mini-bar,html.is-ok-light:not(.dark) #myTracksPage .mini-bar{background:rgba(74,38,46,.12) !important}
-    body.theme-light #myTracksPage .mini-play,html.is-vk-light:not(.dark) #myTracksPage .mini-play,html.is-ok-light:not(.dark) #myTracksPage .mini-play{color:#7d4c0c !important;border-color:rgba(199,138,29,.34) !important;background:rgba(199,138,29,.1) !important}
+    body.theme-light #myTracksPage .mini-play,html.is-vk-light:not(.dark) #myTracksPage .mini-play,html.is-ok-light:not(.dark) #myTracksPage .mini-play{color:#241526 !important;border-color:rgba(74,38,46,.18) !important;background:linear-gradient(160deg,rgba(255,255,255,.9),rgba(255,255,255,.6)) !important}
     #myTracksPage .mt-create{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;margin-top:22px;padding:16px;border-radius:9999px !important;border:1px solid rgba(255,255,255,.15) !important;cursor:pointer;font-size:15px !important;font-weight:600 !important;color:#f5f1fb !important;background:rgba(255,255,255,.05) !important;box-shadow:none !important;min-height:unset !important;transition:transform .12s,background .2s;font-family:inherit}
     #myTracksPage .mt-create:active{transform:scale(.985)}
     #myTracksPage .mt-create svg{color:#ec4899}
@@ -21478,15 +21484,26 @@ body.theme-light #myTracksPage .mtv2-player .v2act,html.is-vk-light:not(.dark) #
         html+=genres.map(function(g){ return '<button type="button" class="wave-pill gp'+(cur===g.k?' on':'')+'" data-g="'+esc(g.k)+'">'+esc(genreName(g.k))+' <span class="gp-n">'+g.n+'</span></button>'; }).join('');
         row.innerHTML=html;
       }
+      // Кэш ленты по волне+жанру (Алла, TestFlight 26: «переключение по жанрам очень медленное») —
+      // повторный заход в уже загруженную вкладку рисуется мгновенно, сеть освежает в фоне;
+      // guard по номеру запроса: поздний ответ старой вкладки не перебивает свежую.
+      var _mtRadioFeedCache={}, _mtRadioFeedReqId=0;
       function loadRadioFeed(wave, genre){
         window._mtRadioFilter=wave;
         if(genre!==undefined) window._mtRadioGenre=genre;
         var g=window._mtRadioGenre||'all';
         var base=rApiBase(); if(!base) return;
         if(typeof window._ensureOnline==='function' && !window._ensureOnline()) return;
+        var cacheKey=wave+'|'+g, reqId=++_mtRadioFeedReqId, cached=_mtRadioFeedCache[cacheKey];
+        if(cached){ window._mtRadioFeed=cached.tracks; window._mtRadioFeatured=cached.featured; renderGenreRow(cached.genres); renderAir(cached.featured); renderFeedList(cached.tracks); }
         fetch(base+'/api/radio/feed?wave='+encodeURIComponent(wave)+'&genre='+encodeURIComponent(g),{headers:rHeaders()})
           .then(function(r){ return r.json().catch(function(){return null;}); })
-          .then(function(d){ var tracks=(d&&d.ok&&d.tracks)?d.tracks:[]; window._mtRadioFeed=tracks; window._mtRadioFeatured=(d&&d.featured)||tracks[0]||null; renderGenreRow(d&&d.genres); renderAir(window._mtRadioFeatured); renderFeedList(tracks); })
+          .then(function(d){
+            if(reqId!==_mtRadioFeedReqId) return;
+            var tracks=(d&&d.ok&&d.tracks)?d.tracks:[], featured=(d&&d.featured)||tracks[0]||null, genres=d&&d.genres;
+            _mtRadioFeedCache[cacheKey]={tracks:tracks,featured:featured,genres:genres};
+            window._mtRadioFeed=tracks; window._mtRadioFeatured=featured; renderGenreRow(genres); renderAir(featured); renderFeedList(tracks);
+          })
           .catch(function(){ /* закон №37 */ });
       }
       function renderRadio(){
@@ -21555,6 +21572,7 @@ body.theme-light #myTracksPage .mtv2-player .v2act,html.is-vk-light:not(.dark) #
               /* Скрываем строку сразу: человек пожаловался — он не должен видеть
                  этот трек до следующей загрузки ленты. */
               try { document.querySelectorAll('#myTracksPage .rt').forEach(function(r){ if(r.getAttribute('data-id')===String(id)) r.remove(); }); } catch(_){}
+              _mtRadioFeedCache={}; // жалоба/скрытие автора меняют ленту на сервере — кэш вкладок устарел целиком
               loadRadioFeed(window._mtRadioFilter||'all');
             })
             .catch(function(){ /* закон №37: молча, без технических текстов */ });
@@ -24243,8 +24261,8 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
              иконку. Картинка та же, что у приложения: public/icon-512.png. -->
         <div id="scIntro" class="mid" aria-hidden="true">
           <span class="orb"><img src="assets/icons/oracle-orb.png" alt="YupSoul" width="344" height="344" decoding="async"></span>
-          <h2 data-i18n="scIntroTitle">Спроси о себе</h2>
-          <p data-i18n="scIntroSubtitle">Оракул отвечает по твоей карте, а не общими словами.</p>
+          <h2 data-i18n="scIntroTitle">Поговорим о тебе</h2>
+          <p data-i18n="scIntroSubtitle">Отношения, деньги, решение, которое всё откладываешь. Отвечаю по твоей дате рождения, лично тебе. Один вопрос — одна Искра.</p>
         </div>
         <div id="scPageNoRequest" class="sc-no-request-card" aria-live="polite">
           <div class="sc-no-request-icon">🌙</div>
@@ -25815,7 +25833,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           errAskezaNeedBirthTime: 'Для практики нужно точное время рождения.',
           errAskezaUnknown: 'Неизвестная практика.', errAskezaBadDay: 'День вне практики.',
           errAskezaNotStarted: 'Практика не начата.',
-          scOracleWho: 'Оракул', scIntroTitle: 'Спроси о себе', scIntroSubtitle: 'Оракул отвечает по твоей карте, а не общими словами. Один вопрос — одна Искра.',
+          scOracleWho: 'Оракул', scIntroTitle: 'Поговорим о тебе', scIntroSubtitle: 'Отношения, деньги, решение, которое всё откладываешь. Отвечаю по твоей дате рождения, лично тебе. Один вопрос — одна Искра.',
           scPrismTitle: 'Разборы', scPrismSubtitle: 'Загляни глубже — твоя карта, спетая вслух', scChartLabel: 'Твоя карта', scChartNoDob: 'Добавь дату рождения', scProgReceived: 'Разборов получено', scProgOpened: 'Открыто разборов', scPrismTagNew: 'Новое', scPrismLockedTitle: 'Доступно в пакете', scPrismLockedMsg: 'Этот разбор доступен с пакетом «Чат с Оракулом». Первый разбор «Имя души» — в подарок.', scPrismTryFreeTitle: 'Попробовать «Имя души»', scPrismPayDesc: 'Глубокий персональный разбор по твоей карте — подробно о тебе.', scPrismPayHave: 'у тебя', scPrismPayBtn: 'Открыть разбор', scPrismPayLoading: 'Готовлю разбор…', pwTeaserLock: 'Оракул не договорил…', pwTitle: 'Продолжим разговор?', pwTeaserBubble: 'Я чувствую, что за этим вопросом прячется что-то большее…', pwPk_q_0_n: '1000 вопросов', pwPk_q_0_d: '1000 Искр — хватит надолго', pwPk_q_1_n: '2000 вопросов', pwPk_q_1_d: '2000 Искр — на месяцы разговоров', pwPk_q_2_n: '5000 вопросов', pwPk_q_2_d: '5000 Искр — лучшая цена', pwPk_iskry_0_n: '1000 Искр', pwPk_iskry_0_d: '≈ 10 песен или 1000 вопросов', pwPk_iskry_1_n: '2000 Искр', pwPk_iskry_1_d: '≈ 20 песен или 2000 вопросов', pwPk_iskry_2_n: '5000 Искр', pwPk_iskry_2_d: '≈ 50 песен — лучшая цена', pwSub: 'Искры закончились — а Оракулу ещё есть что тебе сказать. Возьми пакет и продолжай, без подписок и привязки карты.', pwSegQ: 'Вопросы', pwSegIskry: 'Искры', pwCtaLabel: 'Продолжить разговор', pwDay: 'Или', pwDayAccess: 'доступ на сутки', pwSubscribe: 'Хочешь автопополнение?', pwSubscribeLink: 'Получить пакет с картой', pwSubscribeWhere: '(где доступно)', pwFoot: 'Разовая оплата. Пакет не сгорает — вопросы остаются с тобой.', pwBadgePopular: 'Выгоднее',
           scPrismLoadingCatalog: 'Загружаю разборы…', scPrismRunning: 'Считаю твой разбор…',
           scPrismErrorTitle: 'Не получилось', scPrismRunFail: 'Не удалось выполнить разбор. Попробуй ещё раз.',
@@ -26739,7 +26757,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           errAskezaNeedBirthTime: 'The practice needs your exact birth time.',
           errAskezaUnknown: 'Unknown practice.', errAskezaBadDay: 'That day is outside the practice.',
           errAskezaNotStarted: 'The practice has not started.',
-          scOracleWho: 'Oracle', scIntroTitle: 'Ask about yourself', scIntroSubtitle: 'The Oracle answers from your chart, not in generalities. One question — one Spark.',
+          scOracleWho: 'Oracle', scIntroTitle: 'Let’s talk about you', scIntroSubtitle: 'Relationships, money, the decision you keep putting off. I answer from your birth date, for you alone. One question — one Spark.',
           scPrismTitle: 'Readings', scPrismSubtitle: 'Look deeper — your chart, sung aloud', scChartLabel: 'Your chart', scChartNoDob: 'Add your date of birth', scProgReceived: 'Readings received', scProgOpened: 'Readings opened', scPrismTagNew: 'New', scPrismLockedTitle: 'Available with a package', scPrismLockedMsg: 'This reading is available with the Soul Chat package. The first reading «Soul Name» is a gift.', scPrismTryFreeTitle: 'Try «Soul Name»', scPrismPayDesc: 'A deep personal reading from your chart — detailed about you.', scPrismPayHave: 'you have', scPrismPayBtn: 'Open reading', scPrismPayLoading: 'Preparing your reading…', pwTeaserLock: "Oracle didn't finish…", pwTitle: 'Continue the conversation?', pwTeaserBubble: 'I sense there’s something bigger behind this question…', pwPk_q_0_n: '1000 questions', pwPk_q_0_d: '1000 Sparks — lasts a long time', pwPk_q_1_n: '2000 questions', pwPk_q_1_d: '2000 Sparks — months of conversations', pwPk_q_2_n: '5000 questions', pwPk_q_2_d: '5000 Sparks — best price', pwPk_iskry_0_n: '1000 Sparks', pwPk_iskry_0_d: '≈ 10 songs or 1000 questions', pwPk_iskry_1_n: '2000 Sparks', pwPk_iskry_1_d: '≈ 20 songs or 2000 questions', pwPk_iskry_2_n: '5000 Sparks', pwPk_iskry_2_d: '≈ 50 songs — best price', pwSub: 'Sparks are gone — but the Oracle still has things to tell you. Get a pack and continue, no subscriptions or card required.', pwSegQ: 'Questions', pwSegIskry: 'Sparks', pwCtaLabel: 'Continue conversation', pwDay: 'Or', pwDayAccess: 'day access', pwSubscribe: 'Want auto-refill?', pwSubscribeLink: 'Get a package with card', pwSubscribeWhere: '(where available)', pwFoot: "One-time payment. Pack doesn't expire.", pwBadgePopular: 'Best value',
           scPrismLoadingCatalog: 'Loading readings…', scPrismRunning: 'Running your reading…',
           scPrismErrorTitle: 'Something went wrong', scPrismRunFail: 'Couldn\'t run the reading. Try again.',
@@ -27662,7 +27680,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           errAskezaNeedBirthTime: 'Die Praxis braucht deine genaue Geburtszeit.',
           errAskezaUnknown: 'Unbekannte Praxis.', errAskezaBadDay: 'Dieser Tag liegt außerhalb der Praxis.',
           errAskezaNotStarted: 'Die Praxis hat nicht begonnen.',
-          scOracleWho: 'Orakel', scIntroTitle: 'Frag nach dir selbst', scIntroSubtitle: 'Das Orakel antwortet aus deiner Karte, nicht mit Allgemeinplätzen. Eine Frage — ein Funke.',
+          scOracleWho: 'Orakel', scIntroTitle: 'Reden wir über dich', scIntroSubtitle: 'Beziehungen, Geld, die Entscheidung, die du immer aufschiebst. Ich antworte aus deinem Geburtsdatum, ganz persönlich. Eine Frage — ein Funke.',
           scPrismTitle: 'Deutungen', scPrismSubtitle: 'Blick tiefer — deine Karte, laut gesungen', scChartLabel: 'Deine Karte', scChartNoDob: 'Geburtsdatum hinzufügen', scProgReceived: 'Erhaltene Deutungen', scProgOpened: 'Geöffnete Deutungen', scPrismTagNew: 'Neu', scPrismLockedTitle: 'Im Paket verfügbar', scPrismLockedMsg: 'Diese Deutung ist mit dem Soul-Chat-Paket verfügbar. Die erste Deutung «Seelenname» ist ein Geschenk.', scPrismTryFreeTitle: '«Seelenname» ausprobieren', scPrismPayDesc: 'Eine tiefe persönliche Deutung aus deiner Karte — ausführlich über dich.', scPrismPayHave: 'du hast', scPrismPayBtn: 'Deutung öffnen', scPrismPayLoading: 'Deutung wird vorbereitet…', pwTeaserLock: 'Das Orakel brach ab…', pwTitle: 'Gespräch fortsetzen?', pwTeaserBubble: 'Ich spüre, hinter dieser Frage steckt etwas Größeres…', pwPk_q_0_n: '1000 Fragen', pwPk_q_0_d: '1000 Funken — reicht lange', pwPk_q_1_n: '2000 Fragen', pwPk_q_1_d: '2000 Funken — Monate an Gesprächen', pwPk_q_2_n: '5000 Fragen', pwPk_q_2_d: '5000 Funken — bester Preis', pwPk_iskry_0_n: '1000 Funken', pwPk_iskry_0_d: '≈ 10 Songs oder 1000 Fragen', pwPk_iskry_1_n: '2000 Funken', pwPk_iskry_1_d: '≈ 20 Songs oder 2000 Fragen', pwPk_iskry_2_n: '5000 Funken', pwPk_iskry_2_d: '≈ 50 Songs — bester Preis', pwSub: 'Funken aufgebraucht — aber das Orakel hat noch mehr zu sagen. Hol dir ein Paket, ohne Abo oder Karte.', pwSegQ: 'Fragen', pwSegIskry: 'Funken', pwCtaLabel: 'Gespräch fortsetzen', pwDay: 'Oder', pwDayAccess: 'Tageszugang', pwSubscribe: 'Automatisch aufladen?', pwSubscribeLink: 'Mit Karte abonnieren', pwSubscribeWhere: '(wo verfügbar)', pwFoot: 'Einmalige Zahlung. Paket verfällt nicht.', pwBadgePopular: 'Bester Preis',
           scPrismLoadingCatalog: 'Lade Deutungen…', scPrismRunning: 'Berechne deine Deutung…',
           scPrismErrorTitle: 'Etwas ist schiefgelaufen', scPrismRunFail: 'Deutung konnte nicht erstellt werden.',
@@ -28585,7 +28603,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           errAskezaNeedBirthTime: 'La pratique a besoin de ton heure de naissance exacte.',
           errAskezaUnknown: 'Pratique inconnue.', errAskezaBadDay: 'Ce jour est hors de la pratique.',
           errAskezaNotStarted: 'La pratique n\'a pas commencé.',
-          scOracleWho: 'Oracle', scIntroTitle: 'Interroge-toi', scIntroSubtitle: 'L’Oracle répond d’après ta carte, pas en généralités. Une question — une Étincelle.',
+          scOracleWho: 'Oracle', scIntroTitle: 'Parlons de toi', scIntroSubtitle: 'Les relations, l’argent, la décision que tu repousses sans cesse. Je réponds d’après ta date de naissance, rien que pour toi. Une question — une Étincelle.',
           scPrismTitle: 'Lectures', scPrismSubtitle: 'Regarde plus profond — ta carte, chantée à voix haute', scChartLabel: 'Ta carte', scChartNoDob: 'Ajoute ta date de naissance', scProgReceived: 'Lectures reçues', scProgOpened: 'Lectures ouvertes', scPrismTagNew: 'Nouveau', scPrismLockedTitle: 'Disponible avec un pack', scPrismLockedMsg: 'Cette lecture est disponible avec le pack Soul Chat. La première lecture «Nom de l\'âme» est offerte.', scPrismTryFreeTitle: 'Essayer «Nom de l\'âme»', scPrismPayDesc: 'Une lecture personnelle profonde de ta carte — détaillée sur toi.', scPrismPayHave: 'tu as', scPrismPayBtn: 'Ouvrir la lecture', scPrismPayLoading: 'Préparation de la lecture…', pwTeaserLock: 'L\'Oracle s\'est interrompu…', pwTitle: 'Continuer la conversation?', pwTeaserBubble: 'Je sens qu’il y a quelque chose de plus grand derrière cette question…', pwPk_q_0_n: '1000 questions', pwPk_q_0_d: '1000 Étincelles — pour longtemps', pwPk_q_1_n: '2000 questions', pwPk_q_1_d: '2000 Étincelles — des mois de conversations', pwPk_q_2_n: '5000 questions', pwPk_q_2_d: '5000 Étincelles — meilleur prix', pwPk_iskry_0_n: '1000 Étincelles', pwPk_iskry_0_d: '≈ 10 chansons ou 1000 questions', pwPk_iskry_1_n: '2000 Étincelles', pwPk_iskry_1_d: '≈ 20 chansons ou 2000 questions', pwPk_iskry_2_n: '5000 Étincelles', pwPk_iskry_2_d: '≈ 50 chansons — meilleur prix', pwSub: 'Les Étincelles sont épuisées — mais l\'Oracle a encore des choses à dire. Prends un pack et continue, sans abonnement ni carte.', pwSegQ: 'Questions', pwSegIskry: 'Étincelles', pwCtaLabel: 'Continuer la conversation', pwDay: 'Ou', pwDayAccess: 'accès 24h', pwSubscribe: 'Rechargement automatique?', pwSubscribeLink: 'Souscrire avec carte', pwSubscribeWhere: '(où disponible)', pwFoot: 'Paiement unique. Le pack n\'expire pas.', pwBadgePopular: 'Meilleur prix',
           scPrismLoadingCatalog: 'Chargement des lectures…', scPrismRunning: 'Calcul de ta lecture…',
           scPrismErrorTitle: 'Ça n\'a pas marché', scPrismRunFail: 'La lecture n\'a pas pu être générée. Réessaie.',
@@ -56865,6 +56883,11 @@ body.theme-light #planConfirmOverlay .cf-old{-webkit-text-fill-color:#6f5a66 !im
       var coverEl = document.getElementById('mtNpCover');
       if (titleEl) titleEl.textContent = window._cleanTrackTitle(track.title, track.name);
       if (artistEl) artistEl.textContent = track.name || 'YupSoul';
+      // Подпись «Играет из коллекции · Мои треки/Радио» была статичной в разметке — в радио показывала «Мои треки»
+      try {
+        var _ctxSrc = document.querySelector('#mtNowPlaying .v2ctx-src');
+        if (_ctxSrc) { var _ctxKey = window._mtRadioMode ? 'mtTabRadio' : 'mtTabTracks'; _ctxSrc.setAttribute('data-i18n', _ctxKey); _ctxSrc.textContent = (typeof t === 'function' ? t(_ctxKey) : '') || (window._mtRadioMode ? 'Радио' : 'Мои треки'); }
+      } catch (_) {}
       // VK Testers 7278096 (\u0414\u0430\u0440\u044c\u044f Windows VK 17.05): \u0422\u0430\u043c\u0430\u0440\u0430 \u0432\u0438\u0434\u0435\u043b\u0430 \u043f\u043e\u043b\u043e\u0432\u0438\u043d\u043d\u0443\u044e
       // \u0437\u0430\u0433\u0440\u0443\u0437\u043a\u0443 \u043e\u0431\u043b\u043e\u0436\u043a\u0438 (\u0432\u0435\u0440\u0445 \u0441 image, \u043d\u0438\u0437 \u2014 \u0411\u0415\u041b\u042b\u0419 bg). \u042d\u0442\u043e browser image
       // decoder race \u0432\u043e \u0432\u0440\u0435\u043c\u044f progressive prog load. \u0424\u0438\u043a\u0441: opacity:0 \u2192 1 \u043d\u0430
@@ -57024,7 +57047,12 @@ body.theme-light #planConfirmOverlay .cf-old{-webkit-text-fill-color:#6f5a66 !im
 
       if (window._ysTrack) window._ysTrack('track_play', { request_id: track.id || '' });
 
-      if (_currentIdx === idx && _audio) {
+      // Индекс — не идентичность трека: при смене источника списка (Мои треки ↔ Радио) window._mtTracksData
+      // подменяется целиком, а _currentIdx не сбрасывается — совпадение номеров ложно считалось «тем же
+      // треком», и audio.src не менялся: новое название и обложка, а играет старый трек (Алла, TestFlight 26,
+      // радио → духовный жанр). Сверяем ещё и id того, что реально играет.
+      var _sameTrack = _currentIdx === idx && _audio && window._mtCurrentTrack && String(window._mtCurrentTrack.id) === String(track.id);
+      if (_sameTrack) {
         // Тот же трек. Если полноэкранный плеер ЗАКРЫТ/свёрнут — тап по треку ОТКРЫВАЕТ его заново
         // (баг Аллы «через раз»: _currentIdx не сбрасывался при выходе из плеера → повторный тап той
         // же песни попадал в toggle и ставил паузу/резюм вместо открытия плеера). showNowPlaying НЕ
@@ -57734,6 +57762,20 @@ body.theme-light #planConfirmOverlay .cf-old{-webkit-text-fill-color:#6f5a66 !im
             : _vkNative();
           Promise.resolve(_chain).catch(function(e){ console.warn('[dl] VK save:', (e && e.error_data && e.error_data.error_reason) || (e && e.message) || e); _vkFallback(); });
         } else { _vkFallback(); }
+        return;
+      }
+      if (window._isNativeApp) {
+        // App Store: WKWebView не сохраняет по <a download>, а внешняя ссылка уводит в Safari на сайт
+        // (Алла, TestFlight 26). Тянем файл и открываем системный лист «Поделиться» — «Сохранить в Файлы»,
+        // AirDrop и т.д. Не вышло (нет прав/отмена/старый iOS) — прежний путь через браузер.
+        fetch(dlUrl, { headers: (typeof getAuthHeaders === 'function') ? getAuthHeaders() : {} })
+          .then(function(r){ if (!r.ok) throw new Error('http ' + r.status); return r.blob(); })
+          .then(function(blob){
+            var file = new File([blob], fileName, { type: 'audio/mpeg' });
+            if (navigator.canShare && navigator.canShare({ files: [file] })) return navigator.share({ files: [file], title: fileName });
+            throw new Error('canShare unsupported');
+          })
+          .catch(function(e){ if (e && e.name === 'AbortError') return; console.warn('[dl] native share:', e && e.message); viaExternal(dlUrl); });
         return;
       }
       try { var a=document.createElement('a'); a.href=dlUrl; a.download=fileName; a.style.display='none'; document.body.appendChild(a); a.click(); setTimeout(function(){try{document.body.removeChild(a);}catch(_){}},100); } catch(_) { if(!viaIframe(dlUrl)){ viaExternal(dlUrl); } }

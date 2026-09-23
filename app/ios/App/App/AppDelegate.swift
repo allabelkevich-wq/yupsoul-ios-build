@@ -5,9 +5,6 @@ import Capacitor
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-    // Плеер: SystemVolumePlugin регистрируется один раз (applicationDidBecomeActive
-    // может вызываться повторно при каждом возврате приложения на передний план).
-    private var systemVolumePluginRegistered = false
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Плеер: категория playback — песня продолжает играть при блокировке экрана и в фоне
@@ -33,12 +30,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationDidBecomeActive(_ application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-        if !systemVolumePluginRegistered,
-           let vc = window?.rootViewController as? CAPBridgeViewController,
-           let bridge = vc.bridge {
-            bridge.registerPluginInstance(SystemVolumePlugin())
-            systemVolumePluginRegistered = true
-        }
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
@@ -146,5 +137,16 @@ public class SystemVolumePlugin: CAPPlugin, CAPBridgedPlugin {
             self.volumeSlider = slider
             completion(slider)
         }
+    }
+}
+
+// Плеер (Алла, TestFlight 26: «бегунок живёт своей жизнью»): корень — плагин SystemVolume
+// регистрировался в applicationDidBecomeActive, а Capacitor отдаёт вебу список плагинов
+// один раз при старте моста. Поздняя регистрация в JS не видна — Purchases/SocialLogin
+// приходят как поды, а свой плагин надо объявлять до загрузки WebView: в capacitorDidLoad()
+// подкласса CAPBridgeViewController (класс указан в Main.storyboard).
+class ViewController: CAPBridgeViewController {
+    override open func capacitorDidLoad() {
+        bridge?.registerPluginInstance(SystemVolumePlugin())
     }
 }

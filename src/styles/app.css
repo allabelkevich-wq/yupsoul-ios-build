@@ -6208,11 +6208,11 @@
     }
     /* VK Testers 7260801 ПЕРЕОТКРЫТ (Глазунова dark): иконки в Мои треки плохо видны.
        Универсальный bump для SVG icons в плеере + миниплеере + action btns. */
-    html.dark #myTracksPage button:not(.track-like):not(.mth-play-all) svg,
+    html.dark #myTracksPage button:not(.track-like):not(.mth-play-all):not(.hbtn):not(.mt-detail-header-btn) svg,
     html.dark #myTracksPage .mt-np-action-btn svg,
     html.dark #myTracksPage .mt-mini-action-btn svg,
     html.dark #myTracksPage .mt-now-icon-btn svg,
-    body.theme-dark #myTracksPage button:not(.track-like):not(.mth-play-all) svg,
+    body.theme-dark #myTracksPage button:not(.track-like):not(.mth-play-all):not(.hbtn):not(.mt-detail-header-btn) svg,
     body.theme-dark #myTracksPage .mt-np-action-btn svg,
     body.theme-dark #myTracksPage .mt-mini-action-btn svg {
       fill: rgba(255,255,255,0.92) !important;
@@ -12349,7 +12349,7 @@ html.is-vk-light #soulChatPage .sc-send-btn-icon:disabled svg path {
     border-color: rgba(244,63,94,0.35) !important;
   }
   /* 7260801 — иконки в Мои треки (download/lyrics/share) */
-  body:not(.theme-light):not(.is-vk-light) #myTracksPage button:not(.track-like):not(.mth-play-all) svg,
+  body:not(.theme-light):not(.is-vk-light) #myTracksPage button:not(.track-like):not(.mth-play-all):not(.hbtn):not(.mt-detail-header-btn) svg,
   body:not(.theme-light):not(.is-vk-light) #myTracksPage .mt-now-icon-btn svg {
     fill: rgba(255,255,255,0.85) !important;
     color: rgba(255,255,255,0.85) !important;
@@ -12358,13 +12358,13 @@ html.is-vk-light #soulChatPage .sc-send-btn-icon:disabled svg path {
   /* VK Testers 7260801 ПЕРЕОТКРЫТ-2 (Тамара MacOS 16.05): прошлый fix покрывал
      только тёмную тему. На светлой теме SVG fill наследовал белый/светлый цвет
      от родителя → невидимы на кремовом фоне rgba(250,245,235). Override SVG. */
-  body.theme-light #myTracksPage button:not(.track-like):not(.mth-play-all) svg,
+  body.theme-light #myTracksPage button:not(.track-like):not(.mth-play-all):not(.hbtn):not(.mt-detail-header-btn) svg,
   body.theme-light #myTracksPage .mt-track-item-play svg,
   body.theme-light #myTracksPage .mt-now-icon-btn svg,
   body.theme-light #myTracksPage .mt-np-action-btn svg,
   body.theme-light #myTracksPage .mt-mini-action-btn svg,
   body.theme-light #myTracksPage .mt-now-controls svg,
-  html.is-vk-light #myTracksPage button:not(.track-like):not(.mth-play-all) svg,
+  html.is-vk-light #myTracksPage button:not(.track-like):not(.mth-play-all):not(.hbtn):not(.mt-detail-header-btn) svg,
   html.is-vk-light #myTracksPage .mt-track-item-play svg,
   html.is-vk-light #myTracksPage .mt-now-icon-btn svg,
   html.is-vk-light #myTracksPage .mt-np-action-btn svg,
