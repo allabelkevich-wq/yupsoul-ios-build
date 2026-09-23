@@ -15,6 +15,8 @@
 
         <div class="sec" data-web-only data-i18n="plSubsSec">Подписки · полный доступ</div>
         <div class="sec" data-vk-only data-i18n="plSubsSecVk">Пакеты · полный доступ</div>
+        <!-- App Store: заголовок секции и условия разовой покупки (3.1.2(a)) — на нативе оба блока выше скрыты гейтами -->
+        <div class="sec" data-native-only data-i18n="plSubsSecVk">Пакеты · полный доступ</div>
 
         <!-- Душа / Basic -->
         <!-- КАНОН 02.07: на VK карточки видны как ПАКЕТЫ за голоса (§5.2); на OK скрыты CSS-ом (платежей нет) -->
@@ -77,6 +79,7 @@
         </div>
 
         <p class="legal" data-web-only data-i18n-html="plLegalHtml">Любая песня — 100 Искр. Пакеты — разовая оплата на 30 дней, без автоматических списаний. Оплата картой, Stars или Искрами; промокоды — на разовые покупки. <a href="#" onclick="if(window.showLegalModal)window.showLegalModal('offer');return false">Оферта</a>.</p>
+        <p class="legal" data-native-only data-i18n-html="plLegalHtml">Любая песня — 100 Искр. Пакеты — разовая покупка на 30 дней, без автоматических списаний. <a href="#" onclick="if(window.showLegalModal)window.showLegalModal('offer');return false">Условия использования</a>.</p>
         <p class="legal" data-vk-only data-i18n-html="plLegalVkHtml">Любая песня — 100 Искр. Пакеты и Искры — разовая покупка. <a href="#" onclick="if(window.showLegalModal)window.showLegalModal('offer');return false">Оферта</a>.</p>
       </div>
           <div class="foot">

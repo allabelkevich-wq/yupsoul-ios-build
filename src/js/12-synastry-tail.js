@@ -896,6 +896,11 @@
             if (app && app.openLink) { app.openLink(supportUrl); return; }
           } catch(e) {}
           window.open(supportUrl, '_blank');
+        } else if (window._isNativeApp) {
+          // App Store (аудит «глазами ревьюера» 23.09): уводить в Telegram-бот из нативного
+          // приложения нельзя (4.2.3 / уход на другую платформу). Открываем почту на адрес
+          // со страницы поддержки; Capacitor отдаёт mailto: системе (Mail).
+          try { window.location.href = 'mailto:' + SUPPORT_EMAIL + '?subject=' + encodeURIComponent('YupSoul'); } catch(_) {}
         } else {
           // Batch 9.17 (отчёт Грубниковой Windows): mailto: на Windows без
           // настроенного дефолтного почтового клиента — silent fail. Юзер

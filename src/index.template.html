@@ -6031,6 +6031,8 @@ body.theme-light #myTracksPage .mtv2-player .v2act,html.is-vk-light:not(.dark) #
       // toggle('on', bool) идемпотентен — безопасно звать даже на элементе-инициаторе.
       window._mtSyncLikeUI = function(id, on){
         var sid = String(id);
+        // Лайк в радио теперь пишется и в «Любимые» (сервер) — вкладка перечитает список при следующем входе
+        try { var _lp = document.getElementById('mtPanelLiked'); if (_lp) _lp.dataset.favLoaded = ''; } catch(_){}
         try { document.querySelectorAll('#myTracksPage .rt').forEach(function(r){ if(r.getAttribute('data-id')===sid){ var b=r.querySelector('.rt-like'); if(b) b.classList.toggle('on', on); } }); } catch(_){}
         var ct = window._mtCurrentTrack;
         if (ct && String(ct.id)===sid){ ct.liked=on; var hb=document.getElementById('mtNpHeart'); if(hb) hb.classList.toggle('on', on); }
