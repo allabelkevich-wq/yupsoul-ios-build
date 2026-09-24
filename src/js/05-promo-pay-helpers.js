@@ -1285,6 +1285,9 @@
           if (!dateStr) return '';
           var d = new Date(dateStr + 'T12:00:00');
           if (isNaN(d.getTime())) return dateStr;
+          // (видео Аллы 24.09: «24 июня 1997» на английском профиле) — не-RU языки форматируем по локали
+          var _dl = (typeof currentLang === 'string') ? currentLang : 'ru';
+          if (_dl !== 'ru') { try { return new Intl.DateTimeFormat(_dl, { day: 'numeric', month: 'long', year: 'numeric' }).format(d); } catch (_) {} }
           return d.getDate() + ' ' + monthsRu[d.getMonth()] + ' ' + d.getFullYear() + ' г.';
         }
         (function initDateGroups() {
@@ -2770,6 +2773,49 @@
         // Контент карточек — слова Аллы из референса (4 призмы). Пока RU-only
         // (это её бренд-формулировки; переводы EN/DE/FR — отдельная задача после ревью).
         // Остальные 10 призм — без desc (НЕ выдумываем; Алла даст формулировки).
+        // (видео Аллы 24.09: весь каталог по-русски на английском интерфейсе) — переводы названий
+        // секций, призм, описаний и тегов для EN/DE/FR; сервер отдаёт только русские title.
+        var PRISM_I18N = {
+          sections: {
+            inner:      { en: ['Who you are', 'looking inward'],        de: ['Wer du bist', 'nach innen'],           fr: ['Qui tu es', 'vers l\'intérieur'] },
+            expression: { en: ['How you sound', 'how you show up'],     de: ['Wie du klingst', 'wie du dich zeigst'], fr: ['Comment tu sonnes', 'comment tu te montres'] },
+            others:     { en: ['Who you attract', 'people around you'], de: ['Wen du anziehst', 'Menschen um dich'],  fr: ['Qui tu attires', 'les gens autour'] },
+            creation:   { en: ['What you create', 'your mark on the world'], de: ['Was du erschaffst', 'dein Beitrag zur Welt'], fr: ['Ce que tu crées', 'ta trace dans le monde'] }
+          },
+          prisms: {
+            soul_name:            { en: 'Soul Name',            de: 'Seelenname',            fr: 'Nom de l\'âme' },
+            honest_talk:          { en: 'Honest Talk',          de: 'Ehrliches Gespräch',    fr: 'Conversation honnête' },
+            forbidden_power:      { en: 'Forbidden Power',      de: 'Verbotene Kraft',       fr: 'Pouvoir interdit' },
+            core:                 { en: 'Core',                 de: 'Kern',                  fr: 'Noyau' },
+            voice:                { en: 'Your Language',        de: 'Deine Sprache',         fr: 'Ton langage' },
+            first_touch:          { en: 'First Touch',          de: 'Erste Berührung',       fr: 'Premier contact' },
+            shadow_magnet:        { en: 'Shadow Magnet',        de: 'Schattenmagnet',        fr: 'Aimant de l\'ombre' },
+            client:               { en: 'Your Person',          de: 'Dein Mensch',           fr: 'Ta personne' },
+            relationships_magnet: { en: 'Relationship Magnet',  de: 'Beziehungsmagnet',      fr: 'Aimant des relations' },
+            pair:                 { en: 'The Two of You',       de: 'Ihr beide',             fr: 'Vous deux' },
+            public_role:          { en: 'Role Before the World', de: 'Rolle vor der Welt',   fr: 'Rôle face au monde' },
+            product:              { en: 'Your Product',         de: 'Dein Produkt',          fr: 'Ton produit' },
+            money_channel:        { en: 'Money Channel',        de: 'Geldkanal',             fr: 'Canal de l\'argent' },
+            money_block:          { en: 'Money Block',          de: 'Geldblockade',          fr: 'Blocage de l\'argent' },
+            power_drain:          { en: 'Where Your Power Goes', de: 'Wohin deine Kraft geht', fr: 'Où part ta force' }
+          },
+          desc: {
+            soul_name:       { en: 'A secret name from your birth date',        de: 'Ein geheimer Name aus deinem Geburtsdatum',        fr: 'Un nom secret d\'après ta date de naissance' },
+            core:            { en: 'The main note of your personality',         de: 'Die Grundnote deiner Persönlichkeit',              fr: 'La note principale de ta personnalité' },
+            forbidden_power: { en: 'The gift you are afraid to switch on',      de: 'Die Gabe, die du dich nicht einzuschalten traust',  fr: 'Le don que tu as peur d\'activer' },
+            pair:            { en: 'Compatibility by two birth dates',          de: 'Kompatibilität nach zwei Geburtsdaten',            fr: 'Compatibilité selon deux dates de naissance' }
+          },
+          tags: {
+            'разбор':         { en: 'reading',        de: 'Analyse',        fr: 'lecture' },
+            'разбор + песня': { en: 'reading + song', de: 'Analyse + Lied', fr: 'lecture + chanson' },
+            'разбор + дуэт':  { en: 'reading + duet', de: 'Analyse + Duett', fr: 'lecture + duo' }
+          }
+        };
+        var _prLang = (typeof currentLang === 'string') ? currentLang : 'ru';
+        function _prSec(code, idx, fb) { var v = _prLang !== 'ru' && PRISM_I18N.sections[code] && PRISM_I18N.sections[code][_prLang]; return v ? v[idx] : fb; }
+        function _prTitle(code, fb) { var v = _prLang !== 'ru' && PRISM_I18N.prisms[code] && PRISM_I18N.prisms[code][_prLang]; return v || fb; }
+        function _prDesc(code, fb) { var v = _prLang !== 'ru' && PRISM_I18N.desc[code] && PRISM_I18N.desc[code][_prLang]; return v || fb; }
+        function _prTag(tag) { var v = _prLang !== 'ru' && tag && PRISM_I18N.tags[tag] && PRISM_I18N.tags[tag][_prLang]; return v || tag; }
         var PRISM_META = {
           soul_name:       { desc: 'Тайное имя по дате рождения', tag: 'разбор', is_new: true },
           core:            { desc: 'Главная нота твоей личности', tag: 'разбор + песня' },
@@ -2847,8 +2893,8 @@
         var _num = 0;
         for (var i = 0; i < catalog.length; i++) {
           var sec = catalog[i];
-          html += '<div class="sec-t"><b>' + _escHtml(sec.title || '') + '</b>'
-            + (sec.subtitle ? '<span>' + _escHtml(sec.subtitle) + '</span>' : '') + '</div>';
+          html += '<div class="sec-t"><b>' + _escHtml(_prSec(sec.code, 0, sec.title || '')) + '</b>'
+            + (sec.subtitle ? '<span>' + _escHtml(_prSec(sec.code, 1, sec.subtitle)) + '</span>' : '') + '</div>';
           for (var j = 0; j < (sec.prisms || []).length; j++) {
             var p = sec.prisms[j];
             var meta = PRISM_META[p.code] || {};
@@ -2858,10 +2904,10 @@
             html += '<button type="button" class="pr pcard sc-prism-card ' + (done ? 'done' : (locked ? 'lock locked' : 'open'))
               + '" data-prism="' + _escAttr(p.code) + '">'
               + '<span class="pr-n">' + (_num < 10 ? '0' : '') + _num + '</span>'
-              + '<span class="pr-b"><span class="pr-t"><b>' + _escHtml(p.title) + '</b>'
+              + '<span class="pr-b"><span class="pr-t"><b>' + _escHtml(_prTitle(p.code, p.title)) + '</b>'
               + (meta.is_new && !done ? '<span class="badge">' + _escHtml(_tl('scPrismTagNew', 'Новое')) + '</span>' : '')
               + '</span>'
-              + (meta.desc ? '<span class="pr-s">' + _escHtml(meta.desc) + '</span>' : '')
+              + (meta.desc ? '<span class="pr-s">' + _escHtml(_prDesc(p.code, meta.desc)) + '</span>' : '')
               + '</span>'
               + (done ? '<span class="chk">' + ICON_CHK + '</span>'
                       : locked ? '<span class="cost">' + ICON_SPARK + PRISM_PRICE_ISKRY + '</span>'

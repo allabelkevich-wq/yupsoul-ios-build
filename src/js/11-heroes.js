@@ -35,7 +35,7 @@
             var sub = d.source === 'trial' ? (typeof t === 'function' ? t('subTrialPeriod') : 'Пробный период') : 'Пакет активен';
             if (d.renew_at) {
               var exp = new Date(d.renew_at);
-              sub += ' · до ' + exp.toLocaleDateString('ru-RU', { day:'numeric', month:'short' });
+              sub += ' · ' + ((typeof t === 'function' && t('untilWord') !== 'untilWord') ? t('untilWord') : 'до') + ' ' + exp.toLocaleDateString(({ ru: 'ru-RU', en: 'en-GB', de: 'de-DE', fr: 'fr-FR' }[typeof currentLang !== 'undefined' ? currentLang : 'ru'] || 'ru-RU'), { day:'numeric', month:'short' }); // (аудит 24.09: русское «до» и ru-RU на EN)
             }
             if (badge) badge.textContent = sub;
             paywall.style.display = 'none';

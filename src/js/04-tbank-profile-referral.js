@@ -305,7 +305,7 @@
           var _hasValidDate = !!(_bd && !isNaN(_bd.getTime()));
           if (pdDate) {
             // Эталон showcase-profile: дата словом «14 марта 1996» (без суффикса «г.»), не «14.03.1996».
-            pdDate.textContent = _hasValidDate ? _bd.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' }).replace(/\s*г\.?\s*$/, '') : '';
+            pdDate.textContent = _hasValidDate ? _bd.toLocaleDateString(({ ru: 'ru-RU', en: 'en-GB', de: 'de-DE', fr: 'fr-FR' }[typeof currentLang !== 'undefined' ? currentLang : 'ru'] || 'ru-RU') /* (видео Аллы 24.09: «24 июня 1997» на EN) */, { day: 'numeric', month: 'long', year: 'numeric' }).replace(/\s*г\.?\s*$/, '') : '';
           }
           // Сепаратор «·» — ТОЛЬКО когда есть И имя, И валидная дата (иначе «— ·» / лишний «·»).
           if (pdSep) pdSep.style.display = (displayName && _hasValidDate) ? '' : 'none';

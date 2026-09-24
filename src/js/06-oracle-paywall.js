@@ -158,6 +158,9 @@
           y = dt.getFullYear(); mo = dt.getMonth() + 1; d = dt.getDate();
         }
         if (mo < 1 || mo > 12 || d < 1 || d > 31) return '';
+        // (видео Аллы 24.09: «24 июня 1997» в «Your chart») — не-RU языки форматируем по локали
+        var _dl = (typeof currentLang === 'string') ? currentLang : 'ru';
+        if (_dl !== 'ru') { try { return new Intl.DateTimeFormat(_dl, { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(y, mo - 1, d)); } catch (_) {} }
         var MONTHS = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
         return d + ' ' + MONTHS[mo - 1] + ' ' + y;
       }

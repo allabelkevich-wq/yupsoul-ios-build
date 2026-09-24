@@ -3796,7 +3796,7 @@
             var normalizedTime1 = normalizeBirthTimeInput(birthtime1);
             if (!normalizedTime1) {
               isSubmitting = false;
-              showSubmitHint('Время рождения — формат ЧЧ:ММ, например 14:30.', 'birthtime');
+              showSubmitHint(typeof t === 'function' ? t('alertBirthtimeFormat') : 'Время рождения — формат ЧЧ:ММ, например 14:30.', 'birthtime');
               return;
             }
             birthtime1 = normalizedTime1;
