@@ -319,7 +319,7 @@
     body.theme-light .start-review-card, body.theme-light .start-review { background: rgba(255,255,255,0.85) !important; border: 1px solid rgba(26,26,46,0.1) !important; color: #1a1a2e !important; box-shadow: 0 1px 6px rgba(26,26,46,0.06) !important; }
     body.theme-light .start-review-text { color: rgba(26,26,46,0.7) !important; }
     body.theme-light .start-review-author { color: rgba(26,26,46,0.45) !important; }
-    body.theme-light .start-review-stars { color: #f59e0b !important; }
+    body.theme-light .start-review-stars { color: #b45309 !important; } /* аудит iPhone 24.09 + Алла «сделай звёзды поконтрастнее»: #f59e0b давал 2,1:1 на карточке, #b45309 — 4,9:1 */
     /* Soul Chat — полная адаптация */
     body.theme-light .sc-char-hint { color: rgba(26,26,46,0.35) !important; }
     body.theme-light .sc-input-wrap { background: #ffffff !important; border-color: rgba(26,26,46,0.12) !important; }
@@ -4380,6 +4380,9 @@
        поэтому побеждает на любой ширине. Telegram/VK на телефонах — НЕ трогаем, ждём решения Аллы. */
     html.is-native .start-reviews{overflow:hidden !important;scroll-snap-type:none !important}
     html.is-native .start-reviews .start-reviews-track{animation:scrollStartReviews 28s linear infinite !important}
+    /* Алла 24.09: «отзывы вращаются и их можно пальцем подвигать» — на нативе бегущей строкой управляет JS (14-native-iap.js, reviewsMarquee): CSS-анимация выключается, чтобы не спорить с transform от пальца. */
+    html.is-native .start-reviews .start-reviews-track.js-marquee{animation:none !important}
+    html.is-native .start-reviews.js-marquee-wrap{touch-action:pan-y;cursor:grab}
     /* WCAG 2.2.2: у кого «уменьшить движение» — анимации всё равно не должно быть, даже на нативе. */
     @media (prefers-reduced-motion: reduce){html.is-native .start-reviews .start-reviews-track{animation:none !important}}
     .start-review{flex-shrink:0;width:170px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:8px 10px;backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
@@ -5798,11 +5801,11 @@
     #songOpenedPage .optin-h b{font-size:13px;font-weight:600}
     body.theme-light #songOpenedPage .optin-h b{color:#241526}
     #songOpenedPage .optin-h .gift{margin-left:auto;font-size:10px;font-weight:600;color:var(--spark);white-space:nowrap}
-    body.theme-light #songOpenedPage .optin-h .gift{color:#b3791a}
+    body.theme-light #songOpenedPage .optin-h .gift{color:#8a5a12} /* (аудит iPhone 24.09: #b3791a давал контраст 3.71:1 на светлой теме, ниже WCAG AA) */
     /* Пояснение показываем (Алла 23.09: «прошлый текст нравился больше»; в эталоне абзац спрятан, без него карточка непонятна). Стиль — как подпись .lead/.times экрана. */
     #songOpenedPage .optin-p{display:block;margin:6px 0 0;font-size:12px !important;line-height:1.4;color:var(--muted) !important} /* общее p{font-size:.85rem !important} и светлый блэнкет цвета перебивали (замер 23.09) */
     body.theme-light #songOpenedPage .optin-p{color:rgba(36,21,38,.62) !important}
-    body.theme-light #songOpenedPage .optin-h .gift{color:#b3791a !important}
+    body.theme-light #songOpenedPage .optin-h .gift{color:#8a5a12 !important}
     body.theme-light #songOpenedPage .eyebrow{color:#c43d7e !important}
     #songOpenedPage .optin-row{display:flex;gap:8px;margin-top:9px}
     #songOpenedPage .optin-row button{flex:1;padding:9px;border-radius:9999px;font-size:12px;font-weight:600;border:1px solid var(--line-2)}
@@ -7537,7 +7540,7 @@
     body.theme-light #webLoginScreen * { color: #1a1a2e !important; }
     body.theme-light #webLoginScreen .tagline-glow, body.theme-light #webLoginScreen .home-card-title-accent { color: transparent !important; }
     body.theme-light #webLoginScreen .home-card-cta { color: #fff !important; }
-    body.theme-light #webLoginScreen .start-review-stars, body.theme-light .start-review-stars { color: #f59e0b !important; }
+    body.theme-light #webLoginScreen .start-review-stars, body.theme-light .start-review-stars { color: #b45309 !important; } /* аудит iPhone 24.09: контраст звёзд в светлой теме */
     /* ── Скрытые элементы: popups, dropdowns, hints, overlays ── */
     body.theme-light #paymentOverlay,
     html.is-vk-light #paymentOverlay,

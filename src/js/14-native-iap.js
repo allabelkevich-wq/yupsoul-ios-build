@@ -495,7 +495,8 @@
               // Отмену в системном окне не комментируем — человек закрыл его сам.
               var msg = String((e && e.message) || e || '');
               if (!/cancel|1001/i.test(msg) && typeof window.showToast === 'function') {
-                try { window.showToast(typeof t === 'function' ? t('errPurchaseFailed') : 'Не получилось войти'); } catch(_) {}
+                // (аудит iPhone 24.09: тост ошибки входа брал текст про неудавшуюся покупку — отдельный ключ)
+                try { window.showToast(typeof t === 'function' ? t('errSignInFailed') : 'Не получилось войти'); } catch(_) {}
               }
               console.warn('[native] вход через Apple не удался', e);
             } finally {
@@ -729,4 +730,53 @@
             })();
           }
         }
+
+        /* ── Карусель отзывов на экране входа: бегущая строка + палец ──────────────
+           Алла 24.09: «отзывы вращаются и их можно пальцем подвигать». 22.09 на нативе
+           ручной скролл был выключен, осталась только CSS-анимация. Теперь на нативе
+           строкой управляет JS: едет сама, при касании останавливается и идёт за
+           пальцем, после отпускания через полторы секунды продолжает с того же места.
+           Скорость та же, что у CSS (полкруга за 28 с). «Уменьшить движение» — стоит,
+           двигается только пальцем. Веб/TG/VK не затронуты — модуль нативный. */
+        (function reviewsMarquee() {
+          var wrap = document.querySelector('#webLoginScreen .start-reviews');
+          var track = document.getElementById('startReviewsTrack');
+          if (!wrap || !track) return;
+          var reduce = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+          track.classList.add('js-marquee');
+          wrap.classList.add('js-marquee-wrap');
+          var x = 0, half = 0, speed = 0, last = 0, dragging = false, startX = 0, startOff = 0, idleUntil = 0;
+          function measure() {
+            half = track.scrollWidth / 2;               // контент продублирован (6+6), полкруга = бесшовная петля
+            speed = half > 0 ? half / 28 : 0;            // px/с, как у CSS-анимации 28s
+          }
+          function apply() {
+            if (half > 0) { if (x <= -half) x += half; if (x > 0) x -= half; }
+            track.style.transform = 'translate3d(' + x + 'px,0,0)';
+          }
+          function tick(ts) {
+            if (!last) last = ts;
+            var dt = Math.min(0.1, (ts - last) / 1000); last = ts;
+            // offsetParent у потомков position:fixed всегда null (та же грабля, что у сторожа онбординга) — смотрим на ширину
+            if (wrap.offsetWidth > 0) {
+              if (!half) measure();
+              if (!dragging && !reduce && ts > idleUntil && speed) { x -= speed * dt; apply(); }
+            }
+            requestAnimationFrame(tick);
+          }
+          wrap.addEventListener('pointerdown', function(e) {
+            dragging = true; startX = e.clientX; startOff = x;
+            try { wrap.setPointerCapture(e.pointerId); } catch (_) {}
+          });
+          wrap.addEventListener('pointermove', function(e) {
+            if (!dragging) return;
+            x = startOff + (e.clientX - startX); apply();
+          });
+          function release() { if (!dragging) return; dragging = false; idleUntil = performance.now() + 1500; }
+          wrap.addEventListener('pointerup', release);
+          wrap.addEventListener('pointercancel', release);
+          window.addEventListener('resize', function() { half = 0; });
+          measure();
+          requestAnimationFrame(tick);
+        })();
       })();

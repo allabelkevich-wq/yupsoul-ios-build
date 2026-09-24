@@ -19,8 +19,9 @@
       <div class="player">
         <div class="player-top">
           <span class="player-art"></span>
-          <span class="player-meta"><b id="soPlayTitle">Свет внутри тебя</b><span id="soPlaySub" data-i18n="openedPlaySub">Полная песня · 3:12</span></span>
-          <button class="play-btn" id="soPlayBtn" aria-label="Пауза">
+          <span class="player-meta"><b id="soPlayTitle" data-i18n="soPlayTitleFallback">Твоя песня</b><span id="soPlaySub" data-i18n="openedPlaySub">Полная песня · 3:12</span></span>
+          <!-- аудит iPhone 24.09: aria-label без i18n -->
+          <button class="play-btn" id="soPlayBtn" aria-label="Пауза" data-i18n-aria="pauseLabel">
             <svg class="ic-play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
             <svg class="ic-pause" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
           </button>

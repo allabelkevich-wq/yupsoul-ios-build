@@ -590,7 +590,8 @@
         }
 
         function setLoading(){
-          var nm=document.getElementById('crNames'); if(nm) nm.textContent='Считаем ваше созвучие…';
+          // (аудит iPhone 24.09: экран совместимости был захардкожен на русском)
+          var nm=document.getElementById('crNames'); if(nm) nm.textContent=(typeof t === 'function' && t('compatLoadingNames')) || 'Считаем ваше созвучие…';
           var num=document.getElementById('crPctNum'); if(num) num.innerHTML='<span style="opacity:.5">…</span>';
           var fc=document.getElementById('crFacets'); if(fc) fc.innerHTML='';
           var vd=document.getElementById('crVerdict'); if(vd) vd.textContent='';
@@ -600,13 +601,15 @@
         function render(r){
           if(!r) return;
           if(r.result) r=r.result;
-          var dispA = r.aIsSelf ? 'Ты' : (r.nameA||'—');
-          var dispB = r.bIsSelf ? 'Ты' : (r.nameB||'—');
+          // аудит iPhone 24.09: «Ты» и союз «и» были жёстко русскими на EN/DE/FR
+          var selfWord = (typeof t === 'function' && t('compatSelf') !== 'compatSelf') ? t('compatSelf') : 'Ты';
+          var dispA = r.aIsSelf ? selfWord : (r.nameA||'—');
+          var dispB = r.bIsSelf ? selfWord : (r.nameB||'—');
           var avA=document.getElementById('crAvA'), avB=document.getElementById('crAvB');
           if(avA) avA.textContent=(String(dispA).trim().charAt(0)||'·').toUpperCase();
           if(avB) avB.textContent=(String(dispB).trim().charAt(0)||'·').toUpperCase();
           var nm=document.getElementById('crNames');
-          if(nm) nm.innerHTML='<b>'+esc(dispA)+'</b> и <b>'+esc(dispB)+'</b>';
+          if(nm){ var andTpl=(typeof t === 'function' && t('compatNamesAnd') !== 'compatNamesAnd') ? t('compatNamesAnd') : '{a} и {b}'; nm.innerHTML=esc(andTpl).replace('{a}','<b>'+esc(dispA)+'</b>').replace('{b}','<b>'+esc(dispB)+'</b>'); }
           var score=clamp(r.score);
           var byName={}; (r.facets||[]).forEach(function(f){ if(f&&f.name) byName[f.name]=clamp(f.pct); });
           FACETS.forEach(function(name,i){
@@ -618,11 +621,11 @@
           if(fc){
             var h=''; var closer=Array.isArray(r.closer)?r.closer:[]; var grow=Array.isArray(r.grow)?r.grow:[];
             if(closer.length){
-              h+='<div class="facet-sec">Что вас сближает</div>';
+              h+='<div class="facet-sec">'+esc((typeof t === 'function' && t('compatCloserHeading')) || 'Что вас сближает')+'</div>';
               closer.forEach(function(c,i){ h+='<div class="facet up"><span class="facet-ic">'+(i%2?MIC:SPARK)+'</span><span class="facet-tx"><b>'+esc(c.title)+'</b><span>'+esc(c.desc)+'</span></span></div>'; });
             }
             if(grow.length){
-              h+='<div class="facet-sec" style="margin-top:18px">Над чем стоит расти</div>';
+              h+='<div class="facet-sec" style="margin-top:18px">'+esc((typeof t === 'function' && t('compatGrowHeading')) || 'Над чем стоит расти')+'</div>';
               grow.forEach(function(g){ h+='<div class="facet soft"><span class="facet-ic">'+CLK+'</span><span class="facet-tx"><b>'+esc(g.title)+'</b><span>'+esc(g.desc)+'</span></span></div>'; });
             }
             fc.innerHTML=h;
@@ -672,7 +675,7 @@
               if(resp.ok && json.ok && json.result){ render(json.result); return; }
               // валидационные кейсы — мягкая подсказка + назад (а не пустой экран)
               if(json.error_code==='errContactNeedsBirthData' || json.error_code==='errPartyLoad' || json.error_code==='errNeedTwoParties'){
-                if(typeof window.showToast==='function') window.showToast('Для разбора нужны дата и место рождения обоих');
+                if(typeof window.showToast==='function') window.showToast((typeof t === 'function' && t('errCompatNeedBirthData')) || 'Для разбора нужны дата и место рождения обоих');
                 if(window.goBack) window.goBack();
                 return;
               }

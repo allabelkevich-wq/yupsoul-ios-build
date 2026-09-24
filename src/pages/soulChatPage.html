@@ -22,7 +22,8 @@
       <div id="scPromoArea" class="profile-scroll page-scroll">
         <div class="sc-content-wrap">
         <!-- Заголовок страницы (золотое сечение) -->
-        <header class="sc-page-hero" aria-label="Заголовок Разговор по душам" style="display:none;">
+        <!-- аудит iPhone 24.09: aria-label без i18n -->
+        <header class="sc-page-hero" aria-label="Заголовок Разговор по душам" data-i18n-aria="scHeroTitle" style="display:none;">
           <h1 id="scHeroTitle" class="sc-hero-title">Разговор по душам | Чат с Оракулом</h1>
         </header>
 
@@ -167,10 +168,12 @@
           <img src="assets/icons/logo-symbol.webp" alt="" width="28" height="28" style="border-radius:6px;" aria-hidden="true">
           <span style="font-weight:700;color:#fff;letter-spacing:-0.02em;">YupSoul <span style="opacity:0.2;font-weight:300;">|</span> <span style="background:linear-gradient(135deg,#fff 30%,rgba(var(--primary-rgb),0.7));-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700;">Chat</span></span>
         </div>
-        <div id="scPageTimer" class="sc-timer-badge" aria-live="polite" aria-label="Оставшееся время доступа"></div>
+        <!-- аудит iPhone 24.09: aria-label без i18n -->
+        <div id="scPageTimer" class="sc-timer-badge" aria-live="polite" aria-label="Оставшееся время доступа" data-i18n-aria="ariaTimeRemaining"></div>
         <!-- Алла 11.07: юзеры «теряли диалог» — кнопка истории была почти невидима (0.45/10.9px без
              фона). Теперь заметная пилюля с часиками; механика scLoadHistory уже была готова. -->
-        <button type="button" id="scHistoryToggleBtn" onclick="if(typeof scOpenThreads==='function')scOpenThreads()" aria-label="История переписок" style="flex-shrink:0;display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.14);color:rgba(255,255,255,0.78);font-size:12px;font-weight:500;font-family:inherit;cursor:pointer;padding:7px 12px;border-radius:9999px;white-space:nowrap;line-height:1;transition:background .15s;">
+        <!-- аудит iPhone 24.09: aria-label без i18n -->
+        <button type="button" id="scHistoryToggleBtn" onclick="if(typeof scOpenThreads==='function')scOpenThreads()" aria-label="История переписок" data-i18n-aria="scHistoryToggle" style="flex-shrink:0;display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.14);color:rgba(255,255,255,0.78);font-size:12px;font-weight:500;font-family:inherit;cursor:pointer;padding:7px 12px;border-radius:9999px;white-space:nowrap;line-height:1;transition:background .15s;">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
           <span data-i18n="scHistoryToggle">История</span>
         </button>
@@ -185,7 +188,8 @@
           </div>
           <div class="scroll">
             <p class="ctx-sub" data-i18n="ctxSub">С кем сегодня говорим — Оракул будет держать это в контексте разговора.</p>
-            <div class="seg2" id="scPickerModeTabs" role="tablist" aria-label="Режим чата">
+            <!-- аудит iPhone 24.09: aria-label без i18n -->
+            <div class="seg2" id="scPickerModeTabs" role="tablist" aria-label="Режим чата" data-i18n-aria="ariaChatMode">
               <button id="scPickerTabSingle" type="button" class="on" role="tab" aria-selected="true" onclick="scSetPickerMode('single')" data-i18n="ctxModeOne">Одна карточка</button>
               <button id="scPickerTabSynastry" type="button" role="tab" aria-selected="false" onclick="scSetPickerMode('synastry')" data-i18n="ctxModeCompat">Совместимость</button>
             </div>
@@ -213,7 +217,8 @@
       <!-- Плашка контекста (реф showcase-chat .ctx-plank, Алла 18.06): показ при выбранном человеке -->
       <div id="scCtxPlank" class="sc-ctx-plank" style="display:none;" aria-live="polite"></div>
 
-      <div id="scPageChat" class="sc-messages-area" aria-label="Лента диалога Чат с Оракулом">
+      <!-- аудит iPhone 24.09: aria-label без i18n -->
+      <div id="scPageChat" class="sc-messages-area" aria-label="Лента диалога Чат с Оракулом" data-i18n-aria="ariaChatFeed">
         <div class="sc-content-wrap ora-v2" id="scChatBody">
         <!-- ✦ Интро-блок showcase-chat-v6: мандала + «Оракул» + подзаголовок (Алла 15.06) -->
         <!-- Интро чата по эталону showcase-oracle (.mid): иконка приложения, заголовок,
@@ -229,12 +234,14 @@
           <div class="sc-no-request-title" id="scNoRequestTitleEl">Нужны твои данные</div>
           <p class="sc-no-request-text" id="scNoRequestTextEl">Чат с Оракулом строит персональный разговор на основе имени и даты рождения. Заполни профиль или создай первую заявку на песню.</p>
           <div class="sc-no-request-actions">
-            <button type="button" class="sc-action-btn-primary" id="scFillProfileBtn" onclick="goToPage('profilePage')" aria-label="Перейти к заполнению профиля">Заполнить профиль →</button>
-            <button type="button" class="sc-action-btn-ghost" id="scCreateRequestBtn" onclick="goToPage('formPage')" aria-label="Перейти к созданию заявки на песню">Создать заявку на песню →</button>
+            <!-- аудит iPhone 24.09: aria-label без i18n -->
+            <button type="button" class="sc-action-btn-primary" id="scFillProfileBtn" onclick="goToPage('profilePage')" aria-label="Перейти к заполнению профиля" data-i18n-aria="ariaGoFillProfile">Заполнить профиль →</button>
+            <button type="button" class="sc-action-btn-ghost" id="scCreateRequestBtn" onclick="goToPage('formPage')" aria-label="Перейти к созданию заявки на песню" data-i18n-aria="ariaGoCreateSongRequest">Создать заявку на песню →</button>
           </div>
         </div>
-        <div id="scPageHistory" class="sc-history chat" aria-live="polite" aria-label="История диалога Чат с Оракулом"></div>
-        <div id="scSynastryTeaser" class="sc-synastry-teaser" aria-label="Синастрия доступна в тарифе Лаборатория">
+        <!-- аудит iPhone 24.09: aria-label без i18n -->
+        <div id="scPageHistory" class="sc-history chat" aria-live="polite" aria-label="История диалога Чат с Оракулом" data-i18n-aria="ariaChatHistory"></div>
+        <div id="scSynastryTeaser" class="sc-synastry-teaser" aria-label="Синастрия доступна в тарифе Лаборатория" data-i18n-aria="ariaSynastryTeaser">
           <p class="sc-synastry-teaser-text"><span class="sc-synastry-teaser-accent">✦</span> <span id="scSynastryTeaserText">Совместимость — диалог по двум датам рождения — доступна в тарифе Лаборатория</span></p>
           <button type="button" class="sc-synastry-teaser-btn" id="scSynastryTeaserBtn" onclick="goToMasterPlanFrom('soulChatPage')">Открыть тариф →</button>
         </div>
@@ -242,7 +249,8 @@
         </div><!-- /sc-content-wrap -->
       </div>
 
-      <div id="scInputArea" class="sc-input-area" aria-label="Поле ввода вопроса">
+      <!-- аудит iPhone 24.09: aria-label без i18n -->
+      <div id="scInputArea" class="sc-input-area" aria-label="Поле ввода вопроса" data-i18n-aria="ariaQuestionInputArea">
         <!-- Счётчик пробных вопросов / режим Искр (ЗАКОН Алла 13.06) — НАД окном-композером,
              не внутри (в эталоне счётчика в композере нет). Подписчику скрыт. -->
         <div class="composer">
@@ -262,16 +270,18 @@
 
         <!-- Контекст + история — компактный ряд (Алла 16.06) -->
         <div id="scDockActions" class="comp-opts">
-          <button type="button" class="comp-opt" onclick="scOpenCardPicker();if(typeof scSetPickerMode==='function')scSetPickerMode('single')" aria-label="О себе"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.6"/><path d="M5 20a7 7 0 0 1 14 0"/></svg><span data-i18n="ctxSelfBtn">О себе</span></button>
-          <button type="button" class="comp-opt" onclick="scOpenCardPicker();if(typeof scSetPickerMode==='function')scSetPickerMode('synastry')" aria-label="Совместимость"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 20.3l-1.45-1.32C5.4 14.24 2 11.17 2 7.5 2 4.5 4.42 2 7.5 2c1.74 0 3.41.81 4.5 2.09C13.09 2.81 14.76 2 16.5 2 19.58 2 22 4.5 22 7.5c0 3.67-3.4 6.74-8.55 11.48L12 20.3z"/></svg><span data-i18n="ctxCompatBtn">Совместимость</span></button>
-          <button type="button" class="comp-opt sc-dock-action-hist" onclick="if(typeof scOpenThreads==='function')scOpenThreads()" aria-label="История переписок"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v5h5"/><path d="M3.05 13A9 9 0 1 0 6 5.3L3 8"/><path d="M12 7v5l3 1.5"/></svg><span data-i18n="scHistoryToggle">История</span></button>
+          <!-- аудит iPhone 24.09: aria-label без i18n -->
+          <button type="button" class="comp-opt" onclick="scOpenCardPicker();if(typeof scSetPickerMode==='function')scSetPickerMode('single')" aria-label="О себе" data-i18n-aria="ctxSelfBtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.6"/><path d="M5 20a7 7 0 0 1 14 0"/></svg><span data-i18n="ctxSelfBtn">О себе</span></button>
+          <button type="button" class="comp-opt" onclick="scOpenCardPicker();if(typeof scSetPickerMode==='function')scSetPickerMode('synastry')" aria-label="Совместимость" data-i18n-aria="ctxCompatBtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 20.3l-1.45-1.32C5.4 14.24 2 11.17 2 7.5 2 4.5 4.42 2 7.5 2c1.74 0 3.41.81 4.5 2.09C13.09 2.81 14.76 2 16.5 2 19.58 2 22 4.5 22 7.5c0 3.67-3.4 6.74-8.55 11.48L12 20.3z"/></svg><span data-i18n="ctxCompatBtn">Совместимость</span></button>
+          <button type="button" class="comp-opt sc-dock-action-hist" onclick="if(typeof scOpenThreads==='function')scOpenThreads()" aria-label="История переписок" data-i18n-aria="scHistoryToggle"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v5h5"/><path d="M3.05 13A9 9 0 1 0 6 5.3L3 8"/><path d="M12 7v5l3 1.5"/></svg><span data-i18n="scHistoryToggle">История</span></button>
         </div>
         <div class="comp-divider" aria-hidden="true"></div>
 
         <div class="comp-field cmp">
-          <textarea id="scPageQuestion" rows="1" placeholder="Что у тебя на душе?" aria-label="Вопрос Чат с Оракулом" maxlength="1000" data-i18n-placeholder="scPlaceholder"></textarea>
-          <span id="scPageCharHint" class="sc-char-hint" aria-live="polite" aria-label="Осталось символов" style="display:none;"></span>
-          <button id="scPageSendBtn" type="button" class="send" aria-label="Отправить вопрос" disabled>
+          <!-- аудит iPhone 24.09: aria-label без i18n -->
+          <textarea id="scPageQuestion" rows="1" placeholder="Что у тебя на душе?" aria-label="Вопрос Чат с Оракулом" data-i18n-aria="ariaOracleQuestion" maxlength="1000" data-i18n-placeholder="scPlaceholder"></textarea>
+          <span id="scPageCharHint" class="sc-char-hint" aria-live="polite" aria-label="Осталось символов" data-i18n-aria="ariaCharsLeft" style="display:none;"></span>
+          <button id="scPageSendBtn" type="button" class="send" aria-label="Отправить вопрос" data-i18n-aria="ariaSendQuestion" disabled>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
           </button>
         </div>
@@ -424,7 +434,8 @@
           </span>
           <span class="go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
         </button>
-        <div id="scPrismList" aria-label="Список разборов">
+        <!-- аудит iPhone 24.09: aria-label без i18n -->
+        <div id="scPrismList" aria-label="Список разборов" data-i18n-aria="ariaPrismList">
           <!-- заполняется renderPrismCatalog() -->
           <div class="sc-prism-loading" data-i18n="scPrismLoadingCatalog" style="color:rgba(255,255,255,0.5);text-align:center;padding:32px 16px;font-size:0.85rem;">Загружаю разборы…</div>
         </div>
@@ -539,7 +550,8 @@
       <div class="pw" id="scPaywall" hidden>
         <div class="pw-card">
           <div class="pw-grab"></div>
-          <button class="pw-x" id="scPwX" aria-label="Закрыть"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+          <!-- аудит iPhone 24.09: aria-label без i18n -->
+          <button class="pw-x" id="scPwX" aria-label="Закрыть" data-i18n-aria="navClose"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
           <div class="pw-yupik"></div>
           <div class="pw-teaser">
             <div class="pw-teaser-bubble" data-i18n="pwTeaserBubble">Я чувствую, что за этим вопросом прячется что-то большее…</div>

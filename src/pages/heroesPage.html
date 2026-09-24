@@ -9,8 +9,9 @@
       <header class="topbar">
         <button type="button" id="heroesBackBtn" class="profile-back-btn header-back-btn btn-nav" aria-label="Назад" title="Назад" data-i18n-aria="navBack" data-i18n-title="navBack">←</button>
         <div class="brand" style="flex:1"></div>
-        <div class="lang-switcher-compact" aria-label="Язык интерфейса">
-          <button type="button" class="tb-btn" data-u="hr" id="heroesLangBtn" aria-label="Язык"><span id="heroesLangCurrent">RU</span></button>
+        <!-- аудит iPhone 24.09: aria-label без i18n -->
+        <div class="lang-switcher-compact" aria-label="Язык интерфейса" data-i18n-aria="ariaLangSwitcher">
+          <button type="button" class="tb-btn" data-u="hr" id="heroesLangBtn" aria-label="Язык" data-i18n-aria="pfLang"><span id="heroesLangCurrent">RU</span></button>
           <div id="heroesLangDropdown" class="lang-dropdown" hidden>
             <button type="button" class="lang-opt" data-lang="ru">RU</button>
             <button type="button" class="lang-opt" data-lang="en">EN</button>
@@ -18,7 +19,8 @@
             <button type="button" class="lang-opt" data-lang="fr">FR</button>
           </div>
         </div>
-        <button type="button" class="tb-btn prof" data-u="hr" id="heroesProfileBtn" onclick="goToProfileFrom('heroesPage')" aria-label="Профиль"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.6"></circle><path d="M5 20c.7-3.5 3.6-5.5 7-5.5s6.3 2 7 5.5"></path></svg></button>
+        <!-- аудит iPhone 24.09: aria-label без i18n -->
+        <button type="button" class="tb-btn prof" data-u="hr" id="heroesProfileBtn" onclick="goToProfileFrom('heroesPage')" aria-label="Профиль" data-i18n-aria="myProfile"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.6"></circle><path d="M5 20c.7-3.5 3.6-5.5 7-5.5s6.3 2 7 5.5"></path></svg></button>
       </header>
       <div class="title"><h1 data-i18n="heroesTitleH1">Картотека</h1><p data-i18n="heroesTitleSub">Люди, для которых оракул поёт</p></div>
 
@@ -80,8 +82,9 @@
         <div class="controls">
           <div class="search">
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.2-3.2"></path></svg>
-            <input type="text" id="heroesSearch" placeholder="Поиск по имени" data-i18n-placeholder="searchByName" aria-label="Поиск" autocomplete="off">
-            <button type="button" class="search-x" id="heroesSearchX" hidden aria-label="Очистить"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"></path></svg></button>
+            <!-- аудит iPhone 24.09: aria-label без i18n -->
+            <input type="text" id="heroesSearch" placeholder="Поиск по имени" data-i18n-placeholder="searchByName" aria-label="Поиск" data-i18n-aria="mtSearchAria" autocomplete="off">
+            <button type="button" class="search-x" id="heroesSearchX" hidden aria-label="Очистить" data-i18n-aria="helpSearchClear"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"></path></svg></button>
           </div>
           <button type="button" class="add" id="addHeroBtn" data-i18n="heroesAddBtn">+ Добавить героя</button>
         </div>
@@ -202,10 +205,11 @@
           <div class="hf-field">
             <label data-i18n="heroBirthdate">Дата рождения</label>
             <div id="heroBirthdateWrap" class="birthdate-wrap">
-              <div class="hf-date-row" role="group" aria-label="Дата рождения">
-                <select id="heroBirthdateDay" class="date-group-day" aria-label="День"><option value="" data-i18n="selectDay">День</option></select>
-                <select id="heroBirthdateMonth" class="date-group-month" aria-label="Месяц"><option value="" data-i18n="selectMonth">Месяц</option></select>
-                <select id="heroBirthdateYear" class="date-group-year" aria-label="Год"><option value="" data-i18n="selectYear">Год</option></select>
+              <!-- аудит iPhone 24.09: aria-label без i18n -->
+              <div class="hf-date-row" role="group" aria-label="Дата рождения" data-i18n-aria="heroBirthdate">
+                <select id="heroBirthdateDay" class="date-group-day" aria-label="День" data-i18n-aria="selectDay"><option value="" data-i18n="selectDay">День</option></select>
+                <select id="heroBirthdateMonth" class="date-group-month" aria-label="Месяц" data-i18n-aria="selectMonth"><option value="" data-i18n="selectMonth">Месяц</option></select>
+                <select id="heroBirthdateYear" class="date-group-year" aria-label="Год" data-i18n-aria="selectYear"><option value="" data-i18n="selectYear">Год</option></select>
               </div>
               <input type="date" id="heroBirthdate" data-i18n-title="birthDateTooltip" title="Выберите дату рождения" tabindex="-1">
             </div>
@@ -225,7 +229,8 @@
           </div>
           <div class="hf-field">
             <label id="heroTimeBirthLabel" data-i18n="heroBirthtime">Время рождения</label>
-            <div class="hf-time-group" role="group" aria-label="Время рождения">
+            <!-- аудит iPhone 24.09: aria-label без i18n -->
+            <div class="hf-time-group" role="group" aria-label="Время рождения" data-i18n-aria="heroBirthtime">
               <input type="time" id="heroBirthtime" data-i18n-title="birthTimeTooltip" title="Выберите время рождения">
               <label class="hf-check">
                 <input type="checkbox" id="heroBirthtimeUnknown">

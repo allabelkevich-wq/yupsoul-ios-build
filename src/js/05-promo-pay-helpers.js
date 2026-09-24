@@ -80,7 +80,8 @@
 
         if (activePromo && priceHint) {
           if (sameCurrency) {
-            priceHint.textContent = '💚 Скидка: ' + activePromo.discount_amount + ' ' + activePromo.currency;
+            // (аудит iPhone 24.09: было хардкод RU «Скидка:» на EN/DE/FR — переиспользуем существующий ключ)
+            priceHint.textContent = '💚 ' + (typeof t === 'function' ? t('promoDiscountWord') : 'Скидка') + ': ' + activePromo.discount_amount + ' ' + activePromo.currency;
           } else {
             // Mismatch валют — честно говорим что применили без конкретной суммы
             priceHint.textContent = (typeof t === 'function' ? t('payPromoApplied') : 'Промокод применён');
@@ -159,17 +160,18 @@
           if (!resp.ok || !json.valid) {
             activePromo = null;
             resetPaymentUI();
+            // (аудит iPhone 24.09: было хардкод RU для всех причин — теперь через t(), ключи есть в RU/EN/DE/FR)
             var reasonMap = {
-              not_found: 'Промокод не найден',
-              expired: 'Срок действия промокода истёк',
-              not_started: 'Промокод ещё не активен',
-              inactive: 'Промокод деактивирован',
-              user_limit_reached: 'Вы уже использовали этот промокод',
-              global_limit_reached: 'Промокод больше недоступен (лимит исчерпан)',
-              sku_mismatch: 'Этот промокод не действует для выбранного типа заявки',
+              not_found: typeof t === 'function' ? t('promoNotFound') : 'Промокод не найден',
+              expired: typeof t === 'function' ? t('promoExpired') : 'Срок действия промокода истёк',
+              not_started: typeof t === 'function' ? t('promoNotStarted') : 'Промокод ещё не активен',
+              inactive: typeof t === 'function' ? t('promoInactive') : 'Промокод деактивирован',
+              user_limit_reached: typeof t === 'function' ? t('promoUserLimitReached') : 'Вы уже использовали этот промокод',
+              global_limit_reached: typeof t === 'function' ? t('promoGlobalLimitReached') : 'Промокод больше недоступен (лимит исчерпан)',
+              sku_mismatch: typeof t === 'function' ? t('promoSkuMismatch') : 'Этот промокод не действует для выбранного типа заявки',
               empty: typeof t === 'function' ? t('formEnterPromo') : 'Введите промокод'
             };
-            var errMsg = json.error || reasonMap[json.reason] || 'Промокод недействителен';
+            var errMsg = json.error || reasonMap[json.reason] || (typeof t === 'function' ? t('promoInvalid') : 'Промокод недействителен');
             throw new Error(errMsg);
           }
           
@@ -191,7 +193,8 @@
             hidePaymentSection();
           } else {
             // Промокод даёт частичную скидку
-            setPaymentStatus((typeof t === 'function' ? t('payPromoApplied') : 'Промокод применён!') + ' Скидка: ' + activePromo.discount_amount + ' ' + activePromo.currency, 'ok');
+            // (аудит iPhone 24.09: было хардкод RU «Скидка:» на EN/DE/FR)
+            setPaymentStatus((typeof t === 'function' ? t('payPromoApplied') : 'Промокод применён!') + ' ' + (typeof t === 'function' ? t('promoDiscountWord') : 'Скидка') + ': ' + activePromo.discount_amount + ' ' + activePromo.currency, 'ok');
             updatePaymentSectionWithDiscount();
             hidePromoConfirmButton();
           }
@@ -983,7 +986,11 @@
           if (document.documentElement.classList.contains('web-loading')) return;
           if (window._appEnv === 'web' && !window._googleJwt) return;
           var onboardingPage = document.getElementById('onboardingPage');
-          if (onboardingPage && onboardingPage.style.display !== 'none' && onboardingPage.offsetParent !== null) {
+          // (аудит iPhone 24.09: #onboardingPage — position:fixed, offsetParent у fixed-элементов
+          // ВСЕГДА null → вторая половина условия никогда не срабатывала, гард был мёртвым.
+          // Watchdog проваливался в «нет активной страницы» и повторно звал startApp() поверх
+          // ещё показанной карусели — двойной re-init, риск дублирующего POST на deep-link)
+          if (onboardingPage && onboardingPage.style.display !== 'none') {
             console.log('[App] Онбординг активен — ждём завершения');
             return;
           }

@@ -106,7 +106,8 @@
             <div class="ref-stat"><b class="gold" id="giftsRefEarned">0</b><span data-i18n="giftsRefStatEarned">Искр получено</span></div>
           </div>
           <button class="ref-share" id="giftsRefShareBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"></path></svg> <span data-i18n="giftsRefShare">Поделиться ссылкой</span></button>
-          <div class="ref-link"><input id="giftsRefLinkInput" value="" readonly aria-label="Реферальная ссылка"><button id="giftsRefCopyBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-linejoin="round"><path d="M14.6 7.2 21 13.6l-6.4 6.4-6.4-6.4Z"></path><path d="M9.4 3.6 15.8 10M9.4 3.6 3 10l6.4 6.4" opacity=".5"></path></g></svg><span data-i18n="giftsRefCopy">Копировать</span></button></div>
+          <!-- аудит iPhone 24.09: aria-label без i18n -->
+          <div class="ref-link"><input id="giftsRefLinkInput" value="" readonly aria-label="Реферальная ссылка" data-i18n-aria="ariaRefLink"><button id="giftsRefCopyBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-linejoin="round"><path d="M14.6 7.2 21 13.6l-6.4 6.4-6.4-6.4Z"></path><path d="M9.4 3.6 15.8 10M9.4 3.6 3 10l6.4 6.4" opacity=".5"></path></g></svg><span data-i18n="giftsRefCopy">Копировать</span></button></div>
         </div>
 
         <!-- ═══ КВЕСТЫ (Алла 02.07: платформо-зависимые задания за Искры) ═══ -->

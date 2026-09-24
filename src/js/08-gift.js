@@ -211,7 +211,7 @@
         var btn = document.getElementById('scPageGiftBtn');
         if (!btn) return;
         btn.addEventListener('click', async function() {
-          btn.disabled = true; btn.textContent = 'Активирую…';
+          btn.disabled = true; btn.textContent = typeof t === 'function' ? t('btnActivating') : 'Активирую…'; // (аудит iPhone 24.09: убран хардкод RU, теперь через существующий ключ btnActivating)
           var apiBase  = (window.BACKEND_URL || window.HEROES_API_BASE || '').replace(/\/$/, '');
           if (!apiBase || !hasAuth()) { btn.disabled = false; btn.textContent = typeof t === 'function' ? t('btnTry') : 'Попробовать'; return; }
           var initData = getInitData();
@@ -1584,8 +1584,8 @@
 
         // Не показываем «Оплата получена» до подтверждения сервером — только «Проверяем оплату…»
         var _pendingSubName = isSubPaymentImmediate ? (pendingPayment.plan_name || (
-            pendingPayment.plan_key === 'plan_basic' ? 'Душа' :
-            pendingPayment.plan_key === 'plan_plus' ? 'Глубина' : 'Лаборатория')) : '';
+            pendingPayment.plan_key === 'plan_basic' ? t('planBasicName') :
+            pendingPayment.plan_key === 'plan_plus' ? t('planPlusName') : t('planMasterNameText'))) : ''; // (аудит iPhone 24.09: убран хардкод RU-названий тарифа)
         (function() {
           var pt = document.getElementById('paymentThanksTitle');
           var ps = document.getElementById('paymentThanksSubtitle');
@@ -1700,7 +1700,7 @@
                 var isAn2 = isAnalysisPaymentImmediate || payMode === 'deep_analysis' || paySku === 'deep_analysis_addon';
                 var isSc2 = isSoulChatDayImmediate || payMode === 'soul_chat_day' || paySku === 'soul_chat_1day';
                 if (isSub2) {
-                  var sn = _pendingSubName || (paySku === 'soul_basic_sub' ? 'Душа' : paySku === 'soul_plus_sub' ? 'Глубина' : 'Лаборатория');
+                  var sn = _pendingSubName || (paySku === 'soul_basic_sub' ? t('planBasicName') : paySku === 'soul_plus_sub' ? t('planPlusName') : t('planMasterNameText')); // (аудит iPhone 24.09: убран хардкод RU-названий тарифа)
                   if (pt) pt.textContent = t('subActivated') || 'Тариф активирован!';
                   if (pm) pm.innerHTML = t('payConfirmedPlan').replace('{plan}', sn);
                   if (pb) { pb.style.display = ''; pb.style.visibility = 'visible'; pb.textContent = t('btnGoHome'); pb.setAttribute('data-goto', 'homePage'); }
@@ -1778,15 +1778,15 @@
               var isSubFromMode = (payMode && payMode.startsWith('sub_')) || isSubscriptionSku(paySku);
               if (isSubFromMode && paymentThanksMsg) {
                 var sn = isSubscriptionSku(paySku)
-                  ? (paySku === 'soul_basic_sub' ? 'Душа' : (paySku === 'soul_plus_sub' ? 'Глубина' : 'Лаборатория'))
-                  : (payMode.includes('basic') ? 'Душа' : payMode.includes('plus') ? 'Глубина' : 'Лаборатория');
+                  ? (paySku === 'soul_basic_sub' ? t('planBasicName') : (paySku === 'soul_plus_sub' ? t('planPlusName') : t('planMasterNameText')))
+                  : (payMode.includes('basic') ? t('planBasicName') : payMode.includes('plus') ? t('planPlusName') : t('planMasterNameText')); // (аудит iPhone 24.09: убран хардкод RU-названий тарифа)
                 var ptT = document.getElementById('paymentThanksTitle');
                 var ptS = document.getElementById('paymentThanksSubtitle');
                 var ptH = document.getElementById('paymentThanksHint');
                 var ptB = document.getElementById('paymentThanksBackBtn');
                 if (ptT) ptT.textContent = t('subActivated');
                 if (ptS) ptS.textContent = sn;
-                paymentThanksMsg.innerHTML = 'Тариф <strong>' + sn + '</strong> — ' + t('subscriptionActive');
+                paymentThanksMsg.innerHTML = t('planConfirmHeader') + ' <strong>' + sn + '</strong> — ' + t('subscriptionActive'); // (аудит iPhone 24.09: убран хардкод «Тариф»)
                 if (ptH) ptH.style.display = 'none';
                 if (ptB) { ptB.textContent = t('btnGoHome'); ptB.setAttribute('data-goto', 'homePage'); }
               } else if (payMode === 'deep_analysis' || paySku === 'deep_analysis_addon') {

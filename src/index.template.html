@@ -2457,7 +2457,8 @@ document.addEventListener('DOMContentLoaded', function() {
   <div id="legalModalSheet">
     <div id="legalModalHead">
       <h2 id="legalModalTitle">Документ</h2>
-      <button type="button" id="legalModalClose" aria-label="Закрыть">✕</button>
+      <!-- аудит iPhone 24.09: aria-label без i18n -->
+      <button type="button" id="legalModalClose" aria-label="Закрыть" data-i18n-aria="legalCloseAria">✕</button>
     </div>
     <div id="legalModalContent">
       <div id="legalModalLoading">Загрузка…</div>
@@ -2727,15 +2728,21 @@ document.addEventListener('DOMContentLoaded', function() {
           <svg width="17" height="20" viewBox="0 0 17 20" fill="none" aria-hidden="true"><path d="M14.09 10.62c.01 2.6 2.27 3.46 2.3 3.47-.02.06-.36 1.24-1.2 2.46-.72 1.05-1.47 2.1-2.65 2.12-1.16.02-1.53-.69-2.86-.69-1.32 0-1.74.67-2.84.71-1.13.04-2-1.1-2.72-2.15C2.6 14.4 1.48 10.5 3 7.87c.75-1.31 2.1-2.14 3.56-2.16 1.12-.02 2.17.75 2.86.75.68 0 1.97-.93 3.32-.79.56.02 2.15.2 3.17 1.71-.08.05-1.89 1.11-1.87 3.24M11.86 4.2c.61-.74 1.02-1.77.9-2.79-.9.04-1.99.6-2.62 1.33-.57.65-1.05 1.7-.92 2.7 1 .08 2.03-.51 2.64-1.24" fill="currentColor"/></svg>
           <span data-i18n="signInWithApple">Вход с Apple</span>
         </button>
+        <!-- (аудит iPhone 24.09: до входа не было ссылки на оферту/конфиденциальность — App Store Review 5.1.1(i)
+             требует её в процессе регистрации; переиспользуем существующие ключи footerOffer/footerPrivacy,
+             значения цвета/размера — как в #homePage .home-footer a (app.css:12927); светлая тема уже
+             перекрывается общим правилом body.theme-light #webLoginScreen * (app.css:7537) -->
+        <p style="margin-top:12px;text-align:center;"><a href="javascript:void(0)" onclick="if(window.showLegalModal)window.showLegalModal('offer')" data-i18n="footerOffer" style="color:rgba(255,255,255,.64);font-size:0.75rem;">Оферта</a> · <a href="javascript:void(0)" onclick="if(window.showLegalModal)window.showLegalModal('privacy')" data-i18n="footerPrivacy" style="color:rgba(255,255,255,.64);font-size:0.75rem;">Конфиденциальность</a></p>
         <div class="start-reviews" aria-hidden="true"><div class="start-reviews-track" id="startReviewsTrack"><div class="start-review"><div class="start-review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="start-review-text" data-i18n="review1">Это просто фантастика! Серьёзно, вы считали меня! Это просто супер проект!</div><div class="start-review-author" data-i18n="reviewAuthor1">Роман</div></div><div class="start-review"><div class="start-review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="start-review-text" data-i18n="review2">Кайф! Стиль тот что люблю, слова прямо в сердце!</div><div class="start-review-author" data-i18n="reviewAuthor2">Юлия</div></div><div class="start-review"><div class="start-review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="start-review-text" data-i18n="review3">Зашло то как. Откуда ИИ могло знать про чертежи, про кофе, про отчеты. Браво!!!</div><div class="start-review-author" data-i18n="reviewAuthor3">Геннадий</div></div><div class="start-review"><div class="start-review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="start-review-text" data-i18n="review4">Очень понравилась динамика: от спокойного к мощному. Определенные моменты совпадают!</div><div class="start-review-author" data-i18n="reviewAuthor4">Александр</div></div><div class="start-review"><div class="start-review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="start-review-text" data-i18n="review5">Первая просто шедевр! Удивили, прослушал её раз 15, маме переслал.</div><div class="start-review-author" data-i18n="reviewAuthor5">Владимир</div></div><div class="start-review"><div class="start-review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="start-review-text" data-i18n="review6">Очень красивая и легкая песня, прям можно медитировать слушая её!</div><div class="start-review-author" data-i18n="reviewAuthor6">Пользователь</div></div></div></div>
         <!-- "ТОЛЬКО ЗДЕСЬ" блок убран со стартовой (по запросу) -->
       </article>
     </main>
-    <header class="home-top-bar" aria-label="Шапка">
+    <!-- аудит iPhone 24.09: aria-label/title без i18n -->
+    <header class="home-top-bar" aria-label="Шапка" data-i18n-aria="ariaHeader">
       <span class="home-top-bar-logo"><span class="home-logo-symbol-wrap"><img src="assets/icons/logo-symbol.webp" alt="" class="home-logo-symbol" width="36" height="36" aria-hidden="true"></span><span>YupSoul <span class="logo-pipe" style="font-weight:400;opacity:0.4;">|</span> <span class="logo-subtitle-i18n">Музыкальный оракул</span></span></span>
       <div class="home-top-bar-actions">
-        <div id="startLangSwitcher" class="lang-switcher-compact" aria-label="Язык интерфейса">
-          <button type="button" id="startLangSwitcherBtn" class="home-top-bar-btn lang-switcher-btn header-menu-btn" title="Язык">
+        <div id="startLangSwitcher" class="lang-switcher-compact" aria-label="Язык интерфейса" data-i18n-aria="ariaLangSwitcher">
+          <button type="button" id="startLangSwitcherBtn" class="home-top-bar-btn lang-switcher-btn header-menu-btn" title="Язык" data-i18n-title="pfLang">
             <span id="startLangSwitcherIcon" aria-hidden="true"></span>
             <span id="startLangSwitcherCurrent">RU</span>
           </button>
@@ -2802,7 +2809,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     <!-- Фиксированное нижнее меню: ВНЕ #homePage чтобы overflow:hidden не блокировало клики -->
     <!-- Видимость управляется CSS: #homePage.active ~ #homeAppMenu { display:flex } -->
-    <nav id="homeAppMenu" class="home-app-menu" aria-label="Главное меню">
+    <!-- аудит iPhone 24.09: aria-label без i18n -->
+    <nav id="homeAppMenu" class="home-app-menu" aria-label="Главное меню" data-i18n-aria="ariaMainMenu">
       <!-- Нижнее меню: только подписи, без иконок (по договорённости). -->
       <button type="button" id="soulChatBtn" class="home-app-menu-btn" data-nav="soulChatPage" data-return="homePage" aria-label="Разговор по душам" data-i18n-aria="navSoulChatFull">
         <svg class="home-app-menu-icon" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/><circle cx="9.5" cy="11.5" r="0.8" fill="currentColor" stroke="none"/><circle cx="12" cy="11.5" r="0.8" fill="currentColor" stroke="none"/><circle cx="14.5" cy="11.5" r="0.8" fill="currentColor" stroke="none"/></svg>
@@ -8064,7 +8072,8 @@ html body #paymentOverlay #payOvStatus,html body #paymentOverlay #payOvStatus.er
     </div>
 
     <!-- Цена-якорь. Кликабельна = клик «Оплатить картой» (VK модерация п.1). Цену пишет движок. -->
-    <div class="price-row" id="payOvPriceBlock" role="button" tabindex="0" aria-label="Оплатить картой" onclick="var b=document.getElementById('payOvCardBtn');if(b)b.click();" style="cursor:pointer;">
+    <!-- аудит iPhone 24.09: aria-label без i18n -->
+    <div class="price-row" id="payOvPriceBlock" role="button" tabindex="0" aria-label="Оплатить картой" data-i18n-aria="payOvCardBtn" onclick="var b=document.getElementById('payOvCardBtn');if(b)b.click();" style="cursor:pointer;">
       <div>
         <div class="price-label" id="payOvPriceLabel" data-i18n="payPriceLabel">К оплате</div>
         <div class="price-sub" data-i18n="payPriceSub">Разовая оплата · одна песня</div>
@@ -17215,7 +17224,8 @@ body.theme-light #tourReward.tour-new,html.is-vk-light:not(.dark) #tourReward.to
 .theme-light #dlUnlockOverlay{--bg:#faf5ec !important;--surface:rgba(255,255,255,.8) !important;--surface-2:rgba(74,38,46,.08) !important;--line:rgba(74,38,46,.1) !important;--line-2:rgba(74,38,46,.16) !important;--text:#241526 !important;--muted:#6f5a66 !important;--faint:#9a8088 !important}
 .theme-light #dlUnlockOverlay body{background:#ece0d0 !important}
 </style>
-<div id="dlUnlockOverlay" data-state="gate" role="dialog" aria-modal="true" aria-label="Скачать песню">
+<!-- аудит iPhone 24.09: aria-label без i18n -->
+<div id="dlUnlockOverlay" data-state="gate" role="dialog" aria-modal="true" aria-label="Скачать песню" data-i18n-aria="dlSongTitle">
   <div class="ph-stars"></div>
   <div class="confetti-layer" id="dlCfLayer"></div>
 
@@ -17694,7 +17704,8 @@ body.theme-light #tourReward.tour-new,html.is-vk-light:not(.dark) #tourReward.to
     body.theme-light #prismReadView,html.is-vk-light:not(.dark) #prismReadView,html.is-ok-light:not(.dark) #prismReadView{color:#241526 !important}
     body.theme-light #prismReadView .ghost,html.is-vk-light:not(.dark) #prismReadView .ghost,html.is-ok-light:not(.dark) #prismReadView .ghost{color:#241526 !important}
     </style>
-    <div id="prismReadView" role="dialog" aria-modal="true" aria-label="Разбор">
+    <!-- аудит iPhone 24.09: aria-label без i18n -->
+    <div id="prismReadView" role="dialog" aria-modal="true" aria-label="Разбор" data-i18n-aria="scPrismWord">
       <div class="ph-stars"></div>
       <!-- Шапка окна по эталону showcase-oracle (.s-res): чип «К разборам» вместо
            крестика, надзаголовок «Разбор NN · раздел» и h2. Иконки темы в эталоне нет. -->
@@ -17936,7 +17947,8 @@ html.is-ok-light:not(.dark) #scHistView .ora-v2.ora-v2 #hist .empty .ic{backgrou
     body.theme-light #prismBuySheet .pr-bal,html.is-vk-light:not(.dark) #prismBuySheet .pr-bal,html.is-ok-light:not(.dark) #prismBuySheet .pr-bal{color:#6f5a66 !important}
     body.theme-light #prismBuySheet .buy-cta.topup,html.is-vk-light:not(.dark) #prismBuySheet .buy-cta.topup{color:#3a2305 !important}
     </style>
-    <div id="prismBuySheet" data-bal="ok" role="dialog" aria-modal="true" aria-label="Покупка разбора">
+    <!-- аудит iPhone 24.09: aria-label без i18n -->
+    <div id="prismBuySheet" data-bal="ok" role="dialog" aria-modal="true" aria-label="Покупка разбора" data-i18n-aria="ariaPrismPurchase">
       <div class="scrim" onclick="closePrismBuy()"></div>
       <div class="sheet">
         <div class="grip"></div>
@@ -17946,7 +17958,8 @@ html.is-ok-light:not(.dark) #scHistView .ora-v2.ora-v2 #hist .empty .ic{backgrou
             <div class="sh-eyebrow" data-i18n="prismReadEyebrow">Персональный разбор</div>
             <h2 class="sh-title" id="prismBuyTitle">Разбор</h2>
           </div>
-          <button type="button" class="sh-x" onclick="closePrismBuy()" aria-label="Закрыть"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+          <!-- аудит iPhone 24.09: aria-label без i18n -->
+          <button type="button" class="sh-x" onclick="closePrismBuy()" aria-label="Закрыть" data-i18n-aria="navClose"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
         </div>
         <p class="desc" id="prismBuyDesc" data-i18n="prismBuyDesc">Глубокий персональный разбор по твоей карте — подробно о тебе, и как это разблокировать.</p>
         <div class="incl">

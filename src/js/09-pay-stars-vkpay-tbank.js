@@ -200,7 +200,8 @@
         var apiBase = (window.BACKEND_URL || window.HEROES_API_BASE || '').replace(/\/$/, '');
         if (!apiBase) return;
         profileDeleteAccountBtn.disabled = true;
-        profileDeleteAccountBtn.textContent = 'Удаляем…';
+        // (аудит iPhone 24.09: локализация текста кнопки во время удаления — было hardcoded RU)
+        profileDeleteAccountBtn.textContent = (typeof t === 'function' ? (t('profileDeletingLabel') || 'Удаляем…') : 'Удаляем…');
         var headers = {};
         try {
           if (typeof getAuthHeaders === 'function') {
@@ -232,7 +233,8 @@
               } catch(_) {}
               window._googleJwt = null;
               window._googleUser = null;
-              window.alert('Аккаунт удалён. Спасибо, что были с нами.');
+              // (аудит iPhone 24.09: локализация финального alert — было hardcoded RU)
+              window.alert(typeof t === 'function' ? (t('profileDeletedAlert') || 'Аккаунт удалён. Спасибо, что были с нами.') : 'Аккаунт удалён. Спасибо, что были с нами.');
               // Перезапуск приложения — новая сессия.
               // TG/VK: НЕ сбрасываем URL на голый origin — launch-параметры платформы
               // (tgWebAppData в URL / VK signature) задают окружение и авторизацию; их потеря
@@ -246,13 +248,14 @@
               }
             } else {
               profileDeleteAccountBtn.disabled = false;
-              profileDeleteAccountBtn.textContent = 'Удалить аккаунт';
+              // (аудит iPhone 24.09: локализация revert-текста кнопки — переиспользуем ключ исходной надписи)
+              profileDeleteAccountBtn.textContent = (typeof t === 'function' ? (t('profileDeleteAccountBtn') || 'Удалить аккаунт и все данные') : 'Удалить аккаунт и все данные');
               console.warn('[me/delete]', d && d.error); if (typeof window._ensureOnline === 'function') window._ensureOnline(); // №37
             }
           })
           .catch(function(e) {
             profileDeleteAccountBtn.disabled = false;
-            profileDeleteAccountBtn.textContent = 'Удалить аккаунт';
+            profileDeleteAccountBtn.textContent = (typeof t === 'function' ? (t('profileDeleteAccountBtn') || 'Удалить аккаунт и все данные') : 'Удалить аккаунт и все данные');
             console.warn('[me/delete]', e && e.message);
             if (typeof window._ensureOnline === 'function') window._ensureOnline(); // №37
           });
@@ -280,7 +283,8 @@
         { iskry: 250, price_usd: 22, label: '250 Искр', badge: 'discount', badge_text: '−12%' },
         { iskry: 500, price_usd: 40, label: '500 Искр', badge: 'best', badge_text: '⭐ Лучший выбор' }
       ];
-      var ISKRY_WELCOME_AMOUNT = 100;
+      // (аудит iPhone 24.09: удалён дубль ISKRY_WELCOME_AMOUNT=100 — единственное
+      // объявление теперь в 01-core-i18n.js:265 (=0), закон «вкус — основной вход»)
       var ISKRY_REFERRAL_SENDER = 30;
       function getIskryBalance() {
         return parseInt(localStorage.getItem('yupsoul_iskry') || '0', 10);

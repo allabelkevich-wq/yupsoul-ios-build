@@ -2126,7 +2126,7 @@ document.addEventListener('DOMContentLoaded', function() {
     body.theme-light .start-review-card, body.theme-light .start-review { background: rgba(255,255,255,0.85) !important; border: 1px solid rgba(26,26,46,0.1) !important; color: #1a1a2e !important; box-shadow: 0 1px 6px rgba(26,26,46,0.06) !important; }
     body.theme-light .start-review-text { color: rgba(26,26,46,0.7) !important; }
     body.theme-light .start-review-author { color: rgba(26,26,46,0.45) !important; }
-    body.theme-light .start-review-stars { color: #f59e0b !important; }
+    body.theme-light .start-review-stars { color: #b45309 !important; } /* аудит iPhone 24.09 + Алла «сделай звёзды поконтрастнее»: #f59e0b давал 2,1:1 на карточке, #b45309 — 4,9:1 */
     /* Soul Chat — полная адаптация */
     body.theme-light .sc-char-hint { color: rgba(26,26,46,0.35) !important; }
     body.theme-light .sc-input-wrap { background: #ffffff !important; border-color: rgba(26,26,46,0.12) !important; }
@@ -6187,6 +6187,9 @@ document.addEventListener('DOMContentLoaded', function() {
        поэтому побеждает на любой ширине. Telegram/VK на телефонах — НЕ трогаем, ждём решения Аллы. */
     html.is-native .start-reviews{overflow:hidden !important;scroll-snap-type:none !important}
     html.is-native .start-reviews .start-reviews-track{animation:scrollStartReviews 28s linear infinite !important}
+    /* Алла 24.09: «отзывы вращаются и их можно пальцем подвигать» — на нативе бегущей строкой управляет JS (14-native-iap.js, reviewsMarquee): CSS-анимация выключается, чтобы не спорить с transform от пальца. */
+    html.is-native .start-reviews .start-reviews-track.js-marquee{animation:none !important}
+    html.is-native .start-reviews.js-marquee-wrap{touch-action:pan-y;cursor:grab}
     /* WCAG 2.2.2: у кого «уменьшить движение» — анимации всё равно не должно быть, даже на нативе. */
     @media (prefers-reduced-motion: reduce){html.is-native .start-reviews .start-reviews-track{animation:none !important}}
     .start-review{flex-shrink:0;width:170px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:8px 10px;backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
@@ -7605,11 +7608,11 @@ document.addEventListener('DOMContentLoaded', function() {
     #songOpenedPage .optin-h b{font-size:13px;font-weight:600}
     body.theme-light #songOpenedPage .optin-h b{color:#241526}
     #songOpenedPage .optin-h .gift{margin-left:auto;font-size:10px;font-weight:600;color:var(--spark);white-space:nowrap}
-    body.theme-light #songOpenedPage .optin-h .gift{color:#b3791a}
+    body.theme-light #songOpenedPage .optin-h .gift{color:#8a5a12} /* (аудит iPhone 24.09: #b3791a давал контраст 3.71:1 на светлой теме, ниже WCAG AA) */
     /* Пояснение показываем (Алла 23.09: «прошлый текст нравился больше»; в эталоне абзац спрятан, без него карточка непонятна). Стиль — как подпись .lead/.times экрана. */
     #songOpenedPage .optin-p{display:block;margin:6px 0 0;font-size:12px !important;line-height:1.4;color:var(--muted) !important} /* общее p{font-size:.85rem !important} и светлый блэнкет цвета перебивали (замер 23.09) */
     body.theme-light #songOpenedPage .optin-p{color:rgba(36,21,38,.62) !important}
-    body.theme-light #songOpenedPage .optin-h .gift{color:#b3791a !important}
+    body.theme-light #songOpenedPage .optin-h .gift{color:#8a5a12 !important}
     body.theme-light #songOpenedPage .eyebrow{color:#c43d7e !important}
     #songOpenedPage .optin-row{display:flex;gap:8px;margin-top:9px}
     #songOpenedPage .optin-row button{flex:1;padding:9px;border-radius:9999px;font-size:12px;font-weight:600;border:1px solid var(--line-2)}
@@ -9344,7 +9347,7 @@ document.addEventListener('DOMContentLoaded', function() {
     body.theme-light #webLoginScreen * { color: #1a1a2e !important; }
     body.theme-light #webLoginScreen .tagline-glow, body.theme-light #webLoginScreen .home-card-title-accent { color: transparent !important; }
     body.theme-light #webLoginScreen .home-card-cta { color: #fff !important; }
-    body.theme-light #webLoginScreen .start-review-stars, body.theme-light .start-review-stars { color: #f59e0b !important; }
+    body.theme-light #webLoginScreen .start-review-stars, body.theme-light .start-review-stars { color: #b45309 !important; } /* аудит iPhone 24.09: контраст звёзд в светлой теме */
     /* ── Скрытые элементы: popups, dropdowns, hints, overlays ── */
     body.theme-light #paymentOverlay,
     html.is-vk-light #paymentOverlay,
@@ -16200,7 +16203,8 @@ html.is-ok-light:not(.dark) #homeCommCard .task-body b { color: #241526 !importa
   <div id="legalModalSheet">
     <div id="legalModalHead">
       <h2 id="legalModalTitle">Документ</h2>
-      <button type="button" id="legalModalClose" aria-label="Закрыть">✕</button>
+      <!-- аудит iPhone 24.09: aria-label без i18n -->
+      <button type="button" id="legalModalClose" aria-label="Закрыть" data-i18n-aria="legalCloseAria">✕</button>
     </div>
     <div id="legalModalContent">
       <div id="legalModalLoading">Загрузка…</div>
@@ -16470,15 +16474,21 @@ html.is-ok-light:not(.dark) #homeCommCard .task-body b { color: #241526 !importa
           <svg width="17" height="20" viewBox="0 0 17 20" fill="none" aria-hidden="true"><path d="M14.09 10.62c.01 2.6 2.27 3.46 2.3 3.47-.02.06-.36 1.24-1.2 2.46-.72 1.05-1.47 2.1-2.65 2.12-1.16.02-1.53-.69-2.86-.69-1.32 0-1.74.67-2.84.71-1.13.04-2-1.1-2.72-2.15C2.6 14.4 1.48 10.5 3 7.87c.75-1.31 2.1-2.14 3.56-2.16 1.12-.02 2.17.75 2.86.75.68 0 1.97-.93 3.32-.79.56.02 2.15.2 3.17 1.71-.08.05-1.89 1.11-1.87 3.24M11.86 4.2c.61-.74 1.02-1.77.9-2.79-.9.04-1.99.6-2.62 1.33-.57.65-1.05 1.7-.92 2.7 1 .08 2.03-.51 2.64-1.24" fill="currentColor"/></svg>
           <span data-i18n="signInWithApple">Вход с Apple</span>
         </button>
+        <!-- (аудит iPhone 24.09: до входа не было ссылки на оферту/конфиденциальность — App Store Review 5.1.1(i)
+             требует её в процессе регистрации; переиспользуем существующие ключи footerOffer/footerPrivacy,
+             значения цвета/размера — как в #homePage .home-footer a (app.css:12927); светлая тема уже
+             перекрывается общим правилом body.theme-light #webLoginScreen * (app.css:7537) -->
+        <p style="margin-top:12px;text-align:center;"><a href="javascript:void(0)" onclick="if(window.showLegalModal)window.showLegalModal('offer')" data-i18n="footerOffer" style="color:rgba(255,255,255,.64);font-size:0.75rem;">Оферта</a> · <a href="javascript:void(0)" onclick="if(window.showLegalModal)window.showLegalModal('privacy')" data-i18n="footerPrivacy" style="color:rgba(255,255,255,.64);font-size:0.75rem;">Конфиденциальность</a></p>
         <div class="start-reviews" aria-hidden="true"><div class="start-reviews-track" id="startReviewsTrack"><div class="start-review"><div class="start-review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="start-review-text" data-i18n="review1">Это просто фантастика! Серьёзно, вы считали меня! Это просто супер проект!</div><div class="start-review-author" data-i18n="reviewAuthor1">Роман</div></div><div class="start-review"><div class="start-review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="start-review-text" data-i18n="review2">Кайф! Стиль тот что люблю, слова прямо в сердце!</div><div class="start-review-author" data-i18n="reviewAuthor2">Юлия</div></div><div class="start-review"><div class="start-review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="start-review-text" data-i18n="review3">Зашло то как. Откуда ИИ могло знать про чертежи, про кофе, про отчеты. Браво!!!</div><div class="start-review-author" data-i18n="reviewAuthor3">Геннадий</div></div><div class="start-review"><div class="start-review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="start-review-text" data-i18n="review4">Очень понравилась динамика: от спокойного к мощному. Определенные моменты совпадают!</div><div class="start-review-author" data-i18n="reviewAuthor4">Александр</div></div><div class="start-review"><div class="start-review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="start-review-text" data-i18n="review5">Первая просто шедевр! Удивили, прослушал её раз 15, маме переслал.</div><div class="start-review-author" data-i18n="reviewAuthor5">Владимир</div></div><div class="start-review"><div class="start-review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="start-review-text" data-i18n="review6">Очень красивая и легкая песня, прям можно медитировать слушая её!</div><div class="start-review-author" data-i18n="reviewAuthor6">Пользователь</div></div></div></div>
         <!-- "ТОЛЬКО ЗДЕСЬ" блок убран со стартовой (по запросу) -->
       </article>
     </main>
-    <header class="home-top-bar" aria-label="Шапка">
+    <!-- аудит iPhone 24.09: aria-label/title без i18n -->
+    <header class="home-top-bar" aria-label="Шапка" data-i18n-aria="ariaHeader">
       <span class="home-top-bar-logo"><span class="home-logo-symbol-wrap"><img src="assets/icons/logo-symbol.webp" alt="" class="home-logo-symbol" width="36" height="36" aria-hidden="true"></span><span>YupSoul <span class="logo-pipe" style="font-weight:400;opacity:0.4;">|</span> <span class="logo-subtitle-i18n">Музыкальный оракул</span></span></span>
       <div class="home-top-bar-actions">
-        <div id="startLangSwitcher" class="lang-switcher-compact" aria-label="Язык интерфейса">
-          <button type="button" id="startLangSwitcherBtn" class="home-top-bar-btn lang-switcher-btn header-menu-btn" title="Язык">
+        <div id="startLangSwitcher" class="lang-switcher-compact" aria-label="Язык интерфейса" data-i18n-aria="ariaLangSwitcher">
+          <button type="button" id="startLangSwitcherBtn" class="home-top-bar-btn lang-switcher-btn header-menu-btn" title="Язык" data-i18n-title="pfLang">
             <span id="startLangSwitcherIcon" aria-hidden="true"></span>
             <span id="startLangSwitcherCurrent">RU</span>
           </button>
@@ -16631,11 +16641,12 @@ html.is-ok-light:not(.dark) #homeCommCard .task-body b { color: #241526 !importa
         </div>
       </div>
       <!-- Верхняя панель: логотип слева, RU + профиль справа -->
-      <header id="homeTopBar" class="home-top-bar" aria-label="Шапка">
+      <!-- аудит iPhone 24.09: aria-label без i18n -->
+      <header id="homeTopBar" class="home-top-bar" aria-label="Шапка" data-i18n-aria="ariaHeader">
         <span class="home-top-bar-logo"><span class="home-logo-symbol-wrap"><img src="assets/icons/logo-symbol.webp" alt="" class="home-logo-symbol" width="36" height="36" aria-hidden="true"></span><span>YupSoul <span class="logo-pipe" style="font-weight:400;opacity:0.4;">|</span> <span id="logoSubtitleMain">Музыкальный оракул</span></span></span>
         <div class="home-top-bar-actions">
-          <div id="langSwitcher" class="lang-switcher-compact" aria-label="Язык интерфейса">
-            <button type="button" id="langSwitcherBtn" class="home-top-bar-btn lang-switcher-btn header-menu-btn" title="Язык">
+          <div id="langSwitcher" class="lang-switcher-compact" aria-label="Язык интерфейса" data-i18n-aria="ariaLangSwitcher">
+            <button type="button" id="langSwitcherBtn" class="home-top-bar-btn lang-switcher-btn header-menu-btn" title="Язык" data-i18n-title="pfLang">
               <span id="langSwitcherIcon" aria-hidden="true"></span>
               <span id="langSwitcherCurrent">RU</span>
             </button>
@@ -16718,7 +16729,8 @@ html.is-ok-light:not(.dark) #homeCommCard .task-body b { color: #241526 !importa
         <div class="glass-filter" aria-hidden="true"></div>
         <div class="glass-overlay" aria-hidden="true"></div>
         <div class="glass-specular" aria-hidden="true"></div>
-        <nav class="glass-content home-nav" aria-label="Навигация">
+        <!-- аудит iPhone 24.09: aria-label без i18n -->
+        <nav class="glass-content home-nav" aria-label="Навигация" data-i18n-aria="ariaNav">
           <button type="button" class="home-nav-link glass-item" onclick="goToSoulChat()" aria-label="Разговор по душам" data-i18n-aria="navSoulChatFull"><span id="navFlowSoulChat">Оракул</span></button>
           <button type="button" class="home-nav-link glass-item" onclick="goToHelpFrom('homePage')" aria-label="Помощь" data-i18n-aria="myHelp"><span id="navFlowHelp">Помощь</span></button>
           <button type="button" class="home-nav-link glass-item" onclick="goToHeroesFrom('homePage')" aria-label="Контакты" data-i18n-aria="myHeroes"><span id="navFlowLab">Контакты</span></button>
@@ -16746,7 +16758,8 @@ html.is-ok-light:not(.dark) #homeCommCard .task-body b { color: #241526 !importa
 
     <!-- Фиксированное нижнее меню: ВНЕ #homePage чтобы overflow:hidden не блокировало клики -->
     <!-- Видимость управляется CSS: #homePage.active ~ #homeAppMenu { display:flex } -->
-    <nav id="homeAppMenu" class="home-app-menu" aria-label="Главное меню">
+    <!-- аудит iPhone 24.09: aria-label без i18n -->
+    <nav id="homeAppMenu" class="home-app-menu" aria-label="Главное меню" data-i18n-aria="ariaMainMenu">
       <!-- Нижнее меню: только подписи, без иконок (по договорённости). -->
       <button type="button" id="soulChatBtn" class="home-app-menu-btn" data-nav="soulChatPage" data-return="homePage" aria-label="Разговор по душам" data-i18n-aria="navSoulChatFull">
         <svg class="home-app-menu-icon" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/><circle cx="9.5" cy="11.5" r="0.8" fill="currentColor" stroke="none"/><circle cx="12" cy="11.5" r="0.8" fill="currentColor" stroke="none"/><circle cx="14.5" cy="11.5" r="0.8" fill="currentColor" stroke="none"/></svg>
@@ -17268,7 +17281,7 @@ body.theme-light #giftsPage .cask-cost{color:#f7c873 !important}
             <p class="arch-lead" data-i18n="archLead">В твоей дате рождения есть планета, которую в астрологии называют показателем Души. Она и держит твой характер. Назови дату — покажу.</p>
             <div class="field" style="margin-top:14px;">
               <label for="archDate" data-i18n="archDateLabel">Дата рождения</label>
-              <input type="date" id="archDate" aria-label="Дата рождения">
+              <input type="date" id="archDate" aria-label="Дата рождения" data-i18n-aria="archDateLabel"><!-- аудит iPhone 24.09: aria-label без i18n -->
             </div>
             <p id="archHint" class="arch-hint" style="display:none"></p>
             <button type="button" id="archGoBtn" class="btn-pay" style="margin-top:12px;">
@@ -17406,7 +17419,8 @@ body.theme-light #giftsPage .cask-cost{color:#f7c873 !important}
             <div class="ref-stat"><b class="gold" id="giftsRefEarned">0</b><span data-i18n="giftsRefStatEarned">Искр получено</span></div>
           </div>
           <button class="ref-share" id="giftsRefShareBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"></path></svg> <span data-i18n="giftsRefShare">Поделиться ссылкой</span></button>
-          <div class="ref-link"><input id="giftsRefLinkInput" value="" readonly aria-label="Реферальная ссылка"><button id="giftsRefCopyBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-linejoin="round"><path d="M14.6 7.2 21 13.6l-6.4 6.4-6.4-6.4Z"></path><path d="M9.4 3.6 15.8 10M9.4 3.6 3 10l6.4 6.4" opacity=".5"></path></g></svg><span data-i18n="giftsRefCopy">Копировать</span></button></div>
+          <!-- аудит iPhone 24.09: aria-label без i18n -->
+          <div class="ref-link"><input id="giftsRefLinkInput" value="" readonly aria-label="Реферальная ссылка" data-i18n-aria="ariaRefLink"><button id="giftsRefCopyBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-linejoin="round"><path d="M14.6 7.2 21 13.6l-6.4 6.4-6.4-6.4Z"></path><path d="M9.4 3.6 15.8 10M9.4 3.6 3 10l6.4 6.4" opacity=".5"></path></g></svg><span data-i18n="giftsRefCopy">Копировать</span></button></div>
         </div>
 
         <!-- ═══ КВЕСТЫ (Алла 02.07: платформо-зависимые задания за Искры) ═══ -->
@@ -18335,12 +18349,14 @@ body.theme-light #profilePage #pfNew .foot-note{color:#6f5a66 !important}
       <!-- движок: ошибка загрузки (display:none → показывает JS) — из прода как есть -->
       <div id="profileLoadErrorWrap" class="pf-err" style="display:none;">
         <div id="profileLoadErrorText">Не удалось загрузить профиль</div>
-        <button type="button" id="profileLoadRetryBtn" data-u="pf" aria-label="Обновить">Обновить</button>
+        <!-- аудит iPhone 24.09: aria-label без i18n -->
+        <button type="button" id="profileLoadRetryBtn" data-u="pf" aria-label="Обновить" data-i18n-aria="btnRefresh">Обновить</button>
       </div>
 
       <!-- карточка «я»: тап — раскрыть форму данных; тап по аватару — сменить фото (движок вешает listener на #profileAvatarWrap) -->
       <button type="button" class="me" id="profileMeBtn" data-u="pf" onclick="if(event.target.closest('#profileAvatarWrap'))return;profileAccordionToggle()">
-        <span class="me-av" id="profileAvatarWrap" role="button" aria-label="Изменить фото" title="Изменить фото"><span class="ring"></span><span id="profileAvatar" class="av"><span id="profileAvatarInitial"></span></span><span class="profile-avatar-spinner" id="profileAvatarSpinner">…</span></span>
+        <!-- аудит iPhone 24.09: aria-label/title без i18n -->
+        <span class="me-av" id="profileAvatarWrap" role="button" aria-label="Изменить фото" data-i18n-aria="ariaChangePhoto" title="Изменить фото" data-i18n-title="ariaChangePhoto"><span class="ring"></span><span id="profileAvatar" class="av"><span id="profileAvatarInitial"></span></span><span class="profile-avatar-spinner" id="profileAvatarSpinner">…</span></span>
         <span class="me-b"><b id="profileName">…</b><span><span id="profileDataDate"></span><span id="profileDataCitySep" style="display:none;"> · </span><span id="profileDataCity" style="display:none;"></span></span></span>
         <span class="rt-ch" id="profileDataChevron"><svg viewBox="0 0 24 24" class="gi"><path d="M9.6 5.8 15.8 12l-6.2 6.2" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
       </button>
@@ -18369,7 +18385,8 @@ body.theme-light #profilePage #pfNew .foot-note{color:#6f5a66 !important}
                        autocomplete=bday ловит autofill в НАСТОЯЩИЙ инпут → onchange синхронит дисплей. -->
                   <div style="position:relative">
                     <input type="text" id="profileEditDateDisplay" readonly placeholder="дд месяц гггг" data-i18n-placeholder="phDateDisplay" style="cursor:pointer;width:100%;box-sizing:border-box" tabindex="-1">
-                    <input type="date" id="profileEditDate" min="1900-01-01" autocomplete="bday" aria-label="Дата рождения" style="position:absolute;top:0;left:0;right:0;bottom:0;width:100%;height:100%;opacity:0;cursor:pointer;border:0;padding:0;margin:0" onchange="window._profileSyncDateDisplay&&window._profileSyncDateDisplay()">
+                    <!-- аудит iPhone 24.09: aria-label без i18n -->
+                    <input type="date" id="profileEditDate" min="1900-01-01" autocomplete="bday" aria-label="Дата рождения" data-i18n-aria="profileEditLabelDate" style="position:absolute;top:0;left:0;right:0;bottom:0;width:100%;height:100%;opacity:0;cursor:pointer;border:0;padding:0;margin:0" onchange="window._profileSyncDateDisplay&&window._profileSyncDateDisplay()">
                   </div>
                 </div>
                 <div class="fld tfld" id="profileEditTimeFld" style="flex:0 0 108px">
@@ -18396,7 +18413,8 @@ body.theme-light #profilePage #pfNew .foot-note{color:#6f5a66 !important}
               <!-- Пол — сегмент со слайдером (реф-стиль, Алла 21.06). Save/load-хуки: data-gender + button.is-active. -->
               <div class="fld">
                 <label id="profileEditLblGender">Пол</label>
-                <div class="gseg" id="profileEditGender" role="group" aria-label="Пол">
+                <!-- аудит iPhone 24.09: aria-label без i18n -->
+                <div class="gseg" id="profileEditGender" role="group" aria-label="Пол" data-i18n-aria="profileEditLabelGender">
                   <span class="slider" aria-hidden="true"></span>
                   <button type="button" class="gseg-btn" data-u="pf" data-gender="female" onclick="window._setProfileGender&amp;&amp;window._setProfileGender(this,'female')"><span data-i18n="profileEditFemale">Женский</span></button>
                   <button type="button" class="gseg-btn" data-u="pf" data-gender="male" onclick="window._setProfileGender&amp;&amp;window._setProfileGender(this,'male')"><span data-i18n="profileEditMale">Мужской</span></button>
@@ -18450,7 +18468,8 @@ body.theme-light #profilePage #pfNew .foot-note{color:#6f5a66 !important}
         <!-- промокод: атрибуты инпута — из прода (maxlength, pattern, oninput-санитайз, placeholder + data-i18n-placeholder); на нативе скрыт (3.1.1) -->
         <div class="w-promo" id="profilePromoCard" data-web-only>
           <span class="w-ic sm"><svg viewBox="0 0 24 24" class="gi"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13.1 3.2h5.9a1.8 1.8 0 0 1 1.8 1.8v5.9a1.8 1.8 0 0 1-.53 1.27l-7.6 7.6a1.8 1.8 0 0 1-2.54 0l-5.9-5.9a1.8 1.8 0 0 1 0-2.54l7.6-7.6a1.8 1.8 0 0 1 1.27-.53Z"/><circle cx="16.6" cy="7.4" r="1.35"/></g></svg></span>
-          <input id="profilePromoInput" class="w-promo-in" type="text" maxlength="30" pattern="[A-Za-z0-9-]+" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9-]/g,'').slice(0,30)" placeholder="Введите промокод" data-i18n-placeholder="phPromoInput" autocomplete="off" spellcheck="false" aria-label="Промокод">
+          <!-- аудит iPhone 24.09: aria-label без i18n -->
+          <input id="profilePromoInput" class="w-promo-in" type="text" maxlength="30" pattern="[A-Za-z0-9-]+" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9-]/g,'').slice(0,30)" placeholder="Введите промокод" data-i18n-placeholder="phPromoInput" autocomplete="off" spellcheck="false" aria-label="Промокод" data-i18n-aria="promoCode">
           <button type="button" id="profilePromoBtn" class="w-promo-go" data-u="pf" onclick="applyProfilePromo()" data-i18n="apply">Применить</button>
         </div>
         <p id="profilePromoResult" class="w-nocard" data-web-only style="display:none;"></p>
@@ -18485,7 +18504,8 @@ body.theme-light #profilePage #pfNew .foot-note{color:#6f5a66 !important}
           <span><b class="g" id="refStatSparks">0</b><i data-i18n="profileRefSparks">Искры</i></span>
         </div>
         <div class="ref-link">
-          <input id="profileRefLinkInput" value="" readonly aria-label="Твоя ссылка">
+          <!-- аудит iPhone 24.09: aria-label без i18n -->
+          <input id="profileRefLinkInput" value="" readonly aria-label="Твоя ссылка" data-i18n-aria="ariaYourLink">
           <button type="button" id="profileRefShareCopy" data-u="pf" onclick="window._profileCopyRefLink&amp;&amp;window._profileCopyRefLink(this)"><svg viewBox="0 0 24 24" class="gi"><g fill="none" stroke="currentColor" stroke-linejoin="round"><path d="M14.6 7.2 21 13.6l-6.4 6.4-6.4-6.4Z"/><path d="M9.4 3.6 15.8 10M9.4 3.6 3 10l6.4 6.4" opacity=".5"/></g></svg><span data-i18n="giftsRefCopy">Копировать</span></button>
         </div>
       </div>
@@ -18502,7 +18522,8 @@ body.theme-light #profilePage #pfNew .foot-note{color:#6f5a66 !important}
 
       <!-- настройки -->
       <div class="sec" data-i18n="pfSettings">Настройки</div>
-      <div class="themebar profile-theme-switcher" id="profileThemeSwitcher" data-sel="0" role="group" aria-label="Тема оформления">
+      <!-- аудит iPhone 24.09: aria-label без i18n -->
+      <div class="themebar profile-theme-switcher" id="profileThemeSwitcher" data-sel="0" role="group" aria-label="Тема оформления" data-i18n-aria="profileSectionTheme">
         <button type="button" class="profile-theme-btn on" data-u="pf" data-theme-pref="auto" aria-pressed="true"><svg viewBox="0 0 24 24" class="gi"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.4"/><path d="M12 3.6a8.4 8.4 0 0 1 0 16.8Z" fill="currentColor" stroke="none" opacity=".55"/></g></svg><span data-i18n="themeAuto">Как в системе</span></button>
         <button type="button" class="profile-theme-btn" data-u="pf" data-theme-pref="light" aria-pressed="false"><svg viewBox="0 0 24 24" class="gi"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.6v2.4M12 18.9v2.5" /><path d="M4.5 4.5 6.2 6.2M17.8 17.8l1.7 1.7M2.6 12h2.4M19 12h2.4M4.5 19.5 6.2 17.8M17.8 6.2l1.7-1.7" opacity=".55"/></g></svg><span data-i18n="themeLight">Светлая</span></button>
         <button type="button" class="profile-theme-btn" data-u="pf" data-theme-pref="dark" aria-pressed="false"><svg viewBox="0 0 24 24" class="gi"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20.4 13.3A8.4 8.4 0 0 1 10.6 3.6a7.6 7.6 0 1 0 9.8 9.7Z"/><path d="M17.4 4.2c0 1.5-1.2 2.7-2.7 2.7 1.5 0 2.7 1.2 2.7 2.7 0-1.5 1.2-2.7 2.7-2.7-1.5 0-2.7-1.2-2.7-2.7Z" opacity=".5"/></g></svg><span data-i18n="themeDark">Тёмная</span></button>
@@ -18515,7 +18536,8 @@ body.theme-light #profilePage #pfNew .foot-note{color:#6f5a66 !important}
         </div>
       </div>
       <!-- уведомления: движок (initNotifToggle) вешает click и переключает .sw.on (п.3.1) -->
-      <button type="button" class="row" id="profileNotifToggleBtn" data-u="pf" aria-label="Включить или отключить уведомления"><span class="r-ic"><svg viewBox="0 0 24 24" class="gi"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M17.6 9.4a5.6 5.6 0 1 0-11.2 0c0 5.2-1.9 6.9-1.9 6.9h15s-1.9-1.7-1.9-6.9Z"/><path d="M13.8 19.4a2 2 0 0 1-3.6 0" opacity=".7"/><path d="M12 2.4v1.4" opacity=".5"/></g></svg></span><b data-i18n="pfNotify">Уведомления</b><span class="sw" id="profileNotifSw" aria-hidden="true"></span></button>
+      <!-- аудит iPhone 24.09: aria-label без i18n -->
+      <button type="button" class="row" id="profileNotifToggleBtn" data-u="pf" aria-label="Включить или отключить уведомления" data-i18n-aria="ariaNotifToggle"><span class="r-ic"><svg viewBox="0 0 24 24" class="gi"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M17.6 9.4a5.6 5.6 0 1 0-11.2 0c0 5.2-1.9 6.9-1.9 6.9h15s-1.9-1.7-1.9-6.9Z"/><path d="M13.8 19.4a2 2 0 0 1-3.6 0" opacity=".7"/><path d="M12 2.4v1.4" opacity=".5"/></g></svg></span><b data-i18n="pfNotify">Уведомления</b><span class="sw" id="profileNotifSw" aria-hidden="true"></span></button>
       <!-- сообщество ВК: <a> как в проде (href/target/rel/onclick — из прода), класс row; показ на VK — прод-правило #profilePage #profileVkCommunityBtn -->
       <a class="row" id="profileVkCommunityBtn" href="https://vk.com/club237303283" target="_blank" rel="noopener" onclick="if(window._vkCommunityJoinFlow)return window._vkCommunityJoinFlow(this,event)"><span class="r-ic"><svg viewBox="0 0 24 24" class="gi"><g fill="none" stroke="currentColor" stroke-linecap="round"><circle cx="12" cy="7.4" r="3"/><circle cx="5.6" cy="10.6" r="2.4" opacity=".6"/><circle cx="18.4" cy="10.6" r="2.4" opacity=".6"/><path d="M4 20.2c1.4-3.4 4.4-5.2 8-5.2s6.6 1.8 8 5.2"/></g></svg></span><b data-i18n="pfCommunity">Сообщество</b><span class="rt-ch sm"><svg viewBox="0 0 24 24" class="gi"><path d="M9.6 5.8 15.8 12l-6.2 6.2" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
       <button type="button" class="row" id="profileHelpBtn" data-u="pf" onclick="goToHelpFrom('profilePage')"><span class="r-ic"><svg viewBox="0 0 24 24" class="gi"><g fill="none" stroke="currentColor" stroke-linecap="round"><circle cx="12" cy="12" r="9.2" opacity=".4"/><path d="M9.7 9.5a2.4 2.4 0 1 1 3.4 2.2c-.8.3-1.1.9-1.1 1.7v.3"/></g><circle cx="12" cy="16.9" r=".95" fill="currentColor"/></svg></span><b data-i18n="pfHelpSupport">Помощь и поддержка</b><span class="rt-ch sm"><svg viewBox="0 0 24 24" class="gi"><path d="M9.6 5.8 15.8 12l-6.2 6.2" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
@@ -18524,12 +18546,14 @@ body.theme-light #profilePage #pfNew .foot-note{color:#6f5a66 !important}
 
       <div class="danger">
         <button type="button" id="profileLogoutBtn" class="web-only" data-u="pf" style="display:none;" onclick="webLogout()" data-i18n="profileLogout">Выйти из аккаунта</button>
-        <button type="button" class="del" id="profileDeleteAccountBtn" data-u="pf" aria-label="Удалить аккаунт и все данные" data-i18n="profileDeleteAccountBtn">Удалить аккаунт и все данные</button>
+        <!-- аудит iPhone 24.09: aria-label без i18n -->
+        <button type="button" class="del" id="profileDeleteAccountBtn" data-u="pf" aria-label="Удалить аккаунт и все данные" data-i18n-aria="profileDeleteAccountBtn" data-i18n="profileDeleteAccountBtn">Удалить аккаунт и все данные</button>
       </div>
       <!-- админка (только для админов в Telegram) — из прода как есть -->
       <div id="adminLinkWrapProfile" style="display:none;margin-top:12px;text-align:center">
-        <button type="button" id="adminLinkBtnProfile" class="btn-ghost profile-admin-btn" data-u="pf" aria-label="Перейти в админку">Админка</button>
-        <button type="button" id="analyticsLinkBtnProfile" class="btn-ghost profile-admin-btn" data-u="pf" aria-label="Аналитика" onclick="window.open((window.BACKEND_URL||window.HEROES_API_BASE||'').replace(/\/$/,'') + '/admin/analytics', '_blank')">Аналитика</button>
+        <!-- аудит iPhone 24.09: aria-label без i18n -->
+        <button type="button" id="adminLinkBtnProfile" class="btn-ghost profile-admin-btn" data-u="pf" aria-label="Перейти в админку" data-i18n-aria="ariaGoToAdmin">Админка</button>
+        <button type="button" id="analyticsLinkBtnProfile" class="btn-ghost profile-admin-btn" data-u="pf" aria-label="Аналитика" data-i18n-aria="profileAnalytics" onclick="window.open((window.BACKEND_URL||window.HEROES_API_BASE||'').replace(/\/$/,'') + '/admin/analytics', '_blank')">Аналитика</button>
       </div>
       <div class="pf-footer">
         <a href="javascript:void(0)" data-web-only onclick="if(window.showLegalModal)window.showLegalModal('offer')" data-i18n="profileOfferLink">Договор публичной оферты</a>
@@ -18864,8 +18888,9 @@ body.theme-light #profilePage #pfNew .foot-note{color:#6f5a66 !important}
       <header class="topbar">
         <button type="button" id="heroesBackBtn" class="profile-back-btn header-back-btn btn-nav" aria-label="Назад" title="Назад" data-i18n-aria="navBack" data-i18n-title="navBack">←</button>
         <div class="brand" style="flex:1"></div>
-        <div class="lang-switcher-compact" aria-label="Язык интерфейса">
-          <button type="button" class="tb-btn" data-u="hr" id="heroesLangBtn" aria-label="Язык"><span id="heroesLangCurrent">RU</span></button>
+        <!-- аудит iPhone 24.09: aria-label без i18n -->
+        <div class="lang-switcher-compact" aria-label="Язык интерфейса" data-i18n-aria="ariaLangSwitcher">
+          <button type="button" class="tb-btn" data-u="hr" id="heroesLangBtn" aria-label="Язык" data-i18n-aria="pfLang"><span id="heroesLangCurrent">RU</span></button>
           <div id="heroesLangDropdown" class="lang-dropdown" hidden>
             <button type="button" class="lang-opt" data-lang="ru">RU</button>
             <button type="button" class="lang-opt" data-lang="en">EN</button>
@@ -18873,7 +18898,8 @@ body.theme-light #profilePage #pfNew .foot-note{color:#6f5a66 !important}
             <button type="button" class="lang-opt" data-lang="fr">FR</button>
           </div>
         </div>
-        <button type="button" class="tb-btn prof" data-u="hr" id="heroesProfileBtn" onclick="goToProfileFrom('heroesPage')" aria-label="Профиль"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.6"></circle><path d="M5 20c.7-3.5 3.6-5.5 7-5.5s6.3 2 7 5.5"></path></svg></button>
+        <!-- аудит iPhone 24.09: aria-label без i18n -->
+        <button type="button" class="tb-btn prof" data-u="hr" id="heroesProfileBtn" onclick="goToProfileFrom('heroesPage')" aria-label="Профиль" data-i18n-aria="myProfile"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.6"></circle><path d="M5 20c.7-3.5 3.6-5.5 7-5.5s6.3 2 7 5.5"></path></svg></button>
       </header>
       <div class="title"><h1 data-i18n="heroesTitleH1">Картотека</h1><p data-i18n="heroesTitleSub">Люди, для которых оракул поёт</p></div>
 
@@ -18935,8 +18961,9 @@ body.theme-light #profilePage #pfNew .foot-note{color:#6f5a66 !important}
         <div class="controls">
           <div class="search">
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.2-3.2"></path></svg>
-            <input type="text" id="heroesSearch" placeholder="Поиск по имени" data-i18n-placeholder="searchByName" aria-label="Поиск" autocomplete="off">
-            <button type="button" class="search-x" id="heroesSearchX" hidden aria-label="Очистить"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"></path></svg></button>
+            <!-- аудит iPhone 24.09: aria-label без i18n -->
+            <input type="text" id="heroesSearch" placeholder="Поиск по имени" data-i18n-placeholder="searchByName" aria-label="Поиск" data-i18n-aria="mtSearchAria" autocomplete="off">
+            <button type="button" class="search-x" id="heroesSearchX" hidden aria-label="Очистить" data-i18n-aria="helpSearchClear"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"></path></svg></button>
           </div>
           <button type="button" class="add" id="addHeroBtn" data-i18n="heroesAddBtn">+ Добавить героя</button>
         </div>
@@ -19057,10 +19084,11 @@ body.theme-light #profilePage #pfNew .foot-note{color:#6f5a66 !important}
           <div class="hf-field">
             <label data-i18n="heroBirthdate">Дата рождения</label>
             <div id="heroBirthdateWrap" class="birthdate-wrap">
-              <div class="hf-date-row" role="group" aria-label="Дата рождения">
-                <select id="heroBirthdateDay" class="date-group-day" aria-label="День"><option value="" data-i18n="selectDay">День</option></select>
-                <select id="heroBirthdateMonth" class="date-group-month" aria-label="Месяц"><option value="" data-i18n="selectMonth">Месяц</option></select>
-                <select id="heroBirthdateYear" class="date-group-year" aria-label="Год"><option value="" data-i18n="selectYear">Год</option></select>
+              <!-- аудит iPhone 24.09: aria-label без i18n -->
+              <div class="hf-date-row" role="group" aria-label="Дата рождения" data-i18n-aria="heroBirthdate">
+                <select id="heroBirthdateDay" class="date-group-day" aria-label="День" data-i18n-aria="selectDay"><option value="" data-i18n="selectDay">День</option></select>
+                <select id="heroBirthdateMonth" class="date-group-month" aria-label="Месяц" data-i18n-aria="selectMonth"><option value="" data-i18n="selectMonth">Месяц</option></select>
+                <select id="heroBirthdateYear" class="date-group-year" aria-label="Год" data-i18n-aria="selectYear"><option value="" data-i18n="selectYear">Год</option></select>
               </div>
               <input type="date" id="heroBirthdate" data-i18n-title="birthDateTooltip" title="Выберите дату рождения" tabindex="-1">
             </div>
@@ -19080,7 +19108,8 @@ body.theme-light #profilePage #pfNew .foot-note{color:#6f5a66 !important}
           </div>
           <div class="hf-field">
             <label id="heroTimeBirthLabel" data-i18n="heroBirthtime">Время рождения</label>
-            <div class="hf-time-group" role="group" aria-label="Время рождения">
+            <!-- аудит iPhone 24.09: aria-label без i18n -->
+            <div class="hf-time-group" role="group" aria-label="Время рождения" data-i18n-aria="heroBirthtime">
               <input type="time" id="heroBirthtime" data-i18n-title="birthTimeTooltip" title="Выберите время рождения">
               <label class="hf-check">
                 <input type="checkbox" id="heroBirthtimeUnknown">
@@ -19817,15 +19846,16 @@ body.theme-light #partnerDashPage .btn-pay{color:#2a1c06 !important;background:l
           <div class="conv rise" style="animation-delay:.24s"><span data-i18n="partnerConversion">Конверсия</span><b id="partnerDashConversion">0%</b></div>
 
           <!-- ссылки -->
+          <!-- аудит iPhone 24.09: aria-label="Копировать" (7 кнопок ниже) без i18n -->
           <div class="sec-t rise" style="animation-delay:.28s"><span data-i18n="partnerLinksLabel">Реферальные ссылки</span></div>
           <div class="card lift rise" style="animation-delay:.3s">
-        <div class="lnk" style="--ch-col:#2aabee"><span class="ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M21.9 4.3 18.7 19c-.24 1.06-.87 1.32-1.76.82l-4.86-3.58-2.34 2.26c-.26.26-.48.48-.98.48l.35-4.94 9-8.13c.39-.35-.08-.54-.6-.2L6.1 12.9l-4.78-1.5c-1.04-.32-1.06-1.04.22-1.54l18.7-7.2c.86-.32 1.62.2 1.34 1.64z"/></svg></span><span class="meta"><span class="ch">Telegram</span><input id="pdLink_tg" class="url" readonly onfocus="this.select()"></span><button type="button" class="copy" aria-label="Копировать" onclick="copyPartnerLinkById('pdLink_tg')"><svg class="clip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></button></div>
-        <div class="lnk" style="--ch-col:#0077ff"><span class="ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.8 16.3c-5.3 0-8.7-3.7-8.8-9.8h2.7c.1 4.5 2.2 6.4 3.7 6.8V6.5h2.5v3.7c1.5-.16 3.1-1.9 3.6-3.7h2.5c-.4 2.2-2 3.9-3.1 4.6 1.1.6 2.9 2.1 3.6 4.7h-2.8c-.5-1.7-1.9-3-3.4-3.2v3.2z"/></svg></span><span class="meta"><span class="ch">VK Mini App</span><input id="pdLink_vk" class="url" readonly onfocus="this.select()"></span><button type="button" class="copy" aria-label="Копировать" onclick="copyPartnerLinkById('pdLink_vk')"><svg class="clip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></button></div>
-        <div class="lnk" style="--ch-col:#ec4899"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 2.5 15.4 0 18M12 3c-2.5 2.6-2.5 15.4 0 18"/></svg></span><span class="meta"><span class="ch">Web-app</span><input id="pdLink_web" class="url" readonly onfocus="this.select()"></span><button type="button" class="copy" aria-label="Копировать" onclick="copyPartnerLinkById('pdLink_web')"><svg class="clip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></button></div>
-        <div class="lnk" style="--ch-col:#ff0050"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l9-2v3"/><circle cx="6" cy="18" r="3"/><path d="M15 7a5 5 0 0 0 5 5"/></svg></span><span class="meta"><span class="ch">TikTok</span><input id="pdLink_tiktok" class="url" readonly onfocus="this.select()"></span><button type="button" class="copy" aria-label="Копировать" onclick="copyPartnerLinkById('pdLink_tiktok')"><svg class="clip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></button></div>
-        <div class="lnk" style="--ch-col:#e1306c"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.1" fill="currentColor"/></svg></span><span class="meta"><span class="ch">Instagram</span><input id="pdLink_ig" class="url" readonly onfocus="this.select()"></span><button type="button" class="copy" aria-label="Копировать" onclick="copyPartnerLinkById('pdLink_ig')"><svg class="clip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></button></div>
-        <div class="lnk" style="--ch-col:#f97316"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg></span><span class="meta"><span class="ch">Лендинг</span><input id="pdLink_landing" class="url" readonly onfocus="this.select()"></span><button type="button" class="copy" aria-label="Копировать" onclick="copyPartnerLinkById('pdLink_landing')"><svg class="clip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></button></div>
-        <div class="lnk" style="--ch-col:#a855f7"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span class="meta"><span class="ch">Партнёрка</span><input id="pdLink_partners" class="url" readonly onfocus="this.select()"></span><button type="button" class="copy" aria-label="Копировать" onclick="copyPartnerLinkById('pdLink_partners')"><svg class="clip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></button></div>
+        <div class="lnk" style="--ch-col:#2aabee"><span class="ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M21.9 4.3 18.7 19c-.24 1.06-.87 1.32-1.76.82l-4.86-3.58-2.34 2.26c-.26.26-.48.48-.98.48l.35-4.94 9-8.13c.39-.35-.08-.54-.6-.2L6.1 12.9l-4.78-1.5c-1.04-.32-1.06-1.04.22-1.54l18.7-7.2c.86-.32 1.62.2 1.34 1.64z"/></svg></span><span class="meta"><span class="ch">Telegram</span><input id="pdLink_tg" class="url" readonly onfocus="this.select()"></span><button type="button" class="copy" aria-label="Копировать" data-i18n-aria="partnerCopy" onclick="copyPartnerLinkById('pdLink_tg')"><svg class="clip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></button></div>
+        <div class="lnk" style="--ch-col:#0077ff"><span class="ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.8 16.3c-5.3 0-8.7-3.7-8.8-9.8h2.7c.1 4.5 2.2 6.4 3.7 6.8V6.5h2.5v3.7c1.5-.16 3.1-1.9 3.6-3.7h2.5c-.4 2.2-2 3.9-3.1 4.6 1.1.6 2.9 2.1 3.6 4.7h-2.8c-.5-1.7-1.9-3-3.4-3.2v3.2z"/></svg></span><span class="meta"><span class="ch">VK Mini App</span><input id="pdLink_vk" class="url" readonly onfocus="this.select()"></span><button type="button" class="copy" aria-label="Копировать" data-i18n-aria="partnerCopy" onclick="copyPartnerLinkById('pdLink_vk')"><svg class="clip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></button></div>
+        <div class="lnk" style="--ch-col:#ec4899"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 2.5 15.4 0 18M12 3c-2.5 2.6-2.5 15.4 0 18"/></svg></span><span class="meta"><span class="ch">Web-app</span><input id="pdLink_web" class="url" readonly onfocus="this.select()"></span><button type="button" class="copy" aria-label="Копировать" data-i18n-aria="partnerCopy" onclick="copyPartnerLinkById('pdLink_web')"><svg class="clip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></button></div>
+        <div class="lnk" style="--ch-col:#ff0050"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l9-2v3"/><circle cx="6" cy="18" r="3"/><path d="M15 7a5 5 0 0 0 5 5"/></svg></span><span class="meta"><span class="ch">TikTok</span><input id="pdLink_tiktok" class="url" readonly onfocus="this.select()"></span><button type="button" class="copy" aria-label="Копировать" data-i18n-aria="partnerCopy" onclick="copyPartnerLinkById('pdLink_tiktok')"><svg class="clip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></button></div>
+        <div class="lnk" style="--ch-col:#e1306c"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.1" fill="currentColor"/></svg></span><span class="meta"><span class="ch">Instagram</span><input id="pdLink_ig" class="url" readonly onfocus="this.select()"></span><button type="button" class="copy" aria-label="Копировать" data-i18n-aria="partnerCopy" onclick="copyPartnerLinkById('pdLink_ig')"><svg class="clip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></button></div>
+        <div class="lnk" style="--ch-col:#f97316"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg></span><span class="meta"><span class="ch">Лендинг</span><input id="pdLink_landing" class="url" readonly onfocus="this.select()"></span><button type="button" class="copy" aria-label="Копировать" data-i18n-aria="partnerCopy" onclick="copyPartnerLinkById('pdLink_landing')"><svg class="clip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></button></div>
+        <div class="lnk" style="--ch-col:#a855f7"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span class="meta"><span class="ch">Партнёрка</span><input id="pdLink_partners" class="url" readonly onfocus="this.select()"></span><button type="button" class="copy" aria-label="Копировать" data-i18n-aria="partnerCopy" onclick="copyPartnerLinkById('pdLink_partners')"><svg class="clip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></button></div>
         <button type="button" class="share" id="partnerShareBtn" onclick="sharePartnerLink()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg><span data-i18n="partnerShare">Поделиться</span></button>
         <div class="code-block">
           <div class="code-lbl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-3M9 17H6a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h3M8 12h8"/></svg><span data-i18n="partnerCodeLabel">Персональный код</span></div>
@@ -20804,7 +20834,8 @@ body.theme-light #myTracksPage .mtv2-player .v2act,html.is-vk-light:not(.dark) #
         <div id="mtNowPlaying" class="mt-now-playing mtv2-player" style="display:none;">
           <div class="bg" aria-hidden="true"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div><div class="stars"></div></div>
           <header class="v2ptop">
-            <button type="button" class="v2icon" id="mtNpMinBtn" aria-label="Свернуть"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+            <!-- аудит iPhone 24.09: aria-label без i18n -->
+            <button type="button" class="v2icon" id="mtNpMinBtn" aria-label="Свернуть" data-i18n-aria="coupleCollapseEdit"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
             <div class="v2ctx"><span class="v2ctx-sub" data-i18n="mtNpFromCollection">Играет из коллекции</span><span class="v2ctx-src" data-i18n="mtTabTracks">Мои треки</span></div>
             <span class="v2icon" aria-hidden="true" style="visibility:hidden;pointer-events:none"></span>
           </header>
@@ -20817,9 +20848,11 @@ body.theme-light #myTracksPage .mtv2-player .v2act,html.is-vk-light:not(.dark) #
                 <div class="v2ptitle" id="mtNpTitle">--</div>
                 <div class="v2psub" id="mtNpArtist">YupSoul</div>
               </div>
-              <button type="button" class="v2heart" id="mtNpHeart" aria-label="Нравится" title="Нравится" data-i18n-aria="mtActLike"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M12 20.4C6.9 16.6 4.2 13.6 4.2 10.2A4.3 4.3 0 0 1 12 7.6a4.3 4.3 0 0 1 7.8 2.6c0 3.4-2.7 6.4-7.8 10.2Z" fill="currentColor"/></svg></button>
+              <!-- аудит iPhone 24.09: title без i18n (aria уже был) -->
+              <button type="button" class="v2heart" id="mtNpHeart" aria-label="Нравится" title="Нравится" data-i18n-aria="mtActLike" data-i18n-title="mtActLike"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M12 20.4C6.9 16.6 4.2 13.6 4.2 10.2A4.3 4.3 0 0 1 12 7.6a4.3 4.3 0 0 1 7.8 2.6c0 3.4-2.7 6.4-7.8 10.2Z" fill="currentColor"/></svg></button>
               <!-- Сохранить в коллекцию (закладка) — ТОЛЬКО для радио-треков (Алла 29.06: закладку убрали из строки Радио, сохранять отсюда). display:none по умолчанию, showNowPlaying включает для is_radio. -->
-              <button type="button" class="v2heart" id="mtNpSaveBtn" aria-label="Сохранить" title="Сохранить в коллекцию" style="display:none"><svg width="21" height="21" viewBox="0 0 24 24"><path d="M6.5 3h11v17.3l-5.5-4.4-5.5 4.4Z" fill="currentColor"/></svg></button>
+              <!-- аудит iPhone 24.09: aria-label/title без i18n -->
+              <button type="button" class="v2heart" id="mtNpSaveBtn" aria-label="Сохранить" title="Сохранить в коллекцию" data-i18n-aria="save" data-i18n-title="mtSaveToCollectionTitle" style="display:none"><svg width="21" height="21" viewBox="0 0 24 24"><path d="M6.5 3h11v17.3l-5.5-4.4-5.5 4.4Z" fill="currentColor"/></svg></button>
             </div>
             <div class="v2viz" id="mtNpViz" aria-hidden="true"></div>
           </div>
@@ -20834,16 +20867,22 @@ body.theme-light #myTracksPage .mtv2-player .v2act,html.is-vk-light:not(.dark) #
               </div>
             </div>
             <div class="controls">
-              <button type="button" class="ctrl sm" id="mtNpShuffleBtn" aria-label="Вперемешку"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"/><path d="M4 20 21 3"/><path d="M21 16v5h-5"/><path d="m15 15 6 6"/><path d="M4 4l5 5"/></svg></button>
-              <button type="button" class="ctrl" id="mtNpPrevBtn" aria-label="Предыдущий"><svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><polygon points="19 20 9 12 19 4"/><rect x="5" y="4" width="2.6" height="16" rx="1.3"/></svg></button>
-              <button type="button" class="play" id="mtNpPlayBtn" aria-label="Пауза"><svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor"><polygon points="8 5 19 12 8 19"/></svg></button>
-              <button type="button" class="ctrl" id="mtNpNextBtn" aria-label="Следующий"><svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 4 15 12 5 20"/><rect x="16.4" y="4" width="2.6" height="16" rx="1.3"/></svg></button>
-              <button type="button" class="ctrl sm" id="mtNpRepeatBtn" aria-label="Повтор"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m17 2 4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg></button>
+              <!-- аудит iPhone 24.09: aria-label без i18n -->
+              <button type="button" class="ctrl sm" id="mtNpShuffleBtn" aria-label="Вперемешку" data-i18n-aria="mtShuffleAria"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"/><path d="M4 20 21 3"/><path d="M21 16v5h-5"/><path d="m15 15 6 6"/><path d="M4 4l5 5"/></svg></button>
+              <!-- аудит iPhone 24.09: aria-label без i18n -->
+              <button type="button" class="ctrl" id="mtNpPrevBtn" aria-label="Предыдущий" data-i18n-aria="mtPrevAria"><svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><polygon points="19 20 9 12 19 4"/><rect x="5" y="4" width="2.6" height="16" rx="1.3"/></svg></button>
+              <!-- аудит iPhone 24.09: aria-label без i18n -->
+              <button type="button" class="play" id="mtNpPlayBtn" aria-label="Пауза" data-i18n-aria="pauseLabel"><svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor"><polygon points="8 5 19 12 8 19"/></svg></button>
+              <!-- аудит iPhone 24.09: aria-label без i18n -->
+              <button type="button" class="ctrl" id="mtNpNextBtn" aria-label="Следующий" data-i18n-aria="mtNextAria"><svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 4 15 12 5 20"/><rect x="16.4" y="4" width="2.6" height="16" rx="1.3"/></svg></button>
+              <!-- аудит iPhone 24.09: aria-label без i18n -->
+              <button type="button" class="ctrl sm" id="mtNpRepeatBtn" aria-label="Повтор" data-i18n-aria="mtRepeatAria"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m17 2 4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg></button>
             </div>
             <!-- Громкость — ВЕРБАТИМ из design-new/03.html: кнопка-динамик + кастомный .vol-track/.vol-fill/.vol-knob + .vol-pct.
                  ID движка сохранены (mtNpVolumeBtn / mtNpVolumeIcon / mtNpVolPct); трек/заливка/бегунок — mtNpVolumeTrack/mtNpVolFill/mtNpVolKnob. -->
-            <div class="volume" role="group" aria-label="Громкость">
-              <button type="button" class="vol-btn" id="mtNpVolumeBtn" aria-label="Звук" title="Громкость" data-i18n-title="mtTooltipVolume">
+            <!-- аудит iPhone 24.09: aria-label без i18n -->
+            <div class="volume" role="group" aria-label="Громкость" data-i18n-aria="mtVolumeLabel">
+              <button type="button" class="vol-btn" id="mtNpVolumeBtn" aria-label="Звук" data-i18n-aria="mtSoundAria" title="Громкость" data-i18n-title="mtTooltipVolume">
                 <svg id="mtNpVolumeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>
               </button>
               <div class="vol-track" id="mtNpVolumeTrack"><span class="vol-fill" id="mtNpVolFill" style="width:80%"></span><span class="vol-knob" id="mtNpVolKnob" style="left:80%"></span></div>
@@ -20883,7 +20922,8 @@ body.theme-light #myTracksPage .mtv2-player .v2act,html.is-vk-light:not(.dark) #
         </div>
         <div id="mtHeroCta" class="mt-hero-cta" style="display:none;">
           <button type="button" class="mth-play-all" id="mtHeroPlayAll" data-i18n="mtHeroPlayAll"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><polygon points="7 4 20 12 7 20"/></svg> Слушать всё</button>
-          <button type="button" class="mth-shuffle" id="mtHeroShuffle" aria-label="Перемешать"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"/><path d="M4 20 21 3"/><path d="M21 16v5h-5"/><path d="m15 15 6 6"/><path d="M4 4l5 5"/></svg></button>
+          <!-- аудит iPhone 24.09: aria-label без i18n -->
+          <button type="button" class="mth-shuffle" id="mtHeroShuffle" aria-label="Перемешать" data-i18n-aria="mtHeroShuffleAria"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"/><path d="M4 20 21 3"/><path d="M21 16v5h-5"/><path d="m15 15 6 6"/><path d="M4 4l5 5"/></svg></button>
         </div>
 
         <!-- Loading -->
@@ -20939,7 +20979,8 @@ body.theme-light #myTracksPage .mtv2-player .v2act,html.is-vk-light:not(.dark) #
           <div class="mini-bar"><i id="mtMiniProgressFill"></i></div>
           <span class="mini-cov" id="mtMiniCover"><i></i></span>
           <span class="mini-b"><b id="mtMiniTitle">—</b><span id="mtMiniSub">YupSoul</span></span>
-          <button type="button" class="mini-play" id="mtMiniPlayBtn" aria-label="Пауза">
+          <!-- аудит iPhone 24.09: aria-label без i18n -->
+          <button type="button" class="mini-play" id="mtMiniPlayBtn" aria-label="Пауза" data-i18n-aria="pauseLabel">
             <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><rect x="7.4" y="4.8" width="3.7" height="14.4" rx="1.3"/><rect x="12.9" y="4.8" width="3.7" height="14.4" rx="1.3"/></svg>
           </button>
         </div>
@@ -20962,9 +21003,10 @@ body.theme-light #myTracksPage .mtv2-player .v2act,html.is-vk-light:not(.dark) #
       </div>
 
       <!-- Окно «Поделиться» песней (порт showcase-player.html .share, классы msh-*) -->
-      <div id="mtShareSheet" role="dialog" aria-modal="true" aria-label="Поделиться песней">
+      <!-- аудит iPhone 24.09: aria-label без i18n -->
+      <div id="mtShareSheet" role="dialog" aria-modal="true" aria-label="Поделиться песней" data-i18n-aria="shareSheetTitle">
         <div class="msh-head">
-          <button type="button" class="msh-x" id="mshClose" aria-label="Назад" title="Назад" data-i18n-title="mtCloseBtn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button>
+          <button type="button" class="msh-x" id="mshClose" aria-label="Назад" data-i18n-aria="navBack" title="Назад" data-i18n-title="mtCloseBtn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button>
           <b data-i18n="shareSheetTitle">Поделиться песней</b>
         </div>
         <div class="msh-body">
@@ -21006,17 +21048,19 @@ body.theme-light #myTracksPage .mtv2-player .v2act,html.is-vk-light:not(.dark) #
       </div>
 
       <!-- Караоке (кнопка «Текст») — порт showcase-player.html .lyr -->
-      <div id="mtKaraoke" role="dialog" aria-modal="true" aria-label="Текст песни">
+      <!-- аудит iPhone 24.09: aria-label без i18n -->
+      <div id="mtKaraoke" role="dialog" aria-modal="true" aria-label="Текст песни" data-i18n-aria="karaokeTitle">
         <div class="lyr-head">
-          <button type="button" class="hbtn" id="mtkClose" aria-label="Назад" title="Назад" data-i18n-title="mtCloseBtn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+          <button type="button" class="hbtn" id="mtkClose" aria-label="Назад" data-i18n-aria="navBack" title="Назад" data-i18n-title="mtCloseBtn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
           <div class="tt"><b data-i18n="karaokeTitle">Текст песни</b><span data-i18n="karaokeSub">Караоке · строки в такт</span></div>
-          <button type="button" class="hbtn" id="mtkShare" aria-label="Поделиться" title="Поделиться"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg></button>
+          <button type="button" class="hbtn" id="mtkShare" aria-label="Поделиться" data-i18n-aria="mtActShare" title="Поделиться" data-i18n-title="mtActShare"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg></button>
         </div>
         <div class="lyr-scroll" id="mtkScroll"></div>
         <div class="lyr-foot">
           <span class="fart" id="mtkFootArt"><i></i></span>
           <div class="ftx"><b id="mtkFootName">—</b><span id="mtkFootSub"></span></div>
-          <button type="button" class="fplay" id="mtkPlay" aria-label="Пауза"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><rect x="6.5" y="4.5" width="3.6" height="15" rx="1.2"/><rect x="13.9" y="4.5" width="3.6" height="15" rx="1.2"/></svg></button>
+          <!-- аудит iPhone 24.09: aria-label без i18n -->
+          <button type="button" class="fplay" id="mtkPlay" aria-label="Пауза" data-i18n-aria="pauseLabel"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><rect x="6.5" y="4.5" width="3.6" height="15" rx="1.2"/><rect x="13.9" y="4.5" width="3.6" height="15" rx="1.2"/></svg></button>
         </div>
       </div>
     </div>
@@ -21133,8 +21177,9 @@ body.theme-light #myTracksPage .mtv2-player .v2act,html.is-vk-light:not(.dark) #
       <div class="player">
         <div class="player-top">
           <span class="player-art"></span>
-          <span class="player-meta"><b id="soPlayTitle">Свет внутри тебя</b><span id="soPlaySub" data-i18n="openedPlaySub">Полная песня · 3:12</span></span>
-          <button class="play-btn" id="soPlayBtn" aria-label="Пауза">
+          <span class="player-meta"><b id="soPlayTitle" data-i18n="soPlayTitleFallback">Твоя песня</b><span id="soPlaySub" data-i18n="openedPlaySub">Полная песня · 3:12</span></span>
+          <!-- аудит iPhone 24.09: aria-label без i18n -->
+          <button class="play-btn" id="soPlayBtn" aria-label="Пауза" data-i18n-aria="pauseLabel">
             <svg class="ic-play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
             <svg class="ic-pause" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
           </button>
@@ -22060,19 +22105,19 @@ body.theme-light #myTracksPage .mtv2-player .v2act,html.is-vk-light:not(.dark) #
         <div id="formFieldsWrap">
         <div class="field">
           <label id="nameLabel" for="name" data-icon="">Имя</label>
-            <input type="text" id="name" placeholder="Имя (по желанию)" maxlength="50" aria-label="Имя" data-i18n-placeholder="phName">
+            <input type="text" id="name" placeholder="Имя (по желанию)" maxlength="50" aria-label="Имя" data-i18n-aria="nameLbl" data-i18n-placeholder="phName"><!-- аудит iPhone 24.09: aria-label без i18n -->
             <div class="field-hint" id="nameHint">Впишешь имя — оно прозвучит в песне.</div>
         </div>
         
         <div class="field">
           <label id="birthdateLbl" for="birthdate" data-icon="">Дата рождения</label>
           <div id="birthdateWrap" class="birthdate-wrap">
-            <div class="date-group" role="group" aria-label="Дата рождения">
-              <select id="birthdateDay" class="date-group-day" aria-label="День"><option value="" data-i18n="selectDay">День</option></select>
-              <select id="birthdateMonth" class="date-group-month" aria-label="Месяц"><option value="" data-i18n="selectMonth">Месяц</option></select>
-              <select id="birthdateYear" class="date-group-year" aria-label="Год"><option value="" data-i18n="selectYear">Год</option></select>
+            <div class="date-group" role="group" aria-label="Дата рождения" data-i18n-aria="birthdateLbl"><!-- аудит iPhone 24.09: aria-label без i18n -->
+              <select id="birthdateDay" class="date-group-day" aria-label="День" data-i18n-aria="selectDay"><option value="" data-i18n="selectDay">День</option></select>
+              <select id="birthdateMonth" class="date-group-month" aria-label="Месяц" data-i18n-aria="selectMonth"><option value="" data-i18n="selectMonth">Месяц</option></select>
+              <select id="birthdateYear" class="date-group-year" aria-label="Год" data-i18n-aria="selectYear"><option value="" data-i18n="selectYear">Год</option></select>
             </div>
-            <input type="date" id="birthdate" required aria-label="Дата рождения" data-i18n-title="birthDateTooltip" title="Выберите дату рождения" tabindex="-1">
+            <input type="date" id="birthdate" required aria-label="Дата рождения" data-i18n-aria="birthdateLbl" data-i18n-title="birthDateTooltip" title="Выберите дату рождения" tabindex="-1">
             <span id="birthdateCheck" class="birthdate-check" aria-hidden="true"></span>
           </div>
         </div>
@@ -22093,7 +22138,7 @@ body.theme-light #myTracksPage .mtv2-player .v2act,html.is-vk-light:not(.dark) #
         <div class="field">
           <label id="birthplaceLbl" for="birthplace" data-icon="">Место рождения</label>
           <div id="birthplaceWrap" class="birthplace-wrap">
-              <input type="text" id="birthplace" placeholder="Москва, Лондон, Нью-Йорк..." maxlength="100" autocomplete="off" aria-label="Локация рождения" data-i18n-placeholder="phBirthplace">
+              <input type="text" id="birthplace" placeholder="Москва, Лондон, Нью-Йорк..." maxlength="100" autocomplete="off" aria-label="Локация рождения" data-i18n-aria="ariaBirthplace" data-i18n-placeholder="phBirthplace"><!-- аудит iPhone 24.09: aria-label без i18n -->
               <span id="birthplaceCheck" class="birthplace-check" aria-hidden="true"></span>
             <ul id="birthplaceSuggestions" class="birthplace-suggestions" aria-hidden="true" aria-live="polite"></ul>
           </div>
@@ -22102,10 +22147,10 @@ body.theme-light #myTracksPage .mtv2-player .v2act,html.is-vk-light:not(.dark) #
         
         <div class="field">
           <label id="birthtimeLbl" data-icon="">Время рождения</label>
-          <div class="time-group" role="group" aria-label="Время рождения">
-            <input type="time" id="birthtime" aria-label="Время" data-i18n-title="birthTimeTooltip" title="Выберите время рождения" class="time-group-input">
+          <div class="time-group" role="group" aria-label="Время рождения" data-i18n-aria="birthtimeLbl"><!-- аудит iPhone 24.09: aria-label без i18n -->
+            <input type="time" id="birthtime" aria-label="Время" data-i18n-aria="profileEditLabelTime" data-i18n-title="birthTimeTooltip" title="Выберите время рождения" class="time-group-input">
             <div class="checkbox time-group-checkbox">
-              <input type="checkbox" id="unknown" aria-label="Не знаю время">
+              <input type="checkbox" id="unknown" aria-label="Не знаю время" data-i18n-aria="ariaDontKnowTime">
               <label for="unknown">Не знаю</label>
             </div>
           </div>
@@ -22118,7 +22163,7 @@ body.theme-light #myTracksPage .mtv2-player .v2act,html.is-vk-light:not(.dark) #
              ПЕСНИ, не человека; его место у стиля, а не в анкете). «Пол» остаётся личным полем. -->
         <div class="field">
           <label for="gender" id="genderLabel">Пол</label>
-          <select id="gender" required aria-label="Пол">
+          <select id="gender" required aria-label="Пол" data-i18n-aria="gender"><!-- аудит iPhone 24.09: aria-label без i18n -->
               <option value="">Выбери</option>
             <option value="male">Мужской</option>
             <option value="female">Женский</option>
@@ -22188,7 +22233,8 @@ body.theme-light #myTracksPage .mtv2-player .v2act,html.is-vk-light:not(.dark) #
               <div class="field" id="pickFromLabWrap" style="margin-bottom:12px;">
                 <div style="font-size:0.8rem;color:rgba(255,255,255,0.5);margin-bottom:6px;" id="pickFromLabHint">Выбери человека из Лаборатории — поля заполнятся автоматически</div>
                 <div style="position:relative;">
-                  <button type="button" id="pickFromLabBtn" aria-haspopup="listbox" aria-expanded="false" aria-label="Выбрать из Лаборатории" style="width:100%;padding:10px 14px;border-radius:12px;background:rgba(var(--primary-rgb),0.12);border:1px solid rgba(var(--primary-rgb),0.3);color:var(--primary-color);font-size:0.9rem;font-weight:600;cursor:pointer;font-family:inherit;text-align:left;display:flex;align-items:center;justify-content:space-between;box-shadow:none;">
+                  <!-- аудит iPhone 24.09: aria-label без i18n -->
+                  <button type="button" id="pickFromLabBtn" aria-haspopup="listbox" aria-expanded="false" aria-label="Выбрать из Лаборатории" data-i18n-aria="couplePerson1Pick" style="width:100%;padding:10px 14px;border-radius:12px;background:rgba(var(--primary-rgb),0.12);border:1px solid rgba(var(--primary-rgb),0.3);color:var(--primary-color);font-size:0.9rem;font-weight:600;cursor:pointer;font-family:inherit;text-align:left;display:flex;align-items:center;justify-content:space-between;box-shadow:none;">
                     <span id="pickFromLabBtnText">Выбрать из Лаборатории</span>
                     <span id="pickFromLabChevron" style="transition:transform 0.2s;">▾</span>
                   </button>
@@ -22202,10 +22248,11 @@ body.theme-light #myTracksPage .mtv2-player .v2act,html.is-vk-light:not(.dark) #
               <div class="field">
                 <label id="birthdate2Lbl" for="birthdate2" data-icon="">Дата рождения</label>
                 <div id="birthdate2Wrap" class="birthdate-wrap">
-                  <div class="date-group" role="group" aria-label="Дата рождения второго">
-                    <select id="birthdate2Day" class="date-group-day" aria-label="День"><option value="" data-i18n="selectDay">День</option></select>
-                    <select id="birthdate2Month" class="date-group-month" aria-label="Месяц"><option value="" data-i18n="selectMonth">Месяц</option></select>
-                    <select id="birthdate2Year" class="date-group-year" aria-label="Год"><option value="" data-i18n="selectYear">Год</option></select>
+                  <!-- аудит iPhone 24.09: aria-label без i18n -->
+                  <div class="date-group" role="group" aria-label="Дата рождения второго" data-i18n-aria="ariaBirthdateSecond">
+                    <select id="birthdate2Day" class="date-group-day" aria-label="День" data-i18n-aria="selectDay"><option value="" data-i18n="selectDay">День</option></select>
+                    <select id="birthdate2Month" class="date-group-month" aria-label="Месяц" data-i18n-aria="selectMonth"><option value="" data-i18n="selectMonth">Месяц</option></select>
+                    <select id="birthdate2Year" class="date-group-year" aria-label="Год" data-i18n-aria="selectYear"><option value="" data-i18n="selectYear">Год</option></select>
                   </div>
                   <!-- Batch 5.33 — VK Testers ID 7259402: min/max ограничения -->
                   <input type="date" id="birthdate2" min="1900-01-01" data-i18n-title="birthDateTooltip" title="Выберите дату рождения" tabindex="-1">
@@ -22214,7 +22261,8 @@ body.theme-light #myTracksPage .mtv2-player .v2act,html.is-vk-light:not(.dark) #
               <div class="field">
                 <label id="birthplace2Lbl" for="birthplace2" data-icon="">Место рождения</label>
                 <div id="birthplace2Wrap" class="birthplace-wrap">
-                  <input type="text" id="birthplace2" placeholder="Москва, Лондон, Нью-Йорк..." maxlength="100" autocomplete="off" aria-label="Локация рождения второго" data-i18n-placeholder="phBirthplace">
+                  <!-- аудит iPhone 24.09: aria-label без i18n -->
+                  <input type="text" id="birthplace2" placeholder="Москва, Лондон, Нью-Йорк..." maxlength="100" autocomplete="off" aria-label="Локация рождения второго" data-i18n-aria="ariaBirthplaceSecond" data-i18n-placeholder="phBirthplace">
                   <span id="birthplace2Check" class="birthplace-check" aria-hidden="true"></span>
                   <ul id="birthplaceSuggestions2" class="birthplace-suggestions" aria-hidden="true" aria-live="polite"></ul>
                 </div>
@@ -22222,10 +22270,11 @@ body.theme-light #myTracksPage .mtv2-player .v2act,html.is-vk-light:not(.dark) #
               </div>
               <div class="field">
                 <label id="birthtime2Lbl" data-icon="">Время рождения</label>
+                <!-- аудит iPhone 24.09: aria-label без i18n -->
                 <div class="time-group" role="group">
-                  <input type="time" id="birthtime2" aria-label="Время" data-i18n-title="birthTimeTooltip" title="Выберите время рождения" class="time-group-input">
+                  <input type="time" id="birthtime2" aria-label="Время" data-i18n-aria="profileEditLabelTime" data-i18n-title="birthTimeTooltip" title="Выберите время рождения" class="time-group-input">
                   <div class="checkbox time-group-checkbox">
-                    <input type="checkbox" id="unknown2" aria-label="Не знаю время">
+                    <input type="checkbox" id="unknown2" aria-label="Не знаю время" data-i18n-aria="ariaDontKnowTime">
                     <label for="unknown2">Не знаю</label>
                   </div>
                 </div>
@@ -22300,7 +22349,8 @@ body.theme-light #myTracksPage .mtv2-player .v2act,html.is-vk-light:not(.dark) #
           <!-- Блок ввода: textarea + быстрые запросы -->
           <div class="request-input-box">
             <!-- VK Testers ID 7261250: ограничение 500 символов (был unlimited) -->
-            <textarea id="request" class="request-textarea" placeholder="Например: про смелость начать заново" aria-label="Запрос" rows="4" maxlength="500" data-i18n-placeholder="phRequest"></textarea>
+            <!-- аудит iPhone 24.09: aria-label без i18n -->
+            <textarea id="request" class="request-textarea" placeholder="Например: про смелость начать заново" aria-label="Запрос" data-i18n-aria="ariaSongRequest" rows="4" maxlength="500" data-i18n-placeholder="phRequest"></textarea>
             <div class="request-quick-bar">
               <button type="button" class="request-quick-toggle" id="quickPickerBtn" onclick="toggleQuickPicker(event)">
                 <span id="quickPickerLabel">✦ Быстрые запросы</span>
@@ -22399,7 +22449,8 @@ body.theme-light #myTracksPage .mtv2-player .v2act,html.is-vk-light:not(.dark) #
                13.07). Теперь язык — общий ребёнок #styleFieldWrap, видим во всех 3 режимах. -->
           <div class="field" id="languageFieldWrap" style="margin-top:14px;">
             <label for="language" id="languageLabel">Язык песни</label>
-            <select id="language" required aria-label="Язык песни и описания" data-i18n-title="formLangTooltip" title="На каком языке будет текст песни и расшифровка">
+            <!-- аудит iPhone 24.09: aria-label без i18n -->
+            <select id="language" required aria-label="Язык песни и описания" data-i18n-aria="ariaSongLanguage" data-i18n-title="formLangTooltip" title="На каком языке будет текст песни и расшифровка">
                 <option value="">Выбери</option>
               <option value="ru">Русский</option>
               <option value="en">English</option>
@@ -22453,7 +22504,8 @@ body.theme-light #myTracksPage .mtv2-player .v2act,html.is-vk-light:not(.dark) #
             <div class="request-input-box">
               <!-- 5000 — потолок Suno для модели V5_5 (у V4 было 3000). Ниже резать нечем:
                    наши песни на 5 минут занимают ~1900 символов, запас нужен. -->
-              <textarea id="customLyrics" class="request-textarea" placeholder="Впиши свои строки — споём их" aria-label="Свой текст песни" rows="8" maxlength="5000" data-i18n-placeholder="phCustomLyrics"></textarea>
+              <!-- аудит iPhone 24.09: aria-label без i18n -->
+              <textarea id="customLyrics" class="request-textarea" placeholder="Впиши свои строки — споём их" aria-label="Свой текст песни" data-i18n-aria="ariaCustomLyrics" rows="8" maxlength="5000" data-i18n-placeholder="phCustomLyrics"></textarea>
             </div>
             <!-- Счётчик с ориентиром: без него человек пишет четыре строки и получает трек
                  на минуту вместо трёх (замер по 2448 готовым трекам: 3 мин ≈ 1400 символов). -->
@@ -22735,9 +22787,9 @@ html.is-native #successPage .while-generating-upsell{display:none !important}
           <span class="lim-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></span>
         </div>
         <div class="eyebrow rv"><span class="v-ok" data-i18n="successEyebrow">Оплата получена</span><span class="v-lim" id="successLimitEyebrow">Пакет «Душа»</span></div>
-        <h1 id="successTitle" class="title rv"><span class="v-ok">Готово — твоя<br>песня рождается</span><span class="v-lim" data-i18n-html="successLimitTitle">Песни пакета<br>закончились</span></h1>
+        <h1 id="successTitle" class="title rv"><span class="v-ok" data-i18n-html="successReadyTitle">Готово — твоя<br>песня рождается</span><span class="v-lim" data-i18n-html="successLimitTitle">Песни пакета<br>закончились</span></h1>
         <div class="t-line rv"></div>
-        <p id="successDesc" class="lead rv"><span class="v-ok">Спасибо тебе! <b>Песня души</b> уже создаётся — появится во вкладке «Плейлист» через 10–15 минут.</span><span class="v-lim" id="successLimitLead" data-i18n="successLimitLead">Песни пакета уже созданы. Продли пакет или возьми песню отдельно.</span></p>
+        <p id="successDesc" class="lead rv"><span class="v-ok" data-i18n-html="successReadyLead">Спасибо тебе! <b>Песня души</b> уже создаётся — появится во вкладке «Плейлист» через 10–15 минут.</span><span class="v-lim" id="successLimitLead" data-i18n="successLimitLead">Песни пакета уже созданы. Продли пакет или возьми песню отдельно.</span></p>
         <div class="receipt rv">
           <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></span>
           <span class="tx"><b data-i18n="successReceiptName">Песня души</b><span data-i18n="successReceiptSub">уже в работе</span></span>
@@ -22959,33 +23011,33 @@ body[data-page="compatResultPage"] #compatResultPage.page{background:radial-grad
         <h1 data-i18n="compatTitle">Совместимость</h1>
       </div>
       <div class="scroll">
-        <div class="brandmark"><svg class="bm-ic" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.2L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4z"></path></svg><span class="bm-tx">YupSoul<i>совместимость</i></span></div>
+        <div class="brandmark"><svg class="bm-ic" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.2L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4z"></path></svg><span class="bm-tx">YupSoul<i data-i18n="compatBrandSub">совместимость</i></span></div>
         <div class="pair">
-          <span class="pav" id="crAvA">Т</span>
+          <span class="pav" id="crAvA">·</span>
           <span class="pheart"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 20.3l-1.45-1.32C5.4 14.24 2 11.17 2 7.5 2 4.5 4.42 2 7.5 2c1.74 0 3.41.81 4.5 2.09C13.09 2.81 14.76 2 16.5 2 19.58 2 22 4.5 22 7.5c0 3.67-3.4 6.74-8.55 11.48L12 20.3z"></path></svg></span>
-          <span class="pav b" id="crAvB">А</span>
+          <span class="pav b" id="crAvB">·</span>
         </div>
         <p class="names" id="crNames"></p>
         <div class="constel">
           <div class="ring-wrap">
             <svg viewBox="0 0 188 188"><defs><linearGradient id="crGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f7cf7a"></stop><stop offset="1" stop-color="#ec4899"></stop></linearGradient></defs><circle class="ring-bg" cx="94" cy="94" r="85"></circle><circle class="ring-fg" id="crRing" cx="94" cy="94" r="85"></circle></svg>
-            <div class="ring-num"><div class="v" id="crPctNum">0<span style="font-size:22px">%</span></div><div class="l">созвучие</div></div>
+            <div class="ring-num"><div class="v" id="crPctNum">0<span style="font-size:22px">%</span></div><div class="l" data-i18n="compatRingLabel">созвучие</div></div>
           </div>
-        <div class="pchip tl" style="--dot:#f97316"><span class="pv" id="crChip0v" style="color:#f9a04a">0%</span><span class="pn" id="crChip0n">Тепло</span></div>
-        <div class="pchip ml" style="--dot:#f5566f"><span class="pv" id="crChip1v" style="color:#ff7e92">0%</span><span class="pn" id="crChip1n">Нежность</span></div>
-        <div class="pchip bl" style="--dot:#a855f7"><span class="pv" id="crChip2v" style="color:#c08af5">0%</span><span class="pn" id="crChip2n">Ритм</span></div>
-        <div class="pchip tr" style="--dot:#ec4899"><span class="pv" id="crChip3v" style="color:#f472b6">0%</span><span class="pn" id="crChip3n">Доверие</span></div>
-        <div class="pchip mr" style="--dot:#34d8a8"><span class="pv" id="crChip4v" style="color:#5fe3bd">0%</span><span class="pn" id="crChip4n">Лёгкость</span></div>
-        <div class="pchip br" style="--dot:#f7cf7a"><span class="pv" id="crChip5v" style="color:#f7cf7a">0%</span><span class="pn" id="crChip5n">Поддержка</span></div>
+        <div class="pchip tl" style="--dot:#f97316"><span class="pv" id="crChip0v" style="color:#f9a04a">0%</span><span class="pn" id="crChip0n" data-i18n="compatFacetWarmth">Тепло</span></div>
+        <div class="pchip ml" style="--dot:#f5566f"><span class="pv" id="crChip1v" style="color:#ff7e92">0%</span><span class="pn" id="crChip1n" data-i18n="compatFacetTenderness">Нежность</span></div>
+        <div class="pchip bl" style="--dot:#a855f7"><span class="pv" id="crChip2v" style="color:#c08af5">0%</span><span class="pn" id="crChip2n" data-i18n="compatFacetRhythm">Ритм</span></div>
+        <div class="pchip tr" style="--dot:#ec4899"><span class="pv" id="crChip3v" style="color:#f472b6">0%</span><span class="pn" id="crChip3n" data-i18n="compatFacetTrust">Доверие</span></div>
+        <div class="pchip mr" style="--dot:#34d8a8"><span class="pv" id="crChip4v" style="color:#5fe3bd">0%</span><span class="pn" id="crChip4n" data-i18n="compatFacetEase">Лёгкость</span></div>
+        <div class="pchip br" style="--dot:#f7cf7a"><span class="pv" id="crChip5v" style="color:#f7cf7a">0%</span><span class="pn" id="crChip5n" data-i18n="compatFacetSupport">Поддержка</span></div>
         </div>
         <p class="verdict" id="crVerdict"></p>
         <div class="emo"><p class="q" id="crQuote"></p></div>
         <div class="facets" id="crFacets"></div>
       </div>
       <div class="actions">
-        <button type="button" class="cta" id="crSongBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 17V6l8-1.6V15"></path><circle cx="6.5" cy="17" r="2.5"></circle><circle cx="14.5" cy="15" r="2.5"></circle></svg> Создать песню о вас двоих</button>
-        <button type="button" class="cta ask" id="crAskBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-11.6 7.8L3 21l1.8-6.2A8.4 8.4 0 1 1 21 11.5Z"></path></svg> Спросить Оракула о связи <span class="cost"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.2L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4z"></path></svg>2 искры</span></button>
-        <button type="button" class="ghost" id="crShareBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"></path></svg> Поделиться результатом</button>
+        <button type="button" class="cta" id="crSongBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 17V6l8-1.6V15"></path><circle cx="6.5" cy="17" r="2.5"></circle><circle cx="14.5" cy="15" r="2.5"></circle></svg> <span data-i18n="compatCtaSong">Создать песню о вас двоих</span></button>
+        <button type="button" class="cta ask" id="crAskBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-11.6 7.8L3 21l1.8-6.2A8.4 8.4 0 1 1 21 11.5Z"></path></svg> <span data-i18n="compatCtaAsk">Спросить Оракула о связи</span> <span class="cost"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.2L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4z"></path></svg><span data-i18n="compatCtaAskCost">2 искры</span></span></button>
+        <button type="button" class="ghost" id="crShareBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"></path></svg> <span data-i18n="compatCtaShare">Поделиться результатом</span></button>
       </div>
     </div>
 
@@ -24092,7 +24144,8 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
       <div id="scPromoArea" class="profile-scroll page-scroll">
         <div class="sc-content-wrap">
         <!-- Заголовок страницы (золотое сечение) -->
-        <header class="sc-page-hero" aria-label="Заголовок Разговор по душам" style="display:none;">
+        <!-- аудит iPhone 24.09: aria-label без i18n -->
+        <header class="sc-page-hero" aria-label="Заголовок Разговор по душам" data-i18n-aria="scHeroTitle" style="display:none;">
           <h1 id="scHeroTitle" class="sc-hero-title">Разговор по душам | Чат с Оракулом</h1>
         </header>
 
@@ -24237,10 +24290,12 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           <img src="assets/icons/logo-symbol.webp" alt="" width="28" height="28" style="border-radius:6px;" aria-hidden="true">
           <span style="font-weight:700;color:#fff;letter-spacing:-0.02em;">YupSoul <span style="opacity:0.2;font-weight:300;">|</span> <span style="background:linear-gradient(135deg,#fff 30%,rgba(var(--primary-rgb),0.7));-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700;">Chat</span></span>
         </div>
-        <div id="scPageTimer" class="sc-timer-badge" aria-live="polite" aria-label="Оставшееся время доступа"></div>
+        <!-- аудит iPhone 24.09: aria-label без i18n -->
+        <div id="scPageTimer" class="sc-timer-badge" aria-live="polite" aria-label="Оставшееся время доступа" data-i18n-aria="ariaTimeRemaining"></div>
         <!-- Алла 11.07: юзеры «теряли диалог» — кнопка истории была почти невидима (0.45/10.9px без
              фона). Теперь заметная пилюля с часиками; механика scLoadHistory уже была готова. -->
-        <button type="button" id="scHistoryToggleBtn" onclick="if(typeof scOpenThreads==='function')scOpenThreads()" aria-label="История переписок" style="flex-shrink:0;display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.14);color:rgba(255,255,255,0.78);font-size:12px;font-weight:500;font-family:inherit;cursor:pointer;padding:7px 12px;border-radius:9999px;white-space:nowrap;line-height:1;transition:background .15s;">
+        <!-- аудит iPhone 24.09: aria-label без i18n -->
+        <button type="button" id="scHistoryToggleBtn" onclick="if(typeof scOpenThreads==='function')scOpenThreads()" aria-label="История переписок" data-i18n-aria="scHistoryToggle" style="flex-shrink:0;display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.14);color:rgba(255,255,255,0.78);font-size:12px;font-weight:500;font-family:inherit;cursor:pointer;padding:7px 12px;border-radius:9999px;white-space:nowrap;line-height:1;transition:background .15s;">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
           <span data-i18n="scHistoryToggle">История</span>
         </button>
@@ -24255,7 +24310,8 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           </div>
           <div class="scroll">
             <p class="ctx-sub" data-i18n="ctxSub">С кем сегодня говорим — Оракул будет держать это в контексте разговора.</p>
-            <div class="seg2" id="scPickerModeTabs" role="tablist" aria-label="Режим чата">
+            <!-- аудит iPhone 24.09: aria-label без i18n -->
+            <div class="seg2" id="scPickerModeTabs" role="tablist" aria-label="Режим чата" data-i18n-aria="ariaChatMode">
               <button id="scPickerTabSingle" type="button" class="on" role="tab" aria-selected="true" onclick="scSetPickerMode('single')" data-i18n="ctxModeOne">Одна карточка</button>
               <button id="scPickerTabSynastry" type="button" role="tab" aria-selected="false" onclick="scSetPickerMode('synastry')" data-i18n="ctxModeCompat">Совместимость</button>
             </div>
@@ -24283,7 +24339,8 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
       <!-- Плашка контекста (реф showcase-chat .ctx-plank, Алла 18.06): показ при выбранном человеке -->
       <div id="scCtxPlank" class="sc-ctx-plank" style="display:none;" aria-live="polite"></div>
 
-      <div id="scPageChat" class="sc-messages-area" aria-label="Лента диалога Чат с Оракулом">
+      <!-- аудит iPhone 24.09: aria-label без i18n -->
+      <div id="scPageChat" class="sc-messages-area" aria-label="Лента диалога Чат с Оракулом" data-i18n-aria="ariaChatFeed">
         <div class="sc-content-wrap ora-v2" id="scChatBody">
         <!-- ✦ Интро-блок showcase-chat-v6: мандала + «Оракул» + подзаголовок (Алла 15.06) -->
         <!-- Интро чата по эталону showcase-oracle (.mid): иконка приложения, заголовок,
@@ -24299,12 +24356,14 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           <div class="sc-no-request-title" id="scNoRequestTitleEl">Нужны твои данные</div>
           <p class="sc-no-request-text" id="scNoRequestTextEl">Чат с Оракулом строит персональный разговор на основе имени и даты рождения. Заполни профиль или создай первую заявку на песню.</p>
           <div class="sc-no-request-actions">
-            <button type="button" class="sc-action-btn-primary" id="scFillProfileBtn" onclick="goToPage('profilePage')" aria-label="Перейти к заполнению профиля">Заполнить профиль →</button>
-            <button type="button" class="sc-action-btn-ghost" id="scCreateRequestBtn" onclick="goToPage('formPage')" aria-label="Перейти к созданию заявки на песню">Создать заявку на песню →</button>
+            <!-- аудит iPhone 24.09: aria-label без i18n -->
+            <button type="button" class="sc-action-btn-primary" id="scFillProfileBtn" onclick="goToPage('profilePage')" aria-label="Перейти к заполнению профиля" data-i18n-aria="ariaGoFillProfile">Заполнить профиль →</button>
+            <button type="button" class="sc-action-btn-ghost" id="scCreateRequestBtn" onclick="goToPage('formPage')" aria-label="Перейти к созданию заявки на песню" data-i18n-aria="ariaGoCreateSongRequest">Создать заявку на песню →</button>
           </div>
         </div>
-        <div id="scPageHistory" class="sc-history chat" aria-live="polite" aria-label="История диалога Чат с Оракулом"></div>
-        <div id="scSynastryTeaser" class="sc-synastry-teaser" aria-label="Синастрия доступна в тарифе Лаборатория">
+        <!-- аудит iPhone 24.09: aria-label без i18n -->
+        <div id="scPageHistory" class="sc-history chat" aria-live="polite" aria-label="История диалога Чат с Оракулом" data-i18n-aria="ariaChatHistory"></div>
+        <div id="scSynastryTeaser" class="sc-synastry-teaser" aria-label="Синастрия доступна в тарифе Лаборатория" data-i18n-aria="ariaSynastryTeaser">
           <p class="sc-synastry-teaser-text"><span class="sc-synastry-teaser-accent">✦</span> <span id="scSynastryTeaserText">Совместимость — диалог по двум датам рождения — доступна в тарифе Лаборатория</span></p>
           <button type="button" class="sc-synastry-teaser-btn" id="scSynastryTeaserBtn" onclick="goToMasterPlanFrom('soulChatPage')">Открыть тариф →</button>
         </div>
@@ -24312,7 +24371,8 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
         </div><!-- /sc-content-wrap -->
       </div>
 
-      <div id="scInputArea" class="sc-input-area" aria-label="Поле ввода вопроса">
+      <!-- аудит iPhone 24.09: aria-label без i18n -->
+      <div id="scInputArea" class="sc-input-area" aria-label="Поле ввода вопроса" data-i18n-aria="ariaQuestionInputArea">
         <!-- Счётчик пробных вопросов / режим Искр (ЗАКОН Алла 13.06) — НАД окном-композером,
              не внутри (в эталоне счётчика в композере нет). Подписчику скрыт. -->
         <div class="composer">
@@ -24332,16 +24392,18 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
 
         <!-- Контекст + история — компактный ряд (Алла 16.06) -->
         <div id="scDockActions" class="comp-opts">
-          <button type="button" class="comp-opt" onclick="scOpenCardPicker();if(typeof scSetPickerMode==='function')scSetPickerMode('single')" aria-label="О себе"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.6"/><path d="M5 20a7 7 0 0 1 14 0"/></svg><span data-i18n="ctxSelfBtn">О себе</span></button>
-          <button type="button" class="comp-opt" onclick="scOpenCardPicker();if(typeof scSetPickerMode==='function')scSetPickerMode('synastry')" aria-label="Совместимость"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 20.3l-1.45-1.32C5.4 14.24 2 11.17 2 7.5 2 4.5 4.42 2 7.5 2c1.74 0 3.41.81 4.5 2.09C13.09 2.81 14.76 2 16.5 2 19.58 2 22 4.5 22 7.5c0 3.67-3.4 6.74-8.55 11.48L12 20.3z"/></svg><span data-i18n="ctxCompatBtn">Совместимость</span></button>
-          <button type="button" class="comp-opt sc-dock-action-hist" onclick="if(typeof scOpenThreads==='function')scOpenThreads()" aria-label="История переписок"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v5h5"/><path d="M3.05 13A9 9 0 1 0 6 5.3L3 8"/><path d="M12 7v5l3 1.5"/></svg><span data-i18n="scHistoryToggle">История</span></button>
+          <!-- аудит iPhone 24.09: aria-label без i18n -->
+          <button type="button" class="comp-opt" onclick="scOpenCardPicker();if(typeof scSetPickerMode==='function')scSetPickerMode('single')" aria-label="О себе" data-i18n-aria="ctxSelfBtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.6"/><path d="M5 20a7 7 0 0 1 14 0"/></svg><span data-i18n="ctxSelfBtn">О себе</span></button>
+          <button type="button" class="comp-opt" onclick="scOpenCardPicker();if(typeof scSetPickerMode==='function')scSetPickerMode('synastry')" aria-label="Совместимость" data-i18n-aria="ctxCompatBtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 20.3l-1.45-1.32C5.4 14.24 2 11.17 2 7.5 2 4.5 4.42 2 7.5 2c1.74 0 3.41.81 4.5 2.09C13.09 2.81 14.76 2 16.5 2 19.58 2 22 4.5 22 7.5c0 3.67-3.4 6.74-8.55 11.48L12 20.3z"/></svg><span data-i18n="ctxCompatBtn">Совместимость</span></button>
+          <button type="button" class="comp-opt sc-dock-action-hist" onclick="if(typeof scOpenThreads==='function')scOpenThreads()" aria-label="История переписок" data-i18n-aria="scHistoryToggle"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v5h5"/><path d="M3.05 13A9 9 0 1 0 6 5.3L3 8"/><path d="M12 7v5l3 1.5"/></svg><span data-i18n="scHistoryToggle">История</span></button>
         </div>
         <div class="comp-divider" aria-hidden="true"></div>
 
         <div class="comp-field cmp">
-          <textarea id="scPageQuestion" rows="1" placeholder="Что у тебя на душе?" aria-label="Вопрос Чат с Оракулом" maxlength="1000" data-i18n-placeholder="scPlaceholder"></textarea>
-          <span id="scPageCharHint" class="sc-char-hint" aria-live="polite" aria-label="Осталось символов" style="display:none;"></span>
-          <button id="scPageSendBtn" type="button" class="send" aria-label="Отправить вопрос" disabled>
+          <!-- аудит iPhone 24.09: aria-label без i18n -->
+          <textarea id="scPageQuestion" rows="1" placeholder="Что у тебя на душе?" aria-label="Вопрос Чат с Оракулом" data-i18n-aria="ariaOracleQuestion" maxlength="1000" data-i18n-placeholder="scPlaceholder"></textarea>
+          <span id="scPageCharHint" class="sc-char-hint" aria-live="polite" aria-label="Осталось символов" data-i18n-aria="ariaCharsLeft" style="display:none;"></span>
+          <button id="scPageSendBtn" type="button" class="send" aria-label="Отправить вопрос" data-i18n-aria="ariaSendQuestion" disabled>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
           </button>
         </div>
@@ -24494,7 +24556,8 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           </span>
           <span class="go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
         </button>
-        <div id="scPrismList" aria-label="Список разборов">
+        <!-- аудит iPhone 24.09: aria-label без i18n -->
+        <div id="scPrismList" aria-label="Список разборов" data-i18n-aria="ariaPrismList">
           <!-- заполняется renderPrismCatalog() -->
           <div class="sc-prism-loading" data-i18n="scPrismLoadingCatalog" style="color:rgba(255,255,255,0.5);text-align:center;padding:32px 16px;font-size:0.85rem;">Загружаю разборы…</div>
         </div>
@@ -24609,7 +24672,8 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
       <div class="pw" id="scPaywall" hidden>
         <div class="pw-card">
           <div class="pw-grab"></div>
-          <button class="pw-x" id="scPwX" aria-label="Закрыть"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+          <!-- аудит iPhone 24.09: aria-label без i18n -->
+          <button class="pw-x" id="scPwX" aria-label="Закрыть" data-i18n-aria="navClose"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
           <div class="pw-yupik"></div>
           <div class="pw-teaser">
             <div class="pw-teaser-bubble" data-i18n="pwTeaserBubble">Я чувствую, что за этим вопросом прячется что-то большее…</div>
@@ -24978,7 +25042,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           tagline: 'Узнай, как звучит твой гороскоп',
           taglineAccent: 'твой',
           startBtn: 'Получи свою песню', myProfile: 'Профиль', myHeroes: 'Лаборатория', myHelp: 'Помощь', admin: 'Админка',
-          compatTitle: 'Совместимость', profileTitle: 'Профиль', profileSubtitle: 'Твои данные и баланс Искр',
+          compatSelf: 'Ты', compatNamesAnd: '{a} и {b}', soPlayTitleFallback: 'Твоя песня', compatTitle: 'Совместимость', profileTitle: 'Профиль', profileSubtitle: 'Твои данные и баланс Искр',
           profileFreeCredits: 'Баланс Искр', profileInviteFriend: 'Пригласи друга', profileShare: 'Поделиться', profileCopyLink: 'Скопировать ссылку', profileLinkCopied: 'Ссылка скопирована',
           // VK Testers 7274710 (Maria Lykosova, Android, 14.05.2026): hardcoded русский текст
           // для шаринга, не зависел от текущего языка приложения.
@@ -25100,7 +25164,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           onboardingSlide3Text: 'Введи дату рождения — создай первую песню, минута звучания в подарок.',
           onboardingBtnStart: 'Получить свою песню',
           obBrand: 'YupSoul', obSkip: 'Пропустить', obNext: 'Далее', obCreate: 'Создать первую песню',
-          archTitle: 'Кто ты на самом деле', archLead: 'В твоей дате рождения есть планета, которую в астрологии называют показателем Души. Она и держит твой характер. Назови дату — покажу.', archDateLabel: 'Дата рождения', archGo: 'Показать мой архетип', archEyebrow: 'Показатель Души', archGift: 'Твой дар', archShadow: 'Твоя тень', archSoulPlanet: 'Планета Души', archNote: 'Твоя нота', archBridge: 'Это — словами. А теперь послушай, как это звучит: песня соберётся по этой же дате.', archToSong: 'Собрать мою песню', archAgain: 'Другая дата', archNeedDate: 'Укажи дату рождения', archBadDate: 'Проверь дату — что-то в ней не сходится', signInWithApple: 'Вход с Apple', rgAll: 'Все жанры', rg_rock: 'Рок', rg_electronic: 'Электроника', rg_rap: 'Рэп', rg_folk: 'Фолк', rg_soul: 'Soul / R&B', rg_ambient: 'Ambient', rg_cinematic: 'Кинематографик', rg_acoustic: 'Акустика', rg_sacred: 'Сакральное', rg_pop: 'Поп', rg_other: 'Другое', offlineTitle: 'Нет подключения к интернету', offlineText: 'Проверьте соединение и попробуйте снова', offlineRetry: 'Обновить', errPurchaseFailed: 'Покупка не завершилась', errArchBadDate: 'Проверь дату — что-то в ней не сходится',
+          archTitle: 'Кто ты на самом деле', archLead: 'В твоей дате рождения есть планета, которую в астрологии называют показателем Души. Она и держит твой характер. Назови дату — покажу.', archDateLabel: 'Дата рождения', archGo: 'Показать мой архетип', archEyebrow: 'Показатель Души', archGift: 'Твой дар', archShadow: 'Твоя тень', archSoulPlanet: 'Планета Души', archNote: 'Твоя нота', archBridge: 'Это — словами. А теперь послушай, как это звучит: песня соберётся по этой же дате.', archToSong: 'Собрать мою песню', archAgain: 'Другая дата', archNeedDate: 'Укажи дату рождения', archBadDate: 'Проверь дату — что-то в ней не сходится', signInWithApple: 'Вход с Apple', rgAll: 'Все жанры', rg_rock: 'Рок', rg_electronic: 'Электроника', rg_rap: 'Рэп', rg_folk: 'Фолк', rg_soul: 'Soul / R&B', rg_ambient: 'Ambient', rg_cinematic: 'Кинематографик', rg_acoustic: 'Акустика', rg_sacred: 'Сакральное', rg_pop: 'Поп', rg_other: 'Другое', offlineTitle: 'Нет подключения к интернету', offlineText: 'Проверьте соединение и попробуйте снова', offlineRetry: 'Обновить', errPurchaseFailed: 'Покупка не завершилась', errArchBadDate: 'Проверь дату — что-то в ней не сходится', errSignInFailed: 'Не получилось войти',
           obReward: '+30 Искр за знакомство',
           obChipBirthdate: 'по дате рождения', obChipWhoAmI: '«Кто я?»', obChipDiary: 'дневник дня',
           obChipCompat: 'Ты + мама · 92%', obChipContacts: 'картотека близких', obChipGift: 'подари другу', obChipRadio: 'радио · чужие песни',
@@ -25186,12 +25250,16 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           loading: 'Загрузка…', noCardsYet: 'Нет завершённых карточек', heroHistLoading: 'Загрузка истории…', heroHistEmpty: 'Генераций пока нет', heroHistLoadError: 'Не удалось загрузить историю', heroesPageLoadError: 'Не удалось загрузить героев', retry: 'Повторить',
           forMyself: 'Для себя', forHero: 'Создать песню для {name}', heroDataTitle: 'Данные {name}',
           mtTooltipLyrics: 'Текст', mtTooltipAnalysis: 'Расшифровка', mtTooltipDownload: 'Скачать', mtTooltipShare: 'Поделиться', mtTooltipVolume: 'Громкость', mtVolumeLabel: 'Громкость',
+          // (аудит iPhone 24.09: aria-label плеера «Мои треки» были без i18n)
+          mtSaveToCollectionTitle: 'Сохранить в коллекцию', mtShuffleAria: 'Вперемешку', mtHeroShuffleAria: 'Перемешать', mtPrevAria: 'Предыдущий', mtNextAria: 'Следующий', mtRepeatAria: 'Повтор', mtSoundAria: 'Звук',
           previewHome: 'Главная', previewForm: 'Форма', previewPayment: 'Оплата', previewLoading: 'Загрузка', previewSuccess: 'Успех',
           supportBtn: 'Написать в поддержку',
           subActivated: 'Пакет активирован!', subBtnProfile: 'Мой профиль',
           helpPageTitle: 'Помощь и поддержка', helpPageSubtitle: 'Всё о YupSoul — просто и по делу',
           profileHelpBtn: 'Помощь и поддержка', profileDeleteAccountBtn: 'Удалить аккаунт и все данные',
           deleteAccountConfirm: 'Удалить аккаунт и все связанные данные?\n\nБудут удалены: профиль, настройки, данные о рождении, реферальная история.\n\nВаши созданные треки останутся в общей статистике, но будут отвязаны от вашего аккаунта. Это действие НЕОБРАТИМО.',
+          // (аудит iPhone 24.09: текст кнопки удаления и финальный alert были хардкод-RU)
+          profileDeletingLabel: 'Удаляем…', profileDeletedAlert: 'Аккаунт удалён. Спасибо, что были с нами.',
           profileSectionTheme: 'Тема оформления', themeAuto: 'Авто', themeLight: 'Светлая', themeDark: 'Тёмная',
           profileSubsLink: 'Пакеты', payOvSubsLink: 'пакеты и управление',
           legalTabOffer: 'Оферта', legalTabPrivacy: 'Конфиденциальность', legalTabSubs: 'Пакеты', legalCloseAria: 'Закрыть',
@@ -25671,6 +25739,8 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           formEnterName: 'Введите имя', formNoAuth: 'Нет авторизации',
           formSaving: 'Сохранение…', formDataSaved: 'Данные сохранены ✓',
           formSaveError: 'Ошибка сохранения', formEnterPromo: 'Введите промокод', promoActivated: 'Промокод активирован!', promoNotFound: 'Промокод не найден', promoExpired: 'Промокод истёк', promoUsedUp: 'Промокод больше не действует', promoAlreadyActivated: 'Промокод уже активирован', promoDiscountWord: 'Скидка',
+          // (аудит iPhone 24.09: причины отказа /api/promos/validate были хардкод-RU в reasonMap)
+          promoNotStarted: 'Промокод ещё не активен', promoInactive: 'Промокод деактивирован', promoUserLimitReached: 'Вы уже использовали этот промокод', promoGlobalLimitReached: 'Промокод больше недоступен (лимит исчерпан)', promoSkuMismatch: 'Этот промокод не действует для выбранного типа заявки', promoInvalid: 'Промокод недействителен',
           formPromoError: 'Ошибка проверки. Попробуй позже.', formSecondPerson: 'Второй человек',
           selectDay: 'День', selectMonth: 'Месяц', selectYear: 'Год',
           labelName: 'Имя', labelBirthdate: 'Дата рождения', labelBirthplace: 'Место рождения',
@@ -25896,7 +25966,17 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           profilePartnerBadge: 'Партнёр',
           partnerDashStatEarned: 'Заработано за всё время', partnerDashStatAvailable: 'Доступно к выводу (не потрачено)',
           adminTitle: 'Админка', adminDesc: 'Управление заявками, карта архитектуры и настройки — в веб-админке.',
-          adminOpenBtn: 'Открыть веб-админку'
+          adminOpenBtn: 'Открыть веб-админку',
+          // (аудит iPhone 24.09: заголовок вкладки браузера/PWA не переводился)
+          appTitle: 'YupSoul — песня о тебе',
+          // (аудит iPhone 24.09: экран совместимости — переводы отсутствовали)
+          compatBrandSub: 'совместимость', compatRingLabel: 'созвучие', compatFacetWarmth: 'Тепло', compatFacetTenderness: 'Нежность', compatFacetRhythm: 'Ритм', compatFacetTrust: 'Доверие', compatFacetEase: 'Лёгкость', compatFacetSupport: 'Поддержка',
+          compatCtaSong: 'Создать песню о вас двоих', compatCtaAsk: 'Спросить Оракула о связи', compatCtaAskCost: '2 искры', compatCtaShare: 'Поделиться результатом', compatLoadingNames: 'Считаем ваше созвучие…', compatCloserHeading: 'Что вас сближает', compatGrowHeading: 'Над чем стоит расти', errCompatNeedBirthData: 'Для разбора нужны дата и место рождения обоих',
+          // (аудит iPhone 24.09: aria-label/title для скринридеров не переводились)
+          ariaBirthplace: 'Локация рождения', ariaBirthplaceSecond: 'Локация рождения второго', ariaBirthdateSecond: 'Дата рождения второго', ariaDontKnowTime: 'Не знаю время', ariaSongRequest: 'Запрос', ariaSongLanguage: 'Язык песни и описания', ariaCustomLyrics: 'Свой текст песни', ariaRefLink: 'Реферальная ссылка', ariaLangSwitcher: 'Язык интерфейса',
+          ariaHeader: 'Шапка', ariaNav: 'Навигация', ariaMainMenu: 'Главное меню', ariaChangePhoto: 'Изменить фото', ariaYourLink: 'Твоя ссылка', ariaNotifToggle: 'Включить или отключить уведомления', ariaGoToAdmin: 'Перейти в админку', ariaTimeRemaining: 'Оставшееся время доступа',
+          ariaChatMode: 'Режим чата', ariaChatFeed: 'Лента диалога Чат с Оракулом', ariaGoFillProfile: 'Перейти к заполнению профиля', ariaGoCreateSongRequest: 'Перейти к созданию заявки на песню', ariaChatHistory: 'История диалога Чат с Оракулом', ariaSynastryTeaser: 'Синастрия доступна в тарифе Лаборатория',
+          ariaQuestionInputArea: 'Поле ввода вопроса', ariaOracleQuestion: 'Вопрос Чат с Оракулом', ariaCharsLeft: 'Осталось символов', ariaSendQuestion: 'Отправить вопрос', ariaPrismList: 'Список разборов', ariaPrismPurchase: 'Покупка разбора'
         },
         en: {
           dlSongTitle: 'Download song',
@@ -25914,7 +25994,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           tagline: 'Discover how your horoscope sounds',
           taglineAccent: 'your',
           startBtn: 'Get your song', myProfile: 'Profile', myHeroes: 'Lab', myHelp: 'Help', admin: 'Admin',
-          compatTitle: 'Compatibility', profileTitle: 'Profile', profileSubtitle: 'Your data and Sparks',
+          compatSelf: 'You', compatNamesAnd: '{a} and {b}', soPlayTitleFallback: 'Your song', compatTitle: 'Compatibility', profileTitle: 'Profile', profileSubtitle: 'Your data and Sparks',
           profileFreeCredits: 'Sparks', profileInviteFriend: 'Invite a friend', profileShare: 'Share', profileCopyLink: 'Copy link', profileLinkCopied: 'Link copied',
           refShareTextWithName: 'Hi! Check out this app — it creates a personal song based on your birth date. Really cool, try it — the first minute of your song is a gift!',
           refShareText: 'Check out this app — it creates a personal song based on your birth date. The first minute of your song comes as a gift — give it a try!',
@@ -26031,7 +26111,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           onboardingSlide3Text: 'Enter your date of birth — create your first song, one minute of it as a gift.',
           onboardingBtnStart: 'Get my song',
           obBrand: 'YupSoul', obSkip: 'Skip', obNext: 'Next', obCreate: 'Create first song',
-          archTitle: 'Who you really are', archLead: 'Your birth date holds a planet astrology calls the indicator of the Soul. It shapes your character. Give me the date — I\'ll show you.', archDateLabel: 'Date of birth', archGo: 'Show my archetype', archEyebrow: 'Indicator of the Soul', archGift: 'Your gift', archShadow: 'Your shadow', archSoulPlanet: 'Soul planet', archNote: 'Your note', archBridge: 'That was in words. Now hear how it sounds: your song is built from the same date.', archToSong: 'Create my song', archAgain: 'Another date', archNeedDate: 'Enter your date of birth', archBadDate: 'Check the date — something doesn\'t add up', signInWithApple: 'Sign in with Apple', rgAll: 'All genres', rg_rock: 'Rock', rg_electronic: 'Electronic', rg_rap: 'Rap', rg_folk: 'Folk', rg_soul: 'Soul / R&B', rg_ambient: 'Ambient', rg_cinematic: 'Cinematic', rg_acoustic: 'Acoustic', rg_sacred: 'Sacred', rg_pop: 'Pop', rg_other: 'Other', offlineTitle: 'No internet connection', offlineText: 'Check your connection and try again', offlineRetry: 'Refresh', errPurchaseFailed: 'The purchase didn\'t go through', errArchBadDate: 'Check the date — something doesn\'t add up',
+          archTitle: 'Who you really are', archLead: 'Your birth date holds a planet astrology calls the indicator of the Soul. It shapes your character. Give me the date — I\'ll show you.', archDateLabel: 'Date of birth', archGo: 'Show my archetype', archEyebrow: 'Indicator of the Soul', archGift: 'Your gift', archShadow: 'Your shadow', archSoulPlanet: 'Soul planet', archNote: 'Your note', archBridge: 'That was in words. Now hear how it sounds: your song is built from the same date.', archToSong: 'Create my song', archAgain: 'Another date', archNeedDate: 'Enter your date of birth', archBadDate: 'Check the date — something doesn\'t add up', signInWithApple: 'Sign in with Apple', rgAll: 'All genres', rg_rock: 'Rock', rg_electronic: 'Electronic', rg_rap: 'Rap', rg_folk: 'Folk', rg_soul: 'Soul / R&B', rg_ambient: 'Ambient', rg_cinematic: 'Cinematic', rg_acoustic: 'Acoustic', rg_sacred: 'Sacred', rg_pop: 'Pop', rg_other: 'Other', offlineTitle: 'No internet connection', offlineText: 'Check your connection and try again', offlineRetry: 'Refresh', errPurchaseFailed: 'The purchase didn\'t go through', errArchBadDate: 'Check the date — something doesn\'t add up', errSignInFailed: 'Couldn\'t sign in',
           obReward: '+30 Sparks for getting started',
           obChipBirthdate: 'from your birth date', obChipWhoAmI: '"Who am I?"', obChipDiary: 'diary of the day',
           obChipCompat: 'You + mom · 92%', obChipContacts: 'your circle', obChipGift: 'gift a friend', obChipRadio: "radio · others' songs",
@@ -26116,12 +26196,14 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           loading: 'Loading…', noCardsYet: 'No completed cards yet', heroHistLoading: 'Loading history…', heroHistEmpty: 'No generations yet', heroHistLoadError: 'Could not load history', heroesPageLoadError: 'Could not load heroes', retry: 'Retry',
           forMyself: 'For myself', forHero: 'Create song for {name}', heroDataTitle: '{name} data',
           mtTooltipLyrics: 'Lyrics', mtTooltipAnalysis: 'Analysis', mtTooltipDownload: 'Download', mtTooltipShare: 'Share', mtTooltipVolume: 'Volume', mtVolumeLabel: 'Volume',
+          mtSaveToCollectionTitle: 'Save to collection', mtShuffleAria: 'Shuffle', mtHeroShuffleAria: 'Shuffle', mtPrevAria: 'Previous', mtNextAria: 'Next', mtRepeatAria: 'Repeat', mtSoundAria: 'Sound',
           previewHome: 'Home', previewForm: 'Form', previewPayment: 'Payment', previewLoading: 'Loading', previewSuccess: 'Success',
           supportBtn: 'Contact support',
           subActivated: 'Package activated!', subBtnProfile: 'My profile',
           helpPageTitle: 'Help & Support', helpPageSubtitle: 'Everything about YupSoul — clear and simple',
           profileHelpBtn: 'Help & support', profileDeleteAccountBtn: 'Delete account and all data',
           deleteAccountConfirm: 'Delete account and all related data?\n\nWill be deleted: profile, settings, birth data, referral history.\n\nYour created tracks will stay in overall statistics but will be unlinked from your account. This action is IRREVERSIBLE.',
+          profileDeletingLabel: 'Deleting…', profileDeletedAlert: 'Account deleted. Thanks for being with us.',
           profileSectionTheme: 'Appearance', themeAuto: 'Auto', themeLight: 'Light', themeDark: 'Dark',
           profileSubsLink: 'Packages', payOvSubsLink: 'packages & management',
           legalTabOffer: 'Offer', legalTabPrivacy: 'Privacy', legalTabSubs: 'Packages', legalCloseAria: 'Close',
@@ -26595,6 +26677,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           formEnterName: 'Enter name', formNoAuth: 'Not authorized',
           formSaving: 'Saving…', formDataSaved: 'Data saved ✓',
           formSaveError: 'Save error', formEnterPromo: 'Enter promo code', promoActivated: 'Promo code activated!', promoNotFound: 'Promo code not found', promoExpired: 'Promo code expired', promoUsedUp: 'Promo code no longer valid', promoAlreadyActivated: 'Promo code already activated', promoDiscountWord: 'Discount',
+          promoNotStarted: 'Promo code isn\'t active yet', promoInactive: 'Promo code has been deactivated', promoUserLimitReached: 'You\'ve already used this promo code', promoGlobalLimitReached: 'Promo code is no longer available (limit reached)', promoSkuMismatch: 'This promo code doesn\'t apply to the selected request type', promoInvalid: 'Promo code is invalid',
           formPromoError: 'Check failed. Try later.', formSecondPerson: 'Second person',
           selectDay: 'Day', selectMonth: 'Month', selectYear: 'Year',
           labelName: 'Name', labelBirthdate: 'Date of birth', labelBirthplace: 'Place of birth',
@@ -26790,7 +26873,8 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           scOracleWho: 'Oracle', scIntroTitle: 'I’m here to open you up to yourself', scIntroSubtitle: 'Ask the question that’s been on your mind for a while. I read your birth date and speak without generalities. One question — one Spark.',
           scPrismTitle: 'Readings', scPrismSubtitle: 'Look deeper — your chart, sung aloud', scChartLabel: 'Your chart', scChartNoDob: 'Add your date of birth', scProgReceived: 'Readings received', scProgOpened: 'Readings opened', scPrismTagNew: 'New', scPrismLockedTitle: 'Available with a package', scPrismLockedMsg: 'This reading is available with the Soul Chat package. The first reading «Soul Name» is a gift.', scPrismTryFreeTitle: 'Try «Soul Name»', scPrismPayDesc: 'A deep personal reading from your chart — detailed about you.', scPrismPayHave: 'you have', scPrismPayBtn: 'Open reading', scPrismPayLoading: 'Preparing your reading…', pwTeaserLock: "Oracle didn't finish…", pwTitle: 'Continue the conversation?', pwTeaserBubble: 'I sense there’s something bigger behind this question…', pwPk_q_0_n: '1000 questions', pwPk_q_0_d: '1000 Sparks — lasts a long time', pwPk_q_1_n: '2000 questions', pwPk_q_1_d: '2000 Sparks — months of conversations', pwPk_q_2_n: '5000 questions', pwPk_q_2_d: '5000 Sparks — best price', pwPk_iskry_0_n: '1000 Sparks', pwPk_iskry_0_d: '≈ 10 songs or 1000 questions', pwPk_iskry_1_n: '2000 Sparks', pwPk_iskry_1_d: '≈ 20 songs or 2000 questions', pwPk_iskry_2_n: '5000 Sparks', pwPk_iskry_2_d: '≈ 50 songs — best price', pwSub: 'Sparks are gone — but the Oracle still has things to tell you. Get a pack and continue, no subscriptions or card required.', pwSegQ: 'Questions', pwSegIskry: 'Sparks', pwCtaLabel: 'Continue conversation', pwDay: 'Or', pwDayAccess: 'day access', pwSubscribe: 'Want auto-refill?', pwSubscribeLink: 'Get a package with card', pwSubscribeWhere: '(where available)', pwFoot: "One-time payment. Pack doesn't expire.", pwBadgePopular: 'Best value',
           scPrismLoadingCatalog: 'Loading readings…', scPrismRunning: 'Running your reading…',
-          scPrismErrorTitle: 'Something went wrong', scPrismRunFail: 'Couldn\'t run the reading. Try again.',
+          // (аудит iPhone 24.09: закон №37 — генерик error-тон запрещён, RU/FR уже мягкие)
+          scPrismErrorTitle: 'Didn\'t work', scPrismRunFail: 'Couldn\'t run the reading. Try again.',
           scPrismCatalogErr: 'Couldn\'t load readings.', scPrismCopy: 'Copy reading', prismReadEyebrow: 'Personal reading', prismReadIntro: 'The Oracle reads your chart', prismReadAsk: 'Ask about this reading', prismReadSave: 'Save reading', prismBuyDesc: 'A deep personal reading from your chart — in detail about you and how to unlock it.', prismBuyIncl1Html: '<b>Detailed text</b> based on your birth date', prismBuyIncl2Html: 'Saved to chat — you can <b>ask questions</b>', prismBuyYouHave: 'you have', prismBuyAfter: 'left', prismBuyShort: 'short by', prismBuyOpen: 'Open reading', prismBuyTopup: 'Top up Sparks', prismBuyNoteOk: 'The reading opens right in the chat with the Oracle', prismBuyNoteLow: 'Top up Sparks and open the reading',
           scPrismCopied: 'Reading copied', scPrismCopyFail: 'Copy failed',
           scPrismTryFree: 'Try the gift reading', scPrismGoToPlans: 'Choose a package', scPrismFillProfile: 'Fill in profile',
@@ -26820,7 +26904,14 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           profilePartnerBadge: 'Partner',
           partnerDashStatEarned: 'Total earned', partnerDashStatAvailable: 'Available for withdrawal',
           adminTitle: 'Admin', adminDesc: 'Request management, architecture map and settings — in the web admin panel.',
-          adminOpenBtn: 'Open web admin'
+          adminOpenBtn: 'Open web admin',
+          appTitle: 'YupSoul — a song about you',
+          compatBrandSub: 'compatibility', compatRingLabel: 'resonance', compatFacetWarmth: 'Warmth', compatFacetTenderness: 'Tenderness', compatFacetRhythm: 'Rhythm', compatFacetTrust: 'Trust', compatFacetEase: 'Ease', compatFacetSupport: 'Support',
+          compatCtaSong: 'Create a song about you two', compatCtaAsk: 'Ask the Oracle about your bond', compatCtaAskCost: '2 sparks', compatCtaShare: 'Share result', compatLoadingNames: 'Calculating your resonance…', compatCloserHeading: 'What brings you closer', compatGrowHeading: 'What\'s worth growing on', errCompatNeedBirthData: 'The reading needs both people\'s birth date and place',
+          ariaBirthplace: 'Place of birth', ariaBirthplaceSecond: 'Place of birth of the second person', ariaBirthdateSecond: 'Date of birth of the second person', ariaDontKnowTime: 'I don\'t know the time', ariaSongRequest: 'Request', ariaSongLanguage: 'Song and description language', ariaCustomLyrics: 'Your own song lyrics', ariaRefLink: 'Referral link', ariaLangSwitcher: 'Interface language',
+          ariaHeader: 'Header', ariaNav: 'Navigation', ariaMainMenu: 'Main menu', ariaChangePhoto: 'Change photo', ariaYourLink: 'Your link', ariaNotifToggle: 'Turn notifications on or off', ariaGoToAdmin: 'Go to admin panel', ariaTimeRemaining: 'Remaining access time',
+          ariaChatMode: 'Chat mode', ariaChatFeed: 'Oracle Chat conversation feed', ariaGoFillProfile: 'Go fill in your profile', ariaGoCreateSongRequest: 'Go create a song request', ariaChatHistory: 'Oracle Chat conversation history', ariaSynastryTeaser: 'Compatibility reading is available in the Lab plan',
+          ariaQuestionInputArea: 'Question input field', ariaOracleQuestion: 'Question to Oracle Chat', ariaCharsLeft: 'Characters remaining', ariaSendQuestion: 'Send question', ariaPrismList: 'List of readings', ariaPrismPurchase: 'Buy a reading'
         },
         de: {
           dlSongTitle: 'Song herunterladen',
@@ -26838,7 +26929,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           tagline: 'Entdecke, wie dein Horoskop klingt',
           taglineAccent: 'dein',
           startBtn: 'Hol dir dein Lied', myProfile: 'Profil', myHeroes: 'Labor', myHelp: 'Hilfe', admin: 'Admin',
-          compatTitle: 'Kompatibilität', profileTitle: 'Profil', profileSubtitle: 'Deine Daten und Sparks',
+          compatSelf: 'Du', compatNamesAnd: '{a} und {b}', soPlayTitleFallback: 'Dein Lied', compatTitle: 'Kompatibilität', profileTitle: 'Profil', profileSubtitle: 'Deine Daten und Sparks',
           profileFreeCredits: 'Sparks', profileInviteFriend: 'Freund einladen', profileShare: 'Teilen', profileCopyLink: 'Link kopieren', profileLinkCopied: 'Link kopiert',
           refShareTextWithName: 'Hallo! Schau dir diese App an — sie erstellt einen persönlichen Song basierend auf deinem Geburtsdatum. Wirklich cool, probiere es aus — die erste Minute deines Songs ist ein Geschenk!',
           refShareText: 'Schau dir diese App an — sie erstellt einen persönlichen Song basierend auf deinem Geburtsdatum. Die erste Minute deines Songs ist ein Geschenk — probiere es aus!',
@@ -26871,7 +26962,8 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           gender: 'Geschlecht', genderSelect: 'Wählen', male: 'Männlich', female: 'Weiblich', other: 'Divers',
           modeType: 'Song-Format', modeSubtitle: 'Für wen erstellen wir?',
           modeSingle: 'Über mich', modeSingleDesc: 'Ein Lied nach deinem Geburtsdatum.',
-          modeCouple: 'Über uns zwei', modeCoupleDesc: 'Ein Lied für zwei Menschen.',
+          // (аудит iPhone 24.09: DE-текст обрезался до «Über un…» в 375/393px — <br> внутри nowrap-блока форсирует перенос)
+          modeCouple: 'Über uns<br>zwei', modeCoupleDesc: 'Ein Lied für zwei Menschen.',
           modeLockedBadge: 'Mit Paket verfügbar',
           guideTipFormat: 'Wähle ein Format', guideTipFormatLocked: 'Zunächst ein Lied über dich. „Über uns zwei“ und „Energie des Tages“ kommen mit einem Paket', guideTipDate: 'Gib dein Geburtsdatum ein', guideTipStyle: 'Wähle, wie der Stil bestimmt wird', guideTipLyrics: 'Mit Text, nur Musik oder dein eigener Text', guideTipCreate: 'Fertig — tippe auf „Erstellen“',
           guideTipStart: 'Tipp — wir erstellen deinen Song', guideTipGender: 'Wähle das Geschlecht', guideNextBtn: 'Weiter', coupleManualEnter: 'Manuell eingeben', coupleExpandEdit: 'Aufklappen', coupleCollapseEdit: 'Zuklappen', guideTipLanguage: 'Sprache des Songs', guideTipRequest: 'Ein paar Worte zum Thema, und das Lied trifft es genauer. Keine Lust? Überspring es einfach — wir gestalten es nach deiner Deutung.', guideTipName: 'Name eingeben — wird gesungen. Schon ausgefüllt, aber ungewollt? Einfach löschen', guideTipAdv: 'Optional: Ort & Zeit machen es genauer',
@@ -26955,7 +27047,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           onboardingSlide3Text: 'Gib dein Geburtsdatum ein — erstelle dein erstes Lied, eine Minute davon geschenkt.',
           onboardingBtnStart: 'Mein Lied hören',
           obBrand: 'YupSoul', obSkip: 'Überspringen', obNext: 'Weiter', obCreate: 'Ersten Song erstellen',
-          archTitle: 'Wer du wirklich bist', archLead: 'In deinem Geburtsdatum steckt ein Planet, den die Astrologie den Anzeiger der Seele nennt. Er trägt deinen Charakter. Nenn das Datum — ich zeig es dir.', archDateLabel: 'Geburtsdatum', archGo: 'Meinen Archetyp zeigen', archEyebrow: 'Anzeiger der Seele', archGift: 'Deine Gabe', archShadow: 'Dein Schatten', archSoulPlanet: 'Seelenplanet', archNote: 'Deine Note', archBridge: 'Das waren Worte. Jetzt hör, wie es klingt: der Song entsteht aus demselben Datum.', archToSong: 'Meinen Song erstellen', archAgain: 'Anderes Datum', archNeedDate: 'Gib dein Geburtsdatum ein', archBadDate: 'Prüf das Datum — da stimmt etwas nicht', signInWithApple: 'Mit Apple anmelden', rgAll: 'Alle Genres', rg_rock: 'Rock', rg_electronic: 'Elektronik', rg_rap: 'Rap', rg_folk: 'Folk', rg_soul: 'Soul / R&B', rg_ambient: 'Ambient', rg_cinematic: 'Cinematic', rg_acoustic: 'Akustik', rg_sacred: 'Sakral', rg_pop: 'Pop', rg_other: 'Andere', offlineTitle: 'Keine Internetverbindung', offlineText: 'Prüfe deine Verbindung und versuch es erneut', offlineRetry: 'Neu laden', errPurchaseFailed: 'Der Kauf wurde nicht abgeschlossen', errArchBadDate: 'Prüf das Datum — da stimmt etwas nicht',
+          archTitle: 'Wer du wirklich bist', archLead: 'In deinem Geburtsdatum steckt ein Planet, den die Astrologie den Anzeiger der Seele nennt. Er trägt deinen Charakter. Nenn das Datum — ich zeig es dir.', archDateLabel: 'Geburtsdatum', archGo: 'Meinen Archetyp zeigen', archEyebrow: 'Anzeiger der Seele', archGift: 'Deine Gabe', archShadow: 'Dein Schatten', archSoulPlanet: 'Seelenplanet', archNote: 'Deine Note', archBridge: 'Das waren Worte. Jetzt hör, wie es klingt: der Song entsteht aus demselben Datum.', archToSong: 'Meinen Song erstellen', archAgain: 'Anderes Datum', archNeedDate: 'Gib dein Geburtsdatum ein', archBadDate: 'Prüf das Datum — da stimmt etwas nicht', signInWithApple: 'Mit Apple anmelden', rgAll: 'Alle Genres', rg_rock: 'Rock', rg_electronic: 'Elektronik', rg_rap: 'Rap', rg_folk: 'Folk', rg_soul: 'Soul / R&B', rg_ambient: 'Ambient', rg_cinematic: 'Cinematic', rg_acoustic: 'Akustik', rg_sacred: 'Sakral', rg_pop: 'Pop', rg_other: 'Andere', offlineTitle: 'Keine Internetverbindung', offlineText: 'Prüfe deine Verbindung und versuch es erneut', offlineRetry: 'Neu laden', errPurchaseFailed: 'Der Kauf wurde nicht abgeschlossen', errArchBadDate: 'Prüf das Datum — da stimmt etwas nicht', errSignInFailed: 'Anmeldung hat nicht geklappt',
           obReward: '+30 Funken zum Kennenlernen',
           obChipBirthdate: 'nach deinem Geburtsdatum', obChipWhoAmI: '„Wer bin ich?"', obChipDiary: 'Tagebuch des Tages',
           obChipCompat: 'Du + Mama · 92%', obChipContacts: 'deine Liebsten', obChipGift: 'verschenke an Freunde', obChipRadio: 'Radio · Lieder anderer',
@@ -27040,12 +27132,14 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           loading: 'Laden…', noCardsYet: 'Noch keine abgeschlossenen Karten', heroHistLoading: 'Verlauf wird geladen…', heroHistEmpty: 'Noch keine Generierungen', heroHistLoadError: 'Verlauf konnte nicht geladen werden', heroesPageLoadError: 'Helden konnten nicht geladen werden', retry: 'Wiederholen',
           forMyself: 'Für mich', forHero: 'Lied erstellen für {name}', heroDataTitle: 'Daten von {name}',
           mtTooltipLyrics: 'Text', mtTooltipAnalysis: 'Analyse', mtTooltipDownload: 'Herunterladen', mtTooltipShare: 'Teilen', mtTooltipVolume: 'Lautstärke', mtVolumeLabel: 'Lautstärke',
+          mtSaveToCollectionTitle: 'In der Sammlung speichern', mtShuffleAria: 'Zufallswiedergabe', mtHeroShuffleAria: 'Mischen', mtPrevAria: 'Vorherige', mtNextAria: 'Nächste', mtRepeatAria: 'Wiederholen', mtSoundAria: 'Ton',
           previewHome: 'Startseite', previewForm: 'Formular', previewPayment: 'Zahlung', previewLoading: 'Laden', previewSuccess: 'Erfolg',
           supportBtn: 'Support kontaktieren',
           subActivated: 'Paket aktiviert!', subBtnProfile: 'Mein Profil',
           helpPageTitle: 'Hilfe & Support', helpPageSubtitle: 'Alles über YupSoul — klar und kurz',
           profileHelpBtn: 'Hilfe & Support', profileDeleteAccountBtn: 'Konto und alle Daten löschen',
           deleteAccountConfirm: 'Konto und alle zugehörigen Daten löschen?\n\nWird gelöscht: Profil, Einstellungen, Geburtsdaten, Referral-Verlauf.\n\nDeine erstellten Tracks bleiben in der Gesamtstatistik, werden aber von deinem Konto entkoppelt. Diese Aktion ist UNUMKEHRBAR.',
+          profileDeletingLabel: 'Wird gelöscht…', profileDeletedAlert: 'Konto gelöscht. Danke, dass du dabei warst.',
           profileSectionTheme: 'Erscheinungsbild', themeAuto: 'Auto', themeLight: 'Hell', themeDark: 'Dunkel',
           profileSubsLink: 'Pakete', payOvSubsLink: 'Pakete und Verwaltung',
           legalTabOffer: 'AGB', legalTabPrivacy: 'Datenschutz', legalTabSubs: 'Pakete', legalCloseAria: 'Schließen',
@@ -27214,7 +27308,8 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           wlPlaylistKick: 'Erstelle deine Playlist',
           wlPlaylistName: 'Hits über dich',
           wlPlaylistSub: 'nach Geburtsdatum · für jeden Anlass',
-          wlTrack1Name: 'Ich bin keine Funktion, ich bin Leben',
+          // (аудит iPhone 24.09: DE-текст обрезался на 375/393px — укорочено)
+          wlTrack1Name: 'Keine Funktion, sondern Leben',
           wlTrack1Desc: 'darüber, lebendig zu sein',
           wlTrack2Name: 'Hüterin der Schwelle',
           wlTrack2Desc: 'ein Geburtstagslied',
@@ -27455,7 +27550,8 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           ctxHintOneSelected: 'Der Chat dreht sich um eine Person.',
           ctxHintPickTwo: '<b>Wähle zwei</b> — das Orakel ergründet ihre Kompatibilität.',
           ctxApply: 'Anwenden', ctxApplyOne: 'Anwenden · {name}', ctxApplyPair: 'Paar deuten · {a} & {b}',
-          pfArchSub: 'Deutung nach deinem Geburtsdatum', pfPackLabel: 'Paket', pfChangePack: 'Ändern', pfNoPack: 'Kein Paket — Songs einzeln oder mit Funken', pfOfSongs: 'von {n} {songs}', pfIskrySub: 'Reicht für {n} {songs}', pfTopup: 'Aufladen', profileCardNoCard: 'Keine Karte verknüpft', pfPartnerRow: 'Partnerbereich', pfPartnerSub: 'Eingeladene, Provision und Auszahlungen', pfMine: 'Meins', pfMyTracks: 'Meine Songs', pfSettings: 'Einstellungen', pfLang: 'Sprache', pfNotify: 'Benachrichtigungen', pfCommunity: 'Community', pfHelpSupport: 'Hilfe & Support', pfRestore: 'Käufe wiederherstellen', pfRestoreDone: 'Käufe wiederhergestellt', pfRestoreFail: 'Keine Käufe zum Wiederherstellen', // CD 19.09 · профиль
+          // (аудит iPhone 24.09: DE-текст обрезался на 375px — укорочено без потери смысла)
+          pfArchSub: 'Deutung nach Geburtsdatum', pfPackLabel: 'Paket', pfChangePack: 'Ändern', pfNoPack: 'Kein Paket — Songs einzeln oder mit Funken', pfOfSongs: 'von {n} {songs}', pfIskrySub: 'Reicht für {n} {songs}', pfTopup: 'Aufladen', profileCardNoCard: 'Keine Karte verknüpft', pfPartnerRow: 'Partnerbereich', pfPartnerSub: 'Eingeladene, Provision und Auszahlungen', pfMine: 'Meins', pfMyTracks: 'Meine Songs', pfSettings: 'Einstellungen', pfLang: 'Sprache', pfNotify: 'Benachrichtigungen', pfCommunity: 'Community', pfHelpSupport: 'Hilfe & Support', pfRestore: 'Käufe wiederherstellen', pfRestoreDone: 'Käufe wiederhergestellt', pfRestoreFail: 'Keine Käufe zum Wiederherstellen', // CD 19.09 · профиль
           pfTileSingle: 'Song über dich', pfTilePair: 'Zu zweit', pfTileTransit: 'Energie des Tages', pfUnbind: 'Trennen', pfIskryEnough: 'Reicht für {n} {songs}', pfIskryNone: 'Noch nicht genug', // CD 19.09 · профиль (сверка с эталоном)
           ctxListLabel: 'Deine Karten', ctxNoteEmpty: 'Wähle eine Karte, um fortzufahren', ctxNoteOne: 'Das Orakel behält diese Karte im Kontext', ctxNoteEmptyPair: 'Wähle zwei Karten, um fortzufahren', ctxNoteHalf: 'Eine gewählt — die zweite fehlt', ctxNotePair: 'Das Orakel behält beide Karten im Kontext', ctxEmptyT: 'Bisher nur deine eigene Karte', ctxEmptyS: 'Füge das Geburtsdatum eines nahen Menschen hinzu — das Orakel kann dann über ihn sprechen und eure Verträglichkeit deuten.', ctxEmptyCta: 'Karte hinzufügen', ctxEdit: 'Bearbeiten', ctxDone: 'Fertig', ctxLockTag: 'nicht löschbar', ctxDel: 'Löschen', ctxDelN: 'Löschen · {n}', ctxDelArm: 'Ja, {n} {word} löschen', ctxDelNoteEmpty: 'Wähle die Karten, die weg sollen', ctxDelNoteArm: 'Das lässt sich nicht rückgängig machen — die Geburtsdaten werden endgültig gelöscht', ctxDelCancelArm: 'Nicht löschen', ctxCardWord1: 'Karte', ctxCardWord2: 'Karten', ctxCardWord5: 'Karten', // CD 19.09 · контекст чата
           scCopy: 'Kopieren', scCopied: 'Kopiert',
@@ -27518,6 +27614,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           formEnterName: 'Name eingeben', formNoAuth: 'Nicht autorisiert',
           formSaving: 'Speichern…', formDataSaved: 'Daten gespeichert ✓',
           formSaveError: 'Speicherfehler', formEnterPromo: 'Promo-Code eingeben', promoActivated: 'Promo-Code aktiviert!', promoNotFound: 'Promo-Code nicht gefunden', promoExpired: 'Promo-Code abgelaufen', promoUsedUp: 'Promo-Code nicht mehr gültig', promoAlreadyActivated: 'Promo-Code bereits aktiviert', promoDiscountWord: 'Rabatt',
+          promoNotStarted: 'Promo-Code ist noch nicht aktiv', promoInactive: 'Promo-Code wurde deaktiviert', promoUserLimitReached: 'Du hast diesen Promo-Code bereits verwendet', promoGlobalLimitReached: 'Promo-Code ist nicht mehr verfügbar (Limit erreicht)', promoSkuMismatch: 'Dieser Promo-Code gilt nicht für den ausgewählten Anfragetyp', promoInvalid: 'Promo-Code ist ungültig',
           formPromoError: 'Prüfung fehlgeschlagen. Versuche es später.', formSecondPerson: 'Zweite Person',
           selectDay: 'Tag', selectMonth: 'Monat', selectYear: 'Jahr',
           labelName: 'Name', labelBirthdate: 'Geburtsdatum', labelBirthplace: 'Geburtsort',
@@ -27713,7 +27810,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           scOracleWho: 'Orakel', scIntroTitle: 'Ich bin hier, um dir dich selbst zu zeigen', scIntroSubtitle: 'Stell die Frage, die dir schon lange im Kopf herumgeht. Ich lese dein Geburtsdatum und rede ohne Allgemeinplätze. Eine Frage — ein Funke.',
           scPrismTitle: 'Deutungen', scPrismSubtitle: 'Blick tiefer — deine Karte, laut gesungen', scChartLabel: 'Deine Karte', scChartNoDob: 'Geburtsdatum hinzufügen', scProgReceived: 'Erhaltene Deutungen', scProgOpened: 'Geöffnete Deutungen', scPrismTagNew: 'Neu', scPrismLockedTitle: 'Im Paket verfügbar', scPrismLockedMsg: 'Diese Deutung ist mit dem Soul-Chat-Paket verfügbar. Die erste Deutung «Seelenname» ist ein Geschenk.', scPrismTryFreeTitle: '«Seelenname» ausprobieren', scPrismPayDesc: 'Eine tiefe persönliche Deutung aus deiner Karte — ausführlich über dich.', scPrismPayHave: 'du hast', scPrismPayBtn: 'Deutung öffnen', scPrismPayLoading: 'Deutung wird vorbereitet…', pwTeaserLock: 'Das Orakel brach ab…', pwTitle: 'Gespräch fortsetzen?', pwTeaserBubble: 'Ich spüre, hinter dieser Frage steckt etwas Größeres…', pwPk_q_0_n: '1000 Fragen', pwPk_q_0_d: '1000 Funken — reicht lange', pwPk_q_1_n: '2000 Fragen', pwPk_q_1_d: '2000 Funken — Monate an Gesprächen', pwPk_q_2_n: '5000 Fragen', pwPk_q_2_d: '5000 Funken — bester Preis', pwPk_iskry_0_n: '1000 Funken', pwPk_iskry_0_d: '≈ 10 Songs oder 1000 Fragen', pwPk_iskry_1_n: '2000 Funken', pwPk_iskry_1_d: '≈ 20 Songs oder 2000 Fragen', pwPk_iskry_2_n: '5000 Funken', pwPk_iskry_2_d: '≈ 50 Songs — bester Preis', pwSub: 'Funken aufgebraucht — aber das Orakel hat noch mehr zu sagen. Hol dir ein Paket, ohne Abo oder Karte.', pwSegQ: 'Fragen', pwSegIskry: 'Funken', pwCtaLabel: 'Gespräch fortsetzen', pwDay: 'Oder', pwDayAccess: 'Tageszugang', pwSubscribe: 'Automatisch aufladen?', pwSubscribeLink: 'Mit Karte abonnieren', pwSubscribeWhere: '(wo verfügbar)', pwFoot: 'Einmalige Zahlung. Paket verfällt nicht.', pwBadgePopular: 'Bester Preis',
           scPrismLoadingCatalog: 'Lade Deutungen…', scPrismRunning: 'Berechne deine Deutung…',
-          scPrismErrorTitle: 'Etwas ist schiefgelaufen', scPrismRunFail: 'Deutung konnte nicht erstellt werden.',
+          scPrismErrorTitle: 'Hat nicht geklappt', scPrismRunFail: 'Deutung konnte nicht erstellt werden.',
           scPrismCatalogErr: 'Deutungen konnten nicht geladen werden.', scPrismCopy: 'Deutung kopieren', prismReadEyebrow: 'Persönliche Deutung', prismReadIntro: 'Das Orakel liest deine Karte', prismReadAsk: 'Frage zur Deutung stellen', prismReadSave: 'Deutung speichern', prismBuyDesc: 'Eine tiefe persönliche Deutung aus deiner Karte — ausführlich über dich und wie du es löst.', prismBuyIncl1Html: '<b>Ausführlicher Text</b> nach deinem Geburtsdatum', prismBuyIncl2Html: 'Wird im Chat gespeichert — du kannst <b>Fragen stellen</b>', prismBuyYouHave: 'du hast', prismBuyAfter: 'übrig', prismBuyShort: 'es fehlen', prismBuyOpen: 'Deutung öffnen', prismBuyTopup: 'Funken aufladen', prismBuyNoteOk: 'Die Deutung öffnet sich direkt im Chat mit dem Orakel', prismBuyNoteLow: 'Lade Funken auf und öffne die Deutung',
           scPrismCopied: 'Deutung kopiert', scPrismCopyFail: 'Kopieren fehlgeschlagen',
           scPrismTryFree: 'Geschenk-Deutung probieren', scPrismGoToPlans: 'Paket wählen', scPrismFillProfile: 'Profil ausfüllen',
@@ -27743,7 +27840,14 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           profilePartnerBadge: 'Partner',
           partnerDashStatEarned: 'Insgesamt verdient', partnerDashStatAvailable: 'Verfügbar zur Auszahlung',
           adminTitle: 'Admin', adminDesc: 'Anfragenverwaltung, Architekturkarte und Einstellungen — im Web-Adminbereich.',
-          adminOpenBtn: 'Web-Admin öffnen'
+          adminOpenBtn: 'Web-Admin öffnen',
+          appTitle: 'YupSoul — ein Lied über dich',
+          compatBrandSub: 'Kompatibilität', compatRingLabel: 'Resonanz', compatFacetWarmth: 'Wärme', compatFacetTenderness: 'Zärtlichkeit', compatFacetRhythm: 'Rhythmus', compatFacetTrust: 'Vertrauen', compatFacetEase: 'Leichtigkeit', compatFacetSupport: 'Unterstützung',
+          compatCtaSong: 'Song für euch beide erstellen', compatCtaAsk: 'Das Orakel zu eurer Verbindung fragen', compatCtaAskCost: '2 Funken', compatCtaShare: 'Ergebnis teilen', compatLoadingNames: 'Wir berechnen eure Resonanz…', compatCloserHeading: 'Was euch verbindet', compatGrowHeading: 'Woran ihr wachsen könnt', errCompatNeedBirthData: 'Für die Deutung braucht es Geburtsdatum und -ort von beiden',
+          ariaBirthplace: 'Geburtsort', ariaBirthplaceSecond: 'Geburtsort der zweiten Person', ariaBirthdateSecond: 'Geburtsdatum der zweiten Person', ariaDontKnowTime: 'Zeit unbekannt', ariaSongRequest: 'Anfrage', ariaSongLanguage: 'Sprache des Songs und der Beschreibung', ariaCustomLyrics: 'Eigener Songtext', ariaRefLink: 'Empfehlungslink', ariaLangSwitcher: 'Sprache der Oberfläche',
+          ariaHeader: 'Kopfzeile', ariaNav: 'Navigation', ariaMainMenu: 'Hauptmenü', ariaChangePhoto: 'Foto ändern', ariaYourLink: 'Dein Link', ariaNotifToggle: 'Benachrichtigungen ein- oder ausschalten', ariaGoToAdmin: 'Zum Admin-Bereich', ariaTimeRemaining: 'Verbleibende Zugriffszeit',
+          ariaChatMode: 'Chat-Modus', ariaChatFeed: 'Gesprächsverlauf des Orakel-Chats', ariaGoFillProfile: 'Zum Ausfüllen des Profils', ariaGoCreateSongRequest: 'Zur Erstellung einer Song-Anfrage', ariaChatHistory: 'Gesprächsverlauf des Orakel-Chats', ariaSynastryTeaser: 'Kompatibilitätsanalyse ist im Labor-Paket verfügbar',
+          ariaQuestionInputArea: 'Eingabefeld für die Frage', ariaOracleQuestion: 'Frage an den Orakel-Chat', ariaCharsLeft: 'Verbleibende Zeichen', ariaSendQuestion: 'Frage senden', ariaPrismList: 'Liste der Deutungen', ariaPrismPurchase: 'Deutung kaufen'
         },
         fr: {
           dlSongTitle: 'Télécharger la chanson',
@@ -27761,7 +27865,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           tagline: 'Découvre comment sonne ton horoscope',
           taglineAccent: 'ton',
           startBtn: 'Obtiens ta chanson', myProfile: 'Profil', myHeroes: 'Labo', myHelp: 'Aide', admin: 'Admin',
-          compatTitle: 'Compatibilité', profileTitle: 'Profil', profileSubtitle: 'Tes données et Étincelles',
+          compatSelf: 'Toi', compatNamesAnd: '{a} et {b}', soPlayTitleFallback: 'Ta chanson', compatTitle: 'Compatibilité', profileTitle: 'Profil', profileSubtitle: 'Tes données et Étincelles',
           profileFreeCredits: 'Étincelles', profileInviteFriend: 'Inviter un ami', profileShare: 'Partager', profileCopyLink: 'Copier le lien', profileLinkCopied: 'Lien copié',
           refShareTextWithName: 'Salut ! Découvre cette application — elle crée une chanson personnelle basée sur ta date de naissance. Vraiment cool, essaie — la première minute de ta chanson en cadeau !',
           refShareText: 'Découvre cette application — elle crée une chanson personnelle basée sur ta date de naissance. La première minute de ta chanson en cadeau — essaie !',
@@ -27878,7 +27982,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           onboardingSlide3Text: 'Saisis ta date de naissance — crée ta première chanson, une minute en cadeau.',
           onboardingBtnStart: 'Recevoir ma chanson',
           obBrand: 'YupSoul', obSkip: 'Passer', obNext: 'Suivant', obCreate: 'Créer ma première chanson',
-          archTitle: 'Qui tu es vraiment', archLead: 'Dans ta date de naissance il y a une planète que l\'astrologie appelle l\'indicateur de l\'Âme. C\'est elle qui tient ton caractère. Donne la date — je te montre.', archDateLabel: 'Date de naissance', archGo: 'Montrer mon archétype', archEyebrow: 'Indicateur de l\'Âme', archGift: 'Ton don', archShadow: 'Ton ombre', archSoulPlanet: 'Planète de l\'Âme', archNote: 'Ta note', archBridge: 'Ça, c\'était les mots. Maintenant écoute comment ça sonne : la chanson naît de cette même date.', archToSong: 'Créer ma chanson', archAgain: 'Autre date', archNeedDate: 'Indique ta date de naissance', archBadDate: 'Vérifie la date — quelque chose ne colle pas', signInWithApple: 'Se connecter avec Apple', rgAll: 'Tous les genres', rg_rock: 'Rock', rg_electronic: 'Électronique', rg_rap: 'Rap', rg_folk: 'Folk', rg_soul: 'Soul / R&B', rg_ambient: 'Ambient', rg_cinematic: 'Cinématique', rg_acoustic: 'Acoustique', rg_sacred: 'Sacré', rg_pop: 'Pop', rg_other: 'Autre', offlineTitle: 'Pas de connexion Internet', offlineText: 'Vérifie ta connexion et réessaie', offlineRetry: 'Actualiser', errPurchaseFailed: 'L\'achat n\'a pas abouti', errArchBadDate: 'Vérifie la date — quelque chose ne colle pas',
+          archTitle: 'Qui tu es vraiment', archLead: 'Dans ta date de naissance il y a une planète que l\'astrologie appelle l\'indicateur de l\'Âme. C\'est elle qui tient ton caractère. Donne la date — je te montre.', archDateLabel: 'Date de naissance', archGo: 'Montrer mon archétype', archEyebrow: 'Indicateur de l\'Âme', archGift: 'Ton don', archShadow: 'Ton ombre', archSoulPlanet: 'Planète de l\'Âme', archNote: 'Ta note', archBridge: 'Ça, c\'était les mots. Maintenant écoute comment ça sonne : la chanson naît de cette même date.', archToSong: 'Créer ma chanson', archAgain: 'Autre date', archNeedDate: 'Indique ta date de naissance', archBadDate: 'Vérifie la date — quelque chose ne colle pas', signInWithApple: 'Se connecter avec Apple', rgAll: 'Tous les genres', rg_rock: 'Rock', rg_electronic: 'Électronique', rg_rap: 'Rap', rg_folk: 'Folk', rg_soul: 'Soul / R&B', rg_ambient: 'Ambient', rg_cinematic: 'Cinématique', rg_acoustic: 'Acoustique', rg_sacred: 'Sacré', rg_pop: 'Pop', rg_other: 'Autre', offlineTitle: 'Pas de connexion Internet', offlineText: 'Vérifie ta connexion et réessaie', offlineRetry: 'Actualiser', errPurchaseFailed: 'L\'achat n\'a pas abouti', errArchBadDate: 'Vérifie la date — quelque chose ne colle pas', errSignInFailed: 'Impossible de se connecter',
           obReward: '+30 Étincelles pour faire connaissance',
           obChipBirthdate: 'selon ta date de naissance', obChipWhoAmI: '« Qui suis-je ? »', obChipDiary: 'journal du jour',
           obChipCompat: 'Toi + maman · 92%', obChipContacts: 'tes proches', obChipGift: 'offre à un ami', obChipRadio: 'radio · chansons des autres',
@@ -27963,12 +28067,14 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           loading: 'Chargement…', noCardsYet: 'Pas encore de cartes terminées', heroHistLoading: 'Chargement de l\'historique…', heroHistEmpty: 'Pas encore de générations', heroHistLoadError: 'Impossible de charger l\'historique', heroesPageLoadError: 'Impossible de charger les héros', retry: 'Réessayer',
           forMyself: 'Pour moi', forHero: 'Créer une chanson pour {name}', heroDataTitle: 'Données de {name}',
           mtTooltipLyrics: 'Paroles', mtTooltipAnalysis: 'Analyse', mtTooltipDownload: 'Télécharger', mtTooltipShare: 'Partager', mtTooltipVolume: 'Volume', mtVolumeLabel: 'Volume',
+          mtSaveToCollectionTitle: 'Enregistrer dans la collection', mtShuffleAria: 'Lecture aléatoire', mtHeroShuffleAria: 'Mélanger', mtPrevAria: 'Précédent', mtNextAria: 'Suivant', mtRepeatAria: 'Répéter', mtSoundAria: 'Son',
           previewHome: 'Accueil', previewForm: 'Formulaire', previewPayment: 'Paiement', previewLoading: 'Chargement', previewSuccess: 'Succès',
           supportBtn: 'Contacter le support',
           subActivated: 'Pack activé !', subBtnProfile: 'Mon profil',
           helpPageTitle: 'Aide & Support', helpPageSubtitle: 'Tout sur YupSoul — simple et concis',
           profileHelpBtn: 'Aide & support', profileDeleteAccountBtn: 'Supprimer le compte et toutes les données',
           deleteAccountConfirm: 'Supprimer le compte et toutes les données associées ?\n\nSeront supprimés : profil, paramètres, données de naissance, historique de parrainage.\n\nTes titres créés resteront dans les statistiques globales mais seront dissociés de ton compte. Cette action est IRRÉVERSIBLE.',
+          profileDeletingLabel: 'Suppression…', profileDeletedAlert: 'Compte supprimé. Merci d\'avoir été des nôtres.',
           profileSectionTheme: 'Apparence', themeAuto: 'Auto', themeLight: 'Clair', themeDark: 'Sombre',
           profileSubsLink: 'Packs', payOvSubsLink: 'forfaits et gestion',
           legalTabOffer: 'CGV', legalTabPrivacy: 'Confidentialité', legalTabSubs: 'Packs', legalCloseAria: 'Fermer',
@@ -28137,7 +28243,8 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           wlPlaylistKick: 'Crée ta playlist',
           wlPlaylistName: 'Des hits sur toi',
           wlPlaylistSub: 'par date de naissance · pour chaque occasion',
-          wlTrack1Name: 'Je ne suis pas une fonction, je suis la vie',
+          // (аудит iPhone 24.09: FR-текст обрезался ещё сильнее чем DE — укорочено)
+          wlTrack1Name: 'Pas une fonction, la vie',
           wlTrack1Desc: 'sur le fait d\'être vivant',
           wlTrack2Name: 'Gardienne du seuil',
           wlTrack2Desc: 'une chanson d\'anniversaire',
@@ -28441,6 +28548,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           formEnterName: 'Entrer le nom', formNoAuth: 'Non autorisé',
           formSaving: 'Enregistrement…', formDataSaved: 'Données enregistrées ✓',
           formSaveError: 'Erreur d\'enregistrement', formEnterPromo: 'Entrer le code promo', promoActivated: 'Code promo activé !', promoNotFound: 'Code promo introuvable', promoExpired: 'Code promo expiré', promoUsedUp: 'Code promo non valide', promoAlreadyActivated: 'Code promo déjà activé', promoDiscountWord: 'Réduction',
+          promoNotStarted: 'Le code promo n\'est pas encore actif', promoInactive: 'Le code promo a été désactivé', promoUserLimitReached: 'Vous avez déjà utilisé ce code promo', promoGlobalLimitReached: 'Le code promo n\'est plus disponible (limite atteinte)', promoSkuMismatch: 'Ce code promo ne s\'applique pas au type de demande sélectionné', promoInvalid: 'Le code promo n\'est pas valide',
           formPromoError: 'Vérification échouée. Réessaie plus tard.', formSecondPerson: 'Deuxième personne',
           selectDay: 'Jour', selectMonth: 'Mois', selectYear: 'Année',
           labelName: 'Nom', labelBirthdate: 'Date de naissance', labelBirthplace: 'Lieu de naissance',
@@ -28666,7 +28774,14 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           profilePartnerBadge: 'Partenaire',
           partnerDashStatEarned: 'Total gagné', partnerDashStatAvailable: 'Disponible pour retrait',
           adminTitle: 'Admin', adminDesc: 'Gestion des demandes, carte d\'architecture et paramètres — dans le panneau d\'admin web.',
-          adminOpenBtn: 'Ouvrir l\'admin web'
+          adminOpenBtn: 'Ouvrir l\'admin web',
+          appTitle: 'YupSoul — une chanson sur toi',
+          compatBrandSub: 'compatibilité', compatRingLabel: 'résonance', compatFacetWarmth: 'Chaleur', compatFacetTenderness: 'Tendresse', compatFacetRhythm: 'Rythme', compatFacetTrust: 'Confiance', compatFacetEase: 'Légèreté', compatFacetSupport: 'Soutien',
+          compatCtaSong: 'Créer une chanson pour vous deux', compatCtaAsk: 'Demander à l\'Oracle à propos de votre lien', compatCtaAskCost: '2 étincelles', compatCtaShare: 'Partager le résultat', compatLoadingNames: 'Nous calculons votre résonance…', compatCloserHeading: 'Ce qui vous rapproche', compatGrowHeading: 'Ce sur quoi grandir', errCompatNeedBirthData: 'L\'analyse nécessite la date et le lieu de naissance des deux personnes',
+          ariaBirthplace: 'Lieu de naissance', ariaBirthplaceSecond: 'Lieu de naissance de la deuxième personne', ariaBirthdateSecond: 'Date de naissance de la deuxième personne', ariaDontKnowTime: 'Heure inconnue', ariaSongRequest: 'Demande', ariaSongLanguage: 'Langue de la chanson et de la description', ariaCustomLyrics: 'Tes propres paroles', ariaRefLink: 'Lien de parrainage', ariaLangSwitcher: 'Langue de l\'interface',
+          ariaHeader: 'En-tête', ariaNav: 'Navigation', ariaMainMenu: 'Menu principal', ariaChangePhoto: 'Changer la photo', ariaYourLink: 'Ton lien', ariaNotifToggle: 'Activer ou désactiver les notifications', ariaGoToAdmin: 'Aller au panneau admin', ariaTimeRemaining: 'Temps d\'accès restant',
+          ariaChatMode: 'Mode de discussion', ariaChatFeed: 'Fil de conversation du Chat avec l\'Oracle', ariaGoFillProfile: 'Aller compléter le profil', ariaGoCreateSongRequest: 'Aller créer une demande de chanson', ariaChatHistory: 'Historique du Chat avec l\'Oracle', ariaSynastryTeaser: 'La compatibilité est disponible dans l\'offre Laboratoire',
+          ariaQuestionInputArea: 'Champ de saisie de la question', ariaOracleQuestion: 'Question au Chat avec l\'Oracle', ariaCharsLeft: 'Caractères restants', ariaSendQuestion: 'Envoyer la question', ariaPrismList: 'Liste des lectures', ariaPrismPurchase: 'Achat d\'une lecture'
         }
       };
       var currentLang = 'ru';
@@ -29157,6 +29272,8 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
       window._tl = _tl;
       function applyTranslations() {
         document.documentElement.lang = currentLang || 'ru';
+        // (аудит iPhone 24.09: document.title был всегда RU независимо от языка интерфейса)
+        try { document.title = t('appTitle'); } catch(_) {}
         // Канон v7 (27.07): на VK Искры — валюта Оракула (за голоса), не «песни».
         // Меняем data-i18n АТРИБУТЫ один раз — дальше любой прогон applyTranslations
         // на любом языке сам берёт VK-ключи (грабли селектор-карты: текст, записанный
@@ -29217,6 +29334,8 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
         // innerHTML — для подписей с переносом (напр. «Энергия» + «момента» на двух строках)
         var htmlMap = [
           ['modeTransit','.mode-btn[data-mode="transit"] .mode-label'],
+          // (аудит iPhone 24.09: DE-перевод «Über uns<br>zwei» — нужен innerHTML, иначе <br> рисуется как текст)
+          ['modeCouple','.mode-btn[data-mode="couple"] .mode-label'],
           ['styleManual','.style-mode-btn[data-smode="manual"] .mode-label'],
           ['styleAstro','.style-mode-btn[data-smode="astro"] .mode-label'],
           ['styleStar','.style-mode-btn[data-smode="star"] .mode-label'],
@@ -29571,7 +29690,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
 
         // data-i18n / data-i18n-placeholder — универсальный механизм
         // Пропускаем ключи, уже обработанные через htmlMap (содержат HTML-теги)
-        var htmlKeys = ['styleManual','styleAstro','styleStar','modeTransit',
+        var htmlKeys = ['styleManual','styleAstro','styleStar','modeTransit','modeCouple',
           'helpB1','helpB2','helpB3','helpB4','helpB5','helpB6','helpB7','helpB8','helpB9','helpB10'];
         document.querySelectorAll('[data-i18n]').forEach(function(el) {
           var key = el.getAttribute('data-i18n');
@@ -29735,7 +29854,8 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
         input.setAttribute('autocomplete', 'off');
         input.setAttribute('pattern', '[0-9]{2}:[0-9]{2}');
         // Placeholder ЧЧ:ММ если нет своего
-        if (!input.placeholder) input.placeholder = 'ЧЧ:ММ';
+        // (аудит iPhone 24.09: хардкод RU 'ЧЧ:ММ' на EN/DE/FR — переиспользуем phTransitTime)
+        if (!input.placeholder) input.placeholder = (typeof t === 'function' && t('phTransitTime')) || 'ЧЧ:ММ';
         // Восстанавливаем value
         if (savedVal) input.value = savedVal;
 
@@ -35659,7 +35779,8 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
 
         if (activePromo && priceHint) {
           if (sameCurrency) {
-            priceHint.textContent = '💚 Скидка: ' + activePromo.discount_amount + ' ' + activePromo.currency;
+            // (аудит iPhone 24.09: было хардкод RU «Скидка:» на EN/DE/FR — переиспользуем существующий ключ)
+            priceHint.textContent = '💚 ' + (typeof t === 'function' ? t('promoDiscountWord') : 'Скидка') + ': ' + activePromo.discount_amount + ' ' + activePromo.currency;
           } else {
             // Mismatch валют — честно говорим что применили без конкретной суммы
             priceHint.textContent = (typeof t === 'function' ? t('payPromoApplied') : 'Промокод применён');
@@ -35738,17 +35859,18 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           if (!resp.ok || !json.valid) {
             activePromo = null;
             resetPaymentUI();
+            // (аудит iPhone 24.09: было хардкод RU для всех причин — теперь через t(), ключи есть в RU/EN/DE/FR)
             var reasonMap = {
-              not_found: 'Промокод не найден',
-              expired: 'Срок действия промокода истёк',
-              not_started: 'Промокод ещё не активен',
-              inactive: 'Промокод деактивирован',
-              user_limit_reached: 'Вы уже использовали этот промокод',
-              global_limit_reached: 'Промокод больше недоступен (лимит исчерпан)',
-              sku_mismatch: 'Этот промокод не действует для выбранного типа заявки',
+              not_found: typeof t === 'function' ? t('promoNotFound') : 'Промокод не найден',
+              expired: typeof t === 'function' ? t('promoExpired') : 'Срок действия промокода истёк',
+              not_started: typeof t === 'function' ? t('promoNotStarted') : 'Промокод ещё не активен',
+              inactive: typeof t === 'function' ? t('promoInactive') : 'Промокод деактивирован',
+              user_limit_reached: typeof t === 'function' ? t('promoUserLimitReached') : 'Вы уже использовали этот промокод',
+              global_limit_reached: typeof t === 'function' ? t('promoGlobalLimitReached') : 'Промокод больше недоступен (лимит исчерпан)',
+              sku_mismatch: typeof t === 'function' ? t('promoSkuMismatch') : 'Этот промокод не действует для выбранного типа заявки',
               empty: typeof t === 'function' ? t('formEnterPromo') : 'Введите промокод'
             };
-            var errMsg = json.error || reasonMap[json.reason] || 'Промокод недействителен';
+            var errMsg = json.error || reasonMap[json.reason] || (typeof t === 'function' ? t('promoInvalid') : 'Промокод недействителен');
             throw new Error(errMsg);
           }
           
@@ -35770,7 +35892,8 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
             hidePaymentSection();
           } else {
             // Промокод даёт частичную скидку
-            setPaymentStatus((typeof t === 'function' ? t('payPromoApplied') : 'Промокод применён!') + ' Скидка: ' + activePromo.discount_amount + ' ' + activePromo.currency, 'ok');
+            // (аудит iPhone 24.09: было хардкод RU «Скидка:» на EN/DE/FR)
+            setPaymentStatus((typeof t === 'function' ? t('payPromoApplied') : 'Промокод применён!') + ' ' + (typeof t === 'function' ? t('promoDiscountWord') : 'Скидка') + ': ' + activePromo.discount_amount + ' ' + activePromo.currency, 'ok');
             updatePaymentSectionWithDiscount();
             hidePromoConfirmButton();
           }
@@ -36562,7 +36685,11 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           if (document.documentElement.classList.contains('web-loading')) return;
           if (window._appEnv === 'web' && !window._googleJwt) return;
           var onboardingPage = document.getElementById('onboardingPage');
-          if (onboardingPage && onboardingPage.style.display !== 'none' && onboardingPage.offsetParent !== null) {
+          // (аудит iPhone 24.09: #onboardingPage — position:fixed, offsetParent у fixed-элементов
+          // ВСЕГДА null → вторая половина условия никогда не срабатывала, гард был мёртвым.
+          // Watchdog проваливался в «нет активной страницы» и повторно звал startApp() поверх
+          // ещё показанной карусели — двойной re-init, риск дублирующего POST на deep-link)
+          if (onboardingPage && onboardingPage.style.display !== 'none') {
             console.log('[App] Онбординг активен — ждём завершения');
             return;
           }
@@ -41436,7 +41563,8 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
         }
 
         function setLoading(){
-          var nm=document.getElementById('crNames'); if(nm) nm.textContent='Считаем ваше созвучие…';
+          // (аудит iPhone 24.09: экран совместимости был захардкожен на русском)
+          var nm=document.getElementById('crNames'); if(nm) nm.textContent=(typeof t === 'function' && t('compatLoadingNames')) || 'Считаем ваше созвучие…';
           var num=document.getElementById('crPctNum'); if(num) num.innerHTML='<span style="opacity:.5">…</span>';
           var fc=document.getElementById('crFacets'); if(fc) fc.innerHTML='';
           var vd=document.getElementById('crVerdict'); if(vd) vd.textContent='';
@@ -41446,13 +41574,15 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
         function render(r){
           if(!r) return;
           if(r.result) r=r.result;
-          var dispA = r.aIsSelf ? 'Ты' : (r.nameA||'—');
-          var dispB = r.bIsSelf ? 'Ты' : (r.nameB||'—');
+          // аудит iPhone 24.09: «Ты» и союз «и» были жёстко русскими на EN/DE/FR
+          var selfWord = (typeof t === 'function' && t('compatSelf') !== 'compatSelf') ? t('compatSelf') : 'Ты';
+          var dispA = r.aIsSelf ? selfWord : (r.nameA||'—');
+          var dispB = r.bIsSelf ? selfWord : (r.nameB||'—');
           var avA=document.getElementById('crAvA'), avB=document.getElementById('crAvB');
           if(avA) avA.textContent=(String(dispA).trim().charAt(0)||'·').toUpperCase();
           if(avB) avB.textContent=(String(dispB).trim().charAt(0)||'·').toUpperCase();
           var nm=document.getElementById('crNames');
-          if(nm) nm.innerHTML='<b>'+esc(dispA)+'</b> и <b>'+esc(dispB)+'</b>';
+          if(nm){ var andTpl=(typeof t === 'function' && t('compatNamesAnd') !== 'compatNamesAnd') ? t('compatNamesAnd') : '{a} и {b}'; nm.innerHTML=esc(andTpl).replace('{a}','<b>'+esc(dispA)+'</b>').replace('{b}','<b>'+esc(dispB)+'</b>'); }
           var score=clamp(r.score);
           var byName={}; (r.facets||[]).forEach(function(f){ if(f&&f.name) byName[f.name]=clamp(f.pct); });
           FACETS.forEach(function(name,i){
@@ -41464,11 +41594,11 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           if(fc){
             var h=''; var closer=Array.isArray(r.closer)?r.closer:[]; var grow=Array.isArray(r.grow)?r.grow:[];
             if(closer.length){
-              h+='<div class="facet-sec">Что вас сближает</div>';
+              h+='<div class="facet-sec">'+esc((typeof t === 'function' && t('compatCloserHeading')) || 'Что вас сближает')+'</div>';
               closer.forEach(function(c,i){ h+='<div class="facet up"><span class="facet-ic">'+(i%2?MIC:SPARK)+'</span><span class="facet-tx"><b>'+esc(c.title)+'</b><span>'+esc(c.desc)+'</span></span></div>'; });
             }
             if(grow.length){
-              h+='<div class="facet-sec" style="margin-top:18px">Над чем стоит расти</div>';
+              h+='<div class="facet-sec" style="margin-top:18px">'+esc((typeof t === 'function' && t('compatGrowHeading')) || 'Над чем стоит расти')+'</div>';
               grow.forEach(function(g){ h+='<div class="facet soft"><span class="facet-ic">'+CLK+'</span><span class="facet-tx"><b>'+esc(g.title)+'</b><span>'+esc(g.desc)+'</span></span></div>'; });
             }
             fc.innerHTML=h;
@@ -41518,7 +41648,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
               if(resp.ok && json.ok && json.result){ render(json.result); return; }
               // валидационные кейсы — мягкая подсказка + назад (а не пустой экран)
               if(json.error_code==='errContactNeedsBirthData' || json.error_code==='errPartyLoad' || json.error_code==='errNeedTwoParties'){
-                if(typeof window.showToast==='function') window.showToast('Для разбора нужны дата и место рождения обоих');
+                if(typeof window.showToast==='function') window.showToast((typeof t === 'function' && t('errCompatNeedBirthData')) || 'Для разбора нужны дата и место рождения обоих');
                 if(window.goBack) window.goBack();
                 return;
               }
@@ -42302,7 +42432,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
         var btn = document.getElementById('scPageGiftBtn');
         if (!btn) return;
         btn.addEventListener('click', async function() {
-          btn.disabled = true; btn.textContent = 'Активирую…';
+          btn.disabled = true; btn.textContent = typeof t === 'function' ? t('btnActivating') : 'Активирую…'; // (аудит iPhone 24.09: убран хардкод RU, теперь через существующий ключ btnActivating)
           var apiBase  = (window.BACKEND_URL || window.HEROES_API_BASE || '').replace(/\/$/, '');
           if (!apiBase || !hasAuth()) { btn.disabled = false; btn.textContent = typeof t === 'function' ? t('btnTry') : 'Попробовать'; return; }
           var initData = getInitData();
@@ -43675,8 +43805,8 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
 
         // Не показываем «Оплата получена» до подтверждения сервером — только «Проверяем оплату…»
         var _pendingSubName = isSubPaymentImmediate ? (pendingPayment.plan_name || (
-            pendingPayment.plan_key === 'plan_basic' ? 'Душа' :
-            pendingPayment.plan_key === 'plan_plus' ? 'Глубина' : 'Лаборатория')) : '';
+            pendingPayment.plan_key === 'plan_basic' ? t('planBasicName') :
+            pendingPayment.plan_key === 'plan_plus' ? t('planPlusName') : t('planMasterNameText'))) : ''; // (аудит iPhone 24.09: убран хардкод RU-названий тарифа)
         (function() {
           var pt = document.getElementById('paymentThanksTitle');
           var ps = document.getElementById('paymentThanksSubtitle');
@@ -43791,7 +43921,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
                 var isAn2 = isAnalysisPaymentImmediate || payMode === 'deep_analysis' || paySku === 'deep_analysis_addon';
                 var isSc2 = isSoulChatDayImmediate || payMode === 'soul_chat_day' || paySku === 'soul_chat_1day';
                 if (isSub2) {
-                  var sn = _pendingSubName || (paySku === 'soul_basic_sub' ? 'Душа' : paySku === 'soul_plus_sub' ? 'Глубина' : 'Лаборатория');
+                  var sn = _pendingSubName || (paySku === 'soul_basic_sub' ? t('planBasicName') : paySku === 'soul_plus_sub' ? t('planPlusName') : t('planMasterNameText')); // (аудит iPhone 24.09: убран хардкод RU-названий тарифа)
                   if (pt) pt.textContent = t('subActivated') || 'Тариф активирован!';
                   if (pm) pm.innerHTML = t('payConfirmedPlan').replace('{plan}', sn);
                   if (pb) { pb.style.display = ''; pb.style.visibility = 'visible'; pb.textContent = t('btnGoHome'); pb.setAttribute('data-goto', 'homePage'); }
@@ -43869,15 +43999,15 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
               var isSubFromMode = (payMode && payMode.startsWith('sub_')) || isSubscriptionSku(paySku);
               if (isSubFromMode && paymentThanksMsg) {
                 var sn = isSubscriptionSku(paySku)
-                  ? (paySku === 'soul_basic_sub' ? 'Душа' : (paySku === 'soul_plus_sub' ? 'Глубина' : 'Лаборатория'))
-                  : (payMode.includes('basic') ? 'Душа' : payMode.includes('plus') ? 'Глубина' : 'Лаборатория');
+                  ? (paySku === 'soul_basic_sub' ? t('planBasicName') : (paySku === 'soul_plus_sub' ? t('planPlusName') : t('planMasterNameText')))
+                  : (payMode.includes('basic') ? t('planBasicName') : payMode.includes('plus') ? t('planPlusName') : t('planMasterNameText')); // (аудит iPhone 24.09: убран хардкод RU-названий тарифа)
                 var ptT = document.getElementById('paymentThanksTitle');
                 var ptS = document.getElementById('paymentThanksSubtitle');
                 var ptH = document.getElementById('paymentThanksHint');
                 var ptB = document.getElementById('paymentThanksBackBtn');
                 if (ptT) ptT.textContent = t('subActivated');
                 if (ptS) ptS.textContent = sn;
-                paymentThanksMsg.innerHTML = 'Тариф <strong>' + sn + '</strong> — ' + t('subscriptionActive');
+                paymentThanksMsg.innerHTML = t('planConfirmHeader') + ' <strong>' + sn + '</strong> — ' + t('subscriptionActive'); // (аудит iPhone 24.09: убран хардкод «Тариф»)
                 if (ptH) ptH.style.display = 'none';
                 if (ptB) { ptB.textContent = t('btnGoHome'); ptB.setAttribute('data-goto', 'homePage'); }
               } else if (payMode === 'deep_analysis' || paySku === 'deep_analysis_addon') {
@@ -46652,7 +46782,8 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
         var apiBase = (window.BACKEND_URL || window.HEROES_API_BASE || '').replace(/\/$/, '');
         if (!apiBase) return;
         profileDeleteAccountBtn.disabled = true;
-        profileDeleteAccountBtn.textContent = 'Удаляем…';
+        // (аудит iPhone 24.09: локализация текста кнопки во время удаления — было hardcoded RU)
+        profileDeleteAccountBtn.textContent = (typeof t === 'function' ? (t('profileDeletingLabel') || 'Удаляем…') : 'Удаляем…');
         var headers = {};
         try {
           if (typeof getAuthHeaders === 'function') {
@@ -46684,7 +46815,8 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
               } catch(_) {}
               window._googleJwt = null;
               window._googleUser = null;
-              window.alert('Аккаунт удалён. Спасибо, что были с нами.');
+              // (аудит iPhone 24.09: локализация финального alert — было hardcoded RU)
+              window.alert(typeof t === 'function' ? (t('profileDeletedAlert') || 'Аккаунт удалён. Спасибо, что были с нами.') : 'Аккаунт удалён. Спасибо, что были с нами.');
               // Перезапуск приложения — новая сессия.
               // TG/VK: НЕ сбрасываем URL на голый origin — launch-параметры платформы
               // (tgWebAppData в URL / VK signature) задают окружение и авторизацию; их потеря
@@ -46698,13 +46830,14 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
               }
             } else {
               profileDeleteAccountBtn.disabled = false;
-              profileDeleteAccountBtn.textContent = 'Удалить аккаунт';
+              // (аудит iPhone 24.09: локализация revert-текста кнопки — переиспользуем ключ исходной надписи)
+              profileDeleteAccountBtn.textContent = (typeof t === 'function' ? (t('profileDeleteAccountBtn') || 'Удалить аккаунт и все данные') : 'Удалить аккаунт и все данные');
               console.warn('[me/delete]', d && d.error); if (typeof window._ensureOnline === 'function') window._ensureOnline(); // №37
             }
           })
           .catch(function(e) {
             profileDeleteAccountBtn.disabled = false;
-            profileDeleteAccountBtn.textContent = 'Удалить аккаунт';
+            profileDeleteAccountBtn.textContent = (typeof t === 'function' ? (t('profileDeleteAccountBtn') || 'Удалить аккаунт и все данные') : 'Удалить аккаунт и все данные');
             console.warn('[me/delete]', e && e.message);
             if (typeof window._ensureOnline === 'function') window._ensureOnline(); // №37
           });
@@ -46732,7 +46865,8 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
         { iskry: 250, price_usd: 22, label: '250 Искр', badge: 'discount', badge_text: '−12%' },
         { iskry: 500, price_usd: 40, label: '500 Искр', badge: 'best', badge_text: '⭐ Лучший выбор' }
       ];
-      var ISKRY_WELCOME_AMOUNT = 100;
+      // (аудит iPhone 24.09: удалён дубль ISKRY_WELCOME_AMOUNT=100 — единственное
+      // объявление теперь в 01-core-i18n.js:265 (=0), закон «вкус — основной вход»)
       var ISKRY_REFERRAL_SENDER = 30;
       function getIskryBalance() {
         return parseInt(localStorage.getItem('yupsoul_iskry') || '0', 10);
@@ -49332,12 +49466,14 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           if (syncing) return;
           syncing = true;
           try {
-            var per = tl('perMonth', ' · 30 дней').replace(/^\s*·\s*/, '').trim();
+            // (аудит iPhone 24.09: native перезадаёт perMonth='' — раньше пустая строка трактовалась
+            // как "нет перевода" и подставлялся хардкод "· 30 дней" на всех языках)
+            var per = tl('perMonth', '').replace(/^\s*·\s*/, '').trim();
             CARDS.forEach(function (c) {
               var card = $(c[0]); if (!card) return;
               var m = money(($(c[1]) || {}).textContent);
               setText(card.querySelector('.plan-price b'), m);
-              setText(card.querySelector('.plan-price .per'), m ? '· ' + per : '');
+              setText(card.querySelector('.plan-price .per'), (m && per) ? '· ' + per : '');
               var num = parseFloat(m.replace(/[^\d.,]/g, '').replace(/\s/g, '').replace(',', '.'));
               var tracks = parseInt((typeof PLAN_TRACKS !== 'undefined' && PLAN_TRACKS[c[2]]) || '0', 10);
               var cur = (m.match(/[₽$€]/) || ['₽'])[0];
@@ -53699,7 +53835,8 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
               // Отмену в системном окне не комментируем — человек закрыл его сам.
               var msg = String((e && e.message) || e || '');
               if (!/cancel|1001/i.test(msg) && typeof window.showToast === 'function') {
-                try { window.showToast(typeof t === 'function' ? t('errPurchaseFailed') : 'Не получилось войти'); } catch(_) {}
+                // (аудит iPhone 24.09: тост ошибки входа брал текст про неудавшуюся покупку — отдельный ключ)
+                try { window.showToast(typeof t === 'function' ? t('errSignInFailed') : 'Не получилось войти'); } catch(_) {}
               }
               console.warn('[native] вход через Apple не удался', e);
             } finally {
@@ -53933,6 +54070,55 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
             })();
           }
         }
+
+        /* ── Карусель отзывов на экране входа: бегущая строка + палец ──────────────
+           Алла 24.09: «отзывы вращаются и их можно пальцем подвигать». 22.09 на нативе
+           ручной скролл был выключен, осталась только CSS-анимация. Теперь на нативе
+           строкой управляет JS: едет сама, при касании останавливается и идёт за
+           пальцем, после отпускания через полторы секунды продолжает с того же места.
+           Скорость та же, что у CSS (полкруга за 28 с). «Уменьшить движение» — стоит,
+           двигается только пальцем. Веб/TG/VK не затронуты — модуль нативный. */
+        (function reviewsMarquee() {
+          var wrap = document.querySelector('#webLoginScreen .start-reviews');
+          var track = document.getElementById('startReviewsTrack');
+          if (!wrap || !track) return;
+          var reduce = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+          track.classList.add('js-marquee');
+          wrap.classList.add('js-marquee-wrap');
+          var x = 0, half = 0, speed = 0, last = 0, dragging = false, startX = 0, startOff = 0, idleUntil = 0;
+          function measure() {
+            half = track.scrollWidth / 2;               // контент продублирован (6+6), полкруга = бесшовная петля
+            speed = half > 0 ? half / 28 : 0;            // px/с, как у CSS-анимации 28s
+          }
+          function apply() {
+            if (half > 0) { if (x <= -half) x += half; if (x > 0) x -= half; }
+            track.style.transform = 'translate3d(' + x + 'px,0,0)';
+          }
+          function tick(ts) {
+            if (!last) last = ts;
+            var dt = Math.min(0.1, (ts - last) / 1000); last = ts;
+            // offsetParent у потомков position:fixed всегда null (та же грабля, что у сторожа онбординга) — смотрим на ширину
+            if (wrap.offsetWidth > 0) {
+              if (!half) measure();
+              if (!dragging && !reduce && ts > idleUntil && speed) { x -= speed * dt; apply(); }
+            }
+            requestAnimationFrame(tick);
+          }
+          wrap.addEventListener('pointerdown', function(e) {
+            dragging = true; startX = e.clientX; startOff = x;
+            try { wrap.setPointerCapture(e.pointerId); } catch (_) {}
+          });
+          wrap.addEventListener('pointermove', function(e) {
+            if (!dragging) return;
+            x = startOff + (e.clientX - startX); apply();
+          });
+          function release() { if (!dragging) return; dragging = false; idleUntil = performance.now() + 1500; }
+          wrap.addEventListener('pointerup', release);
+          wrap.addEventListener('pointercancel', release);
+          window.addEventListener('resize', function() { half = 0; });
+          measure();
+          requestAnimationFrame(tick);
+        })();
       })();
 </script>
 
@@ -54462,7 +54648,8 @@ html body #paymentOverlay #payOvStatus,html body #paymentOverlay #payOvStatus.er
     </div>
 
     <!-- Цена-якорь. Кликабельна = клик «Оплатить картой» (VK модерация п.1). Цену пишет движок. -->
-    <div class="price-row" id="payOvPriceBlock" role="button" tabindex="0" aria-label="Оплатить картой" onclick="var b=document.getElementById('payOvCardBtn');if(b)b.click();" style="cursor:pointer;">
+    <!-- аудит iPhone 24.09: aria-label без i18n -->
+    <div class="price-row" id="payOvPriceBlock" role="button" tabindex="0" aria-label="Оплатить картой" data-i18n-aria="payOvCardBtn" onclick="var b=document.getElementById('payOvCardBtn');if(b)b.click();" style="cursor:pointer;">
       <div>
         <div class="price-label" id="payOvPriceLabel" data-i18n="payPriceLabel">К оплате</div>
         <div class="price-sub" data-i18n="payPriceSub">Разовая оплата · одна песня</div>
@@ -63613,7 +63800,8 @@ body.theme-light #tourReward.tour-new,html.is-vk-light:not(.dark) #tourReward.to
 .theme-light #dlUnlockOverlay{--bg:#faf5ec !important;--surface:rgba(255,255,255,.8) !important;--surface-2:rgba(74,38,46,.08) !important;--line:rgba(74,38,46,.1) !important;--line-2:rgba(74,38,46,.16) !important;--text:#241526 !important;--muted:#6f5a66 !important;--faint:#9a8088 !important}
 .theme-light #dlUnlockOverlay body{background:#ece0d0 !important}
 </style>
-<div id="dlUnlockOverlay" data-state="gate" role="dialog" aria-modal="true" aria-label="Скачать песню">
+<!-- аудит iPhone 24.09: aria-label без i18n -->
+<div id="dlUnlockOverlay" data-state="gate" role="dialog" aria-modal="true" aria-label="Скачать песню" data-i18n-aria="dlSongTitle">
   <div class="ph-stars"></div>
   <div class="confetti-layer" id="dlCfLayer"></div>
 
@@ -64092,7 +64280,8 @@ body.theme-light #tourReward.tour-new,html.is-vk-light:not(.dark) #tourReward.to
     body.theme-light #prismReadView,html.is-vk-light:not(.dark) #prismReadView,html.is-ok-light:not(.dark) #prismReadView{color:#241526 !important}
     body.theme-light #prismReadView .ghost,html.is-vk-light:not(.dark) #prismReadView .ghost,html.is-ok-light:not(.dark) #prismReadView .ghost{color:#241526 !important}
     </style>
-    <div id="prismReadView" role="dialog" aria-modal="true" aria-label="Разбор">
+    <!-- аудит iPhone 24.09: aria-label без i18n -->
+    <div id="prismReadView" role="dialog" aria-modal="true" aria-label="Разбор" data-i18n-aria="scPrismWord">
       <div class="ph-stars"></div>
       <!-- Шапка окна по эталону showcase-oracle (.s-res): чип «К разборам» вместо
            крестика, надзаголовок «Разбор NN · раздел» и h2. Иконки темы в эталоне нет. -->
@@ -64334,7 +64523,8 @@ html.is-ok-light:not(.dark) #scHistView .ora-v2.ora-v2 #hist .empty .ic{backgrou
     body.theme-light #prismBuySheet .pr-bal,html.is-vk-light:not(.dark) #prismBuySheet .pr-bal,html.is-ok-light:not(.dark) #prismBuySheet .pr-bal{color:#6f5a66 !important}
     body.theme-light #prismBuySheet .buy-cta.topup,html.is-vk-light:not(.dark) #prismBuySheet .buy-cta.topup{color:#3a2305 !important}
     </style>
-    <div id="prismBuySheet" data-bal="ok" role="dialog" aria-modal="true" aria-label="Покупка разбора">
+    <!-- аудит iPhone 24.09: aria-label без i18n -->
+    <div id="prismBuySheet" data-bal="ok" role="dialog" aria-modal="true" aria-label="Покупка разбора" data-i18n-aria="ariaPrismPurchase">
       <div class="scrim" onclick="closePrismBuy()"></div>
       <div class="sheet">
         <div class="grip"></div>
@@ -64344,7 +64534,8 @@ html.is-ok-light:not(.dark) #scHistView .ora-v2.ora-v2 #hist .empty .ic{backgrou
             <div class="sh-eyebrow" data-i18n="prismReadEyebrow">Персональный разбор</div>
             <h2 class="sh-title" id="prismBuyTitle">Разбор</h2>
           </div>
-          <button type="button" class="sh-x" onclick="closePrismBuy()" aria-label="Закрыть"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+          <!-- аудит iPhone 24.09: aria-label без i18n -->
+          <button type="button" class="sh-x" onclick="closePrismBuy()" aria-label="Закрыть" data-i18n-aria="navClose"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
         </div>
         <p class="desc" id="prismBuyDesc" data-i18n="prismBuyDesc">Глубокий персональный разбор по твоей карте — подробно о тебе, и как это разблокировать.</p>
         <div class="incl">

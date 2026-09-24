@@ -74,7 +74,8 @@
         <div id="mtNowPlaying" class="mt-now-playing mtv2-player" style="display:none;">
           <div class="bg" aria-hidden="true"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div><div class="stars"></div></div>
           <header class="v2ptop">
-            <button type="button" class="v2icon" id="mtNpMinBtn" aria-label="Свернуть"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+            <!-- аудит iPhone 24.09: aria-label без i18n -->
+            <button type="button" class="v2icon" id="mtNpMinBtn" aria-label="Свернуть" data-i18n-aria="coupleCollapseEdit"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
             <div class="v2ctx"><span class="v2ctx-sub" data-i18n="mtNpFromCollection">Играет из коллекции</span><span class="v2ctx-src" data-i18n="mtTabTracks">Мои треки</span></div>
             <span class="v2icon" aria-hidden="true" style="visibility:hidden;pointer-events:none"></span>
           </header>
@@ -87,9 +88,11 @@
                 <div class="v2ptitle" id="mtNpTitle">--</div>
                 <div class="v2psub" id="mtNpArtist">YupSoul</div>
               </div>
-              <button type="button" class="v2heart" id="mtNpHeart" aria-label="Нравится" title="Нравится" data-i18n-aria="mtActLike"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M12 20.4C6.9 16.6 4.2 13.6 4.2 10.2A4.3 4.3 0 0 1 12 7.6a4.3 4.3 0 0 1 7.8 2.6c0 3.4-2.7 6.4-7.8 10.2Z" fill="currentColor"/></svg></button>
+              <!-- аудит iPhone 24.09: title без i18n (aria уже был) -->
+              <button type="button" class="v2heart" id="mtNpHeart" aria-label="Нравится" title="Нравится" data-i18n-aria="mtActLike" data-i18n-title="mtActLike"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M12 20.4C6.9 16.6 4.2 13.6 4.2 10.2A4.3 4.3 0 0 1 12 7.6a4.3 4.3 0 0 1 7.8 2.6c0 3.4-2.7 6.4-7.8 10.2Z" fill="currentColor"/></svg></button>
               <!-- Сохранить в коллекцию (закладка) — ТОЛЬКО для радио-треков (Алла 29.06: закладку убрали из строки Радио, сохранять отсюда). display:none по умолчанию, showNowPlaying включает для is_radio. -->
-              <button type="button" class="v2heart" id="mtNpSaveBtn" aria-label="Сохранить" title="Сохранить в коллекцию" style="display:none"><svg width="21" height="21" viewBox="0 0 24 24"><path d="M6.5 3h11v17.3l-5.5-4.4-5.5 4.4Z" fill="currentColor"/></svg></button>
+              <!-- аудит iPhone 24.09: aria-label/title без i18n -->
+              <button type="button" class="v2heart" id="mtNpSaveBtn" aria-label="Сохранить" title="Сохранить в коллекцию" data-i18n-aria="save" data-i18n-title="mtSaveToCollectionTitle" style="display:none"><svg width="21" height="21" viewBox="0 0 24 24"><path d="M6.5 3h11v17.3l-5.5-4.4-5.5 4.4Z" fill="currentColor"/></svg></button>
             </div>
             <div class="v2viz" id="mtNpViz" aria-hidden="true"></div>
           </div>
@@ -104,16 +107,22 @@
               </div>
             </div>
             <div class="controls">
-              <button type="button" class="ctrl sm" id="mtNpShuffleBtn" aria-label="Вперемешку"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"/><path d="M4 20 21 3"/><path d="M21 16v5h-5"/><path d="m15 15 6 6"/><path d="M4 4l5 5"/></svg></button>
-              <button type="button" class="ctrl" id="mtNpPrevBtn" aria-label="Предыдущий"><svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><polygon points="19 20 9 12 19 4"/><rect x="5" y="4" width="2.6" height="16" rx="1.3"/></svg></button>
-              <button type="button" class="play" id="mtNpPlayBtn" aria-label="Пауза"><svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor"><polygon points="8 5 19 12 8 19"/></svg></button>
-              <button type="button" class="ctrl" id="mtNpNextBtn" aria-label="Следующий"><svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 4 15 12 5 20"/><rect x="16.4" y="4" width="2.6" height="16" rx="1.3"/></svg></button>
-              <button type="button" class="ctrl sm" id="mtNpRepeatBtn" aria-label="Повтор"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m17 2 4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg></button>
+              <!-- аудит iPhone 24.09: aria-label без i18n -->
+              <button type="button" class="ctrl sm" id="mtNpShuffleBtn" aria-label="Вперемешку" data-i18n-aria="mtShuffleAria"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"/><path d="M4 20 21 3"/><path d="M21 16v5h-5"/><path d="m15 15 6 6"/><path d="M4 4l5 5"/></svg></button>
+              <!-- аудит iPhone 24.09: aria-label без i18n -->
+              <button type="button" class="ctrl" id="mtNpPrevBtn" aria-label="Предыдущий" data-i18n-aria="mtPrevAria"><svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><polygon points="19 20 9 12 19 4"/><rect x="5" y="4" width="2.6" height="16" rx="1.3"/></svg></button>
+              <!-- аудит iPhone 24.09: aria-label без i18n -->
+              <button type="button" class="play" id="mtNpPlayBtn" aria-label="Пауза" data-i18n-aria="pauseLabel"><svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor"><polygon points="8 5 19 12 8 19"/></svg></button>
+              <!-- аудит iPhone 24.09: aria-label без i18n -->
+              <button type="button" class="ctrl" id="mtNpNextBtn" aria-label="Следующий" data-i18n-aria="mtNextAria"><svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 4 15 12 5 20"/><rect x="16.4" y="4" width="2.6" height="16" rx="1.3"/></svg></button>
+              <!-- аудит iPhone 24.09: aria-label без i18n -->
+              <button type="button" class="ctrl sm" id="mtNpRepeatBtn" aria-label="Повтор" data-i18n-aria="mtRepeatAria"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m17 2 4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg></button>
             </div>
             <!-- Громкость — ВЕРБАТИМ из design-new/03.html: кнопка-динамик + кастомный .vol-track/.vol-fill/.vol-knob + .vol-pct.
                  ID движка сохранены (mtNpVolumeBtn / mtNpVolumeIcon / mtNpVolPct); трек/заливка/бегунок — mtNpVolumeTrack/mtNpVolFill/mtNpVolKnob. -->
-            <div class="volume" role="group" aria-label="Громкость">
-              <button type="button" class="vol-btn" id="mtNpVolumeBtn" aria-label="Звук" title="Громкость" data-i18n-title="mtTooltipVolume">
+            <!-- аудит iPhone 24.09: aria-label без i18n -->
+            <div class="volume" role="group" aria-label="Громкость" data-i18n-aria="mtVolumeLabel">
+              <button type="button" class="vol-btn" id="mtNpVolumeBtn" aria-label="Звук" data-i18n-aria="mtSoundAria" title="Громкость" data-i18n-title="mtTooltipVolume">
                 <svg id="mtNpVolumeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>
               </button>
               <div class="vol-track" id="mtNpVolumeTrack"><span class="vol-fill" id="mtNpVolFill" style="width:80%"></span><span class="vol-knob" id="mtNpVolKnob" style="left:80%"></span></div>
@@ -153,7 +162,8 @@
         </div>
         <div id="mtHeroCta" class="mt-hero-cta" style="display:none;">
           <button type="button" class="mth-play-all" id="mtHeroPlayAll" data-i18n="mtHeroPlayAll"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><polygon points="7 4 20 12 7 20"/></svg> Слушать всё</button>
-          <button type="button" class="mth-shuffle" id="mtHeroShuffle" aria-label="Перемешать"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"/><path d="M4 20 21 3"/><path d="M21 16v5h-5"/><path d="m15 15 6 6"/><path d="M4 4l5 5"/></svg></button>
+          <!-- аудит iPhone 24.09: aria-label без i18n -->
+          <button type="button" class="mth-shuffle" id="mtHeroShuffle" aria-label="Перемешать" data-i18n-aria="mtHeroShuffleAria"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"/><path d="M4 20 21 3"/><path d="M21 16v5h-5"/><path d="m15 15 6 6"/><path d="M4 4l5 5"/></svg></button>
         </div>
 
         <!-- Loading -->
@@ -209,7 +219,8 @@
           <div class="mini-bar"><i id="mtMiniProgressFill"></i></div>
           <span class="mini-cov" id="mtMiniCover"><i></i></span>
           <span class="mini-b"><b id="mtMiniTitle">—</b><span id="mtMiniSub">YupSoul</span></span>
-          <button type="button" class="mini-play" id="mtMiniPlayBtn" aria-label="Пауза">
+          <!-- аудит iPhone 24.09: aria-label без i18n -->
+          <button type="button" class="mini-play" id="mtMiniPlayBtn" aria-label="Пауза" data-i18n-aria="pauseLabel">
             <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><rect x="7.4" y="4.8" width="3.7" height="14.4" rx="1.3"/><rect x="12.9" y="4.8" width="3.7" height="14.4" rx="1.3"/></svg>
           </button>
         </div>
@@ -232,9 +243,10 @@
       </div>
 
       <!-- Окно «Поделиться» песней (порт showcase-player.html .share, классы msh-*) -->
-      <div id="mtShareSheet" role="dialog" aria-modal="true" aria-label="Поделиться песней">
+      <!-- аудит iPhone 24.09: aria-label без i18n -->
+      <div id="mtShareSheet" role="dialog" aria-modal="true" aria-label="Поделиться песней" data-i18n-aria="shareSheetTitle">
         <div class="msh-head">
-          <button type="button" class="msh-x" id="mshClose" aria-label="Назад" title="Назад" data-i18n-title="mtCloseBtn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button>
+          <button type="button" class="msh-x" id="mshClose" aria-label="Назад" data-i18n-aria="navBack" title="Назад" data-i18n-title="mtCloseBtn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button>
           <b data-i18n="shareSheetTitle">Поделиться песней</b>
         </div>
         <div class="msh-body">
@@ -276,17 +288,19 @@
       </div>
 
       <!-- Караоке (кнопка «Текст») — порт showcase-player.html .lyr -->
-      <div id="mtKaraoke" role="dialog" aria-modal="true" aria-label="Текст песни">
+      <!-- аудит iPhone 24.09: aria-label без i18n -->
+      <div id="mtKaraoke" role="dialog" aria-modal="true" aria-label="Текст песни" data-i18n-aria="karaokeTitle">
         <div class="lyr-head">
-          <button type="button" class="hbtn" id="mtkClose" aria-label="Назад" title="Назад" data-i18n-title="mtCloseBtn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+          <button type="button" class="hbtn" id="mtkClose" aria-label="Назад" data-i18n-aria="navBack" title="Назад" data-i18n-title="mtCloseBtn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
           <div class="tt"><b data-i18n="karaokeTitle">Текст песни</b><span data-i18n="karaokeSub">Караоке · строки в такт</span></div>
-          <button type="button" class="hbtn" id="mtkShare" aria-label="Поделиться" title="Поделиться"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg></button>
+          <button type="button" class="hbtn" id="mtkShare" aria-label="Поделиться" data-i18n-aria="mtActShare" title="Поделиться" data-i18n-title="mtActShare"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg></button>
         </div>
         <div class="lyr-scroll" id="mtkScroll"></div>
         <div class="lyr-foot">
           <span class="fart" id="mtkFootArt"><i></i></span>
           <div class="ftx"><b id="mtkFootName">—</b><span id="mtkFootSub"></span></div>
-          <button type="button" class="fplay" id="mtkPlay" aria-label="Пауза"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><rect x="6.5" y="4.5" width="3.6" height="15" rx="1.2"/><rect x="13.9" y="4.5" width="3.6" height="15" rx="1.2"/></svg></button>
+          <!-- аудит iPhone 24.09: aria-label без i18n -->
+          <button type="button" class="fplay" id="mtkPlay" aria-label="Пауза" data-i18n-aria="pauseLabel"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><rect x="6.5" y="4.5" width="3.6" height="15" rx="1.2"/><rect x="13.9" y="4.5" width="3.6" height="15" rx="1.2"/></svg></button>
         </div>
       </div>
     </div>

@@ -110,19 +110,19 @@
         <div id="formFieldsWrap">
         <div class="field">
           <label id="nameLabel" for="name" data-icon="">Имя</label>
-            <input type="text" id="name" placeholder="Имя (по желанию)" maxlength="50" aria-label="Имя" data-i18n-placeholder="phName">
+            <input type="text" id="name" placeholder="Имя (по желанию)" maxlength="50" aria-label="Имя" data-i18n-aria="nameLbl" data-i18n-placeholder="phName"><!-- аудит iPhone 24.09: aria-label без i18n -->
             <div class="field-hint" id="nameHint">Впишешь имя — оно прозвучит в песне.</div>
         </div>
         
         <div class="field">
           <label id="birthdateLbl" for="birthdate" data-icon="">Дата рождения</label>
           <div id="birthdateWrap" class="birthdate-wrap">
-            <div class="date-group" role="group" aria-label="Дата рождения">
-              <select id="birthdateDay" class="date-group-day" aria-label="День"><option value="" data-i18n="selectDay">День</option></select>
-              <select id="birthdateMonth" class="date-group-month" aria-label="Месяц"><option value="" data-i18n="selectMonth">Месяц</option></select>
-              <select id="birthdateYear" class="date-group-year" aria-label="Год"><option value="" data-i18n="selectYear">Год</option></select>
+            <div class="date-group" role="group" aria-label="Дата рождения" data-i18n-aria="birthdateLbl"><!-- аудит iPhone 24.09: aria-label без i18n -->
+              <select id="birthdateDay" class="date-group-day" aria-label="День" data-i18n-aria="selectDay"><option value="" data-i18n="selectDay">День</option></select>
+              <select id="birthdateMonth" class="date-group-month" aria-label="Месяц" data-i18n-aria="selectMonth"><option value="" data-i18n="selectMonth">Месяц</option></select>
+              <select id="birthdateYear" class="date-group-year" aria-label="Год" data-i18n-aria="selectYear"><option value="" data-i18n="selectYear">Год</option></select>
             </div>
-            <input type="date" id="birthdate" required aria-label="Дата рождения" data-i18n-title="birthDateTooltip" title="Выберите дату рождения" tabindex="-1">
+            <input type="date" id="birthdate" required aria-label="Дата рождения" data-i18n-aria="birthdateLbl" data-i18n-title="birthDateTooltip" title="Выберите дату рождения" tabindex="-1">
             <span id="birthdateCheck" class="birthdate-check" aria-hidden="true"></span>
           </div>
         </div>
@@ -143,7 +143,7 @@
         <div class="field">
           <label id="birthplaceLbl" for="birthplace" data-icon="">Место рождения</label>
           <div id="birthplaceWrap" class="birthplace-wrap">
-              <input type="text" id="birthplace" placeholder="Москва, Лондон, Нью-Йорк..." maxlength="100" autocomplete="off" aria-label="Локация рождения" data-i18n-placeholder="phBirthplace">
+              <input type="text" id="birthplace" placeholder="Москва, Лондон, Нью-Йорк..." maxlength="100" autocomplete="off" aria-label="Локация рождения" data-i18n-aria="ariaBirthplace" data-i18n-placeholder="phBirthplace"><!-- аудит iPhone 24.09: aria-label без i18n -->
               <span id="birthplaceCheck" class="birthplace-check" aria-hidden="true"></span>
             <ul id="birthplaceSuggestions" class="birthplace-suggestions" aria-hidden="true" aria-live="polite"></ul>
           </div>
@@ -152,10 +152,10 @@
         
         <div class="field">
           <label id="birthtimeLbl" data-icon="">Время рождения</label>
-          <div class="time-group" role="group" aria-label="Время рождения">
-            <input type="time" id="birthtime" aria-label="Время" data-i18n-title="birthTimeTooltip" title="Выберите время рождения" class="time-group-input">
+          <div class="time-group" role="group" aria-label="Время рождения" data-i18n-aria="birthtimeLbl"><!-- аудит iPhone 24.09: aria-label без i18n -->
+            <input type="time" id="birthtime" aria-label="Время" data-i18n-aria="profileEditLabelTime" data-i18n-title="birthTimeTooltip" title="Выберите время рождения" class="time-group-input">
             <div class="checkbox time-group-checkbox">
-              <input type="checkbox" id="unknown" aria-label="Не знаю время">
+              <input type="checkbox" id="unknown" aria-label="Не знаю время" data-i18n-aria="ariaDontKnowTime">
               <label for="unknown">Не знаю</label>
             </div>
           </div>
@@ -168,7 +168,7 @@
              ПЕСНИ, не человека; его место у стиля, а не в анкете). «Пол» остаётся личным полем. -->
         <div class="field">
           <label for="gender" id="genderLabel">Пол</label>
-          <select id="gender" required aria-label="Пол">
+          <select id="gender" required aria-label="Пол" data-i18n-aria="gender"><!-- аудит iPhone 24.09: aria-label без i18n -->
               <option value="">Выбери</option>
             <option value="male">Мужской</option>
             <option value="female">Женский</option>
@@ -238,7 +238,8 @@
               <div class="field" id="pickFromLabWrap" style="margin-bottom:12px;">
                 <div style="font-size:0.8rem;color:rgba(255,255,255,0.5);margin-bottom:6px;" id="pickFromLabHint">Выбери человека из Лаборатории — поля заполнятся автоматически</div>
                 <div style="position:relative;">
-                  <button type="button" id="pickFromLabBtn" aria-haspopup="listbox" aria-expanded="false" aria-label="Выбрать из Лаборатории" style="width:100%;padding:10px 14px;border-radius:12px;background:rgba(var(--primary-rgb),0.12);border:1px solid rgba(var(--primary-rgb),0.3);color:var(--primary-color);font-size:0.9rem;font-weight:600;cursor:pointer;font-family:inherit;text-align:left;display:flex;align-items:center;justify-content:space-between;box-shadow:none;">
+                  <!-- аудит iPhone 24.09: aria-label без i18n -->
+                  <button type="button" id="pickFromLabBtn" aria-haspopup="listbox" aria-expanded="false" aria-label="Выбрать из Лаборатории" data-i18n-aria="couplePerson1Pick" style="width:100%;padding:10px 14px;border-radius:12px;background:rgba(var(--primary-rgb),0.12);border:1px solid rgba(var(--primary-rgb),0.3);color:var(--primary-color);font-size:0.9rem;font-weight:600;cursor:pointer;font-family:inherit;text-align:left;display:flex;align-items:center;justify-content:space-between;box-shadow:none;">
                     <span id="pickFromLabBtnText">Выбрать из Лаборатории</span>
                     <span id="pickFromLabChevron" style="transition:transform 0.2s;">▾</span>
                   </button>
@@ -252,10 +253,11 @@
               <div class="field">
                 <label id="birthdate2Lbl" for="birthdate2" data-icon="">Дата рождения</label>
                 <div id="birthdate2Wrap" class="birthdate-wrap">
-                  <div class="date-group" role="group" aria-label="Дата рождения второго">
-                    <select id="birthdate2Day" class="date-group-day" aria-label="День"><option value="" data-i18n="selectDay">День</option></select>
-                    <select id="birthdate2Month" class="date-group-month" aria-label="Месяц"><option value="" data-i18n="selectMonth">Месяц</option></select>
-                    <select id="birthdate2Year" class="date-group-year" aria-label="Год"><option value="" data-i18n="selectYear">Год</option></select>
+                  <!-- аудит iPhone 24.09: aria-label без i18n -->
+                  <div class="date-group" role="group" aria-label="Дата рождения второго" data-i18n-aria="ariaBirthdateSecond">
+                    <select id="birthdate2Day" class="date-group-day" aria-label="День" data-i18n-aria="selectDay"><option value="" data-i18n="selectDay">День</option></select>
+                    <select id="birthdate2Month" class="date-group-month" aria-label="Месяц" data-i18n-aria="selectMonth"><option value="" data-i18n="selectMonth">Месяц</option></select>
+                    <select id="birthdate2Year" class="date-group-year" aria-label="Год" data-i18n-aria="selectYear"><option value="" data-i18n="selectYear">Год</option></select>
                   </div>
                   <!-- Batch 5.33 — VK Testers ID 7259402: min/max ограничения -->
                   <input type="date" id="birthdate2" min="1900-01-01" data-i18n-title="birthDateTooltip" title="Выберите дату рождения" tabindex="-1">
@@ -264,7 +266,8 @@
               <div class="field">
                 <label id="birthplace2Lbl" for="birthplace2" data-icon="">Место рождения</label>
                 <div id="birthplace2Wrap" class="birthplace-wrap">
-                  <input type="text" id="birthplace2" placeholder="Москва, Лондон, Нью-Йорк..." maxlength="100" autocomplete="off" aria-label="Локация рождения второго" data-i18n-placeholder="phBirthplace">
+                  <!-- аудит iPhone 24.09: aria-label без i18n -->
+                  <input type="text" id="birthplace2" placeholder="Москва, Лондон, Нью-Йорк..." maxlength="100" autocomplete="off" aria-label="Локация рождения второго" data-i18n-aria="ariaBirthplaceSecond" data-i18n-placeholder="phBirthplace">
                   <span id="birthplace2Check" class="birthplace-check" aria-hidden="true"></span>
                   <ul id="birthplaceSuggestions2" class="birthplace-suggestions" aria-hidden="true" aria-live="polite"></ul>
                 </div>
@@ -272,10 +275,11 @@
               </div>
               <div class="field">
                 <label id="birthtime2Lbl" data-icon="">Время рождения</label>
+                <!-- аудит iPhone 24.09: aria-label без i18n -->
                 <div class="time-group" role="group">
-                  <input type="time" id="birthtime2" aria-label="Время" data-i18n-title="birthTimeTooltip" title="Выберите время рождения" class="time-group-input">
+                  <input type="time" id="birthtime2" aria-label="Время" data-i18n-aria="profileEditLabelTime" data-i18n-title="birthTimeTooltip" title="Выберите время рождения" class="time-group-input">
                   <div class="checkbox time-group-checkbox">
-                    <input type="checkbox" id="unknown2" aria-label="Не знаю время">
+                    <input type="checkbox" id="unknown2" aria-label="Не знаю время" data-i18n-aria="ariaDontKnowTime">
                     <label for="unknown2">Не знаю</label>
                   </div>
                 </div>
@@ -350,7 +354,8 @@
           <!-- Блок ввода: textarea + быстрые запросы -->
           <div class="request-input-box">
             <!-- VK Testers ID 7261250: ограничение 500 символов (был unlimited) -->
-            <textarea id="request" class="request-textarea" placeholder="Например: про смелость начать заново" aria-label="Запрос" rows="4" maxlength="500" data-i18n-placeholder="phRequest"></textarea>
+            <!-- аудит iPhone 24.09: aria-label без i18n -->
+            <textarea id="request" class="request-textarea" placeholder="Например: про смелость начать заново" aria-label="Запрос" data-i18n-aria="ariaSongRequest" rows="4" maxlength="500" data-i18n-placeholder="phRequest"></textarea>
             <div class="request-quick-bar">
               <button type="button" class="request-quick-toggle" id="quickPickerBtn" onclick="toggleQuickPicker(event)">
                 <span id="quickPickerLabel">✦ Быстрые запросы</span>
@@ -449,7 +454,8 @@
                13.07). Теперь язык — общий ребёнок #styleFieldWrap, видим во всех 3 режимах. -->
           <div class="field" id="languageFieldWrap" style="margin-top:14px;">
             <label for="language" id="languageLabel">Язык песни</label>
-            <select id="language" required aria-label="Язык песни и описания" data-i18n-title="formLangTooltip" title="На каком языке будет текст песни и расшифровка">
+            <!-- аудит iPhone 24.09: aria-label без i18n -->
+            <select id="language" required aria-label="Язык песни и описания" data-i18n-aria="ariaSongLanguage" data-i18n-title="formLangTooltip" title="На каком языке будет текст песни и расшифровка">
                 <option value="">Выбери</option>
               <option value="ru">Русский</option>
               <option value="en">English</option>
@@ -503,7 +509,8 @@
             <div class="request-input-box">
               <!-- 5000 — потолок Suno для модели V5_5 (у V4 было 3000). Ниже резать нечем:
                    наши песни на 5 минут занимают ~1900 символов, запас нужен. -->
-              <textarea id="customLyrics" class="request-textarea" placeholder="Впиши свои строки — споём их" aria-label="Свой текст песни" rows="8" maxlength="5000" data-i18n-placeholder="phCustomLyrics"></textarea>
+              <!-- аудит iPhone 24.09: aria-label без i18n -->
+              <textarea id="customLyrics" class="request-textarea" placeholder="Впиши свои строки — споём их" aria-label="Свой текст песни" data-i18n-aria="ariaCustomLyrics" rows="8" maxlength="5000" data-i18n-placeholder="phCustomLyrics"></textarea>
             </div>
             <!-- Счётчик с ориентиром: без него человек пишет четыре строки и получает трек
                  на минуту вместо трёх (замер по 2448 готовым трекам: 3 мин ≈ 1400 символов). -->

@@ -562,12 +562,14 @@
           if (syncing) return;
           syncing = true;
           try {
-            var per = tl('perMonth', ' · 30 дней').replace(/^\s*·\s*/, '').trim();
+            // (аудит iPhone 24.09: native перезадаёт perMonth='' — раньше пустая строка трактовалась
+            // как "нет перевода" и подставлялся хардкод "· 30 дней" на всех языках)
+            var per = tl('perMonth', '').replace(/^\s*·\s*/, '').trim();
             CARDS.forEach(function (c) {
               var card = $(c[0]); if (!card) return;
               var m = money(($(c[1]) || {}).textContent);
               setText(card.querySelector('.plan-price b'), m);
-              setText(card.querySelector('.plan-price .per'), m ? '· ' + per : '');
+              setText(card.querySelector('.plan-price .per'), (m && per) ? '· ' + per : '');
               var num = parseFloat(m.replace(/[^\d.,]/g, '').replace(/\s/g, '').replace(',', '.'));
               var tracks = parseInt((typeof PLAN_TRACKS !== 'undefined' && PLAN_TRACKS[c[2]]) || '0', 10);
               var cur = (m.match(/[₽$€]/) || ['₽'])[0];

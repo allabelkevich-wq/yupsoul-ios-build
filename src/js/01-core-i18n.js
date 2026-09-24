@@ -286,7 +286,7 @@
           tagline: 'Узнай, как звучит твой гороскоп',
           taglineAccent: 'твой',
           startBtn: 'Получи свою песню', myProfile: 'Профиль', myHeroes: 'Лаборатория', myHelp: 'Помощь', admin: 'Админка',
-          compatTitle: 'Совместимость', profileTitle: 'Профиль', profileSubtitle: 'Твои данные и баланс Искр',
+          compatSelf: 'Ты', compatNamesAnd: '{a} и {b}', soPlayTitleFallback: 'Твоя песня', compatTitle: 'Совместимость', profileTitle: 'Профиль', profileSubtitle: 'Твои данные и баланс Искр',
           profileFreeCredits: 'Баланс Искр', profileInviteFriend: 'Пригласи друга', profileShare: 'Поделиться', profileCopyLink: 'Скопировать ссылку', profileLinkCopied: 'Ссылка скопирована',
           // VK Testers 7274710 (Maria Lykosova, Android, 14.05.2026): hardcoded русский текст
           // для шаринга, не зависел от текущего языка приложения.
@@ -408,7 +408,7 @@
           onboardingSlide3Text: 'Введи дату рождения — создай первую песню, минута звучания в подарок.',
           onboardingBtnStart: 'Получить свою песню',
           obBrand: 'YupSoul', obSkip: 'Пропустить', obNext: 'Далее', obCreate: 'Создать первую песню',
-          archTitle: 'Кто ты на самом деле', archLead: 'В твоей дате рождения есть планета, которую в астрологии называют показателем Души. Она и держит твой характер. Назови дату — покажу.', archDateLabel: 'Дата рождения', archGo: 'Показать мой архетип', archEyebrow: 'Показатель Души', archGift: 'Твой дар', archShadow: 'Твоя тень', archSoulPlanet: 'Планета Души', archNote: 'Твоя нота', archBridge: 'Это — словами. А теперь послушай, как это звучит: песня соберётся по этой же дате.', archToSong: 'Собрать мою песню', archAgain: 'Другая дата', archNeedDate: 'Укажи дату рождения', archBadDate: 'Проверь дату — что-то в ней не сходится', signInWithApple: 'Вход с Apple', rgAll: 'Все жанры', rg_rock: 'Рок', rg_electronic: 'Электроника', rg_rap: 'Рэп', rg_folk: 'Фолк', rg_soul: 'Soul / R&B', rg_ambient: 'Ambient', rg_cinematic: 'Кинематографик', rg_acoustic: 'Акустика', rg_sacred: 'Сакральное', rg_pop: 'Поп', rg_other: 'Другое', offlineTitle: 'Нет подключения к интернету', offlineText: 'Проверьте соединение и попробуйте снова', offlineRetry: 'Обновить', errPurchaseFailed: 'Покупка не завершилась', errArchBadDate: 'Проверь дату — что-то в ней не сходится',
+          archTitle: 'Кто ты на самом деле', archLead: 'В твоей дате рождения есть планета, которую в астрологии называют показателем Души. Она и держит твой характер. Назови дату — покажу.', archDateLabel: 'Дата рождения', archGo: 'Показать мой архетип', archEyebrow: 'Показатель Души', archGift: 'Твой дар', archShadow: 'Твоя тень', archSoulPlanet: 'Планета Души', archNote: 'Твоя нота', archBridge: 'Это — словами. А теперь послушай, как это звучит: песня соберётся по этой же дате.', archToSong: 'Собрать мою песню', archAgain: 'Другая дата', archNeedDate: 'Укажи дату рождения', archBadDate: 'Проверь дату — что-то в ней не сходится', signInWithApple: 'Вход с Apple', rgAll: 'Все жанры', rg_rock: 'Рок', rg_electronic: 'Электроника', rg_rap: 'Рэп', rg_folk: 'Фолк', rg_soul: 'Soul / R&B', rg_ambient: 'Ambient', rg_cinematic: 'Кинематографик', rg_acoustic: 'Акустика', rg_sacred: 'Сакральное', rg_pop: 'Поп', rg_other: 'Другое', offlineTitle: 'Нет подключения к интернету', offlineText: 'Проверьте соединение и попробуйте снова', offlineRetry: 'Обновить', errPurchaseFailed: 'Покупка не завершилась', errArchBadDate: 'Проверь дату — что-то в ней не сходится', errSignInFailed: 'Не получилось войти',
           obReward: '+30 Искр за знакомство',
           obChipBirthdate: 'по дате рождения', obChipWhoAmI: '«Кто я?»', obChipDiary: 'дневник дня',
           obChipCompat: 'Ты + мама · 92%', obChipContacts: 'картотека близких', obChipGift: 'подари другу', obChipRadio: 'радио · чужие песни',
@@ -494,12 +494,16 @@
           loading: 'Загрузка…', noCardsYet: 'Нет завершённых карточек', heroHistLoading: 'Загрузка истории…', heroHistEmpty: 'Генераций пока нет', heroHistLoadError: 'Не удалось загрузить историю', heroesPageLoadError: 'Не удалось загрузить героев', retry: 'Повторить',
           forMyself: 'Для себя', forHero: 'Создать песню для {name}', heroDataTitle: 'Данные {name}',
           mtTooltipLyrics: 'Текст', mtTooltipAnalysis: 'Расшифровка', mtTooltipDownload: 'Скачать', mtTooltipShare: 'Поделиться', mtTooltipVolume: 'Громкость', mtVolumeLabel: 'Громкость',
+          // (аудит iPhone 24.09: aria-label плеера «Мои треки» были без i18n)
+          mtSaveToCollectionTitle: 'Сохранить в коллекцию', mtShuffleAria: 'Вперемешку', mtHeroShuffleAria: 'Перемешать', mtPrevAria: 'Предыдущий', mtNextAria: 'Следующий', mtRepeatAria: 'Повтор', mtSoundAria: 'Звук',
           previewHome: 'Главная', previewForm: 'Форма', previewPayment: 'Оплата', previewLoading: 'Загрузка', previewSuccess: 'Успех',
           supportBtn: 'Написать в поддержку',
           subActivated: 'Пакет активирован!', subBtnProfile: 'Мой профиль',
           helpPageTitle: 'Помощь и поддержка', helpPageSubtitle: 'Всё о YupSoul — просто и по делу',
           profileHelpBtn: 'Помощь и поддержка', profileDeleteAccountBtn: 'Удалить аккаунт и все данные',
           deleteAccountConfirm: 'Удалить аккаунт и все связанные данные?\n\nБудут удалены: профиль, настройки, данные о рождении, реферальная история.\n\nВаши созданные треки останутся в общей статистике, но будут отвязаны от вашего аккаунта. Это действие НЕОБРАТИМО.',
+          // (аудит iPhone 24.09: текст кнопки удаления и финальный alert были хардкод-RU)
+          profileDeletingLabel: 'Удаляем…', profileDeletedAlert: 'Аккаунт удалён. Спасибо, что были с нами.',
           profileSectionTheme: 'Тема оформления', themeAuto: 'Авто', themeLight: 'Светлая', themeDark: 'Тёмная',
           profileSubsLink: 'Пакеты', payOvSubsLink: 'пакеты и управление',
           legalTabOffer: 'Оферта', legalTabPrivacy: 'Конфиденциальность', legalTabSubs: 'Пакеты', legalCloseAria: 'Закрыть',
@@ -979,6 +983,8 @@
           formEnterName: 'Введите имя', formNoAuth: 'Нет авторизации',
           formSaving: 'Сохранение…', formDataSaved: 'Данные сохранены ✓',
           formSaveError: 'Ошибка сохранения', formEnterPromo: 'Введите промокод', promoActivated: 'Промокод активирован!', promoNotFound: 'Промокод не найден', promoExpired: 'Промокод истёк', promoUsedUp: 'Промокод больше не действует', promoAlreadyActivated: 'Промокод уже активирован', promoDiscountWord: 'Скидка',
+          // (аудит iPhone 24.09: причины отказа /api/promos/validate были хардкод-RU в reasonMap)
+          promoNotStarted: 'Промокод ещё не активен', promoInactive: 'Промокод деактивирован', promoUserLimitReached: 'Вы уже использовали этот промокод', promoGlobalLimitReached: 'Промокод больше недоступен (лимит исчерпан)', promoSkuMismatch: 'Этот промокод не действует для выбранного типа заявки', promoInvalid: 'Промокод недействителен',
           formPromoError: 'Ошибка проверки. Попробуй позже.', formSecondPerson: 'Второй человек',
           selectDay: 'День', selectMonth: 'Месяц', selectYear: 'Год',
           labelName: 'Имя', labelBirthdate: 'Дата рождения', labelBirthplace: 'Место рождения',
@@ -1204,7 +1210,17 @@
           profilePartnerBadge: 'Партнёр',
           partnerDashStatEarned: 'Заработано за всё время', partnerDashStatAvailable: 'Доступно к выводу (не потрачено)',
           adminTitle: 'Админка', adminDesc: 'Управление заявками, карта архитектуры и настройки — в веб-админке.',
-          adminOpenBtn: 'Открыть веб-админку'
+          adminOpenBtn: 'Открыть веб-админку',
+          // (аудит iPhone 24.09: заголовок вкладки браузера/PWA не переводился)
+          appTitle: 'YupSoul — песня о тебе',
+          // (аудит iPhone 24.09: экран совместимости — переводы отсутствовали)
+          compatBrandSub: 'совместимость', compatRingLabel: 'созвучие', compatFacetWarmth: 'Тепло', compatFacetTenderness: 'Нежность', compatFacetRhythm: 'Ритм', compatFacetTrust: 'Доверие', compatFacetEase: 'Лёгкость', compatFacetSupport: 'Поддержка',
+          compatCtaSong: 'Создать песню о вас двоих', compatCtaAsk: 'Спросить Оракула о связи', compatCtaAskCost: '2 искры', compatCtaShare: 'Поделиться результатом', compatLoadingNames: 'Считаем ваше созвучие…', compatCloserHeading: 'Что вас сближает', compatGrowHeading: 'Над чем стоит расти', errCompatNeedBirthData: 'Для разбора нужны дата и место рождения обоих',
+          // (аудит iPhone 24.09: aria-label/title для скринридеров не переводились)
+          ariaBirthplace: 'Локация рождения', ariaBirthplaceSecond: 'Локация рождения второго', ariaBirthdateSecond: 'Дата рождения второго', ariaDontKnowTime: 'Не знаю время', ariaSongRequest: 'Запрос', ariaSongLanguage: 'Язык песни и описания', ariaCustomLyrics: 'Свой текст песни', ariaRefLink: 'Реферальная ссылка', ariaLangSwitcher: 'Язык интерфейса',
+          ariaHeader: 'Шапка', ariaNav: 'Навигация', ariaMainMenu: 'Главное меню', ariaChangePhoto: 'Изменить фото', ariaYourLink: 'Твоя ссылка', ariaNotifToggle: 'Включить или отключить уведомления', ariaGoToAdmin: 'Перейти в админку', ariaTimeRemaining: 'Оставшееся время доступа',
+          ariaChatMode: 'Режим чата', ariaChatFeed: 'Лента диалога Чат с Оракулом', ariaGoFillProfile: 'Перейти к заполнению профиля', ariaGoCreateSongRequest: 'Перейти к созданию заявки на песню', ariaChatHistory: 'История диалога Чат с Оракулом', ariaSynastryTeaser: 'Синастрия доступна в тарифе Лаборатория',
+          ariaQuestionInputArea: 'Поле ввода вопроса', ariaOracleQuestion: 'Вопрос Чат с Оракулом', ariaCharsLeft: 'Осталось символов', ariaSendQuestion: 'Отправить вопрос', ariaPrismList: 'Список разборов', ariaPrismPurchase: 'Покупка разбора'
         },
         en: {
           dlSongTitle: 'Download song',
@@ -1222,7 +1238,7 @@
           tagline: 'Discover how your horoscope sounds',
           taglineAccent: 'your',
           startBtn: 'Get your song', myProfile: 'Profile', myHeroes: 'Lab', myHelp: 'Help', admin: 'Admin',
-          compatTitle: 'Compatibility', profileTitle: 'Profile', profileSubtitle: 'Your data and Sparks',
+          compatSelf: 'You', compatNamesAnd: '{a} and {b}', soPlayTitleFallback: 'Your song', compatTitle: 'Compatibility', profileTitle: 'Profile', profileSubtitle: 'Your data and Sparks',
           profileFreeCredits: 'Sparks', profileInviteFriend: 'Invite a friend', profileShare: 'Share', profileCopyLink: 'Copy link', profileLinkCopied: 'Link copied',
           refShareTextWithName: 'Hi! Check out this app — it creates a personal song based on your birth date. Really cool, try it — the first minute of your song is a gift!',
           refShareText: 'Check out this app — it creates a personal song based on your birth date. The first minute of your song comes as a gift — give it a try!',
@@ -1339,7 +1355,7 @@
           onboardingSlide3Text: 'Enter your date of birth — create your first song, one minute of it as a gift.',
           onboardingBtnStart: 'Get my song',
           obBrand: 'YupSoul', obSkip: 'Skip', obNext: 'Next', obCreate: 'Create first song',
-          archTitle: 'Who you really are', archLead: 'Your birth date holds a planet astrology calls the indicator of the Soul. It shapes your character. Give me the date — I\'ll show you.', archDateLabel: 'Date of birth', archGo: 'Show my archetype', archEyebrow: 'Indicator of the Soul', archGift: 'Your gift', archShadow: 'Your shadow', archSoulPlanet: 'Soul planet', archNote: 'Your note', archBridge: 'That was in words. Now hear how it sounds: your song is built from the same date.', archToSong: 'Create my song', archAgain: 'Another date', archNeedDate: 'Enter your date of birth', archBadDate: 'Check the date — something doesn\'t add up', signInWithApple: 'Sign in with Apple', rgAll: 'All genres', rg_rock: 'Rock', rg_electronic: 'Electronic', rg_rap: 'Rap', rg_folk: 'Folk', rg_soul: 'Soul / R&B', rg_ambient: 'Ambient', rg_cinematic: 'Cinematic', rg_acoustic: 'Acoustic', rg_sacred: 'Sacred', rg_pop: 'Pop', rg_other: 'Other', offlineTitle: 'No internet connection', offlineText: 'Check your connection and try again', offlineRetry: 'Refresh', errPurchaseFailed: 'The purchase didn\'t go through', errArchBadDate: 'Check the date — something doesn\'t add up',
+          archTitle: 'Who you really are', archLead: 'Your birth date holds a planet astrology calls the indicator of the Soul. It shapes your character. Give me the date — I\'ll show you.', archDateLabel: 'Date of birth', archGo: 'Show my archetype', archEyebrow: 'Indicator of the Soul', archGift: 'Your gift', archShadow: 'Your shadow', archSoulPlanet: 'Soul planet', archNote: 'Your note', archBridge: 'That was in words. Now hear how it sounds: your song is built from the same date.', archToSong: 'Create my song', archAgain: 'Another date', archNeedDate: 'Enter your date of birth', archBadDate: 'Check the date — something doesn\'t add up', signInWithApple: 'Sign in with Apple', rgAll: 'All genres', rg_rock: 'Rock', rg_electronic: 'Electronic', rg_rap: 'Rap', rg_folk: 'Folk', rg_soul: 'Soul / R&B', rg_ambient: 'Ambient', rg_cinematic: 'Cinematic', rg_acoustic: 'Acoustic', rg_sacred: 'Sacred', rg_pop: 'Pop', rg_other: 'Other', offlineTitle: 'No internet connection', offlineText: 'Check your connection and try again', offlineRetry: 'Refresh', errPurchaseFailed: 'The purchase didn\'t go through', errArchBadDate: 'Check the date — something doesn\'t add up', errSignInFailed: 'Couldn\'t sign in',
           obReward: '+30 Sparks for getting started',
           obChipBirthdate: 'from your birth date', obChipWhoAmI: '"Who am I?"', obChipDiary: 'diary of the day',
           obChipCompat: 'You + mom · 92%', obChipContacts: 'your circle', obChipGift: 'gift a friend', obChipRadio: "radio · others' songs",
@@ -1424,12 +1440,14 @@
           loading: 'Loading…', noCardsYet: 'No completed cards yet', heroHistLoading: 'Loading history…', heroHistEmpty: 'No generations yet', heroHistLoadError: 'Could not load history', heroesPageLoadError: 'Could not load heroes', retry: 'Retry',
           forMyself: 'For myself', forHero: 'Create song for {name}', heroDataTitle: '{name} data',
           mtTooltipLyrics: 'Lyrics', mtTooltipAnalysis: 'Analysis', mtTooltipDownload: 'Download', mtTooltipShare: 'Share', mtTooltipVolume: 'Volume', mtVolumeLabel: 'Volume',
+          mtSaveToCollectionTitle: 'Save to collection', mtShuffleAria: 'Shuffle', mtHeroShuffleAria: 'Shuffle', mtPrevAria: 'Previous', mtNextAria: 'Next', mtRepeatAria: 'Repeat', mtSoundAria: 'Sound',
           previewHome: 'Home', previewForm: 'Form', previewPayment: 'Payment', previewLoading: 'Loading', previewSuccess: 'Success',
           supportBtn: 'Contact support',
           subActivated: 'Package activated!', subBtnProfile: 'My profile',
           helpPageTitle: 'Help & Support', helpPageSubtitle: 'Everything about YupSoul — clear and simple',
           profileHelpBtn: 'Help & support', profileDeleteAccountBtn: 'Delete account and all data',
           deleteAccountConfirm: 'Delete account and all related data?\n\nWill be deleted: profile, settings, birth data, referral history.\n\nYour created tracks will stay in overall statistics but will be unlinked from your account. This action is IRREVERSIBLE.',
+          profileDeletingLabel: 'Deleting…', profileDeletedAlert: 'Account deleted. Thanks for being with us.',
           profileSectionTheme: 'Appearance', themeAuto: 'Auto', themeLight: 'Light', themeDark: 'Dark',
           profileSubsLink: 'Packages', payOvSubsLink: 'packages & management',
           legalTabOffer: 'Offer', legalTabPrivacy: 'Privacy', legalTabSubs: 'Packages', legalCloseAria: 'Close',
@@ -1903,6 +1921,7 @@
           formEnterName: 'Enter name', formNoAuth: 'Not authorized',
           formSaving: 'Saving…', formDataSaved: 'Data saved ✓',
           formSaveError: 'Save error', formEnterPromo: 'Enter promo code', promoActivated: 'Promo code activated!', promoNotFound: 'Promo code not found', promoExpired: 'Promo code expired', promoUsedUp: 'Promo code no longer valid', promoAlreadyActivated: 'Promo code already activated', promoDiscountWord: 'Discount',
+          promoNotStarted: 'Promo code isn\'t active yet', promoInactive: 'Promo code has been deactivated', promoUserLimitReached: 'You\'ve already used this promo code', promoGlobalLimitReached: 'Promo code is no longer available (limit reached)', promoSkuMismatch: 'This promo code doesn\'t apply to the selected request type', promoInvalid: 'Promo code is invalid',
           formPromoError: 'Check failed. Try later.', formSecondPerson: 'Second person',
           selectDay: 'Day', selectMonth: 'Month', selectYear: 'Year',
           labelName: 'Name', labelBirthdate: 'Date of birth', labelBirthplace: 'Place of birth',
@@ -2098,7 +2117,8 @@
           scOracleWho: 'Oracle', scIntroTitle: 'I’m here to open you up to yourself', scIntroSubtitle: 'Ask the question that’s been on your mind for a while. I read your birth date and speak without generalities. One question — one Spark.',
           scPrismTitle: 'Readings', scPrismSubtitle: 'Look deeper — your chart, sung aloud', scChartLabel: 'Your chart', scChartNoDob: 'Add your date of birth', scProgReceived: 'Readings received', scProgOpened: 'Readings opened', scPrismTagNew: 'New', scPrismLockedTitle: 'Available with a package', scPrismLockedMsg: 'This reading is available with the Soul Chat package. The first reading «Soul Name» is a gift.', scPrismTryFreeTitle: 'Try «Soul Name»', scPrismPayDesc: 'A deep personal reading from your chart — detailed about you.', scPrismPayHave: 'you have', scPrismPayBtn: 'Open reading', scPrismPayLoading: 'Preparing your reading…', pwTeaserLock: "Oracle didn't finish…", pwTitle: 'Continue the conversation?', pwTeaserBubble: 'I sense there’s something bigger behind this question…', pwPk_q_0_n: '1000 questions', pwPk_q_0_d: '1000 Sparks — lasts a long time', pwPk_q_1_n: '2000 questions', pwPk_q_1_d: '2000 Sparks — months of conversations', pwPk_q_2_n: '5000 questions', pwPk_q_2_d: '5000 Sparks — best price', pwPk_iskry_0_n: '1000 Sparks', pwPk_iskry_0_d: '≈ 10 songs or 1000 questions', pwPk_iskry_1_n: '2000 Sparks', pwPk_iskry_1_d: '≈ 20 songs or 2000 questions', pwPk_iskry_2_n: '5000 Sparks', pwPk_iskry_2_d: '≈ 50 songs — best price', pwSub: 'Sparks are gone — but the Oracle still has things to tell you. Get a pack and continue, no subscriptions or card required.', pwSegQ: 'Questions', pwSegIskry: 'Sparks', pwCtaLabel: 'Continue conversation', pwDay: 'Or', pwDayAccess: 'day access', pwSubscribe: 'Want auto-refill?', pwSubscribeLink: 'Get a package with card', pwSubscribeWhere: '(where available)', pwFoot: "One-time payment. Pack doesn't expire.", pwBadgePopular: 'Best value',
           scPrismLoadingCatalog: 'Loading readings…', scPrismRunning: 'Running your reading…',
-          scPrismErrorTitle: 'Something went wrong', scPrismRunFail: 'Couldn\'t run the reading. Try again.',
+          // (аудит iPhone 24.09: закон №37 — генерик error-тон запрещён, RU/FR уже мягкие)
+          scPrismErrorTitle: 'Didn\'t work', scPrismRunFail: 'Couldn\'t run the reading. Try again.',
           scPrismCatalogErr: 'Couldn\'t load readings.', scPrismCopy: 'Copy reading', prismReadEyebrow: 'Personal reading', prismReadIntro: 'The Oracle reads your chart', prismReadAsk: 'Ask about this reading', prismReadSave: 'Save reading', prismBuyDesc: 'A deep personal reading from your chart — in detail about you and how to unlock it.', prismBuyIncl1Html: '<b>Detailed text</b> based on your birth date', prismBuyIncl2Html: 'Saved to chat — you can <b>ask questions</b>', prismBuyYouHave: 'you have', prismBuyAfter: 'left', prismBuyShort: 'short by', prismBuyOpen: 'Open reading', prismBuyTopup: 'Top up Sparks', prismBuyNoteOk: 'The reading opens right in the chat with the Oracle', prismBuyNoteLow: 'Top up Sparks and open the reading',
           scPrismCopied: 'Reading copied', scPrismCopyFail: 'Copy failed',
           scPrismTryFree: 'Try the gift reading', scPrismGoToPlans: 'Choose a package', scPrismFillProfile: 'Fill in profile',
@@ -2128,7 +2148,14 @@
           profilePartnerBadge: 'Partner',
           partnerDashStatEarned: 'Total earned', partnerDashStatAvailable: 'Available for withdrawal',
           adminTitle: 'Admin', adminDesc: 'Request management, architecture map and settings — in the web admin panel.',
-          adminOpenBtn: 'Open web admin'
+          adminOpenBtn: 'Open web admin',
+          appTitle: 'YupSoul — a song about you',
+          compatBrandSub: 'compatibility', compatRingLabel: 'resonance', compatFacetWarmth: 'Warmth', compatFacetTenderness: 'Tenderness', compatFacetRhythm: 'Rhythm', compatFacetTrust: 'Trust', compatFacetEase: 'Ease', compatFacetSupport: 'Support',
+          compatCtaSong: 'Create a song about you two', compatCtaAsk: 'Ask the Oracle about your bond', compatCtaAskCost: '2 sparks', compatCtaShare: 'Share result', compatLoadingNames: 'Calculating your resonance…', compatCloserHeading: 'What brings you closer', compatGrowHeading: 'What\'s worth growing on', errCompatNeedBirthData: 'The reading needs both people\'s birth date and place',
+          ariaBirthplace: 'Place of birth', ariaBirthplaceSecond: 'Place of birth of the second person', ariaBirthdateSecond: 'Date of birth of the second person', ariaDontKnowTime: 'I don\'t know the time', ariaSongRequest: 'Request', ariaSongLanguage: 'Song and description language', ariaCustomLyrics: 'Your own song lyrics', ariaRefLink: 'Referral link', ariaLangSwitcher: 'Interface language',
+          ariaHeader: 'Header', ariaNav: 'Navigation', ariaMainMenu: 'Main menu', ariaChangePhoto: 'Change photo', ariaYourLink: 'Your link', ariaNotifToggle: 'Turn notifications on or off', ariaGoToAdmin: 'Go to admin panel', ariaTimeRemaining: 'Remaining access time',
+          ariaChatMode: 'Chat mode', ariaChatFeed: 'Oracle Chat conversation feed', ariaGoFillProfile: 'Go fill in your profile', ariaGoCreateSongRequest: 'Go create a song request', ariaChatHistory: 'Oracle Chat conversation history', ariaSynastryTeaser: 'Compatibility reading is available in the Lab plan',
+          ariaQuestionInputArea: 'Question input field', ariaOracleQuestion: 'Question to Oracle Chat', ariaCharsLeft: 'Characters remaining', ariaSendQuestion: 'Send question', ariaPrismList: 'List of readings', ariaPrismPurchase: 'Buy a reading'
         },
         de: {
           dlSongTitle: 'Song herunterladen',
@@ -2146,7 +2173,7 @@
           tagline: 'Entdecke, wie dein Horoskop klingt',
           taglineAccent: 'dein',
           startBtn: 'Hol dir dein Lied', myProfile: 'Profil', myHeroes: 'Labor', myHelp: 'Hilfe', admin: 'Admin',
-          compatTitle: 'Kompatibilität', profileTitle: 'Profil', profileSubtitle: 'Deine Daten und Sparks',
+          compatSelf: 'Du', compatNamesAnd: '{a} und {b}', soPlayTitleFallback: 'Dein Lied', compatTitle: 'Kompatibilität', profileTitle: 'Profil', profileSubtitle: 'Deine Daten und Sparks',
           profileFreeCredits: 'Sparks', profileInviteFriend: 'Freund einladen', profileShare: 'Teilen', profileCopyLink: 'Link kopieren', profileLinkCopied: 'Link kopiert',
           refShareTextWithName: 'Hallo! Schau dir diese App an — sie erstellt einen persönlichen Song basierend auf deinem Geburtsdatum. Wirklich cool, probiere es aus — die erste Minute deines Songs ist ein Geschenk!',
           refShareText: 'Schau dir diese App an — sie erstellt einen persönlichen Song basierend auf deinem Geburtsdatum. Die erste Minute deines Songs ist ein Geschenk — probiere es aus!',
@@ -2179,7 +2206,8 @@
           gender: 'Geschlecht', genderSelect: 'Wählen', male: 'Männlich', female: 'Weiblich', other: 'Divers',
           modeType: 'Song-Format', modeSubtitle: 'Für wen erstellen wir?',
           modeSingle: 'Über mich', modeSingleDesc: 'Ein Lied nach deinem Geburtsdatum.',
-          modeCouple: 'Über uns zwei', modeCoupleDesc: 'Ein Lied für zwei Menschen.',
+          // (аудит iPhone 24.09: DE-текст обрезался до «Über un…» в 375/393px — <br> внутри nowrap-блока форсирует перенос)
+          modeCouple: 'Über uns<br>zwei', modeCoupleDesc: 'Ein Lied für zwei Menschen.',
           modeLockedBadge: 'Mit Paket verfügbar',
           guideTipFormat: 'Wähle ein Format', guideTipFormatLocked: 'Zunächst ein Lied über dich. „Über uns zwei“ und „Energie des Tages“ kommen mit einem Paket', guideTipDate: 'Gib dein Geburtsdatum ein', guideTipStyle: 'Wähle, wie der Stil bestimmt wird', guideTipLyrics: 'Mit Text, nur Musik oder dein eigener Text', guideTipCreate: 'Fertig — tippe auf „Erstellen“',
           guideTipStart: 'Tipp — wir erstellen deinen Song', guideTipGender: 'Wähle das Geschlecht', guideNextBtn: 'Weiter', coupleManualEnter: 'Manuell eingeben', coupleExpandEdit: 'Aufklappen', coupleCollapseEdit: 'Zuklappen', guideTipLanguage: 'Sprache des Songs', guideTipRequest: 'Ein paar Worte zum Thema, und das Lied trifft es genauer. Keine Lust? Überspring es einfach — wir gestalten es nach deiner Deutung.', guideTipName: 'Name eingeben — wird gesungen. Schon ausgefüllt, aber ungewollt? Einfach löschen', guideTipAdv: 'Optional: Ort & Zeit machen es genauer',
@@ -2263,7 +2291,7 @@
           onboardingSlide3Text: 'Gib dein Geburtsdatum ein — erstelle dein erstes Lied, eine Minute davon geschenkt.',
           onboardingBtnStart: 'Mein Lied hören',
           obBrand: 'YupSoul', obSkip: 'Überspringen', obNext: 'Weiter', obCreate: 'Ersten Song erstellen',
-          archTitle: 'Wer du wirklich bist', archLead: 'In deinem Geburtsdatum steckt ein Planet, den die Astrologie den Anzeiger der Seele nennt. Er trägt deinen Charakter. Nenn das Datum — ich zeig es dir.', archDateLabel: 'Geburtsdatum', archGo: 'Meinen Archetyp zeigen', archEyebrow: 'Anzeiger der Seele', archGift: 'Deine Gabe', archShadow: 'Dein Schatten', archSoulPlanet: 'Seelenplanet', archNote: 'Deine Note', archBridge: 'Das waren Worte. Jetzt hör, wie es klingt: der Song entsteht aus demselben Datum.', archToSong: 'Meinen Song erstellen', archAgain: 'Anderes Datum', archNeedDate: 'Gib dein Geburtsdatum ein', archBadDate: 'Prüf das Datum — da stimmt etwas nicht', signInWithApple: 'Mit Apple anmelden', rgAll: 'Alle Genres', rg_rock: 'Rock', rg_electronic: 'Elektronik', rg_rap: 'Rap', rg_folk: 'Folk', rg_soul: 'Soul / R&B', rg_ambient: 'Ambient', rg_cinematic: 'Cinematic', rg_acoustic: 'Akustik', rg_sacred: 'Sakral', rg_pop: 'Pop', rg_other: 'Andere', offlineTitle: 'Keine Internetverbindung', offlineText: 'Prüfe deine Verbindung und versuch es erneut', offlineRetry: 'Neu laden', errPurchaseFailed: 'Der Kauf wurde nicht abgeschlossen', errArchBadDate: 'Prüf das Datum — da stimmt etwas nicht',
+          archTitle: 'Wer du wirklich bist', archLead: 'In deinem Geburtsdatum steckt ein Planet, den die Astrologie den Anzeiger der Seele nennt. Er trägt deinen Charakter. Nenn das Datum — ich zeig es dir.', archDateLabel: 'Geburtsdatum', archGo: 'Meinen Archetyp zeigen', archEyebrow: 'Anzeiger der Seele', archGift: 'Deine Gabe', archShadow: 'Dein Schatten', archSoulPlanet: 'Seelenplanet', archNote: 'Deine Note', archBridge: 'Das waren Worte. Jetzt hör, wie es klingt: der Song entsteht aus demselben Datum.', archToSong: 'Meinen Song erstellen', archAgain: 'Anderes Datum', archNeedDate: 'Gib dein Geburtsdatum ein', archBadDate: 'Prüf das Datum — da stimmt etwas nicht', signInWithApple: 'Mit Apple anmelden', rgAll: 'Alle Genres', rg_rock: 'Rock', rg_electronic: 'Elektronik', rg_rap: 'Rap', rg_folk: 'Folk', rg_soul: 'Soul / R&B', rg_ambient: 'Ambient', rg_cinematic: 'Cinematic', rg_acoustic: 'Akustik', rg_sacred: 'Sakral', rg_pop: 'Pop', rg_other: 'Andere', offlineTitle: 'Keine Internetverbindung', offlineText: 'Prüfe deine Verbindung und versuch es erneut', offlineRetry: 'Neu laden', errPurchaseFailed: 'Der Kauf wurde nicht abgeschlossen', errArchBadDate: 'Prüf das Datum — da stimmt etwas nicht', errSignInFailed: 'Anmeldung hat nicht geklappt',
           obReward: '+30 Funken zum Kennenlernen',
           obChipBirthdate: 'nach deinem Geburtsdatum', obChipWhoAmI: '„Wer bin ich?"', obChipDiary: 'Tagebuch des Tages',
           obChipCompat: 'Du + Mama · 92%', obChipContacts: 'deine Liebsten', obChipGift: 'verschenke an Freunde', obChipRadio: 'Radio · Lieder anderer',
@@ -2348,12 +2376,14 @@
           loading: 'Laden…', noCardsYet: 'Noch keine abgeschlossenen Karten', heroHistLoading: 'Verlauf wird geladen…', heroHistEmpty: 'Noch keine Generierungen', heroHistLoadError: 'Verlauf konnte nicht geladen werden', heroesPageLoadError: 'Helden konnten nicht geladen werden', retry: 'Wiederholen',
           forMyself: 'Für mich', forHero: 'Lied erstellen für {name}', heroDataTitle: 'Daten von {name}',
           mtTooltipLyrics: 'Text', mtTooltipAnalysis: 'Analyse', mtTooltipDownload: 'Herunterladen', mtTooltipShare: 'Teilen', mtTooltipVolume: 'Lautstärke', mtVolumeLabel: 'Lautstärke',
+          mtSaveToCollectionTitle: 'In der Sammlung speichern', mtShuffleAria: 'Zufallswiedergabe', mtHeroShuffleAria: 'Mischen', mtPrevAria: 'Vorherige', mtNextAria: 'Nächste', mtRepeatAria: 'Wiederholen', mtSoundAria: 'Ton',
           previewHome: 'Startseite', previewForm: 'Formular', previewPayment: 'Zahlung', previewLoading: 'Laden', previewSuccess: 'Erfolg',
           supportBtn: 'Support kontaktieren',
           subActivated: 'Paket aktiviert!', subBtnProfile: 'Mein Profil',
           helpPageTitle: 'Hilfe & Support', helpPageSubtitle: 'Alles über YupSoul — klar und kurz',
           profileHelpBtn: 'Hilfe & Support', profileDeleteAccountBtn: 'Konto und alle Daten löschen',
           deleteAccountConfirm: 'Konto und alle zugehörigen Daten löschen?\n\nWird gelöscht: Profil, Einstellungen, Geburtsdaten, Referral-Verlauf.\n\nDeine erstellten Tracks bleiben in der Gesamtstatistik, werden aber von deinem Konto entkoppelt. Diese Aktion ist UNUMKEHRBAR.',
+          profileDeletingLabel: 'Wird gelöscht…', profileDeletedAlert: 'Konto gelöscht. Danke, dass du dabei warst.',
           profileSectionTheme: 'Erscheinungsbild', themeAuto: 'Auto', themeLight: 'Hell', themeDark: 'Dunkel',
           profileSubsLink: 'Pakete', payOvSubsLink: 'Pakete und Verwaltung',
           legalTabOffer: 'AGB', legalTabPrivacy: 'Datenschutz', legalTabSubs: 'Pakete', legalCloseAria: 'Schließen',
@@ -2522,7 +2552,8 @@
           wlPlaylistKick: 'Erstelle deine Playlist',
           wlPlaylistName: 'Hits über dich',
           wlPlaylistSub: 'nach Geburtsdatum · für jeden Anlass',
-          wlTrack1Name: 'Ich bin keine Funktion, ich bin Leben',
+          // (аудит iPhone 24.09: DE-текст обрезался на 375/393px — укорочено)
+          wlTrack1Name: 'Keine Funktion, sondern Leben',
           wlTrack1Desc: 'darüber, lebendig zu sein',
           wlTrack2Name: 'Hüterin der Schwelle',
           wlTrack2Desc: 'ein Geburtstagslied',
@@ -2763,7 +2794,8 @@
           ctxHintOneSelected: 'Der Chat dreht sich um eine Person.',
           ctxHintPickTwo: '<b>Wähle zwei</b> — das Orakel ergründet ihre Kompatibilität.',
           ctxApply: 'Anwenden', ctxApplyOne: 'Anwenden · {name}', ctxApplyPair: 'Paar deuten · {a} & {b}',
-          pfArchSub: 'Deutung nach deinem Geburtsdatum', pfPackLabel: 'Paket', pfChangePack: 'Ändern', pfNoPack: 'Kein Paket — Songs einzeln oder mit Funken', pfOfSongs: 'von {n} {songs}', pfIskrySub: 'Reicht für {n} {songs}', pfTopup: 'Aufladen', profileCardNoCard: 'Keine Karte verknüpft', pfPartnerRow: 'Partnerbereich', pfPartnerSub: 'Eingeladene, Provision und Auszahlungen', pfMine: 'Meins', pfMyTracks: 'Meine Songs', pfSettings: 'Einstellungen', pfLang: 'Sprache', pfNotify: 'Benachrichtigungen', pfCommunity: 'Community', pfHelpSupport: 'Hilfe & Support', pfRestore: 'Käufe wiederherstellen', pfRestoreDone: 'Käufe wiederhergestellt', pfRestoreFail: 'Keine Käufe zum Wiederherstellen', // CD 19.09 · профиль
+          // (аудит iPhone 24.09: DE-текст обрезался на 375px — укорочено без потери смысла)
+          pfArchSub: 'Deutung nach Geburtsdatum', pfPackLabel: 'Paket', pfChangePack: 'Ändern', pfNoPack: 'Kein Paket — Songs einzeln oder mit Funken', pfOfSongs: 'von {n} {songs}', pfIskrySub: 'Reicht für {n} {songs}', pfTopup: 'Aufladen', profileCardNoCard: 'Keine Karte verknüpft', pfPartnerRow: 'Partnerbereich', pfPartnerSub: 'Eingeladene, Provision und Auszahlungen', pfMine: 'Meins', pfMyTracks: 'Meine Songs', pfSettings: 'Einstellungen', pfLang: 'Sprache', pfNotify: 'Benachrichtigungen', pfCommunity: 'Community', pfHelpSupport: 'Hilfe & Support', pfRestore: 'Käufe wiederherstellen', pfRestoreDone: 'Käufe wiederhergestellt', pfRestoreFail: 'Keine Käufe zum Wiederherstellen', // CD 19.09 · профиль
           pfTileSingle: 'Song über dich', pfTilePair: 'Zu zweit', pfTileTransit: 'Energie des Tages', pfUnbind: 'Trennen', pfIskryEnough: 'Reicht für {n} {songs}', pfIskryNone: 'Noch nicht genug', // CD 19.09 · профиль (сверка с эталоном)
           ctxListLabel: 'Deine Karten', ctxNoteEmpty: 'Wähle eine Karte, um fortzufahren', ctxNoteOne: 'Das Orakel behält diese Karte im Kontext', ctxNoteEmptyPair: 'Wähle zwei Karten, um fortzufahren', ctxNoteHalf: 'Eine gewählt — die zweite fehlt', ctxNotePair: 'Das Orakel behält beide Karten im Kontext', ctxEmptyT: 'Bisher nur deine eigene Karte', ctxEmptyS: 'Füge das Geburtsdatum eines nahen Menschen hinzu — das Orakel kann dann über ihn sprechen und eure Verträglichkeit deuten.', ctxEmptyCta: 'Karte hinzufügen', ctxEdit: 'Bearbeiten', ctxDone: 'Fertig', ctxLockTag: 'nicht löschbar', ctxDel: 'Löschen', ctxDelN: 'Löschen · {n}', ctxDelArm: 'Ja, {n} {word} löschen', ctxDelNoteEmpty: 'Wähle die Karten, die weg sollen', ctxDelNoteArm: 'Das lässt sich nicht rückgängig machen — die Geburtsdaten werden endgültig gelöscht', ctxDelCancelArm: 'Nicht löschen', ctxCardWord1: 'Karte', ctxCardWord2: 'Karten', ctxCardWord5: 'Karten', // CD 19.09 · контекст чата
           scCopy: 'Kopieren', scCopied: 'Kopiert',
@@ -2826,6 +2858,7 @@
           formEnterName: 'Name eingeben', formNoAuth: 'Nicht autorisiert',
           formSaving: 'Speichern…', formDataSaved: 'Daten gespeichert ✓',
           formSaveError: 'Speicherfehler', formEnterPromo: 'Promo-Code eingeben', promoActivated: 'Promo-Code aktiviert!', promoNotFound: 'Promo-Code nicht gefunden', promoExpired: 'Promo-Code abgelaufen', promoUsedUp: 'Promo-Code nicht mehr gültig', promoAlreadyActivated: 'Promo-Code bereits aktiviert', promoDiscountWord: 'Rabatt',
+          promoNotStarted: 'Promo-Code ist noch nicht aktiv', promoInactive: 'Promo-Code wurde deaktiviert', promoUserLimitReached: 'Du hast diesen Promo-Code bereits verwendet', promoGlobalLimitReached: 'Promo-Code ist nicht mehr verfügbar (Limit erreicht)', promoSkuMismatch: 'Dieser Promo-Code gilt nicht für den ausgewählten Anfragetyp', promoInvalid: 'Promo-Code ist ungültig',
           formPromoError: 'Prüfung fehlgeschlagen. Versuche es später.', formSecondPerson: 'Zweite Person',
           selectDay: 'Tag', selectMonth: 'Monat', selectYear: 'Jahr',
           labelName: 'Name', labelBirthdate: 'Geburtsdatum', labelBirthplace: 'Geburtsort',
@@ -3021,7 +3054,7 @@
           scOracleWho: 'Orakel', scIntroTitle: 'Ich bin hier, um dir dich selbst zu zeigen', scIntroSubtitle: 'Stell die Frage, die dir schon lange im Kopf herumgeht. Ich lese dein Geburtsdatum und rede ohne Allgemeinplätze. Eine Frage — ein Funke.',
           scPrismTitle: 'Deutungen', scPrismSubtitle: 'Blick tiefer — deine Karte, laut gesungen', scChartLabel: 'Deine Karte', scChartNoDob: 'Geburtsdatum hinzufügen', scProgReceived: 'Erhaltene Deutungen', scProgOpened: 'Geöffnete Deutungen', scPrismTagNew: 'Neu', scPrismLockedTitle: 'Im Paket verfügbar', scPrismLockedMsg: 'Diese Deutung ist mit dem Soul-Chat-Paket verfügbar. Die erste Deutung «Seelenname» ist ein Geschenk.', scPrismTryFreeTitle: '«Seelenname» ausprobieren', scPrismPayDesc: 'Eine tiefe persönliche Deutung aus deiner Karte — ausführlich über dich.', scPrismPayHave: 'du hast', scPrismPayBtn: 'Deutung öffnen', scPrismPayLoading: 'Deutung wird vorbereitet…', pwTeaserLock: 'Das Orakel brach ab…', pwTitle: 'Gespräch fortsetzen?', pwTeaserBubble: 'Ich spüre, hinter dieser Frage steckt etwas Größeres…', pwPk_q_0_n: '1000 Fragen', pwPk_q_0_d: '1000 Funken — reicht lange', pwPk_q_1_n: '2000 Fragen', pwPk_q_1_d: '2000 Funken — Monate an Gesprächen', pwPk_q_2_n: '5000 Fragen', pwPk_q_2_d: '5000 Funken — bester Preis', pwPk_iskry_0_n: '1000 Funken', pwPk_iskry_0_d: '≈ 10 Songs oder 1000 Fragen', pwPk_iskry_1_n: '2000 Funken', pwPk_iskry_1_d: '≈ 20 Songs oder 2000 Fragen', pwPk_iskry_2_n: '5000 Funken', pwPk_iskry_2_d: '≈ 50 Songs — bester Preis', pwSub: 'Funken aufgebraucht — aber das Orakel hat noch mehr zu sagen. Hol dir ein Paket, ohne Abo oder Karte.', pwSegQ: 'Fragen', pwSegIskry: 'Funken', pwCtaLabel: 'Gespräch fortsetzen', pwDay: 'Oder', pwDayAccess: 'Tageszugang', pwSubscribe: 'Automatisch aufladen?', pwSubscribeLink: 'Mit Karte abonnieren', pwSubscribeWhere: '(wo verfügbar)', pwFoot: 'Einmalige Zahlung. Paket verfällt nicht.', pwBadgePopular: 'Bester Preis',
           scPrismLoadingCatalog: 'Lade Deutungen…', scPrismRunning: 'Berechne deine Deutung…',
-          scPrismErrorTitle: 'Etwas ist schiefgelaufen', scPrismRunFail: 'Deutung konnte nicht erstellt werden.',
+          scPrismErrorTitle: 'Hat nicht geklappt', scPrismRunFail: 'Deutung konnte nicht erstellt werden.',
           scPrismCatalogErr: 'Deutungen konnten nicht geladen werden.', scPrismCopy: 'Deutung kopieren', prismReadEyebrow: 'Persönliche Deutung', prismReadIntro: 'Das Orakel liest deine Karte', prismReadAsk: 'Frage zur Deutung stellen', prismReadSave: 'Deutung speichern', prismBuyDesc: 'Eine tiefe persönliche Deutung aus deiner Karte — ausführlich über dich und wie du es löst.', prismBuyIncl1Html: '<b>Ausführlicher Text</b> nach deinem Geburtsdatum', prismBuyIncl2Html: 'Wird im Chat gespeichert — du kannst <b>Fragen stellen</b>', prismBuyYouHave: 'du hast', prismBuyAfter: 'übrig', prismBuyShort: 'es fehlen', prismBuyOpen: 'Deutung öffnen', prismBuyTopup: 'Funken aufladen', prismBuyNoteOk: 'Die Deutung öffnet sich direkt im Chat mit dem Orakel', prismBuyNoteLow: 'Lade Funken auf und öffne die Deutung',
           scPrismCopied: 'Deutung kopiert', scPrismCopyFail: 'Kopieren fehlgeschlagen',
           scPrismTryFree: 'Geschenk-Deutung probieren', scPrismGoToPlans: 'Paket wählen', scPrismFillProfile: 'Profil ausfüllen',
@@ -3051,7 +3084,14 @@
           profilePartnerBadge: 'Partner',
           partnerDashStatEarned: 'Insgesamt verdient', partnerDashStatAvailable: 'Verfügbar zur Auszahlung',
           adminTitle: 'Admin', adminDesc: 'Anfragenverwaltung, Architekturkarte und Einstellungen — im Web-Adminbereich.',
-          adminOpenBtn: 'Web-Admin öffnen'
+          adminOpenBtn: 'Web-Admin öffnen',
+          appTitle: 'YupSoul — ein Lied über dich',
+          compatBrandSub: 'Kompatibilität', compatRingLabel: 'Resonanz', compatFacetWarmth: 'Wärme', compatFacetTenderness: 'Zärtlichkeit', compatFacetRhythm: 'Rhythmus', compatFacetTrust: 'Vertrauen', compatFacetEase: 'Leichtigkeit', compatFacetSupport: 'Unterstützung',
+          compatCtaSong: 'Song für euch beide erstellen', compatCtaAsk: 'Das Orakel zu eurer Verbindung fragen', compatCtaAskCost: '2 Funken', compatCtaShare: 'Ergebnis teilen', compatLoadingNames: 'Wir berechnen eure Resonanz…', compatCloserHeading: 'Was euch verbindet', compatGrowHeading: 'Woran ihr wachsen könnt', errCompatNeedBirthData: 'Für die Deutung braucht es Geburtsdatum und -ort von beiden',
+          ariaBirthplace: 'Geburtsort', ariaBirthplaceSecond: 'Geburtsort der zweiten Person', ariaBirthdateSecond: 'Geburtsdatum der zweiten Person', ariaDontKnowTime: 'Zeit unbekannt', ariaSongRequest: 'Anfrage', ariaSongLanguage: 'Sprache des Songs und der Beschreibung', ariaCustomLyrics: 'Eigener Songtext', ariaRefLink: 'Empfehlungslink', ariaLangSwitcher: 'Sprache der Oberfläche',
+          ariaHeader: 'Kopfzeile', ariaNav: 'Navigation', ariaMainMenu: 'Hauptmenü', ariaChangePhoto: 'Foto ändern', ariaYourLink: 'Dein Link', ariaNotifToggle: 'Benachrichtigungen ein- oder ausschalten', ariaGoToAdmin: 'Zum Admin-Bereich', ariaTimeRemaining: 'Verbleibende Zugriffszeit',
+          ariaChatMode: 'Chat-Modus', ariaChatFeed: 'Gesprächsverlauf des Orakel-Chats', ariaGoFillProfile: 'Zum Ausfüllen des Profils', ariaGoCreateSongRequest: 'Zur Erstellung einer Song-Anfrage', ariaChatHistory: 'Gesprächsverlauf des Orakel-Chats', ariaSynastryTeaser: 'Kompatibilitätsanalyse ist im Labor-Paket verfügbar',
+          ariaQuestionInputArea: 'Eingabefeld für die Frage', ariaOracleQuestion: 'Frage an den Orakel-Chat', ariaCharsLeft: 'Verbleibende Zeichen', ariaSendQuestion: 'Frage senden', ariaPrismList: 'Liste der Deutungen', ariaPrismPurchase: 'Deutung kaufen'
         },
         fr: {
           dlSongTitle: 'Télécharger la chanson',
@@ -3069,7 +3109,7 @@
           tagline: 'Découvre comment sonne ton horoscope',
           taglineAccent: 'ton',
           startBtn: 'Obtiens ta chanson', myProfile: 'Profil', myHeroes: 'Labo', myHelp: 'Aide', admin: 'Admin',
-          compatTitle: 'Compatibilité', profileTitle: 'Profil', profileSubtitle: 'Tes données et Étincelles',
+          compatSelf: 'Toi', compatNamesAnd: '{a} et {b}', soPlayTitleFallback: 'Ta chanson', compatTitle: 'Compatibilité', profileTitle: 'Profil', profileSubtitle: 'Tes données et Étincelles',
           profileFreeCredits: 'Étincelles', profileInviteFriend: 'Inviter un ami', profileShare: 'Partager', profileCopyLink: 'Copier le lien', profileLinkCopied: 'Lien copié',
           refShareTextWithName: 'Salut ! Découvre cette application — elle crée une chanson personnelle basée sur ta date de naissance. Vraiment cool, essaie — la première minute de ta chanson en cadeau !',
           refShareText: 'Découvre cette application — elle crée une chanson personnelle basée sur ta date de naissance. La première minute de ta chanson en cadeau — essaie !',
@@ -3186,7 +3226,7 @@
           onboardingSlide3Text: 'Saisis ta date de naissance — crée ta première chanson, une minute en cadeau.',
           onboardingBtnStart: 'Recevoir ma chanson',
           obBrand: 'YupSoul', obSkip: 'Passer', obNext: 'Suivant', obCreate: 'Créer ma première chanson',
-          archTitle: 'Qui tu es vraiment', archLead: 'Dans ta date de naissance il y a une planète que l\'astrologie appelle l\'indicateur de l\'Âme. C\'est elle qui tient ton caractère. Donne la date — je te montre.', archDateLabel: 'Date de naissance', archGo: 'Montrer mon archétype', archEyebrow: 'Indicateur de l\'Âme', archGift: 'Ton don', archShadow: 'Ton ombre', archSoulPlanet: 'Planète de l\'Âme', archNote: 'Ta note', archBridge: 'Ça, c\'était les mots. Maintenant écoute comment ça sonne : la chanson naît de cette même date.', archToSong: 'Créer ma chanson', archAgain: 'Autre date', archNeedDate: 'Indique ta date de naissance', archBadDate: 'Vérifie la date — quelque chose ne colle pas', signInWithApple: 'Se connecter avec Apple', rgAll: 'Tous les genres', rg_rock: 'Rock', rg_electronic: 'Électronique', rg_rap: 'Rap', rg_folk: 'Folk', rg_soul: 'Soul / R&B', rg_ambient: 'Ambient', rg_cinematic: 'Cinématique', rg_acoustic: 'Acoustique', rg_sacred: 'Sacré', rg_pop: 'Pop', rg_other: 'Autre', offlineTitle: 'Pas de connexion Internet', offlineText: 'Vérifie ta connexion et réessaie', offlineRetry: 'Actualiser', errPurchaseFailed: 'L\'achat n\'a pas abouti', errArchBadDate: 'Vérifie la date — quelque chose ne colle pas',
+          archTitle: 'Qui tu es vraiment', archLead: 'Dans ta date de naissance il y a une planète que l\'astrologie appelle l\'indicateur de l\'Âme. C\'est elle qui tient ton caractère. Donne la date — je te montre.', archDateLabel: 'Date de naissance', archGo: 'Montrer mon archétype', archEyebrow: 'Indicateur de l\'Âme', archGift: 'Ton don', archShadow: 'Ton ombre', archSoulPlanet: 'Planète de l\'Âme', archNote: 'Ta note', archBridge: 'Ça, c\'était les mots. Maintenant écoute comment ça sonne : la chanson naît de cette même date.', archToSong: 'Créer ma chanson', archAgain: 'Autre date', archNeedDate: 'Indique ta date de naissance', archBadDate: 'Vérifie la date — quelque chose ne colle pas', signInWithApple: 'Se connecter avec Apple', rgAll: 'Tous les genres', rg_rock: 'Rock', rg_electronic: 'Électronique', rg_rap: 'Rap', rg_folk: 'Folk', rg_soul: 'Soul / R&B', rg_ambient: 'Ambient', rg_cinematic: 'Cinématique', rg_acoustic: 'Acoustique', rg_sacred: 'Sacré', rg_pop: 'Pop', rg_other: 'Autre', offlineTitle: 'Pas de connexion Internet', offlineText: 'Vérifie ta connexion et réessaie', offlineRetry: 'Actualiser', errPurchaseFailed: 'L\'achat n\'a pas abouti', errArchBadDate: 'Vérifie la date — quelque chose ne colle pas', errSignInFailed: 'Impossible de se connecter',
           obReward: '+30 Étincelles pour faire connaissance',
           obChipBirthdate: 'selon ta date de naissance', obChipWhoAmI: '« Qui suis-je ? »', obChipDiary: 'journal du jour',
           obChipCompat: 'Toi + maman · 92%', obChipContacts: 'tes proches', obChipGift: 'offre à un ami', obChipRadio: 'radio · chansons des autres',
@@ -3271,12 +3311,14 @@
           loading: 'Chargement…', noCardsYet: 'Pas encore de cartes terminées', heroHistLoading: 'Chargement de l\'historique…', heroHistEmpty: 'Pas encore de générations', heroHistLoadError: 'Impossible de charger l\'historique', heroesPageLoadError: 'Impossible de charger les héros', retry: 'Réessayer',
           forMyself: 'Pour moi', forHero: 'Créer une chanson pour {name}', heroDataTitle: 'Données de {name}',
           mtTooltipLyrics: 'Paroles', mtTooltipAnalysis: 'Analyse', mtTooltipDownload: 'Télécharger', mtTooltipShare: 'Partager', mtTooltipVolume: 'Volume', mtVolumeLabel: 'Volume',
+          mtSaveToCollectionTitle: 'Enregistrer dans la collection', mtShuffleAria: 'Lecture aléatoire', mtHeroShuffleAria: 'Mélanger', mtPrevAria: 'Précédent', mtNextAria: 'Suivant', mtRepeatAria: 'Répéter', mtSoundAria: 'Son',
           previewHome: 'Accueil', previewForm: 'Formulaire', previewPayment: 'Paiement', previewLoading: 'Chargement', previewSuccess: 'Succès',
           supportBtn: 'Contacter le support',
           subActivated: 'Pack activé !', subBtnProfile: 'Mon profil',
           helpPageTitle: 'Aide & Support', helpPageSubtitle: 'Tout sur YupSoul — simple et concis',
           profileHelpBtn: 'Aide & support', profileDeleteAccountBtn: 'Supprimer le compte et toutes les données',
           deleteAccountConfirm: 'Supprimer le compte et toutes les données associées ?\n\nSeront supprimés : profil, paramètres, données de naissance, historique de parrainage.\n\nTes titres créés resteront dans les statistiques globales mais seront dissociés de ton compte. Cette action est IRRÉVERSIBLE.',
+          profileDeletingLabel: 'Suppression…', profileDeletedAlert: 'Compte supprimé. Merci d\'avoir été des nôtres.',
           profileSectionTheme: 'Apparence', themeAuto: 'Auto', themeLight: 'Clair', themeDark: 'Sombre',
           profileSubsLink: 'Packs', payOvSubsLink: 'forfaits et gestion',
           legalTabOffer: 'CGV', legalTabPrivacy: 'Confidentialité', legalTabSubs: 'Packs', legalCloseAria: 'Fermer',
@@ -3445,7 +3487,8 @@
           wlPlaylistKick: 'Crée ta playlist',
           wlPlaylistName: 'Des hits sur toi',
           wlPlaylistSub: 'par date de naissance · pour chaque occasion',
-          wlTrack1Name: 'Je ne suis pas une fonction, je suis la vie',
+          // (аудит iPhone 24.09: FR-текст обрезался ещё сильнее чем DE — укорочено)
+          wlTrack1Name: 'Pas une fonction, la vie',
           wlTrack1Desc: 'sur le fait d\'être vivant',
           wlTrack2Name: 'Gardienne du seuil',
           wlTrack2Desc: 'une chanson d\'anniversaire',
@@ -3749,6 +3792,7 @@
           formEnterName: 'Entrer le nom', formNoAuth: 'Non autorisé',
           formSaving: 'Enregistrement…', formDataSaved: 'Données enregistrées ✓',
           formSaveError: 'Erreur d\'enregistrement', formEnterPromo: 'Entrer le code promo', promoActivated: 'Code promo activé !', promoNotFound: 'Code promo introuvable', promoExpired: 'Code promo expiré', promoUsedUp: 'Code promo non valide', promoAlreadyActivated: 'Code promo déjà activé', promoDiscountWord: 'Réduction',
+          promoNotStarted: 'Le code promo n\'est pas encore actif', promoInactive: 'Le code promo a été désactivé', promoUserLimitReached: 'Vous avez déjà utilisé ce code promo', promoGlobalLimitReached: 'Le code promo n\'est plus disponible (limite atteinte)', promoSkuMismatch: 'Ce code promo ne s\'applique pas au type de demande sélectionné', promoInvalid: 'Le code promo n\'est pas valide',
           formPromoError: 'Vérification échouée. Réessaie plus tard.', formSecondPerson: 'Deuxième personne',
           selectDay: 'Jour', selectMonth: 'Mois', selectYear: 'Année',
           labelName: 'Nom', labelBirthdate: 'Date de naissance', labelBirthplace: 'Lieu de naissance',
@@ -3974,7 +4018,14 @@
           profilePartnerBadge: 'Partenaire',
           partnerDashStatEarned: 'Total gagné', partnerDashStatAvailable: 'Disponible pour retrait',
           adminTitle: 'Admin', adminDesc: 'Gestion des demandes, carte d\'architecture et paramètres — dans le panneau d\'admin web.',
-          adminOpenBtn: 'Ouvrir l\'admin web'
+          adminOpenBtn: 'Ouvrir l\'admin web',
+          appTitle: 'YupSoul — une chanson sur toi',
+          compatBrandSub: 'compatibilité', compatRingLabel: 'résonance', compatFacetWarmth: 'Chaleur', compatFacetTenderness: 'Tendresse', compatFacetRhythm: 'Rythme', compatFacetTrust: 'Confiance', compatFacetEase: 'Légèreté', compatFacetSupport: 'Soutien',
+          compatCtaSong: 'Créer une chanson pour vous deux', compatCtaAsk: 'Demander à l\'Oracle à propos de votre lien', compatCtaAskCost: '2 étincelles', compatCtaShare: 'Partager le résultat', compatLoadingNames: 'Nous calculons votre résonance…', compatCloserHeading: 'Ce qui vous rapproche', compatGrowHeading: 'Ce sur quoi grandir', errCompatNeedBirthData: 'L\'analyse nécessite la date et le lieu de naissance des deux personnes',
+          ariaBirthplace: 'Lieu de naissance', ariaBirthplaceSecond: 'Lieu de naissance de la deuxième personne', ariaBirthdateSecond: 'Date de naissance de la deuxième personne', ariaDontKnowTime: 'Heure inconnue', ariaSongRequest: 'Demande', ariaSongLanguage: 'Langue de la chanson et de la description', ariaCustomLyrics: 'Tes propres paroles', ariaRefLink: 'Lien de parrainage', ariaLangSwitcher: 'Langue de l\'interface',
+          ariaHeader: 'En-tête', ariaNav: 'Navigation', ariaMainMenu: 'Menu principal', ariaChangePhoto: 'Changer la photo', ariaYourLink: 'Ton lien', ariaNotifToggle: 'Activer ou désactiver les notifications', ariaGoToAdmin: 'Aller au panneau admin', ariaTimeRemaining: 'Temps d\'accès restant',
+          ariaChatMode: 'Mode de discussion', ariaChatFeed: 'Fil de conversation du Chat avec l\'Oracle', ariaGoFillProfile: 'Aller compléter le profil', ariaGoCreateSongRequest: 'Aller créer une demande de chanson', ariaChatHistory: 'Historique du Chat avec l\'Oracle', ariaSynastryTeaser: 'La compatibilité est disponible dans l\'offre Laboratoire',
+          ariaQuestionInputArea: 'Champ de saisie de la question', ariaOracleQuestion: 'Question au Chat avec l\'Oracle', ariaCharsLeft: 'Caractères restants', ariaSendQuestion: 'Envoyer la question', ariaPrismList: 'Liste des lectures', ariaPrismPurchase: 'Achat d\'une lecture'
         }
       };
       var currentLang = 'ru';
@@ -4465,6 +4516,8 @@
       window._tl = _tl;
       function applyTranslations() {
         document.documentElement.lang = currentLang || 'ru';
+        // (аудит iPhone 24.09: document.title был всегда RU независимо от языка интерфейса)
+        try { document.title = t('appTitle'); } catch(_) {}
         // Канон v7 (27.07): на VK Искры — валюта Оракула (за голоса), не «песни».
         // Меняем data-i18n АТРИБУТЫ один раз — дальше любой прогон applyTranslations
         // на любом языке сам берёт VK-ключи (грабли селектор-карты: текст, записанный
@@ -4525,6 +4578,8 @@
         // innerHTML — для подписей с переносом (напр. «Энергия» + «момента» на двух строках)
         var htmlMap = [
           ['modeTransit','.mode-btn[data-mode="transit"] .mode-label'],
+          // (аудит iPhone 24.09: DE-перевод «Über uns<br>zwei» — нужен innerHTML, иначе <br> рисуется как текст)
+          ['modeCouple','.mode-btn[data-mode="couple"] .mode-label'],
           ['styleManual','.style-mode-btn[data-smode="manual"] .mode-label'],
           ['styleAstro','.style-mode-btn[data-smode="astro"] .mode-label'],
           ['styleStar','.style-mode-btn[data-smode="star"] .mode-label'],
@@ -4879,7 +4934,7 @@
 
         // data-i18n / data-i18n-placeholder — универсальный механизм
         // Пропускаем ключи, уже обработанные через htmlMap (содержат HTML-теги)
-        var htmlKeys = ['styleManual','styleAstro','styleStar','modeTransit',
+        var htmlKeys = ['styleManual','styleAstro','styleStar','modeTransit','modeCouple',
           'helpB1','helpB2','helpB3','helpB4','helpB5','helpB6','helpB7','helpB8','helpB9','helpB10'];
         document.querySelectorAll('[data-i18n]').forEach(function(el) {
           var key = el.getAttribute('data-i18n');
@@ -5043,7 +5098,8 @@
         input.setAttribute('autocomplete', 'off');
         input.setAttribute('pattern', '[0-9]{2}:[0-9]{2}');
         // Placeholder ЧЧ:ММ если нет своего
-        if (!input.placeholder) input.placeholder = 'ЧЧ:ММ';
+        // (аудит iPhone 24.09: хардкод RU 'ЧЧ:ММ' на EN/DE/FR — переиспользуем phTransitTime)
+        if (!input.placeholder) input.placeholder = (typeof t === 'function' && t('phTransitTime')) || 'ЧЧ:ММ';
         // Восстанавливаем value
         if (savedVal) input.value = savedVal;
 

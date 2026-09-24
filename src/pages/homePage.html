@@ -11,11 +11,12 @@
         </div>
       </div>
       <!-- Верхняя панель: логотип слева, RU + профиль справа -->
-      <header id="homeTopBar" class="home-top-bar" aria-label="Шапка">
+      <!-- аудит iPhone 24.09: aria-label без i18n -->
+      <header id="homeTopBar" class="home-top-bar" aria-label="Шапка" data-i18n-aria="ariaHeader">
         <span class="home-top-bar-logo"><span class="home-logo-symbol-wrap"><img src="assets/icons/logo-symbol.webp" alt="" class="home-logo-symbol" width="36" height="36" aria-hidden="true"></span><span>YupSoul <span class="logo-pipe" style="font-weight:400;opacity:0.4;">|</span> <span id="logoSubtitleMain">Музыкальный оракул</span></span></span>
         <div class="home-top-bar-actions">
-          <div id="langSwitcher" class="lang-switcher-compact" aria-label="Язык интерфейса">
-            <button type="button" id="langSwitcherBtn" class="home-top-bar-btn lang-switcher-btn header-menu-btn" title="Язык">
+          <div id="langSwitcher" class="lang-switcher-compact" aria-label="Язык интерфейса" data-i18n-aria="ariaLangSwitcher">
+            <button type="button" id="langSwitcherBtn" class="home-top-bar-btn lang-switcher-btn header-menu-btn" title="Язык" data-i18n-title="pfLang">
               <span id="langSwitcherIcon" aria-hidden="true"></span>
               <span id="langSwitcherCurrent">RU</span>
             </button>
@@ -98,7 +99,8 @@
         <div class="glass-filter" aria-hidden="true"></div>
         <div class="glass-overlay" aria-hidden="true"></div>
         <div class="glass-specular" aria-hidden="true"></div>
-        <nav class="glass-content home-nav" aria-label="Навигация">
+        <!-- аудит iPhone 24.09: aria-label без i18n -->
+        <nav class="glass-content home-nav" aria-label="Навигация" data-i18n-aria="ariaNav">
           <button type="button" class="home-nav-link glass-item" onclick="goToSoulChat()" aria-label="Разговор по душам" data-i18n-aria="navSoulChatFull"><span id="navFlowSoulChat">Оракул</span></button>
           <button type="button" class="home-nav-link glass-item" onclick="goToHelpFrom('homePage')" aria-label="Помощь" data-i18n-aria="myHelp"><span id="navFlowHelp">Помощь</span></button>
           <button type="button" class="home-nav-link glass-item" onclick="goToHeroesFrom('homePage')" aria-label="Контакты" data-i18n-aria="myHeroes"><span id="navFlowLab">Контакты</span></button>
