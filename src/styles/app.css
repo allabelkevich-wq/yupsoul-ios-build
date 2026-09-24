@@ -7104,6 +7104,12 @@
       align-items: center !important;
       justify-content: center !important;
     }
+    /* Алла 24.09 (TestFlight 33, скрин): «Enter manually» / «Artist style» резались снизу. Корень: заголовок зажат
+       в высоту 2.5em от своих 0.72rem (28.8px), а подпись .mode-label внутри — 13px (правило #formPage … .mode-label
+       ниже, 0.8125rem) × 1.25 = 16.25px на строку → две строки 32.5px не влезали, низ букв уходил под overflow:hidden.
+       Высота заголовка — по содержимому, минимум прежние 2.5em (ровные карточки с одной строкой сохраняются). */
+    #formPage #styleModeSwitcher.mode-cards .mode-btn.mode-card .mode-card-title,
+    #formPage .mode-cards .mode-btn.mode-card .mode-card-title { height: auto !important; max-height: none !important; }
     /* Только "Энергия момента" — позволить переносу строки через <br> */
     #formPage .mode-btn.mode-card[data-mode="transit"] .mode-card-title {
       white-space: pre-line !important;
