@@ -271,7 +271,8 @@
           // Чек валидирует RevenueCat, товар выдаёт вебхук. Ждём, пока сервер
           // увидит начисление, и только потом рисуем результат.
           var granted = await _waitForGrant(sku, orderReqId, baseline);
-          return granted ? { ok: true } : { ok: false, error: 'grant_pending' };
+          // Вебхук RevenueCat может опоздать (песочница/TestFlight): отдаём данные, чтобы экран дождался в фоне, а не объявил провал
+          return granted ? { ok: true } : { ok: false, error: 'grant_pending', requestId: orderReqId, baseline: baseline };
         };
 
         /* Заявка-носитель заводится ДО покупки. Если покупка не состоялась,
@@ -294,9 +295,10 @@
            Вебхук RevenueCat приходит за секунды, но не мгновенно.
            Признак выдачи: для песни — paid_at у заявки в /api/me/requests,
            для пакета Искр — выросший iskry_balance в /api/me. */
-        async function _waitForGrant(sku, requestId, baseline) {
-          for (var i = 0; i < 6; i++) {
-            await new Promise(function(r) { setTimeout(r, 900 + i * 600); });
+        async function _waitForGrant(sku, requestId, baseline, tries) {
+          var n = tries || 6;
+          for (var i = 0; i < n; i++) {
+            await new Promise(function(r) { setTimeout(r, Math.min(4000, 900 + i * 600)); });
             try {
               if (sku === 'song_unlock' && requestId) {
                 var rr = await fetch(apiBase + '/api/me/requests', { headers: getAuthHeaders() });
@@ -553,6 +555,16 @@
         async function _buyAndRefresh(sku, opts) {
           var suRoot = document.getElementById('suRoot');
           var res = await window._nativeBuy(sku, opts);
+          if (res && res.error === 'grant_pending') {
+            /* Аудит 24.09 (перед записью для App Review): вебхук RevenueCat до сервера ещё не дошёл, а Apple покупку
+               уже провёл — раньше тут через 14 с показывался тост «Покупка не завершилась», хотя деньги списаны
+               (закон №37: это не ошибка). Говорим мягко и ждём начисление ещё до двух минут. */
+            if (typeof window.showToast === 'function') {
+              try { window.showToast(typeof t === 'function' ? t('purchasePendingToast') : 'Оплата прошла, начисляю…'); } catch(_) {}
+            }
+            var _late = await _waitForGrant(sku, res.requestId, res.baseline, 30);
+            if (_late) res = { ok: true };
+          }
           if (res && res.ok) {
             var _lm = null;
             if (typeof window.loadMe === 'function') { try { _lm = window.loadMe(); } catch(_) {} }
@@ -608,7 +620,7 @@
           }
           if (suRoot) suRoot.dataset.state = 'offer';
           // Отмену пользователем не комментируем: он сам закрыл окно Apple.
-          if (res && res.error !== 'cancelled' && typeof window.showToast === 'function') {
+          if (res && res.error !== 'cancelled' && res.error !== 'grant_pending' && typeof window.showToast === 'function') {
             try { window.showToast(typeof t === 'function' ? t('errPurchaseFailed') : 'Покупка не завершилась'); } catch(_) {}
           }
         }
