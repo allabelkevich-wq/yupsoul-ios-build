@@ -993,6 +993,14 @@
         fetch(apiBase + '/api/stats/total-songs').then(function(r) { return r.json(); }).then(function(d) {
           if (!d.success || !d.count) { renderFallback(); return; }
           var target = d.count;
+          // Алла 24.09 («сгенерировано песен показывает меньше»): на экране входа висел статичный «3000+»,
+          // а живой счётчик уже 3510 — подставляем реальное число тем же запросом.
+          try {
+            var _pl = (typeof currentLang === 'string') ? currentLang : 'ru';
+            var _pn = target.toLocaleString({ ru: 'ru-RU', en: 'en-US', de: 'de-DE', fr: 'fr-FR' }[_pl] || 'ru-RU');
+            var _ptxt = (typeof t === 'function' && t('wlProofN') !== 'wlProofN') ? t('wlProofN').replace('{n}', _pn) : null;
+            if (_ptxt) document.querySelectorAll('.wl-proof').forEach(function(el) { el.textContent = _ptxt; el.removeAttribute('data-i18n'); });
+          } catch (_) {}
           // Animated count-up
           var start = Math.max(0, target - 40);
           var current = start;

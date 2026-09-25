@@ -25435,7 +25435,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           wlTrack3Name: 'Для любимого',
           wlTrack3Desc: 'признание',
           wlLoginTitleHtml: 'Узнай, как звучит <span class="home-card-title-accent">твоя</span> дата рождения',
-          wlProof: '3000+ песен уже создано',
+          wlProofN: '{n} песен уже создано', wlProof: '3000+ песен уже создано',
           loginVia: 'Вход через',
           review1: 'Это просто фантастика! Серьёзно, вы считали меня! Это просто супер проект!', reviewAuthor1: 'Роман',
           review2: 'Кайф! Стиль тот что люблю, слова прямо в сердце!', reviewAuthor2: 'Юлия',
@@ -26385,7 +26385,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           wlTrack3Name: 'For Your Love',
           wlTrack3Desc: 'a confession',
           wlLoginTitleHtml: 'Hear how <span class="home-card-title-accent">your</span> birth date sounds',
-          wlProof: '3,000+ songs already created',
+          wlProofN: '{n} songs already created', wlProof: '3,000+ songs already created',
           loginVia: 'Sign in via',
           review1: 'This is just fantastic! Seriously, you read me! This is an amazing project!', reviewAuthor1: 'Roman',
           review2: 'Love it! The style I adore, the words go straight to the heart!', reviewAuthor2: 'Julia',
@@ -27322,7 +27322,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           wlTrack3Name: 'Für deine Liebe',
           wlTrack3Desc: 'ein Geständnis',
           wlLoginTitleHtml: 'Hör, wie <span class="home-card-title-accent">dein</span> Geburtsdatum klingt',
-          wlProof: '3.000+ Songs bereits erstellt',
+          wlProofN: '{n} Songs bereits erstellt', wlProof: '3.000+ Songs bereits erstellt',
           loginVia: 'Anmelden über',
           review1: 'Das ist einfach fantastisch! Ernsthaft, ihr habt mich gelesen! Ein super Projekt!', reviewAuthor1: 'Roman',
           review2: 'Geil! Der Stil den ich liebe, die Worte gehen direkt ins Herz!', reviewAuthor2: 'Julia',
@@ -28257,7 +28257,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           wlTrack3Name: 'Pour ton amour',
           wlTrack3Desc: 'une déclaration',
           wlLoginTitleHtml: 'Écoute comment sonne <span class="home-card-title-accent">ta</span> date de naissance',
-          wlProof: '3 000+ chansons déjà créées',
+          wlProofN: '{n} chansons déjà créées', wlProof: '3 000+ chansons déjà créées',
           loginVia: 'Se connecter via',
           review1: 'C\'est tout simplement fantastique ! Sérieusement, vous m\'avez lu ! Un super projet !', reviewAuthor1: 'Roman',
           review2: 'Génial ! Le style que j\'adore, les mots vont droit au cœur !', reviewAuthor2: 'Julia',
@@ -47630,6 +47630,14 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
         fetch(apiBase + '/api/stats/total-songs').then(function(r) { return r.json(); }).then(function(d) {
           if (!d.success || !d.count) { renderFallback(); return; }
           var target = d.count;
+          // Алла 24.09 («сгенерировано песен показывает меньше»): на экране входа висел статичный «3000+»,
+          // а живой счётчик уже 3510 — подставляем реальное число тем же запросом.
+          try {
+            var _pl = (typeof currentLang === 'string') ? currentLang : 'ru';
+            var _pn = target.toLocaleString({ ru: 'ru-RU', en: 'en-US', de: 'de-DE', fr: 'fr-FR' }[_pl] || 'ru-RU');
+            var _ptxt = (typeof t === 'function' && t('wlProofN') !== 'wlProofN') ? t('wlProofN').replace('{n}', _pn) : null;
+            if (_ptxt) document.querySelectorAll('.wl-proof').forEach(function(el) { el.textContent = _ptxt; el.removeAttribute('data-i18n'); });
+          } catch (_) {}
           // Animated count-up
           var start = Math.max(0, target - 40);
           var current = start;
