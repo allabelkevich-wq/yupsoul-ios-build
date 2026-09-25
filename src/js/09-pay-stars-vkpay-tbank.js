@@ -981,18 +981,25 @@
         var lblEl = document.getElementById('homeSongCountLabel');
         var counterEl = document.getElementById('homeSongCounter');
         if (!numEl) return;
-        var FALLBACK_COUNT = 367; // зеркало SONG_COUNT_BASE(250)+SONG_COUNT_DELETED_OFFSET(117) из bot/index.js
+        // Алла 25.09 (видео App Review): «в Apple пишет, что там только 300 песен» — в нативе счётчик всегда
+        // показывал резервные 367. Корень: модуль брал `API_BASE`, которого нет (все остальные — BACKEND_URL),
+        // запрос уходил на capacitor://localhost и падал. Резерв больше не выдумывает число: последнее известное
+        // с сервера или счётчик скрыт.
         function renderFallback() {
-          numEl.textContent = FALLBACK_COUNT.toLocaleString('ru-RU');
+          var cached = 0;
+          try { cached = parseInt(localStorage.getItem('ys_song_count') || '0', 10) || 0; } catch (_) {}
+          if (!cached) { if (counterEl) counterEl.style.display = 'none'; return; }
+          numEl.textContent = cached.toLocaleString('ru-RU');
           if (typeof t === 'function' && t('songCounterLabel')) {
             lblEl.textContent = t('songCounterLabel');
           }
           if (counterEl) counterEl.style.display = '';
         }
-        var apiBase = (typeof API_BASE !== 'undefined' && API_BASE) ? API_BASE : '';
+        var apiBase = (window.BACKEND_URL || window.HEROES_API_BASE || '').replace(/\/$/, '');
         fetch(apiBase + '/api/stats/total-songs').then(function(r) { return r.json(); }).then(function(d) {
           if (!d.success || !d.count) { renderFallback(); return; }
           var target = d.count;
+          try { localStorage.setItem('ys_song_count', String(target)); } catch (_) {}
           // Алла 24.09 («сгенерировано песен показывает меньше»): на экране входа висел статичный «3000+»,
           // а живой счётчик уже 3510 — подставляем реальное число тем же запросом.
           try {
