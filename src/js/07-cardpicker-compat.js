@@ -529,6 +529,7 @@
       // request_id_2 (сторона B) и рендерим как любой другой разбор. 'self' = твой
       // профиль на бэке. Бэкенд: pair.txt + /api/soul-chat/prism + getAstroSnapshotForUser.
       async function runPairPrism(rid1, rid2) {
+        if (window._isNativeApp && typeof window._nativeEnsureAiConsent === 'function' && !(await window._nativeEnsureAiConsent())) return; // натив: согласие на ИИ (5.1.2(i))
         _prismCatalogHide();
         var resultEl = document.getElementById('scPrismResult');
         if (!rid1 || !rid2) {
@@ -652,6 +653,8 @@
         window.renderCompatResult = render;
 
         window.openCompatResult = async function(ridA, ridB){
+          // Натив (App Store 5.1.2(i)): разбор пары строит DeepSeek — сначала явное согласие.
+          if (window._isNativeApp && typeof window._nativeEnsureAiConsent === 'function' && !(await window._nativeEnsureAiConsent())) return;
           // Запоминаем пару, чтобы кнопка «Спросить Оракула о связи» перенесла ИМЕННО
           // этих двоих в чат. Иначе initSoulChatPage подставит последнюю песню владельца
           // и Оракул «путает участников» (Закон №20).

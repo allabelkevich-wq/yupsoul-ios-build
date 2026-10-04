@@ -309,6 +309,9 @@
             if (masterNav && userTariff === 'master') masterNav.style.display = 'block';
             // «Опытный» юзер (есть заявки): тур/подсветки — только новым (Алла 08.07)
             if (d && typeof d.has_tracks === 'boolean') window._meHasTracks = d.has_tracks;
+            // Натив: согласие на передачу данных ИИ хранится в той же отметке, что согласие VK
+            // (vk_terms_accepted_at) — отдельной колонки на проде нет. См. _nativeEnsureAiConsent.
+            if (window._isNativeApp && d && typeof d.vk_terms_accepted === 'boolean') window._meAiConsent = d.vk_terms_accepted;
             // Серверный статус онбординга (модерация ВК 11.08). true не понижаем до false:
             // локальное завершение карусели могло ещё не долететь до сервера.
             if (d && typeof d.onboarding_seen === 'boolean' && window._obSeenServer !== true) window._obSeenServer = d.onboarding_seen;
@@ -433,7 +436,8 @@
                 // ПОСЛЕ первой песни (has_tracks = есть что доставлять), не в онбординге, не на
                 // пустом входе. +5 Искр не обещаем на VK (канон v4 §2.6.2 — бэкенд их и не даёт).
                 var _hasTracks = false; try { _hasTracks = !!(d.has_tracks || (_np && (_np.has_tracks || (_np.tracks_count || 0) > 0))); } catch(_) {}
-                var _nlBonus = !_np.notify_consent_bonus_given && (window._appEnv !== 'vk');
+                // Приложение из стора: тоже без обещания Искр за уведомления (App Store 5.1.1(iv)).
+                var _nlBonus = !_np.notify_consent_bonus_given && (window._appEnv !== 'vk') && !window._isNativeApp;
                 if (_tourDone && _guideDone && _hasTracks && !_subscribed && !_rejRecent && !_nlShown && typeof window.showNewsletterOffer === 'function') {
                   try { sessionStorage.setItem('ys_newsletter_shown', '1'); } catch(_) {}
                   setTimeout(function(){ if (typeof window.showNewsletterOffer === 'function') window.showNewsletterOffer(_nlBonus); }, 1400);
@@ -2077,6 +2081,9 @@
       function switchOracleTab(tab) {
         var pageEl = document.getElementById('soulChatPage');
         if (!pageEl) return;
+        // Сборка для стора: Разборы вырезаны (scripts/build-app-www.mjs, NATIVE_FEATURES) —
+        // переходы из кода (мостик в чате, картотека) открывают чат, а не пустую вкладку.
+        if (tab === 'prism' && (window.__YS_NATIVE_OFF__ || {}).razbory_askezy) tab = 'chat';
 
         // Обычный вход в оракул сбрасывает контекст разбора-призмы (askAboutPrism ставит
         // его ПОСЛЕ этого вызова) — чтобы плашка «ваш разбор «X»» не висела при повторном
@@ -2620,6 +2627,8 @@
       };
 
       window.openAskeza = async function openAskeza() {
+        // Натив (App Store 5.1.2(i)): практику и «почему» пишет DeepSeek — сначала явное согласие.
+        if (window._isNativeApp && typeof window._nativeEnsureAiConsent === 'function' && !(await window._nativeEnsureAiConsent())) return;
         var screen = document.getElementById('scAskezaScreen');
         // Каталог гасим целиком: заголовок, «Твоя карта» и прогресс живут в той же
         // обёртке. Пока их прятали по одному, шапка оставалась висеть над практикой.

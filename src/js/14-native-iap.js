@@ -115,6 +115,78 @@
         };
         window._nativeProductBySku = PRODUCT_BY_SKU;
 
+        /* ── Согласие на передачу данных сторонним ИИ (App Store 5.1.2(i)) ──────
+           Перед первой песней, входом во вкладку Soul Chat, подпиской на дневник
+           (и экранами совместимости/аскез, если они есть в сборке) показываем
+           #nativeAiConsentOverlay: куда и какие данные уходят (DeepSeek, Suno).
+           Где хранится: на сервере — та же отметка, что у согласия VK
+           (POST /api/vk/accept-terms → vk_terms_accepted в /api/me), потому что
+           приложение ходит в боевой сервер, а отдельной колонки там пока нет.
+           localStorage — копия на случай, если запись не дошла до сервера:
+           тогда доотправляем её при следующей проверке. Ошибку сети не
+           показываем (закон №37). Отмена — заявка или вопрос не уходят. */
+        var AI_CONSENT_KEY = 'ys_ai_consent';
+        var _aiConsentResolve = null;
+        var _aiConsentPending = null;
+        var _aiConsentResent = false;
+
+        function _aiConsentSend() {
+          var ctrl = (typeof AbortController === 'function') ? new AbortController() : null;
+          var timer = ctrl ? setTimeout(function() { try { ctrl.abort(); } catch (_) {} }, 5000) : null;
+          fetch(apiBase + '/api/vk/accept-terms', {
+            method: 'POST',
+            headers: Object.assign({ 'Content-Type': 'application/json' }, (typeof getAuthHeaders === 'function' ? getAuthHeaders() : {})),
+            body: '{}',
+            signal: ctrl ? ctrl.signal : undefined
+          }).then(function(r) { if (r && r.ok) window._meAiConsent = true; })
+            .catch(function() {})
+            .then(function() { if (timer) clearTimeout(timer); });
+        }
+
+        function _aiConsentClose(result) {
+          var ov = document.getElementById('nativeAiConsentOverlay');
+          if (ov) { ov.style.display = 'none'; ov.setAttribute('aria-hidden', 'true'); }
+          var done = _aiConsentResolve;
+          _aiConsentResolve = null;
+          _aiConsentPending = null;
+          if (done) done(result);
+        }
+
+        window._nativeEnsureAiConsent = function() {
+          if (window._meAiConsent === true) return Promise.resolve(true);
+          var local = false;
+          try { local = localStorage.getItem(AI_CONSENT_KEY) === '1'; } catch (_) {}
+          if (local) {
+            // Сервер ответил «нет», а на устройстве согласие есть — значит, запись
+            // не долетела. Отправляем её снова, один раз за запуск.
+            if (window._meAiConsent === false && !_aiConsentResent) { _aiConsentResent = true; _aiConsentSend(); }
+            return Promise.resolve(true);
+          }
+          var ov = document.getElementById('nativeAiConsentOverlay');
+          if (!ov) return Promise.resolve(true);
+          if (_aiConsentPending) return _aiConsentPending;
+          if (!ov._wired) {
+            ov._wired = true;
+            document.getElementById('nativeAiConsentAgree').addEventListener('click', function() {
+              try { localStorage.setItem(AI_CONSENT_KEY, '1'); } catch (_) {}
+              _aiConsentSend();
+              _aiConsentClose(true);
+            });
+            document.getElementById('nativeAiConsentCancel').addEventListener('click', function() {
+              _aiConsentClose(false);
+            });
+          }
+          _aiConsentPending = new Promise(function(resolve) { _aiConsentResolve = resolve; });
+          ov.style.display = 'flex';
+          ov.setAttribute('aria-hidden', 'false');
+          return _aiConsentPending;
+        };
+        // Без окна: для входа во вкладку Soul Chat (goToPage) — там переход синхронный.
+        window._nativeHasAiConsent = function() {
+          if (window._meAiConsent === true) return true;
+          try { return localStorage.getItem(AI_CONSENT_KEY) === '1'; } catch (_) { return false; }
+        };
+
         /* ── Вход через Apple ──────────────────────────────────────────────── */
         var _socialReady = false;
 

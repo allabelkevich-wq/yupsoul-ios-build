@@ -13729,6 +13729,15 @@ html.is-ok-light:not(.dark) #homeCommCard .task-body b { color: #241526 !importa
     html.is-native #profileReferralSection,
     html.is-native #partnerApplyPage,
     html.is-native #partnerDashPage { display: none !important; }
+    /* App Store 4.3(b): секция «Возможности для мастеров» подаёт приложение как инструмент
+       «для астрологов и консультантов» с перепродажей песен клиентам. В сборке для стора
+       её нет; !important — как у соседних правил блока (у .qa свой display). */
+    html.is-native #helpSec9 { display: none !important; }
+    /* App Store: отзывы с пятью звёздами (экран входа и Помощь) в сборке для стора не
+       показываем — проверить, что это дословные слова реальных людей, нельзя, звёзды
+       похожи на рейтинг App Store, а «вы считали меня» звучит как гадание. */
+    html.is-native #webLoginScreen .start-reviews,
+    html.is-native #helpSec10 { display: none !important; }
 
     /* ── Вход через Apple (только нативная сборка) ──────────────────────────
        Гайдлайны Apple разрешают радиус от нуля до половины высоты, поэтому

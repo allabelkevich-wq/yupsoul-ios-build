@@ -192,6 +192,8 @@
       // Архитектура «Вариант B»: первый клик прогревает все 13 призм параллельно
       // одним запросом. Последующие клики — мгновенно из клиентского кэша.
       async function runPrism(prismCode) {
+        // Натив (App Store 5.1.2(i)): разбор строит DeepSeek — сначала явное согласие.
+        if (window._isNativeApp && typeof window._nativeEnsureAiConsent === 'function' && !(await window._nativeEnsureAiConsent())) return;
         var resultEl = document.getElementById('scPrismResult');
         _prismCatalogHide();
 
@@ -631,6 +633,7 @@
       window._drainPlanet = window._drainPlanet || '';
 
       async function runPrismPaid(prismCode, planetCode) {
+        if (window._isNativeApp && typeof window._nativeEnsureAiConsent === 'function' && !(await window._nativeEnsureAiConsent())) return; // натив: согласие на ИИ (5.1.2(i))
         var resultEl = document.getElementById('scPrismResult');
         var _tl2 = function(k, fb){ try { if (typeof t === 'function') { var v = t(k); if (v && v !== k) return v; } } catch(_) {} return fb || k; };
         _prismCatalogHide();
@@ -825,6 +828,7 @@
 
       async function submitDiaryOnboarding() {
         if (_diarySelectedTopics.length < 1) return;
+        if (window._isNativeApp && typeof window._nativeEnsureAiConsent === 'function' && !(await window._nativeEnsureAiConsent())) return; // натив: заметки дневника пишет DeepSeek — согласие на ИИ (5.1.2(i))
         var startBtn = document.getElementById('scDiaryStartBtn');
         if (startBtn) { startBtn.disabled = true; startBtn.textContent = t('oracleConfiguring'); }
         var apiBase = (window.BACKEND_URL || window.HEROES_API_BASE || '').replace(/\/$/, '');
@@ -1273,6 +1277,7 @@
         var picked = Array.prototype.map.call(document.querySelectorAll('#scDiaryThemes .th.on'),
           function(b){ return b.getAttribute('data-topic'); });
         if (!picked.length) return;
+        if (window._isNativeApp && typeof window._nativeEnsureAiConsent === 'function' && !(await window._nativeEnsureAiConsent())) return; // натив: заметки дневника пишет DeepSeek — согласие на ИИ (5.1.2(i))
         if (!window._ensureOnline()) return;
         var btn = document.getElementById('scDiaryEnableBtn');
         if (btn) btn.disabled = true;

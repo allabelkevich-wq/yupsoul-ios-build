@@ -51,6 +51,7 @@
                   <span class="mode-desc" data-i18n="modeCoupleDesc">Для двух людей</span>
                 </div>
               </button>
+              <!-- @@native-feature:energy_of_day:begin режим «Энергия дня» -->
               <button type="button" class="mode-btn mode-card btn-magic" data-mode="transit" data-effect="transit">
                 <div class="mode-card-inner" aria-hidden="true"></div>
                 <div class="mode-content-wrap">
@@ -59,6 +60,7 @@
                   <span class="mode-desc" data-i18n="modeTransitDesc">О сегодняшнем дне</span>
                 </div>
               </button>
+              <!-- @@native-feature:energy_of_day:end -->
             </div>
           </div>
         </div>
@@ -297,6 +299,7 @@
           </div>
         </div>
 
+        <!-- @@native-feature:energy_of_day:begin поля события «Энергии дня» (дата, время, город) -->
         <!-- Аккордеон энергии момента — отдельно, как второй человек -->
         <!-- Batch 10.30 (отчёт 7258164 Android): «Формат выбора песни отображается
              некорректно». На скриншоте видны 3 mode-кнопки в step 1 («Энергия дня»
@@ -335,6 +338,7 @@
             </div>
           </div>
         </div>
+        <!-- @@native-feature:energy_of_day:end -->
 
         </div><!-- /step-panel data-step=2 -->
 
@@ -384,6 +388,7 @@
                   <span class="mode-desc" id="styleManualDesc">Выбрать вручную</span>
                 </div>
               </button>
+              <!-- @@native-feature:planet_sound:begin стиль «Звучание планет» -->
               <button type="button" class="mode-btn mode-card btn-magic style-mode-btn" data-smode="astro" data-effect="hue" onclick="setStyleMode('astro')">
                 <div class="mode-card-inner" aria-hidden="true"></div>
                 <div class="mode-content-wrap">
@@ -392,6 +397,7 @@
                   <span class="mode-desc" id="styleAstroDesc">Автоматически</span>
                 </div>
               </button>
+              <!-- @@native-feature:planet_sound:end -->
               <button type="button" class="mode-btn mode-card btn-magic style-mode-btn" data-smode="star" data-effect="transit" onclick="setStyleMode('star')">
                 <div class="mode-card-inner" aria-hidden="true"></div>
                 <div class="mode-content-wrap">

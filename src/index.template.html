@@ -121,6 +121,10 @@
         window._isNativeApp = true;
         window._nativePlatform = typeof C.getPlatform === 'function' ? C.getPlatform() : '';
         window._appEnv = 'native';
+        // Площадку сервер узнаёт сам: Capacitor 8 на iOS шлёт Origin capacitor://localhost с каждым
+        // запросом из бандла (bot/index.js isIosClient) — и отдаёт приложению свои задания для ИИ
+        // (без прогнозов и сроков) постоянно, без переключателей (App Store 2.3.1). Своего заголовка
+        // не шлём: прод-сервер не разрешает его в CORS, и все запросы приложения отклонялись бы (2.1).
         var r = document.documentElement;
         r.classList.add('is-native');
         if (window._nativePlatform === 'ios') r.classList.add('is-native-ios');
@@ -140,6 +144,29 @@
             if (el) { try { el.remove(); } catch (_) {} }
           });
           try { window.goToPartnerPage = function() {}; } catch (_) {}
+          // App Store 4.3(b): песня — главное. Узлы переставляем в DOM, а не CSS order:
+          // VoiceOver читает по порядку разметки. Шаги тура ищут кнопки по id.
+          try {
+            // Нижнее меню: «Плейлист» первым, затем «Оракул».
+            var menu = document.getElementById('homeAppMenu');
+            var pl = document.getElementById('goMyTracksBtn');
+            var oc = document.getElementById('soulChatBtn');
+            if (menu && pl && oc && pl.parentNode === menu && oc.parentNode === menu) menu.insertBefore(pl, oc);
+            // Онбординг: дарения песен в приложении нет — четвёртый слайд только про Радио,
+            // значок подарка меняем на значок эфира (тот же, что у сферы Радио).
+            var tr = document.getElementById('obTrack');
+            if (tr && tr.children.length === 4) {
+              var sl = [].slice.call(tr.children);
+              var radio = '<circle cx="12" cy="12" r="2.5"/><path d="M16.2 7.8a6 6 0 0 1 0 8.4M7.8 16.2a6 6 0 0 1 0-8.4M19 5a10 10 0 0 1 0 14M5 19A10 10 0 0 1 5 5"/>';
+              var glyph = sl[3].querySelector('.ob-art-glyph');
+              if (glyph) glyph.innerHTML = '<svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">' + radio + '</svg>';
+              var ebIcon = sl[3].querySelector('.ob-eyebrow svg');
+              if (ebIcon) ebIcon.outerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">' + radio + '</svg>';
+              // Порядок: песня → Радио → Оракул → песня для двоих (последний слайд
+              // с кнопкой «Создать первую песню» — снова про песню).
+              tr.append(sl[0], sl[3], sl[1], sl[2]);
+            }
+          } catch (_) {}
         });
         if (document.body) document.body.classList.add('in-native');
       } catch(_) {}
@@ -632,6 +659,9 @@
        согласие на оповещения вне белого списка; бэк на vk-канале бонус не начисляет).
        #trConsentBonus — перебить id-специфичное правило карточки тура (спец-бомба, закон №29). */
     html.is-vk .consent-bonus, html.is-vk #trConsentBonus { display: none !important; }
+    /* Приложение из стора: награда за разрешение уведомлений запрещена (App Store 5.1.1(iv) / 3.2.2(x)),
+       бэкенд для iPhone её не начисляет (ревью 04.10). */
+    html.is-native .consent-bonus, html.is-native #trConsentBonus { display: none !important; }
     /* VK — тёмный фон как дефолт (тёмная тема основная). Светлая применяется
        через класс html.is-vk-light (ставится по событию VKWebAppUpdateConfig
        с scheme=bright_light или vkcom_light). Поддержка обеих тем —
@@ -1293,6 +1323,9 @@ document.addEventListener('DOMContentLoaded', function() {
     window._draftStarStyle = '';
 
     function setStyleMode(mode) {
+      // Сборка для стора: «Звучание планет» вырезано (NATIVE_FEATURES) — быстрые запросы
+      // и черновики, которые включали его, оставляют ручной стиль (пусто = подберём сами).
+      if (mode === 'astro' && (window.__YS_NATIVE_OFF__ || {}).planet_sound) mode = 'manual';
       // Баг доходимости B: перед сменой режима сохраняем текущий ввод в черновик
       // уходящего режима (manual=жанр / star=артист), иначе input.value='' ниже его сотрёт.
       var _prevSmInput = document.getElementById('requestPreferredStyle');
@@ -1989,6 +2022,38 @@ document.addEventListener('DOMContentLoaded', function() {
 </div>
 <!-- @@native-strip:end -->
 
+<!-- Приложение из стора (App Store 5.1.2(i)): явное согласие на передачу данных
+     сторонним ИИ — DeepSeek пишет текст песни и отвечает в чате, Suno делает музыку.
+     Показывается перед первой песней, при входе во вкладку Soul Chat и перед подпиской
+     на дневник (window._nativeEnsureAiConsent,
+     модуль 14-native-iap). Классы — от экрана согласия VK выше, без звёзд и подписи
+     про оракула. Вне натива узел скрыт CSS-правилом (html:not(.is-native)). -->
+<div id="nativeAiConsentOverlay" aria-hidden="true" class="vk-consent-overlay" role="dialog" aria-modal="true" aria-labelledby="nativeAiConsentTitle" style="display:none;">
+  <div class="vk-consent-bg" aria-hidden="true">
+    <div class="vk-consent-blob vk-consent-blob-1"></div>
+    <div class="vk-consent-blob vk-consent-blob-2"></div>
+    <div class="vk-consent-blob vk-consent-blob-3"></div>
+  </div>
+  <div class="vk-consent-card">
+    <div class="vk-consent-icon" aria-hidden="true">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M12 2L14.4 9.6L22 12L14.4 14.4L12 22L9.6 14.4L2 12L9.6 9.6L12 2Z" fill="currentColor" fill-opacity="0.15"/>
+      </svg>
+    </div>
+    <h2 class="vk-consent-title" id="nativeAiConsentTitle" data-i18n="aiConsentTitle">Прежде чем начать</h2>
+    <p class="vk-consent-desc" data-i18n="aiConsentDesc">Песни и ответы в чате создают сторонние ИИ-сервисы: DeepSeek пишет текст песни и отвечает на вопросы, Suno (через посредника sunoapi.org) превращает текст в музыку.</p>
+    <p class="vk-consent-desc" data-i18n="aiConsentData">В DeepSeek уходят имя, пол, дата, время и место рождения, текст твоего запроса или вопроса и история переписки в Soul Chat, а для утренних заметок дневника — имя, выбранные темы и твои ответы на заметки. В песне для двоих — такие же данные второго человека. В Suno (через посредника sunoapi.org) — текст песни и описание стиля. Почту и номер аккаунта эти сервисы не получают.</p>
+    <p class="vk-consent-legal">
+      <span data-i18n="aiConsentLegal">Нажимая «Даю согласие», ты разрешаешь эту передачу. Подробнее — в</span>
+      <a href="javascript:void(0)" onclick="if(window.showLegalModal)window.showLegalModal('privacy')" class="vk-consent-link" data-i18n="aiConsentPrivacyLink">Политике конфиденциальности</a>
+      <span data-i18n="aiConsentAnd">и</span>
+      <a href="javascript:void(0)" onclick="if(window.showLegalModal)window.showLegalModal('offer')" class="vk-consent-link" data-i18n="aiConsentTermsLink">Условиях использования</a>.
+    </p>
+    <button id="nativeAiConsentAgree" type="button" class="vk-consent-btn"><span data-i18n="aiConsentAgree">Даю согласие</span></button>
+    <button id="nativeAiConsentCancel" type="button" class="vk-consent-btn vk-consent-btn-ghost"><span data-i18n="planConfirmCancel">Отмена</span></button>
+  </div>
+</div>
+
 <!-- ═══════════════════════════════════════════════════════════════════════
      legalModal — встроенный экран с офертой/политикой/подпиской.
      §1.1.4 + §5.4.2 VK Mini Apps: пользователь должен видеть документы
@@ -2302,6 +2367,31 @@ document.addEventListener('DOMContentLoaded', function() {
     margin: 18px 0 0;
     letter-spacing: 0.01em;
   }
+  /* Экран согласия на ИИ (натив). Общее правило пилюли в app.css
+     (button:not(:where(…)) с !important) красит .vk-consent-btn в серое стекло —
+     возвращаем основной кнопке её градиент из правила выше. «Отмена» — без заливки,
+     с контуром, чтобы не спорить с «Даю согласие». Размеры и шрифт у обеих —
+     общие для всех кнопок приложения (закон №9), форма — пилюля (закон №43). */
+  #nativeAiConsentOverlay .vk-consent-btn {
+    background: linear-gradient(135deg,#a78bfa,#ec4899,#f59e0b) !important;
+    border: none !important;
+    color: #fff !important;
+    box-shadow: 0 6px 24px rgba(167,139,250,0.40), 0 0 0 1px rgba(255,255,255,0.08) inset !important;
+  }
+  #nativeAiConsentOverlay .vk-consent-btn.vk-consent-btn-ghost {
+    background: transparent !important;
+    border: 1px solid rgba(255,255,255,0.22) !important;
+    color: rgba(255,255,255,0.85) !important;
+    box-shadow: none !important;
+    margin-top: 10px;
+  }
+  /* Светлая тема красит все span/div в #1a1a2e (!important) — текст кнопок и
+     подписи берут цвет своего блока, значок — свой цвет из .vk-consent-icon. */
+  #nativeAiConsentOverlay .vk-consent-btn span,
+  #nativeAiConsentOverlay .vk-consent-legal span { color: inherit !important; }
+  #nativeAiConsentOverlay .vk-consent-icon { color: rgba(245,158,11,0.85) !important; }
+  /* Экран согласия на ИИ существует только в приложении из стора. */
+  html:not(.is-native) #nativeAiConsentOverlay { display: none !important; }
   /* ═══ Светлая тема для vkConsentOverlay (VK light + web/TG light) ═══ */
   body.theme-light .vk-consent-overlay,
   html.is-vk-light .vk-consent-overlay { background: #faf8f2 !important; }
@@ -2355,6 +2445,10 @@ document.addEventListener('DOMContentLoaded', function() {
   }
   body.theme-light .vk-consent-privacy,
   html.is-vk-light .vk-consent-privacy { color: rgba(26,26,46,0.45) !important; }
+  body.theme-light #nativeAiConsentOverlay .vk-consent-btn.vk-consent-btn-ghost {
+    color: #1a1a2e !important;
+    border-color: rgba(26,26,46,0.18) !important;
+  }
   /* На очень узких экранах (iPhone SE) — паддинги уменьшаются */
   @media (max-width: 360px) {
     .vk-consent-card { padding: 28px 20px 24px; }
@@ -3570,7 +3664,7 @@ body.theme-light #pfNew .bdg.partner{color:#5b21b6;background:rgba(139,92,246,.1
 body.theme-light #pfNew .w-bind{color:#be3a78;background:rgba(236,72,153,.08);border-color:rgba(236,72,153,.26)}
 /* ═══ РАЗОВЫЕ ТРЕКИ: три режима formPage ═══ */
 #pfNew .sec-note{margin:-4px 2px 10px;font-size:12px;line-height:1.45;color:var(--muted)}
-#pfNew .tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+#pfNew .tiles{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:8px} /* столько колонок, сколько плиток: в сборке для стора «Энергия дня» вырезана (NATIVE_FEATURES) */
 #pfNew .tile{display:flex;flex-direction:column;align-items:center;gap:2px;padding:13px 6px 11px;border-radius:16px;border:1px solid var(--line);background:var(--surface);color:var(--text)}
 #pfNew .t-ic{width:34px;height:34px;margin-bottom:5px;border-radius:11px;display:grid;place-items:center;color:#f7b6d6;background:rgba(236,72,153,.1);border:1px solid rgba(236,72,153,.22)}
 #pfNew .t-ic svg{width:17px;height:17px}
@@ -6605,6 +6699,11 @@ body.theme-light #successPage .wgu-desc{color:#4a3f52 !important;opacity:1 !impo
 body.theme-light #successPage .wgu-price{color:#8a5410 !important}
 /* натив: расшифровка не заведена как IAP (3.1.1) — блок не показываем */
 html.is-native #successPage .while-generating-upsell{display:none !important}
+/* Приложение из стора (4.3(b)): в «Пока ждёшь» вместо чата — Радио, готовая музыка.
+   Id-селекторы нужны, чтобы перебить #successPage .scard{display:flex !important} (закон №29). */
+#successPage #successRadioCard{display:none !important}
+html.is-native #successPage #successRadioCard{display:flex !important}
+html.is-native #successPage #successOracleCard{display:none !important}
 
 
 </style>
@@ -11323,6 +11422,7 @@ body.theme-light #planConfirmOverlay .cf-old{-webkit-text-fill-color:#6f5a66 !im
       });
     });
 
+    /* @@native-feature:song_analysis:begin клик «Расшифровка» в плеере */
     if (analysisBtn) analysisBtn.addEventListener('click', function() {
       var track = (window._mtTracksData || [])[_currentIdx];
       if (!track) return;
@@ -11339,6 +11439,7 @@ body.theme-light #planConfirmOverlay .cf-old{-webkit-text-fill-color:#6f5a66 !im
         openDetailOverlay(typeof t === 'function' ? t('mtAnalysisTitle') : 'Расшифровка', tr.detailed_analysis);
       });
     });
+    /* @@native-feature:song_analysis:end */
 
     // Кнопка «Копировать» в overlay
     // VK Testers ID 7260810 (Windows VK web): «Не удалось скопировать
@@ -16222,6 +16323,21 @@ body.theme-light #tourReward.tour-new,html.is-vk-light:not(.dark) #tourReward.to
     retain_resume: { ru: 'Продолжить знакомство', en: 'Continue the tour', de: 'Tour fortsetzen', fr: 'Continuer la visite' },
     retain_quit: { ru: 'Всё равно не нужно', en: 'Leave anyway', de: 'Trotzdem nicht', fr: 'Partir quand même' }
   };
+  // Приложение из стора (4.3(b)): песня — главное. Первый шаг — без «по дате рождения»
+  // как единственного входа, шаг «Подарки» — без дарения песен (на нативе его нет),
+  // «Плейлист и Радио» — вторым шагом, как во вкладках. Чат — «Soul Chat» (без «Оракула»
+  // и «дневника дня»), вкладка «Подарки» — «Сегодня», как в NATIVE_LANG_OVERRIDES.
+  if (window._isNativeApp) {
+    TOUR_STEPS[0].text = { ru: 'Главная кнопка. Жми — соберём трек из твоих слов и даты рождения.', en: 'The main button. Tap it — we’ll craft a track from your words and your birth date.', de: 'Der Hauptknopf. Tippe — wir bauen einen Track aus deinen Worten und deinem Geburtsdatum.', fr: 'Le bouton principal. Appuie — on compose un morceau à partir de tes mots et de ta date de naissance.' };
+    TOUR_STEPS[1].title = { ru: 'Soul Chat', en: 'Soul Chat', de: 'Soul Chat', fr: 'Soul Chat' };
+    TOUR_STEPS[1].text = { ru: 'Поговори о себе и о том, что у тебя на душе сейчас.', en: 'Talk about yourself and what’s on your mind right now.', de: 'Sprich über dich und über das, was dich gerade bewegt.', fr: 'Parle de toi et de ce que tu as sur le cœur en ce moment.' };
+    TOUR_STEPS[3].title = { ru: 'Сегодня', en: 'Today', de: 'Heute', fr: 'Aujourd’hui' };
+    TOUR_STEPS[3].text = { ru: 'Забирай Искру дня.', en: 'Grab the Spark of the day.', de: 'Hol dir den Funken des Tages.', fr: 'Prends l’Étincelle du jour.' };
+    TOUR_I18N.welcome_reward = { ru: 'Доберёшься до конца — подарю 30 Искр <i class="iskra-ic" aria-hidden="true"></i> Это монетки приложения: на них собирают песни и задают вопросы в Soul Chat.', en: 'Make it to the end — I’ll gift you 30 Sparks <i class="iskra-ic" aria-hidden="true"></i> They’re the app’s coins: craft songs and ask questions in Soul Chat with them.', de: 'Komm bis zum Ende — ich schenke dir 30 Funken <i class="iskra-ic" aria-hidden="true"></i> Das sind die Münzen der App: Songs machen und Fragen im Soul Chat stellen.', fr: 'Va jusqu’au bout — je t’offre 30 Étincelles <i class="iskra-ic" aria-hidden="true"></i> Ce sont les pièces de l’app : composer des chansons et poser des questions dans Soul Chat.' };
+    TOUR_I18N.retain_badge = { ru: '30 Искр = <b>30 вопросов в Soul Chat</b>', en: '30 Sparks = <b>30 questions in Soul Chat</b>', de: '30 Funken = <b>30 Fragen im Soul Chat</b>', fr: '30 Étincelles = <b>30 questions dans Soul Chat</b>' };
+    TOUR_I18N.retain_text = { ru: 'Тур совсем короткий — минутка, и <b>30 Искр</b> твои (это 30 вопросов в Soul Chat). А не сейчас — можно пройти его позже в «Помощи».', en: 'The tour is really short — a minute, and <b>30 Sparks</b> are yours (that’s 30 questions in Soul Chat). Not now? You can take it later in Help.', de: 'Die Tour ist ganz kurz — eine Minute, und <b>30 Funken</b> gehören dir (das sind 30 Fragen im Soul Chat). Nicht jetzt? Du kannst sie später in der Hilfe machen.', fr: 'La visite est très courte — une minute, et <b>30 Étincelles</b> sont à toi (soit 30 questions dans Soul Chat). Pas maintenant ? Tu peux la faire plus tard dans l’Aide.' };
+    TOUR_STEPS.splice(1, 0, TOUR_STEPS.splice(2, 1)[0]);
+  }
   function _tl(key) {
     var lang = (typeof window._currentLang === 'string' ? window._currentLang : 'ru') || 'ru';
     var obj = typeof key === 'object' ? key : (TOUR_I18N[key] || {});
@@ -16995,12 +17111,20 @@ body.theme-light #tourReward.tour-new,html.is-vk-light:not(.dark) #tourReward.to
               en: 'This is the Diary. I gently keep your answers and insights here — so you can come back to them.',
               de: 'Das ist das Tagebuch. Hier bewahre ich deine Antworten und Erkenntnisse — damit du zu ihnen zurückkehren kannst.',
               fr: 'Ceci est le Journal. J\'y garde tes réponses et tes prises de conscience — pour que tu puisses y revenir.' } },
+    /* @@native-feature:razbory_askezy:begin шаг про вкладку «Разборы» */
     { selector: '.sc-oracle-tab[data-tab="prism"]',
       text: { ru: 'А это Разборы — глубокие готовые разборы по твоей карте, в один заход: кто ты на самом деле, как ты звучишь и проявляешься, кого притягиваешь и кто твой человек, как у тебя с деньгами, карьерой и ролью в мире. Выбери тему — и получишь разбор.',
               en: 'And these are Readings — deep one-tap breakdowns of your chart: who you really are, how you sound and show up, who you attract and who your person is, how things stand with money, career and your role in the world. Pick a topic — get your reading.',
               de: 'Und das sind die Berechnungen — tiefe Analysen deiner Karte mit einem Tipp: wer du wirklich bist, wie du klingst und dich zeigst, wen du anziehst und wer dein Mensch ist, wie es um Geld, Karriere und deine Rolle in der Welt steht. Wähle ein Thema — erhalte deine Analyse.',
               fr: 'Et voici les Calculs — des analyses profondes de ta carte en un geste : qui tu es vraiment, comment tu résonnes et te manifestes, qui tu attires et qui te correspond, où en sont l\'argent, la carrière et ton rôle dans le monde. Choisis un thème — reçois ton analyse.' } }
+    /* @@native-feature:razbory_askezy:end */
   ];
+  // Сборка для стора (4.3(b)): чат — о человеке сейчас, без «отвечаю по дате рождения»;
+  // Дневник — короткая утренняя заметка, как в NATIVE_LANG_OVERRIDES (diaryHeadSub).
+  if (window._isNativeApp) {
+    OT_STEPS[0].text = { ru: 'Это Чат. Говори со мной о чём угодно — о себе, о том, что на душе сейчас, об отношениях.', en: 'This is Chat. Talk to me about anything — yourself, what’s on your mind right now, your relationships.', de: 'Das ist der Chat. Sprich mit mir über alles — über dich, über das, was dich gerade bewegt, über deine Beziehungen.', fr: 'Ceci est le Chat. Parle-moi de tout — de toi, de ce que tu as sur le cœur en ce moment, de tes relations.' };
+    OT_STEPS[1].text = { ru: 'Это Дневник: каждое утро — короткая заметка о тебе сегодня.', en: 'This is the Diary: every morning — a short note about you today.', de: 'Das ist das Tagebuch: jeden Morgen eine kurze Notiz über dich heute.', fr: 'Ceci est le Journal : chaque matin, une courte note sur toi aujourd’hui.' };
+  }
   var OT_BTN = {
     next: { ru: 'Дальше', en: 'Next', de: 'Weiter', fr: 'Suivant' },
     done: { ru: 'Понятно', en: 'Got it', de: 'Verstanden', fr: 'Compris' },
@@ -17512,6 +17636,11 @@ body.theme-light #tourReward.tour-new,html.is-vk-light:not(.dark) #tourReward.to
   if (window._isNativeApp) PAGE_HINTS.profilePage = {
     ru: 'Тут баланс Искр и пакеты', en: 'Your Sparks balance and packages',
     de: 'Dein Funken-Guthaben und Pakete', fr: "Ton solde d'Étincelles et les packs"
+  };
+  // Дарения в сборке для стора нет — подсказка картотеки без «в подарок».
+  if (window._isNativeApp) PAGE_HINTS.heroesPage = {
+    ru: 'Создай песню для близкого человека', en: 'Create a song for someone special',
+    de: 'Erstelle ein Lied für einen besonderen Menschen', fr: "Crée une chanson pour quelqu'un de spécial"
   };
 
   // Helper: принудительно скрыть pageHint (чтобы он не застревал на экране

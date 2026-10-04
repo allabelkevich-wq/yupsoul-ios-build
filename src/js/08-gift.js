@@ -647,6 +647,7 @@
       // при пустой дате рождения — 409, и человека выбрасывало на другой экран.
       async function _scShowWallPrism(historyEl, tl) {
         if (!historyEl) return;
+        if ((window.__YS_NATIVE_OFF__ || {}).razbory_askezy) return; // стор: Разборов нет (NATIVE_FEATURES)
         var free = window._scSoulNameFree;
         if (free !== true && free !== false) free = await _scFetchSoulNameFree();
         if (free !== true) return;
@@ -720,6 +721,9 @@
           if (!question) return;
           var apiBase  = (window.BACKEND_URL || window.HEROES_API_BASE || '').replace(/\/$/, '');
           if (!apiBase || !hasAuth()) return;
+          // Натив (App Store 5.1.2(i)): вопрос уходит в DeepSeek — сначала явное согласие.
+          // При «Отмене» вопрос остаётся в поле ввода.
+          if (window._isNativeApp && typeof window._nativeEnsureAiConsent === 'function' && !(await window._nativeEnsureAiConsent())) return;
           var initData = getInitData();
           var sendH = getAuthHeaders();
 
@@ -948,6 +952,19 @@
         if (!pageId) {
           console.warn('[goToPage] pageId пустой — переходим на homePage');
           pageId = 'homePage';
+        }
+        // Натив (App Store 5.1.2(i)): Soul Chat отправляет вопросы в DeepSeek — согласие на ИИ
+        // спрашиваем один раз при входе во вкладку (любой путь сюда идёт через goToPage).
+        // «Отмена» — остаёмся, где были; «Даю согласие» — тот же переход.
+        if (pageId === 'soulChatPage' && window._isNativeApp && typeof window._nativeHasAiConsent === 'function' && !window._nativeHasAiConsent()) {
+          var _acTab = window._tabNav, _acBack = window._navBack;
+          window._tabNav = false; window._navBack = false;
+          window._nativeEnsureAiConsent().then(function(ok) {
+            if (!ok) return;
+            window._tabNav = _acTab; window._navBack = _acBack;
+            window.goToPage(pageId);
+          });
+          return;
         }
         // Тихая доначисление-проверка бонуса за сообщество при заходе в профиль.
         // Ловит тех, кто вступил в группу мимо нашей кнопки (из ленты, по ссылке
@@ -1408,6 +1425,7 @@
       // Применение конфига навигации с сервера (редактор в админке): кнопка → страница.
       // ЗАПРЕЩЕНО: soulChatBtn всегда ведёт на soulChatPage, никогда на profilePage (закон проекта).
       function applyNavigationConfig(mappings) {
+        if (window._isNativeApp) return; // 2.3.1 — см. loadNavigationConfig
         if (!mappings || typeof mappings !== 'object') return;
         window.__navConfig = mappings;
         var homeNavIds = { soulChatBtn: 1, goHelpBtn: 1, goHeroesBtn: 1, goMyTracksBtn: 1 };
@@ -1435,6 +1453,9 @@
 
       // Загрузка конфига навигации с сервера (редактор в админке) и применение
       (function loadNavigationConfig() {
+        // App Store 2.3.1: в приложении из стора навигация — та, что прошла ревью;
+        // сервер не переназначает кнопки. Запрос не шлём.
+        if (window._isNativeApp) return;
         var base = (window.BACKEND_URL || window.HEROES_API_BASE || '').replace(/\/$/, '');
         if (!base) return;
         fetch(base + '/api/config/navigation').then(function(r) { return r.json(); }).then(function(data) {
@@ -1444,6 +1465,7 @@
 
       // Применение дизайна градиентов (цвета и интенсивность) с сервера
       function applyDesignConfig(design) {
+        if (window._isNativeApp) return; // 2.3.1 — см. loadDesignConfig
         if (!design || typeof design !== 'object') return;
         var cssVars = [];
         var map = { g_bg1: '--g-bg1', g_bg2: '--g-bg2', g_c1: '--g-c1', g_c2: '--g-c2', g_c3: '--g-c3', g_ci: '--g-ci', g_blend: '--g-blend', g_blob_opacity: '--g-blob-opacity', g_blob_mid: '--g-blob-mid', g_blob_edge: '--g-blob-edge', g_int_opacity: '--g-int-opacity', g_int_strong: '--g-int-strong', g_int_mid: '--g-int-mid', g_int_soft: '--g-int-soft' };
@@ -1458,6 +1480,9 @@
       }
       window.applyDesignConfig = applyDesignConfig;
       (function loadDesignConfig() {
+        // App Store 2.3.1: сервер не меняет вид приложения из стора (значения шли бы
+        // прямо в <style>, мимо ревью). Как и навигацию, запрос не шлём.
+        if (window._isNativeApp) return;
         var base = (window.BACKEND_URL || window.HEROES_API_BASE || '').replace(/\/$/, '');
         if (!base) return;
         fetch(base + '/api/config/design').then(function(r) { return r.json(); }).then(function(design) {
@@ -1986,6 +2011,17 @@
               (L.typewriter3 || 'Общайся со своей душой с помощью Душевного чата.'),
               (L.typewriter5 || 'Заводи карточки с данными своих близких или клиентов для быстрого доступа.'),
               (L.typewriter6 || 'Соединяй карточки с данными близких.')
+            ];
+          }
+          // Приложение из стора: фразы про расшифровку, подарки и карточки клиентов
+          // обещают то, чего там нет или что звучит как астро-сервис (4.3(b)).
+          // Остаются песня, Радио, караоке и чат.
+          if (window._isNativeApp) {
+            return [
+              (L.typewriter1 || 'Создавай песню о себе на любую тему.'),
+              (L.typewriterNative2 || 'Слушай песни других людей на Радио.'),
+              (L.typewriterNative3 || 'Пой свою песню в караоке.'),
+              (L.typewriter3 || 'Общайся со своей душой с помощью Душевного чата.')
             ];
           }
           return [
@@ -2643,6 +2679,8 @@
       }
 
       function setMode(mode) {
+        // Сборка для стора: «Энергия дня» вырезана (NATIVE_FEATURES) — пресеты и черновики с ней ведут в «Обо мне».
+        if (mode === 'transit' && (window.__YS_NATIVE_OFF__ || {}).energy_of_day) mode = 'single';
         selectedMode = mode || 'single';
         document.querySelectorAll('.mode-btn[data-mode]').forEach(function(btn) {
           btn.classList.toggle('active', btn.getAttribute('data-mode') === selectedMode);
@@ -3467,6 +3505,42 @@
         'c75ac93c': { icon: '∞', placeholderI18n: {en:'Tell us about our bond and compatibility based on our dates of birth',de:'Erzähl uns von unserer Verbindung und Kompatibilität nach unseren Geburtsdaten',fr:'Parle-nous de notre lien et de notre compatibilité d\'après nos dates de naissance'}, duoPlaceholderI18n: {en:'Tell us about our bond and compatibility based on our dates of birth',de:'Erzähl uns von unserer Verbindung und Kompatibilität nach unseren Geburtsdaten',fr:'Parle-nous de notre lien et de notre compatibilité d\'après nos dates de naissance'}, label: {ru:'Песня про нас',en:'Song about us',de:'Lied über uns',fr:'Chanson sur nous'}, duoLabel: {ru:'Песня про нас',en:'Song about us',de:'Lied über uns',fr:'Chanson sur nous'}, desc: {ru:'Дуэт, рождённый из двух дат рождения',en:'A duet born from two birthdates',de:'Ein Duett aus zwei Geburtsdaten',fr:'Un duo né de deux dates de naissance'}, duoDesc: {ru:'Дуэт, рождённый из двух дат рождения',en:'A duet born from two birthdates',de:'Ein Duett aus zwei Geburtsdaten',fr:'Un duo né de deux dates de naissance'}, input: null },
       };
 
+      // Сборка для стора (App Store 4.3(b), ревью 04.10): запросы «по дате рождения», «что впереди»
+      // и «совместимость» — это гадание. На нативе остаются 5 запросов про событие и состояние, с
+      // текстами без даты рождения; русский текст из базы подменяется тоже. Остальные площадки — как было.
+      var NATIVE_QUICK = {
+        '602c8e18': {
+          placeholderI18n: {ru:'Создай песню об этом особом моменте в моей жизни',en:'Create a song about this special moment in my life',de:'Schreib ein Lied über diesen besonderen Moment in meinem Leben',fr:'Crée une chanson sur ce moment spécial de ma vie'},
+          duoPlaceholderI18n: {ru:'Создай песню об этом особом моменте в нашей жизни',en:'Create a song about this special moment in our life',de:'Schreib ein Lied über diesen besonderen Moment in unserem Leben',fr:'Crée une chanson sur ce moment spécial de notre vie'}
+        },
+        '73edc06e': {
+          placeholderI18n: {ru:'Создай спокойную песню-медитацию обо мне и о том, что я чувствую сейчас',en:'Create a calm meditative song about me and what I feel right now',de:'Schreib ein ruhiges, meditatives Lied über mich und darüber, was ich gerade fühle',fr:'Crée une chanson calme et méditative sur moi et sur ce que je ressens maintenant'},
+          duoPlaceholderI18n: {ru:'Создай спокойную песню-медитацию о нас и о том, что мы чувствуем сейчас',en:'Create a calm meditative song about us and what we feel right now',de:'Schreib ein ruhiges, meditatives Lied über uns und darüber, was wir gerade fühlen',fr:'Crée une chanson calme et méditative sur nous et sur ce que nous ressentons maintenant'},
+          input: {ru:'Укажи намерение: спокойствие, отпустить, выдохнуть...',en:'Specify intention: calm, letting go, a deep breath...',de:'Gib die Absicht an: Ruhe, loslassen, durchatmen...',fr:'Précise l\'intention : calme, lâcher prise, respirer...'}
+        },
+        'a7b25cb3': {
+          placeholderI18n: {ru:'Создай смешную и ироничную песню обо мне и моих слабостях',en:'Create a funny, self-ironic song about me and my quirks',de:'Schreib ein lustiges, selbstironisches Lied über mich und meine Macken',fr:'Crée une chanson drôle et autodérisoire sur moi et mes travers'},
+          duoPlaceholderI18n: {ru:'Создай смешную и ироничную песню о нас и наших слабостях',en:'Create a funny, ironic song about us and our quirks',de:'Schreib ein lustiges, ironisches Lied über uns und unsere Macken',fr:'Crée une chanson drôle et ironique sur nous et nos travers'}
+        },
+        'fb1377ae': {
+          placeholderI18n: {ru:'Создай песню-благословение для меня — тёплые слова поддержки',en:'Create a blessing song for me — warm words of support',de:'Schreib ein Segenslied für mich — warme Worte der Unterstützung',fr:'Crée une chanson-bénédiction pour moi — des mots chaleureux de soutien'},
+          duoPlaceholderI18n: {ru:'Создай песню-благословение для нас двоих — тёплые слова поддержки',en:'Create a blessing song for the two of us — warm words of support',de:'Schreib ein Segenslied für uns beide — warme Worte der Unterstützung',fr:'Crée une chanson-bénédiction pour nous deux — des mots chaleureux de soutien'},
+          input: {ru:'Укажи, на что благословение: рождение ребёнка, новый этап, важный шаг...',en:'Specify: a birth, a new chapter, an important step...',de:'Gib an: eine Geburt, ein neues Kapitel, ein wichtiger Schritt...',fr:'Précise : une naissance, un nouveau chapitre, un pas important...'}
+        },
+        '5a9e392b': {
+          placeholderI18n: {ru:'Создай мою личную фразу силы — короткую, ритмичную, про меня сейчас',en:'Create my personal power phrase — short, rhythmic, about me right now',de:'Erstelle meinen persönlichen Kraftspruch — kurz, rhythmisch, über mich jetzt',fr:'Crée ma phrase de pouvoir personnelle — courte, rythmée, sur moi maintenant'},
+          duoPlaceholderI18n: {ru:'Создай нашу общую фразу силы — короткую, ритмичную, про нас сейчас',en:'Create our shared power phrase — short, rhythmic, about us right now',de:'Erstelle unseren gemeinsamen Kraftspruch — kurz, rhythmisch, über uns jetzt',fr:'Crée notre phrase de pouvoir commune — courte, rythmée, sur nous maintenant'}
+        }
+      };
+      // Запись подсказок для кнопки: на нативе поверх общей — тексты из NATIVE_QUICK
+      // (русский — тоже через duoPlaceholder, иначе он брался бы из базы «по дате рождения»).
+      function _quickTips(shortId) {
+        var tt = BUTTON_TOOLTIPS[shortId] || {};
+        var nq = window._isNativeApp ? NATIVE_QUICK[shortId] : null;
+        if (!nq) return tt;
+        return Object.assign({}, tt, nq, { duoPlaceholder: { ru: nq.duoPlaceholderI18n.ru } });
+      }
+
       // VK Testers 10.05.2026: автозамена единственного → множественного для
       // placeholder'ов quick-buttons в режиме «couple». Меняет местоимения
       // первого лица единственного числа на множественное (мой → наш, моя →
@@ -3515,6 +3589,11 @@
         if (oldTooltip) oldTooltip.remove();
 
         var filtered = buttons.filter(function(b){ return mode === 'couple' ? true : !b.is_duo; });
+        if (window._isNativeApp) {
+          filtered = filtered.filter(function(b){ return NATIVE_QUICK[String(b.id).split('-')[0]]; }).map(function(b){
+            return Object.assign({}, b, { placeholder: NATIVE_QUICK[String(b.id).split('-')[0]].placeholderI18n.ru });
+          });
+        }
         filtered.forEach(function(btn) {
           var el = document.createElement('button');
           el.type = 'button';
@@ -3524,13 +3603,13 @@
           el.setAttribute('data-quick-hint', btn.hint || '');
           // Добавляем крафтовую иконку + адаптируем label для duo
           var shortId = btn.id.split('-')[0];
-          var tt = BUTTON_TOOLTIPS[shortId] || {};
+          var tt = _quickTips(shortId);
           var isDuo = mode === 'couple';
           var displayLabel = isDuo && tt.duoLabel ? _qbl(tt.duoLabel) : (_qbl(tt.label) || btn.label);
           el.textContent = (tt.icon ? tt.icon + ' ' : '') + displayLabel;
           // Клик = сразу выбор (без промежуточного тултипа)
           el.addEventListener('click', function() {
-            var tt2 = BUTTON_TOOLTIPS[shortId] || {};
+            var tt2 = _quickTips(shortId);
             var requestField = document.getElementById('request');
             if (requestField) {
               // VK Testers 10.05.2026: в режиме «couple» placeholder остаётся
@@ -3754,6 +3833,9 @@
           return;
         }
         hideSubmitHint();
+        // Натив (App Store 5.1.2(i)): данные заявки уходят в DeepSeek и Suno — сначала явное согласие.
+        // Стоит после валидации и до isSubmitting: при «Отмене» сбрасывать нечего, запрос не ушёл.
+        if (window._isNativeApp && typeof window._nativeEnsureAiConsent === 'function' && !(await window._nativeEnsureAiConsent())) return;
         isSubmitting = true;
         var mode = selectedMode || 'single';
         var name1 = document.getElementById('name').value.trim();

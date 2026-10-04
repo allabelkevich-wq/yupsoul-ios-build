@@ -442,9 +442,12 @@
         }
 
         var optinRow = document.querySelector('#songOpenedPage .optin-row');
-        if (optinRow) optinRow.addEventListener('click', function(e){
+        if (optinRow) optinRow.addEventListener('click', async function(e){
           var b=e.target.closest('button'); if(!b) return;
           var yes = b.classList.contains('optin-yes');
+          // Натив (App Store 5.1.2(i)): утренние заметки пишет DeepSeek — до подписки согласие на ИИ.
+          // «Отмена» — карточка остаётся, ничего не подписываем.
+          if (yes && window._isNativeApp && typeof window._nativeEnsureAiConsent === 'function' && !(await window._nativeEnsureAiConsent())) return;
           var o=document.getElementById('soOptin'); if(o){ o.style.opacity='0'; setTimeout(function(){ o.style.display='none'; }, 260); }
           try{ localStorage.setItem('ys_oracle_optin', yes?'1':'0'); }catch(_){}
           if (yes && typeof window.enableOracleOptin === 'function') window.enableOracleOptin(); // Фаза 3
@@ -479,7 +482,8 @@
         on('soRecipLyrics', function(){ var tr=_soTrack(); if(tr && window._mtOpenKaraoke) window._mtOpenKaraoke(tr); });
 
         // Опт-ин Оракула («Да, присылай») — POST /api/daily-oracle/onboarding (закон №37: провал — тихо).
-        window.enableOracleOptin = function(){
+        window.enableOracleOptin = async function(){
+          if (window._isNativeApp && typeof window._nativeEnsureAiConsent === 'function' && !(await window._nativeEnsureAiConsent())) return; // натив: согласие на ИИ (5.1.2(i))
           // Приложение App Store: рассылка Оракула идёт в Телеграм/ВК, у Apple-входа их нет —
           // без этого «Да, присылай» на айфоне не давало ничего. Утреннее уведомление ставит сам телефон.
           try { if (window._isNativeApp && typeof window._nativeEnableDailyNotif === 'function') window._nativeEnableDailyNotif(); } catch(_) {}

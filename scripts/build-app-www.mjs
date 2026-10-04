@@ -45,6 +45,34 @@ mkdirSync(www, { recursive: true });
 const STRIP = /(?:<!--|\/\*)\s*@@native-strip:begin[\s\S]*?(?:<!--|\/\*)\s*@@native-strip:end\s*(?:-->|\*\/)/g;
 const STRIP_EXPECTED = 4; // согласие первого входа, документы продавца, 2 блока партнёрских ссылок
 
+// ═══════════════════════════════════════════════════════════════════════════
+// ПЕРЕКЛЮЧАТЕЛИ ФУНКЦИЙ ДЛЯ СТОРА (App Store 4.3(b), 04.10.2026) — единственное место.
+// Функции, астрологичные по самому механизму, в iOS 1.0 не входят. В src/ они
+// обёрнуты метками <!-- @@native-feature:ГРУППА:begin --> … <!-- @@native-feature:ГРУППА:end -->
+// (в JS/CSS — /* … */). Группа false — блок вырезается из app/www целиком
+// (вместе со всеми входами: кнопки, вкладки, шаги обучалки, пункты пакетов).
+// Включить в iOS — поставить true и пересобрать. Telegram/VK/веб не меняются:
+// public/index.html метки только комментирует. Переходы из кода (мостики,
+// пресеты формы) смотрят window.__YS_NATIVE_OFF__ — его вставляем ниже.
+const NATIVE_FEATURES = {
+  razbory_askezy: false, // Разборы (призмы) и Аскезы — вкладка в Soul Chat и входы в неё
+  compat_percent: false, // Совместимость в процентах: экран и режим «Совместимость» в чате
+  who_are_you: false,    // «Кто ты на самом деле»: архетип, «планета души»
+  energy_of_day: false,  // режим «Энергия дня» (транзиты), поля события, «Песня дня» на главной
+  planet_sound: false,   // стиль музыки «Звучание планет»
+  song_analysis: false,  // «Расшифровка» песни (астро-разбор из ответа ИИ): кнопка в плеере, «Глубокая расшифровка», разбор в истории карточки
+};
+// Чего не должно остаться в файле, если группа выключена, — страховка
+// от забытой или сломанной метки.
+const FEATURE_GONE = {
+  razbory_askezy: ['data-tab="prism" onclick', 'id="scPrismPane"', 'id="ulSegTopic"'],
+  compat_percent: ['id="compatResultPage"', 'id="scPickerTabSynastry"', 'id="scSynastryTeaser"', 'data-i18n-aria="ctxCompatBtn"'],
+  who_are_you: ['id="archetypePage"', 'id="profileArchBtn"'],
+  energy_of_day: ['data-mode="transit" data-effect', 'data-u="pf" data-mode="transit"', 'id="transitAccordion"', 'data-quick-action="song_of_day"', 'data-i18n="plBuy3"'],
+  planet_sound: ['data-smode="astro" data-effect'],
+  song_analysis: ['id="mtNpAnalysisBtn"', 'id="whileGeneratingUpsell"', "t('mtAnalysisTitle')", "t('heroAnalysisBtn')"],
+};
+
 // Продавец в словарях веб-версии. Значения — те же, что в NATIVE_LANG_OVERRIDES.
 const SELLER = {
   'Исполнитель': 'Исполнитель: Yupland Digital Solutions, LLC, Грузия',
@@ -84,6 +112,31 @@ if (stripped !== STRIP_EXPECTED) {
 }
 html = html.replace(STRIP, '');
 
+// Переключатели функций: метки парные, имена групп — только из NATIVE_FEATURES.
+const featureNames = [...html.matchAll(/@@native-feature:([a-z_]+):(?:begin|end)/g)].map(m => m[1]);
+const unknownFeature = [...new Set(featureNames)].filter(n => !(n in NATIVE_FEATURES));
+if (unknownFeature.length) {
+  console.error(`[build-app-www] Метки @@native-feature с неизвестной группой: ${unknownFeature.join(', ')}. Добавьте группу в NATIVE_FEATURES.`);
+  process.exit(1);
+}
+const featureOff = {};
+for (const [name, on] of Object.entries(NATIVE_FEATURES)) {
+  const count = kind => (html.match(new RegExp(`@@native-feature:${name}:${kind}\\b`, 'g')) || []).length;
+  const begins = count('begin');
+  if (!begins || begins !== count('end')) {
+    console.error(`[build-app-www] Группа ${name}: меток begin ${begins}, end ${count('end')} — должны быть парными и хотя бы одна.`);
+    process.exit(1);
+  }
+  if (on) continue;
+  featureOff[name] = true;
+  html = html.replace(new RegExp(`(?:<!--|\\/\\*)\\s*@@native-feature:${name}:begin[\\s\\S]*?(?:<!--|\\/\\*)\\s*@@native-feature:${name}:end\\s*(?:-->|\\*\\/)`, 'g'), '');
+  const left = FEATURE_GONE[name].filter(s => html.includes(s));
+  if (left.length) {
+    console.error(`[build-app-www] Группа ${name} выключена, но в файле осталось: ${left.join(' | ')}. Оберните это меткой @@native-feature:${name}.`);
+    process.exit(1);
+  }
+}
+
 const seller = new RegExp('(helpLegalSeller:\\s*)([\'"])((?:\\\\.|(?!\\2).)*)\\2', 'g');
 html = html.replace(seller, (m, key, q, value) => {
   if (!IE_TRACE.test(value)) return m;
@@ -119,7 +172,7 @@ if (!html.includes('</head>')) {
   console.error('[build-app-www] Не найден </head> — не удалось вставить метку сборки');
   process.exit(1);
 }
-html = html.replace('</head>', `<script>window.__YS_BUILD__=${JSON.stringify(buildInfo)};</script></head>`);
+html = html.replace('</head>', `<script>window.__YS_BUILD__=${JSON.stringify(buildInfo)};window.__YS_NATIVE_OFF__=${JSON.stringify(featureOff)};</script></head>`);
 
 // Синтаксическая проверка встроенных скриптов. Одна незакрытая кавычка в
 // подстановке выше ломает парсинг всего кода приложения: на iPhone это экран

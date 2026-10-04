@@ -515,6 +515,7 @@
                     itemDiv.appendChild(lyricsText);
                   }
                   
+                  /* @@native-feature:song_analysis:begin «Расшифровка» в истории карточки */
                   if (r.detailed_analysis) {
                     var analysisBtn = document.createElement('button');
                     analysisBtn.type = 'button';
@@ -528,6 +529,7 @@
                     analysisText.textContent = typeof window._mtCleanMarkdown === 'function' ? window._mtCleanMarkdown(r.detailed_analysis) : r.detailed_analysis;
                     itemDiv.appendChild(analysisText);
                   }
+                  /* @@native-feature:song_analysis:end */
                   
                   if (r.cover_letter) {
                     var letterBtn = document.createElement('button');

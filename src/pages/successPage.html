@@ -51,6 +51,7 @@
           <div class="step" data-step><span class="step-ic"><span class="ring"></span><span class="spin"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span class="step-lbl" data-i18n="genStage4">Составляю звуковую композицию</span></div>
         </div>
         <!-- CD 19.09: апселл «Глубокая расшифровка» — переехал с удалённой loadingPage (D11); показывает suCdInit через showWhileGeneratingUpsell -->
+        <!-- @@native-feature:song_analysis:begin апселл «Глубокая расшифровка» (на нативе и так скрыт CSS — здесь вырезаем из сборки) -->
         <div id="whileGeneratingUpsell" class="while-generating-upsell rv" style="display:none;">
           <div class="wgu-label" data-i18n="wguLabel">Пока создаётся твоя песня</div>
           <div class="wgu-title" data-i18n="wguTitle">Узнай что твоя дата говорит о тебе</div>
@@ -58,6 +59,7 @@
           <div class="wgu-price" data-i18n="wguPrice">Глубокая расшифровка — 40 Искр (290 ₽)</div>
           <button type="button" class="btn btn-secondary" data-i18n="wguBtn" onclick="if(typeof handleBuyDeepAnalysis==='function')handleBuyDeepAnalysis()">Получить расшифровку</button>
         </div>
+        <!-- @@native-feature:song_analysis:end -->
         <!-- CD 19.09: помощь при задержке -->
         <div class="help rv" id="successHelp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4.5M12 16h.01"/></svg><span><b data-i18n="successHelpT">Тишина дольше 20 минут?</b> <span data-i18n="successHelpBody">Напиши боту «песня не пришла» — разберёмся и вернём Искры, если что-то сломалось.</span></span></div>
 
@@ -65,7 +67,9 @@
           <div class="suggest-h" data-i18n="csWhileWaiting">Пока ждёшь песню</div>
           <div class="sgrid">
             <button class="scard" type="button" id="successShareBtn" onclick="if(typeof shareApp==='function')shareApp()"><span class="sic v1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg></span><b data-i18n="successShareShort">Поделиться</b></button>
-            <button class="scard" type="button" onclick="if(typeof _leaveSuccessTo==='function'){_leaveSuccessTo('soulChatPage')}else{window.returnToPage='homePage';goToPage('soulChatPage')}if(typeof initSoulChatPage==='function')setTimeout(initSoulChatPage,300)"><span class="sic v2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-11.6 7.8L3 21l1.8-6.2A8.4 8.4 0 1 1 21 11.5Z"/></svg></span><b data-i18n="homeChoice3">Чат с Оракулом</b></button>
+            <button class="scard" type="button" id="successOracleCard" onclick="if(typeof _leaveSuccessTo==='function'){_leaveSuccessTo('soulChatPage')}else{window.returnToPage='homePage';goToPage('soulChatPage')}if(typeof initSoulChatPage==='function')setTimeout(initSoulChatPage,300)"><span class="sic v2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-11.6 7.8L3 21l1.8-6.2A8.4 8.4 0 1 1 21 11.5Z"/></svg></span><b data-i18n="homeChoice3">Чат с Оракулом</b></button>
+            <!-- Приложение из стора: пока пишется песня, предлагаем готовую музыку — Радио (вкладка Плейлиста), а не чат. Видимость — CSS html.is-native в шаблоне. -->
+            <button class="scard" type="button" id="successRadioCard" onclick="if(typeof _leaveSuccessTo==='function'){_leaveSuccessTo('myTracksPage')}else{window.returnToPage='homePage';goToPage('myTracksPage')}if(typeof window.loadMyTracks==='function')window.loadMyTracks(false);setTimeout(function(){var r=document.getElementById('mtTabRadio');if(r)r.click()},0)"><span class="sic v2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="2.5"/><path d="M16.2 7.8a6 6 0 0 1 0 8.4M7.8 16.2a6 6 0 0 1 0-8.4M19 5a10 10 0 0 1 0 14M5 19A10 10 0 0 1 5 5"/></svg></span><b data-i18n="mtTabRadio">Радио</b></button>
             <button class="scard" type="button" id="newKeyBtn"><span class="sic v3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg></span><b data-i18n="csNewSong">Ещё песню</b></button>
           </div>
         </div>
