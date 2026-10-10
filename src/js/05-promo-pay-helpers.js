@@ -436,8 +436,7 @@
                 // ПОСЛЕ первой песни (has_tracks = есть что доставлять), не в онбординге, не на
                 // пустом входе. +5 Искр не обещаем на VK (канон v4 §2.6.2 — бэкенд их и не даёт).
                 var _hasTracks = false; try { _hasTracks = !!(d.has_tracks || (_np && (_np.has_tracks || (_np.tracks_count || 0) > 0))); } catch(_) {}
-                // Приложение из стора: тоже без обещания Искр за уведомления (App Store 5.1.1(iv)).
-                var _nlBonus = !_np.notify_consent_bonus_given && (window._appEnv !== 'vk') && !window._isNativeApp;
+                var _nlBonus = !_np.notify_consent_bonus_given && (window._appEnv !== 'vk');
                 if (_tourDone && _guideDone && _hasTracks && !_subscribed && !_rejRecent && !_nlShown && typeof window.showNewsletterOffer === 'function') {
                   try { sessionStorage.setItem('ys_newsletter_shown', '1'); } catch(_) {}
                   setTimeout(function(){ if (typeof window.showNewsletterOffer === 'function') window.showNewsletterOffer(_nlBonus); }, 1400);

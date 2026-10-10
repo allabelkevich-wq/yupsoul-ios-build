@@ -651,6 +651,22 @@
       window.handleGoogleSignIn = handleGoogleSignIn;
       window.showWebLoginScreen = showWebLoginScreen;
 
+      /** Вход недействителен (сервер ответил 401 на запрос с нашим токеном, или токена нет):
+       *  токен истёк (7 дней, APP_JWT_EXPIRES_SEC), аккаунт удалён и т.п. Сборка 40 (Алла 09.10):
+       *  вместо текста «Сессия истекла…» (закон №37) снимаем вход и показываем экран входа —
+       *  в приложении из стора это вход через Apple. Возвращает true, если экран входа показан.
+       *  Telegram/VK/OK — вход платформенный (initData / подпись запуска), экрана входа там нет
+       *  (showWebLoginScreen их и так блокирует): возвращаем false, вызывающий код тихо повторяет. */
+      window._ysAuthLost = function() {
+        if (window._appEnv === 'telegram' || window._isTgEmbed || window._isVkMiniApp || window._isOkMiniApp ||
+            window._appEnv === 'vk' || window._appEnv === 'ok' || window._previewMode) return false;
+        try { localStorage.removeItem('google_jwt'); localStorage.removeItem('google_user'); } catch(_) {}
+        window._googleJwt = null; window._googleUser = null;
+        window._webAuthReadyDone = false;
+        showWebLoginScreen();
+        return true;
+      };
+
       function onWebAuthReady() {
         if (window._webAuthReadyDone) return;
         window._webAuthReadyDone = true;

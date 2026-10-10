@@ -876,6 +876,7 @@
         var result = document.getElementById('scDiaryPreviewResult');
         if (!btn || !result) return;
         if (_diarySelectedTopics.length < 1) return;
+        if (window._isNativeApp && typeof window._nativeEnsureAiConsent === 'function' && !(await window._nativeEnsureAiConsent())) return; // натив: пробную заметку пишет DeepSeek — согласие на ИИ (5.1.2(i))
         btn.disabled = true;
         btn.innerHTML = '<span class="oracle-loading" style="display:inline-flex;padding:0;font-size:0.85rem;color:rgba(255,255,255,0.5);">' + t('oracleThinking') + '</span>';
         result.style.display = 'block';

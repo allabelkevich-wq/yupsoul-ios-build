@@ -116,9 +116,11 @@
         window._nativeProductBySku = PRODUCT_BY_SKU;
 
         /* ── Согласие на передачу данных сторонним ИИ (App Store 5.1.2(i)) ──────
-           Перед первой песней, входом во вкладку Soul Chat, подпиской на дневник
-           (и экранами совместимости/аскез, если они есть в сборке) показываем
-           #nativeAiConsentOverlay: куда и какие данные уходят (DeepSeek, Suno).
+           Перед первой песней, первым вопросом Оракулу, разбором, совместимостью,
+           аскезой и подпиской на утренние заметки дневника показываем
+           #nativeAiConsentOverlay — одна строка: песню и ответы помогает писать ИИ,
+           ему уходят рассказ и дата рождения. Названий сервисов в окне нет
+           (Алла 09.10), подробности — по ссылке на Политику конфиденциальности.
            Где хранится: на сервере — та же отметка, что у согласия VK
            (POST /api/vk/accept-terms → vk_terms_accepted в /api/me), потому что
            приложение ходит в боевой сервер, а отдельной колонки там пока нет.
@@ -175,16 +177,17 @@
             document.getElementById('nativeAiConsentCancel').addEventListener('click', function() {
               _aiConsentClose(false);
             });
+            // Ссылка «Политике конфиденциальности» — <u> внутри перевода (data-i18n-html
+            // пересобирает узел на смене языка), поэтому слушаем строку целиком.
+            var legal = ov.querySelector('.consent-legal');
+            if (legal) legal.addEventListener('click', function(e) {
+              if (e.target && e.target.closest && e.target.closest('u') && window.showLegalModal) window.showLegalModal('privacy');
+            });
           }
           _aiConsentPending = new Promise(function(resolve) { _aiConsentResolve = resolve; });
           ov.style.display = 'flex';
           ov.setAttribute('aria-hidden', 'false');
           return _aiConsentPending;
-        };
-        // Без окна: для входа во вкладку Soul Chat (goToPage) — там переход синхронный.
-        window._nativeHasAiConsent = function() {
-          if (window._meAiConsent === true) return true;
-          try { return localStorage.getItem(AI_CONSENT_KEY) === '1'; } catch (_) { return false; }
         };
 
         /* ── Вход через Apple ──────────────────────────────────────────────── */
@@ -227,6 +230,47 @@
           await _rcIdentify(d.user_id);
           return d;
         };
+
+        /* ── Вход истёк или недействителен → экран входа (сборка 40, Алла 09.10) ──
+           Токен входа живёт 7 дней (APP_JWT_EXPIRES_SEC на сервере), а iOS держит
+           приложение в памяти дольше; аккаунт могли удалить. Тогда наш сервер отвечает
+           401 на запросы с этим токеном (или /api/me — authenticated:false), и экраны
+           показывали текст ошибки («Сессия истекла…» в Плейлисте). Общего помощника
+           запросов в приложении нет — запросы идут через window.fetch из разных модулей,
+           поэтому слушаем ответы здесь, один раз для всех. Только наш сервер и только
+           запросы с текущим Bearer: вход Apple (/api/auth/apple) идёт без токена, а
+           Telegram/VK/OK сюда не попадают — модуль работает лишь в приложении из стора. */
+        (function watchAuthLost() {
+          var _fetch = window.fetch;
+          if (typeof _fetch !== 'function' || !apiBase) return;
+          var bearerOf = function(opts) {
+            var h = opts && opts.headers;
+            if (!h) return '';
+            try { if (typeof Headers !== 'undefined' && h instanceof Headers) return h.get('Authorization') || ''; } catch (_) {}
+            return h.Authorization || h.authorization || '';
+          };
+          var isCurrent = function(bearer) { return !!window._googleJwt && bearer === 'Bearer ' + window._googleJwt; };
+          window.fetch = function(url, opts) {
+            var p = _fetch.apply(this, arguments);
+            try {
+              var u = typeof url === 'string' ? url : ((url && url.url) || '');
+              var bearer = bearerOf(opts);
+              if (bearer && u.indexOf(apiBase + '/api/') === 0) {
+                var isMe = /^\/api\/me(\?|$)/.test(u.slice(apiBase.length)) && !(opts && opts.method && String(opts.method).toUpperCase() !== 'GET');
+                p.then(function(r) {
+                  if (!r || !isCurrent(bearer)) return;
+                  if (r.status === 401) { if (window._ysAuthLost) window._ysAuthLost(); return; }
+                  if (isMe && r.ok) {
+                    r.clone().json().then(function(d) {
+                      if (d && d.authenticated === false && isCurrent(bearer) && window._ysAuthLost) window._ysAuthLost();
+                    }).catch(function() {});
+                  }
+                }, function() {});
+              }
+            } catch (_) {}
+            return p;
+          };
+        })();
 
         /* ── RevenueCat ────────────────────────────────────────────────────── */
         var _rcReady = false;

@@ -332,18 +332,12 @@
           try {
             var apiBase = (window.BACKEND_URL || window.HEROES_API_BASE || '').replace(/\/$/, '');
             var hdrs = (typeof getAuthHeaders === 'function') ? getAuthHeaders() : {};
-            // Приложение из стора получает мысль дня на языке интерфейса (сервер отдаёт её только iPhone).
-            var spreadUrl = apiBase + '/api/daily-spread' + (window._isNativeApp ? '?lang=' + encodeURIComponent(currentLang || 'en') : '');
             var resp = await (window.fetchWithTimeout
-              ? window.fetchWithTimeout(spreadUrl, { headers: hdrs }, 15000)
-              : fetch(spreadUrl, { headers: hdrs }));
+              ? window.fetchWithTimeout(apiBase + '/api/daily-spread', { headers: hdrs }, 15000)
+              : fetch(apiBase + '/api/daily-spread', { headers: hdrs }));
             var d = await resp.json().catch(function () { return {}; });
             var cmsg = document.querySelector('#giftsPage .cmsg');
-            if (d && d.ok && d.available && d.message && cmsg) {
-              cmsg.textContent = '«' + d.message + '»';
-              // Пришедшая мысль — не дефолтный текст: повторный applyTranslations её не затирает.
-              cmsg.removeAttribute('data-i18n');
-            }
+            if (d && d.ok && d.available && d.message && cmsg) cmsg.textContent = '«' + d.message + '»';
           } catch (e) { /* тихо (закон №37) — остаётся дефолтное послание */ }
           btn._loading = false;
         });

@@ -177,17 +177,15 @@
           </div>
         </div>
 
-        <!-- Empty -->
+        <!-- Empty — по эталону showcase-playlist .liked-empty (класс mt-liked-empty, как у пустого
+             «Любимого»): круглый значок .le-ic + короткий текст. Кнопка одна — #mtCreateBtn ниже
+             (реф .create). #mtEmptyCtaEl виден только в оракульном режиме VK (html.is-vk-oracle,
+             «Спросить оракула», 13-vk-oracle.js) — песен там нет, ведёт в оракул. Закон №37:
+             текста ошибки входа здесь нет — 401 ведёт на экран входа (_ysAuthLost). -->
         <div id="myTracksEmpty" style="display:none;">
-          <div class="mt-empty">
-            <div class="mt-empty-ic" aria-hidden="true">
-              <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                <defs><linearGradient id="noteGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#ec4899"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient></defs>
-                <path d="M9 18V5l12-2v13" stroke="url(#noteGrad)"/><circle cx="6" cy="18" r="3" stroke="url(#noteGrad)"/><circle cx="18" cy="16" r="3" stroke="url(#noteGrad)"/>
-              </svg>
-            </div>
-            <div class="mt-empty-title" id="mtEmptyTitleEl">Здесь появятся твои песни</div>
-            <div class="mt-empty-desc" id="mtEmptyDescEl">Создай первую — по дате рождения</div>
+          <div class="mt-liked-empty">
+            <span class="le-ic"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></span>
+            <p id="mtEmptyTitleEl">Здесь появятся твои песни</p>
             <button type="button" id="mtEmptyCtaEl" onclick="goToPage('formPage')">Создать песню</button>
           </div>
         </div>
@@ -197,7 +195,8 @@
         <!-- Track list -->
         <div id="myTracksList" class="mt-track-list" style="display:none;"></div>
         <button type="button" id="myTracksLoadMore" class="mt-load-more" style="display:none;margin:12px 16px;"><span id="myTracksLoadMoreEl">Загрузить ещё</span></button>
-        <button type="button" class="mt-create" id="mtCreateBtn" onclick="window.goToPage&&goToPage('formPage')" data-i18n="mtCreateBtn"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg> Создать новую песню</button>
+        <!-- data-i18n на <span>, не на кнопке: applyTranslations пишет textContent и стирал «+» (реф .create — значок + текст) -->
+        <button type="button" class="mt-create" id="mtCreateBtn" onclick="window.goToPage&&goToPage('formPage')"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg> <span data-i18n="mtCreateBtn">Создать новую песню</span></button>
         </div><!-- /mtPanelTracks -->
         <div id="mtPanelLiked" class="mt-pane" hidden></div>
         <div id="mtPanelRadio" class="mt-pane v2radio" hidden></div>

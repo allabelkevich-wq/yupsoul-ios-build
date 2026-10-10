@@ -450,8 +450,6 @@
     /* Кнопка "Создать песню" на плейлисте */
     body.theme-light .mt-empty-btn, body.theme-light [class*="create-btn"]:not(.profile-create-btn),
     body.theme-light #mtEmptyCtaEl { background: rgba(250,245,235,0.7) !important; border: 1px solid rgba(236,72,153,0.3) !important; color: #ec4899 !important; }
-    body.theme-light #mtEmptyTitleEl { color: #1a1a2e !important; }
-    body.theme-light #mtEmptyDescEl { color: rgba(26,26,46,0.5) !important; }
     /* Batch 9.38: исключаем back-btn / nav из стилизации myTracksPage */
     body.theme-light #myTracksPage button:not(.profile-back-btn):not(.header-back-btn):not(.btn-nav):not(.header-menu-btn):not(.btn-info):not(.mth-play-all):not(.mth-shuffle):not(.mt-tab):not(.track-like):not(.track-more):not(.mt-create):not(.mt-play-btn):not(.mt-rate-btn):not(.mt-mini-btn):not(.r-hero):not(.r-card):not(.wave-pill):not(.rchip):not(.rt-like):not(.rt-save):not(.track-pub):not(.air-play):not(.rbtn-primary):not(.rbtn-ghost):not(.rsw):not(.act):not(.mt-upsell-btn) { background: rgba(250,245,235,0.7) !important; border: 1px solid rgba(212,149,107,0.2) !important; color: #1a1a2e !important; }
     /* ── Фоны страниц: переопределение --g-bg для светлой темы ── */
@@ -5172,7 +5170,7 @@
     /* .plan-modal-cta УБРАНА из этой pill-группы (Алла 03.07): это полноширинная CTA подписки в модалке
        тарифа (.plan-modal-cta.gold/.pink, 5144+), а не мелкая пилюля-нав. Группа плющила её в серую
        пилюлю поверх золото/розового градиента (0.68rem + серый фон). Теперь градиент применяется. */
-    .help-section-title,.help-support-btn,#scMoreBtn,#scPromoRetryBtn,#scChoosePlanBtn,#scPageGiftBtn,#scPageBuyDayBtn,#mtEmptyCtaEl,.mt-empty-desc button,.pill-btn,.ppc-btn,.referral-share-btn{font-size:0.68rem !important;font-weight:300 !important;border-radius:9999px !important;height:auto !important;min-height:unset !important;color:rgba(255,255,255,0.50) !important;letter-spacing:0.02em !important;background:rgba(255,255,255,0.03) !important;border:1px solid rgba(255,255,255,0.10) !important;box-shadow:none !important;padding:9px 14px !important;box-sizing:border-box !important}
+    .help-section-title,.help-support-btn,#scMoreBtn,#scPromoRetryBtn,#scChoosePlanBtn,#scPageGiftBtn,#scPageBuyDayBtn,#mtEmptyCtaEl,.pill-btn,.ppc-btn,.referral-share-btn{font-size:0.68rem !important;font-weight:300 !important;border-radius:9999px !important;height:auto !important;min-height:unset !important;color:rgba(255,255,255,0.50) !important;letter-spacing:0.02em !important;background:rgba(255,255,255,0.03) !important;border:1px solid rgba(255,255,255,0.10) !important;box-shadow:none !important;padding:9px 14px !important;box-sizing:border-box !important}
     .help-support-btn{box-shadow:0 0 16px rgba(255,255,255,0.05) !important}
     /* Пресеты: скрыть содержимое формы до готовности (предотвращает скачок) */
     #formPage.preset-loading .step-panel,
@@ -12945,14 +12943,13 @@ body.theme-light #homePage .home-footer a{color:rgba(36,21,38,0.72) !important;t
 }
 #homePage #homeHero .home-choice::after,#homePage .home-block-choices .home-choice::after{content:"" !important;position:absolute !important;inset:-4px !important;border-radius:inherit !important}
 
-/* [1] Пустое состояние — тёплый блок в центре декоративного кольца.
-   display БЕЗ !important: JS (loadMyTracks) прячет блок инлайновым display:none — важность сломала бы тоггл */
-#myTracksPage #myTracksEmpty{display:flex;align-items:center;justify-content:center;min-height:52vh;padding:24px 20px;text-align:center;box-sizing:border-box}
-#myTracksPage .mt-empty{display:flex;flex-direction:column;align-items:center;gap:12px;max-width:300px;margin:0 auto}
-#myTracksPage .mt-empty-ic{display:grid;place-items:center} /* иконка-нота 46px, фирменный градиент magenta→violet уже в SVG */
-/* Типографика по шкале формы: 17/600 заголовок, 13/500 подпись; контраст ≥4.5 в обеих темах */
-#myTracksPage .mt-empty-title{font-size:17px !important;font-weight:600 !important;line-height:1.3;letter-spacing:-.01em;color:#f5f1fb !important}
-#myTracksPage .mt-empty-desc{font-size:13px !important;font-weight:500 !important;line-height:1.45;color:rgba(255,255,255,0.7) !important;margin:0 !important;letter-spacing:0}
+/* [1] Пустое состояние «Моих треков» — по эталону .liked-empty (класс .mt-liked-empty, стили в шаблоне).
+   Сборка 40 (Алла 09.10): старый блок (центр 52vh, заголовок+подпись, своя кнопка) снят. Текст — muted,
+   как в эталоне: светлый блэнкет body.theme-light p{#1a1a2e !important} иначе красит его в основной. */
+#myTracksPage #myTracksEmpty .mt-liked-empty p{color:inherit !important}
+/* #mtEmptyCtaEl — только оракульный режим VK («Спросить оракула», 13-vk-oracle.js); везде иначе кнопка одна — #mtCreateBtn */
+#myTracksPage #mtEmptyCtaEl{display:none !important}
+html.is-vk-oracle #myTracksPage #mtEmptyCtaEl,body.in-vk-oracle #myTracksPage #mtEmptyCtaEl{display:inline-flex !important;align-items:center;justify-content:center;margin-top:16px !important}
 /* CTA — пилюля в стиле .mt-create; двойной ID перебивает глоб. #mtEmptyCtaEl{0.68rem/300/50%} (app.css:4958) и светлый блэнкет button:not(...) (app.css:464) */
 #myTracksPage #mtEmptyCtaEl{margin-top:6px !important;padding:13px 28px !important;min-height:44px !important;height:auto !important;border-radius:9999px !important;font-size:15px !important;font-weight:600 !important;letter-spacing:-.01em !important;color:#f5f1fb !important;background:rgba(255,255,255,.05) !important;border:1px solid rgba(255,255,255,.15) !important;box-shadow:none !important;cursor:pointer;font-family:inherit;transition:transform .12s}
 #myTracksPage #mtEmptyCtaEl:active{transform:scale(.985)}
@@ -12975,8 +12972,6 @@ body.theme-light #homePage .home-footer a{color:rgba(36,21,38,0.72) !important;t
 #myTracksPage .track-more{position:relative !important} /* 32px → hit 44 */
 #myTracksPage .track-more::after{content:"";position:absolute;inset:-6px;border-radius:50%}
 
-body.theme-light #myTracksPage .mt-empty-title,html.is-vk-light:not(.dark) #myTracksPage .mt-empty-title,html.is-ok-light:not(.dark) #myTracksPage .mt-empty-title{color:#241526 !important}
-body.theme-light #myTracksPage .mt-empty-desc,html.is-vk-light:not(.dark) #myTracksPage .mt-empty-desc,html.is-ok-light:not(.dark) #myTracksPage .mt-empty-desc{color:rgba(36,21,38,0.72) !important} /* muted-канон светлой, контраст ≥4.5 на #faf5ec */
 body.theme-light #myTracksPage #mtEmptyCtaEl,html.is-vk-light:not(.dark) #myTracksPage #mtEmptyCtaEl,html.is-ok-light:not(.dark) #myTracksPage #mtEmptyCtaEl{color:#241526 !important;background:rgba(255,255,255,.5) !important;border-color:rgba(74,38,46,.16) !important} /* зеркало светлого .mt-create (template:4929) */
 /* .mt-tab.on в светлой: градиент задан универсальным правилом выше, текст #fff уже есть (template:4916) — доп. правило не нужно */
 
@@ -13729,15 +13724,6 @@ html.is-ok-light:not(.dark) #homeCommCard .task-body b { color: #241526 !importa
     html.is-native #profileReferralSection,
     html.is-native #partnerApplyPage,
     html.is-native #partnerDashPage { display: none !important; }
-    /* App Store 4.3(b): секция «Возможности для мастеров» подаёт приложение как инструмент
-       «для астрологов и консультантов» с перепродажей песен клиентам. В сборке для стора
-       её нет; !important — как у соседних правил блока (у .qa свой display). */
-    html.is-native #helpSec9 { display: none !important; }
-    /* App Store: отзывы с пятью звёздами (экран входа и Помощь) в сборке для стора не
-       показываем — проверить, что это дословные слова реальных людей, нельзя, звёзды
-       похожи на рейтинг App Store, а «вы считали меня» звучит как гадание. */
-    html.is-native #webLoginScreen .start-reviews,
-    html.is-native #helpSec10 { display: none !important; }
 
     /* ── Вход через Apple (только нативная сборка) ──────────────────────────
        Гайдлайны Apple разрешают радиус от нуля до половины высоты, поэтому
