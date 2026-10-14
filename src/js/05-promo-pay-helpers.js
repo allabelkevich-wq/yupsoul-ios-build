@@ -2293,7 +2293,7 @@
             continue;
           }
           try {
-            var res = await fetchWithTimeout(_askezaApi() + '/api/soul-chat/askeza', { headers: _askezaHeaders() }, 20000);
+            var res = await fetchWithTimeout(_askezaApi() + '/api/soul-chat/askeza?lang=' + encodeURIComponent(window.currentLang || 'ru'), { headers: _askezaHeaders() }, 20000);
             var json = await res.json().catch(function(){ return {}; });
             if (res.ok && json.success) {
               _askezaState = json;
@@ -2430,7 +2430,7 @@
           var planetNow = _askezaState.planet;
           try {
             if (navigator.onLine !== false) {
-              var r = await fetchWithTimeout(_askezaApi() + '/api/soul-chat/askeza', { headers: _askezaHeaders() }, 20000);
+              var r = await fetchWithTimeout(_askezaApi() + '/api/soul-chat/askeza?lang=' + encodeURIComponent(window.currentLang || 'ru'), { headers: _askezaHeaders() }, 20000);
               var j = await r.json().catch(function () { return {}; });
               // Пока шёл запрос, практику могли перезапустить — чужой ответ не рисуем.
               if (r.ok && j.success && j.state === 'active' && _askezaState && _askezaState.state === 'active' && j.planet === planetNow) {
@@ -2701,7 +2701,7 @@
           var startStatus = 0;
           try {
             var res = await fetchWithTimeout(_askezaApi() + '/api/soul-chat/askeza/start', {
-              method: 'POST', headers: _askezaHeaders(true), body: JSON.stringify({ planet: sentPlanet })
+              method: 'POST', headers: _askezaHeaders(true), body: JSON.stringify({ planet: sentPlanet, lang: window.currentLang || 'ru' })
             }, 25000); // старт больше не ждёт модель — обычного таймаута хватает (закон №36)
             startStatus = res.status;
             var json = await res.json().catch(function(){ return {}; });

@@ -5776,6 +5776,11 @@
     #songOpenedPage .play-btn{flex:none;width:46px;height:46px;border-radius:50%;border:none;display:grid;place-items:center;color:#fff;background:var(--cta);box-shadow:0 12px 26px -12px var(--cta-glow)}
     #songOpenedPage .play-btn svg{width:20px !important;height:20px !important;max-width:none !important} /* общее img,svg{max-width:100%;height:auto} сжимало паузу до 4px (замер 23.09) */
     #songOpenedPage .play-btn .ic-pause{display:none}
+    /* TestFlight 43: глобальный padding/min-width кнопок оставлял 6px под 20px-иконку — в Safari пауза уезжала вправо */
+    #songOpenedPage .play-btn{padding:0 !important;min-width:0 !important;min-height:0 !important}
+    /* кнопка выхода — как «назад» в Моих треках */
+    #songOpenedPage #soCloseBtn{position:absolute !important;top:calc(env(safe-area-inset-top,0px) + 12px) !important;left:16px !important;z-index:20 !important;width:40px !important;height:40px !important;min-width:40px !important;min-height:40px !important;padding:0 !important;border-radius:50% !important;display:inline-flex !important;align-items:center !important;justify-content:center !important;background:rgba(255,255,255,0.06) !important;border:1px solid var(--line-2,rgba(255,255,255,.15)) !important;color:rgba(245,241,251,0.85) !important;box-shadow:none !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important}
+    body.theme-light #songOpenedPage #soCloseBtn{background:rgba(26,26,46,0.04) !important;border-color:rgba(26,26,46,0.12) !important;color:#1a1a2e !important}
     #songOpenedPage .so-root.playing .play-btn .ic-play{display:none}
     #songOpenedPage .so-root.playing .play-btn .ic-pause{display:block}
     #songOpenedPage .wave{display:flex;align-items:center;gap:3px;height:24px;margin:9px 2px 6px;cursor:pointer}

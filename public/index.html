@@ -7586,6 +7586,11 @@ document.addEventListener('DOMContentLoaded', function() {
     #songOpenedPage .play-btn{flex:none;width:46px;height:46px;border-radius:50%;border:none;display:grid;place-items:center;color:#fff;background:var(--cta);box-shadow:0 12px 26px -12px var(--cta-glow)}
     #songOpenedPage .play-btn svg{width:20px !important;height:20px !important;max-width:none !important} /* общее img,svg{max-width:100%;height:auto} сжимало паузу до 4px (замер 23.09) */
     #songOpenedPage .play-btn .ic-pause{display:none}
+    /* TestFlight 43: глобальный padding/min-width кнопок оставлял 6px под 20px-иконку — в Safari пауза уезжала вправо */
+    #songOpenedPage .play-btn{padding:0 !important;min-width:0 !important;min-height:0 !important}
+    /* кнопка выхода — как «назад» в Моих треках */
+    #songOpenedPage #soCloseBtn{position:absolute !important;top:calc(env(safe-area-inset-top,0px) + 12px) !important;left:16px !important;z-index:20 !important;width:40px !important;height:40px !important;min-width:40px !important;min-height:40px !important;padding:0 !important;border-radius:50% !important;display:inline-flex !important;align-items:center !important;justify-content:center !important;background:rgba(255,255,255,0.06) !important;border:1px solid var(--line-2,rgba(255,255,255,.15)) !important;color:rgba(245,241,251,0.85) !important;box-shadow:none !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important}
+    body.theme-light #songOpenedPage #soCloseBtn{background:rgba(26,26,46,0.04) !important;border-color:rgba(26,26,46,0.12) !important;color:#1a1a2e !important}
     #songOpenedPage .so-root.playing .play-btn .ic-play{display:none}
     #songOpenedPage .so-root.playing .play-btn .ic-pause{display:block}
     #songOpenedPage .wave{display:flex;align-items:center;gap:3px;height:24px;margin:9px 2px 6px;cursor:pointer}
@@ -21285,6 +21290,8 @@ body.theme-light #myTracksPage .mtv2-player .v2act,html.is-vk-light:not(.dark) #
      Реальное аудио/скачивание/слова/опт-ин API + появление после оплаты — Фаза 3. -->
 <div class="page" id="songOpenedPage">
   <div class="so-root playing" id="soRoot">
+    <!-- выход с экрана (TestFlight 43, 14.10: без кнопки со страницы было не уйти) -->
+    <button type="button" id="soCloseBtn" class="profile-back-btn header-back-btn btn-nav" aria-label="Назад" data-i18n-aria="navBack">←</button>
     <div class="ph-stars"></div>
     <div class="confetti-layer" id="soCfLayer"></div>
 
@@ -21300,7 +21307,7 @@ body.theme-light #myTracksPage .mtv2-player .v2act,html.is-vk-light:not(.dark) #
       <div class="player">
         <div class="player-top">
           <span class="player-art"></span>
-          <span class="player-meta"><b id="soPlayTitle" data-i18n="soPlayTitleFallback">Твоя песня</b><span id="soPlaySub" data-i18n="openedPlaySub">Полная песня · 3:12</span></span>
+          <span class="player-meta"><b id="soPlayTitle">Твоя песня</b><span id="soPlaySub">Полная песня · 3:12</span></span>
           <!-- аудит iPhone 24.09: aria-label без i18n -->
           <button class="play-btn" id="soPlayBtn" aria-label="Пауза" data-i18n-aria="pauseLabel">
             <svg class="ic-play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
@@ -38565,7 +38572,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
             continue;
           }
           try {
-            var res = await fetchWithTimeout(_askezaApi() + '/api/soul-chat/askeza', { headers: _askezaHeaders() }, 20000);
+            var res = await fetchWithTimeout(_askezaApi() + '/api/soul-chat/askeza?lang=' + encodeURIComponent(window.currentLang || 'ru'), { headers: _askezaHeaders() }, 20000);
             var json = await res.json().catch(function(){ return {}; });
             if (res.ok && json.success) {
               _askezaState = json;
@@ -38702,7 +38709,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           var planetNow = _askezaState.planet;
           try {
             if (navigator.onLine !== false) {
-              var r = await fetchWithTimeout(_askezaApi() + '/api/soul-chat/askeza', { headers: _askezaHeaders() }, 20000);
+              var r = await fetchWithTimeout(_askezaApi() + '/api/soul-chat/askeza?lang=' + encodeURIComponent(window.currentLang || 'ru'), { headers: _askezaHeaders() }, 20000);
               var j = await r.json().catch(function () { return {}; });
               // Пока шёл запрос, практику могли перезапустить — чужой ответ не рисуем.
               if (r.ok && j.success && j.state === 'active' && _askezaState && _askezaState.state === 'active' && j.planet === planetNow) {
@@ -38973,7 +38980,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           var startStatus = 0;
           try {
             var res = await fetchWithTimeout(_askezaApi() + '/api/soul-chat/askeza/start', {
-              method: 'POST', headers: _askezaHeaders(true), body: JSON.stringify({ planet: sentPlanet })
+              method: 'POST', headers: _askezaHeaders(true), body: JSON.stringify({ planet: sentPlanet, lang: window.currentLang || 'ru' })
             }, 25000); // старт больше не ждёт модель — обычного таймаута хватает (закон №36)
             startStatus = res.status;
             var json = await res.json().catch(function(){ return {}; });
@@ -52816,8 +52823,28 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           });
         });
         // «Текст» и «Спеть караоке» → построчное караоке (в проде «Текст» = караоке).
-        on('soLyricsBtn', function(){ var tr=_soTrack(); if(tr && window._mtOpenKaraoke) window._mtOpenKaraoke(tr); });
-        on('soKaraBtn',   function(){ var tr=_soTrack(); if(tr && window._mtOpenKaraoke) window._mtOpenKaraoke(tr); });
+        // Караоке живёт внутри «Моих треков» и синхронизируется с их плеером: на скрытой странице
+        // оверлей открывался невидимым (TestFlight 43). Переходим в «Мои треки», включаем там эту
+        // песню и открываем караоке поверх.
+        function _soLeave(){ if (soAudio) { try{ soAudio.pause(); }catch(_){} } clearInterval(tick); playing=false; soRoot.classList.remove('playing'); }
+        function _soOpenLyrics(){
+          var tr=_soTrack(); if(!tr) return;
+          _soLeave();
+          if (window.goToPage) goToPage('myTracksPage');
+          var tries=0;
+          (function wait(){
+            var list=window._mtTracksData||[], idx=-1;
+            for (var i=0;i<list.length;i++) if (list[i] && String(list[i].id)===String(tr.id)) { idx=i; break; }
+            if (idx<0 && tries++<30) { setTimeout(wait, 200); return; }
+            var t0 = idx>=0 ? list[idx] : tr;
+            if (idx>=0 && typeof window._mtPlayTrack==='function') window._mtPlayTrack(idx);
+            var ens = (typeof window._mtEnsureTrackDetails==='function') ? window._mtEnsureTrackDetails(t0) : Promise.resolve(t0);
+            Promise.resolve(ens).then(function(full){ if (window._mtOpenKaraoke) window._mtOpenKaraoke(full||t0); });
+          })();
+        }
+        on('soLyricsBtn', _soOpenLyrics);
+        on('soKaraBtn',   _soOpenLyrics);
+        on('soCloseBtn',  function(){ _soLeave(); if (window.goToPage) goToPage('myTracksPage'); });
         on('soShareBtn',  function(){ var tr=_soTrack(); if(!tr) return; if(window._mtOpenShareSheet) window._mtOpenShareSheet(tr); else if(window._mtShareTrack) window._mtShareTrack(tr); });
         // «Создать песню близкому» → флоу подарка (оплати → создай новую).
         // §6.12 (отказ 10.07): платный подарок = продажа промокода — на VK запрещён (кнопка скрыта CSS, гард — рубеж)
@@ -52851,6 +52878,8 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           } catch(e){ console.warn('[OracleOptin]', e && e.message); }
         };
 
+        // «Полная песня · 3:12»: длительность подставляем настоящую
+        function _soSetSub(){ var ps=document.getElementById('soPlaySub'); if(!ps) return; var base=(typeof t==='function' && t('openedPlaySub')) || 'Полная песня · 3:12'; ps.textContent = String(base).replace(/\d+:\d\d/, fmt(TOTAL)); }
         // Привязать реальное аудио к плееру экрана B. Нет трека → демо-волна (тест-вход).
         function _attachRealAudio(track){
           if (soAudio){ try{ soAudio.pause(); }catch(_){} try{ soAudio.src=''; }catch(_){} soAudio=null; }
@@ -52859,7 +52888,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           // §2.2.5 VK: new Audio() вне DOM не гасится циклом querySelectorAll('audio')
           // в VKWebAppViewHide — регистрируем ссылку для глобальной паузы (template ~943).
           window._soAudioRef = soAudio;
-          soAudio.addEventListener('loadedmetadata', function(){ if (soAudio && isFinite(soAudio.duration) && soAudio.duration>0){ TOTAL=soAudio.duration; var tt=document.getElementById('soTTot'); if(tt) tt.textContent=fmt(TOTAL); } });
+          soAudio.addEventListener('loadedmetadata', function(){ if (soAudio && isFinite(soAudio.duration) && soAudio.duration>0){ TOTAL=soAudio.duration; var tt=document.getElementById('soTTot'); if(tt) tt.textContent=fmt(TOTAL); _soSetSub(); } });
           soAudio.addEventListener('timeupdate', function(){ if (soAudio){ pos=soAudio.currentTime; render(); } });
           soAudio.addEventListener('ended', function(){ pos=0; render(); setPlaying(false); });
           soAudio.addEventListener('error', function(){ console.warn('[songOpened] audio error'); });
@@ -52901,8 +52930,10 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
             }
           } catch (_) {}
           buildBars(); pos = 0;
+          // Без data-i18n: applyTranslations при переходах затирал название на «Твоя песня» (TestFlight 43)
           var title = (track && (track.title || track.name)) || opts.title || '';
-          var t2=document.getElementById('soPlayTitle'); if(t2 && title) t2.textContent=title;
+          var t2=document.getElementById('soPlayTitle'); if(t2) t2.textContent = title || ((typeof t==='function' && t('soPlayTitleFallback')) || 'Твоя песня');
+          _soSetSub();
           var hasReal = _attachRealAudio(track);
           if (!hasReal && opts.durationSec) TOTAL = opts.durationSec;
           var tt=document.getElementById('soTTot'); if(tt) tt.textContent=fmt(TOTAL);

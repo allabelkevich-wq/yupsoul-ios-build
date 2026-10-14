@@ -466,8 +466,28 @@
           });
         });
         // «Текст» и «Спеть караоке» → построчное караоке (в проде «Текст» = караоке).
-        on('soLyricsBtn', function(){ var tr=_soTrack(); if(tr && window._mtOpenKaraoke) window._mtOpenKaraoke(tr); });
-        on('soKaraBtn',   function(){ var tr=_soTrack(); if(tr && window._mtOpenKaraoke) window._mtOpenKaraoke(tr); });
+        // Караоке живёт внутри «Моих треков» и синхронизируется с их плеером: на скрытой странице
+        // оверлей открывался невидимым (TestFlight 43). Переходим в «Мои треки», включаем там эту
+        // песню и открываем караоке поверх.
+        function _soLeave(){ if (soAudio) { try{ soAudio.pause(); }catch(_){} } clearInterval(tick); playing=false; soRoot.classList.remove('playing'); }
+        function _soOpenLyrics(){
+          var tr=_soTrack(); if(!tr) return;
+          _soLeave();
+          if (window.goToPage) goToPage('myTracksPage');
+          var tries=0;
+          (function wait(){
+            var list=window._mtTracksData||[], idx=-1;
+            for (var i=0;i<list.length;i++) if (list[i] && String(list[i].id)===String(tr.id)) { idx=i; break; }
+            if (idx<0 && tries++<30) { setTimeout(wait, 200); return; }
+            var t0 = idx>=0 ? list[idx] : tr;
+            if (idx>=0 && typeof window._mtPlayTrack==='function') window._mtPlayTrack(idx);
+            var ens = (typeof window._mtEnsureTrackDetails==='function') ? window._mtEnsureTrackDetails(t0) : Promise.resolve(t0);
+            Promise.resolve(ens).then(function(full){ if (window._mtOpenKaraoke) window._mtOpenKaraoke(full||t0); });
+          })();
+        }
+        on('soLyricsBtn', _soOpenLyrics);
+        on('soKaraBtn',   _soOpenLyrics);
+        on('soCloseBtn',  function(){ _soLeave(); if (window.goToPage) goToPage('myTracksPage'); });
         on('soShareBtn',  function(){ var tr=_soTrack(); if(!tr) return; if(window._mtOpenShareSheet) window._mtOpenShareSheet(tr); else if(window._mtShareTrack) window._mtShareTrack(tr); });
         // «Создать песню близкому» → флоу подарка (оплати → создай новую).
         // §6.12 (отказ 10.07): платный подарок = продажа промокода — на VK запрещён (кнопка скрыта CSS, гард — рубеж)
@@ -501,6 +521,8 @@
           } catch(e){ console.warn('[OracleOptin]', e && e.message); }
         };
 
+        // «Полная песня · 3:12»: длительность подставляем настоящую
+        function _soSetSub(){ var ps=document.getElementById('soPlaySub'); if(!ps) return; var base=(typeof t==='function' && t('openedPlaySub')) || 'Полная песня · 3:12'; ps.textContent = String(base).replace(/\d+:\d\d/, fmt(TOTAL)); }
         // Привязать реальное аудио к плееру экрана B. Нет трека → демо-волна (тест-вход).
         function _attachRealAudio(track){
           if (soAudio){ try{ soAudio.pause(); }catch(_){} try{ soAudio.src=''; }catch(_){} soAudio=null; }
@@ -509,7 +531,7 @@
           // §2.2.5 VK: new Audio() вне DOM не гасится циклом querySelectorAll('audio')
           // в VKWebAppViewHide — регистрируем ссылку для глобальной паузы (template ~943).
           window._soAudioRef = soAudio;
-          soAudio.addEventListener('loadedmetadata', function(){ if (soAudio && isFinite(soAudio.duration) && soAudio.duration>0){ TOTAL=soAudio.duration; var tt=document.getElementById('soTTot'); if(tt) tt.textContent=fmt(TOTAL); } });
+          soAudio.addEventListener('loadedmetadata', function(){ if (soAudio && isFinite(soAudio.duration) && soAudio.duration>0){ TOTAL=soAudio.duration; var tt=document.getElementById('soTTot'); if(tt) tt.textContent=fmt(TOTAL); _soSetSub(); } });
           soAudio.addEventListener('timeupdate', function(){ if (soAudio){ pos=soAudio.currentTime; render(); } });
           soAudio.addEventListener('ended', function(){ pos=0; render(); setPlaying(false); });
           soAudio.addEventListener('error', function(){ console.warn('[songOpened] audio error'); });
@@ -551,8 +573,10 @@
             }
           } catch (_) {}
           buildBars(); pos = 0;
+          // Без data-i18n: applyTranslations при переходах затирал название на «Твоя песня» (TestFlight 43)
           var title = (track && (track.title || track.name)) || opts.title || '';
-          var t2=document.getElementById('soPlayTitle'); if(t2 && title) t2.textContent=title;
+          var t2=document.getElementById('soPlayTitle'); if(t2) t2.textContent = title || ((typeof t==='function' && t('soPlayTitleFallback')) || 'Твоя песня');
+          _soSetSub();
           var hasReal = _attachRealAudio(track);
           if (!hasReal && opts.durationSec) TOTAL = opts.durationSec;
           var tt=document.getElementById('soTTot'); if(tt) tt.textContent=fmt(TOTAL);
