@@ -57,6 +57,10 @@
             <button type="button" class="home-choice" data-quick-action="couple_song" data-i18n="homeChoiceMain4">Совместимость</button>
           </div>
         </article>
+        <!-- Дисклеймер под главной карточкой — только приложение из App Store (Алла 14.10). Стиль — как у подписи
+             .home-song-counter (тот же класс: размер, приглушённый цвет, светлая тема). Нажатие → Помощь.
+             order:1 — как у #homeHero (иначе встаёт над карточкой); без role=button — его ловит глобальное правило пилюли. -->
+        <p id="homeAboutLine" class="home-song-counter" data-native-only data-i18n="homeAboutLine" onclick="goToHelpFrom('homePage')" style="order:1; margin:10px 0 0; font-size:0.82rem; text-align:center; letter-spacing:0.02em; cursor:pointer;">Творческое музыкальное приложение: песни о тебе, а не предсказания.</p>
 
         <!-- Правая колонка на веб: интерактивный текст (блок «ЧТО ПОПРОБУЕШЬ?» перенесён на стартовую) -->
         <div class="home-right-col">

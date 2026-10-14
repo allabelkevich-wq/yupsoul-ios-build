@@ -2308,6 +2308,11 @@ document.addEventListener('DOMContentLoaded', function() {
     body.theme-light .tagline-underline { background: linear-gradient(90deg, transparent, rgba(147,51,234,0.25), rgba(236,72,153,0.2), transparent) !important; }
     body.theme-light .home-card-choices-head { background: linear-gradient(90deg, #9333ea, #ec4899, #f97316) !important; -webkit-background-clip: text !important; }
     body.theme-light .home-song-counter { color: rgba(26,26,46,0.45) !important; }
+    /* Дисклеймер под главной карточкой (натив, 14.10): цвет — как у подписи .home-song-counter. Не инлайном:
+       светлая тема перекрашивает любой [style*="color:rgba(255,255,255"] в тёмный — !important нужен, чтобы
+       перебить общее body.theme-light p {color:#1a1a2e !important}. */
+    #homePage #homeAboutLine { color: rgba(255,255,255,0.55); }
+    body.theme-light #homePage #homeAboutLine { color: rgba(26,26,46,0.45) !important; }
     body.theme-light #homePage #homeHero .home-choice { background: rgba(26,26,46,0.05) !important; border-color: rgba(26,26,46,0.12) !important; color: #1a1a2e !important; }
     body.theme-light #homePage #homeHero .home-choice:hover,
     body.theme-light #homePage .home-block-choices .home-choice:hover { background: rgba(236,72,153,0.08) !important; border-color: rgba(236,72,153,0.25) !important; }
@@ -16783,6 +16788,10 @@ html:not(.is-native) #nativeAiConsentOverlay{display:none !important}
             <button type="button" class="home-choice" data-quick-action="couple_song" data-i18n="homeChoiceMain4">Совместимость</button>
           </div>
         </article>
+        <!-- Дисклеймер под главной карточкой — только приложение из App Store (Алла 14.10). Стиль — как у подписи
+             .home-song-counter (тот же класс: размер, приглушённый цвет, светлая тема). Нажатие → Помощь.
+             order:1 — как у #homeHero (иначе встаёт над карточкой); без role=button — его ловит глобальное правило пилюли. -->
+        <p id="homeAboutLine" class="home-song-counter" data-native-only data-i18n="homeAboutLine" onclick="goToHelpFrom('homePage')" style="order:1; margin:10px 0 0; font-size:0.82rem; text-align:center; letter-spacing:0.02em; cursor:pointer;">Творческое музыкальное приложение: песни о тебе, а не предсказания.</p>
 
         <!-- Правая колонка на веб: интерактивный текст (блок «ЧТО ПОПРОБУЕШЬ?» перенесён на стартовую) -->
         <div class="home-right-col">
@@ -17613,6 +17622,7 @@ body.theme-light #giftsPage .cask-cost{color:#f7c873 !important}
       #helpPage .search-x[hidden]{display:none}
       #helpPage .sec-t{margin:20px 2px 12px;font-size:12px;font-weight:600;letter-spacing:.13em;text-transform:uppercase;color:var(--faint)}
       #helpPage .faq{display:flex;flex-direction:column;gap:9px}
+      #helpPage .help-about{margin-top:14px} /* отступ как у .search (14px) */
       #helpPage .qa{border:1px solid var(--line);border-radius:18px;overflow:hidden;background:linear-gradient(160deg,rgba(255,255,255,.05),rgba(255,255,255,.018));
         box-shadow:inset 0 1px 0 rgba(255,255,255,.05);transition:border-color .2s}
       #helpPage .qa.open{border-color:var(--line-2)}
@@ -17728,6 +17738,17 @@ body.theme-light #giftsPage .cask-cost{color:#f7c873 !important}
           <span class="hero-ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><path d="M9.2 9.3a2.9 2.9 0 0 1 5.6 1c0 2-2.8 2.4-2.8 4.2"/><circle cx="12" cy="17.4" r="1" fill="currentColor" stroke="none"/></svg></span>
           <h2 data-i18n="helpHeroTitle">Чем можем помочь?</h2>
           <p data-i18n="helpHeroSub">Всё о YupSoul — просто и по делу. Найди ответ или напиши нам.</p>
+        </div>
+
+        <!-- О YupSoul — только приложение из App Store (Алла 14.10): творческое музыкальное приложение, не прогноз.
+             Карточка — тот же .qa, что у вопросов ниже; id тела не helpB*, чтобы поиск её не прятал. -->
+        <div class="qa open help-about" id="helpAbout" data-native-only>
+          <button type="button" class="qa-q" onclick="this.closest('.qa').classList.toggle('open')">
+            <span class="qa-ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 17.2V5.1l11-2.1v11.2"/><ellipse cx="6.4" cy="17.4" rx="2.6" ry="2.2"/><ellipse cx="17.4" cy="15.3" rx="2.6" ry="2.2"/></svg></span>
+            <span class="qa-tt" data-i18n="helpAboutTitle">О YupSoul</span>
+            <span class="qa-chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>
+          </button>
+          <div class="qa-a"><div class="qa-a-in"><p data-i18n="helpAboutBody">YupSoul — творческое музыкальное приложение. Мы пишем песню о человеке по его дате рождения и его словам: текст, мелодию и голос. Дата рождения для нас — творческое задание для песни, а не прогноз. Песни и ответы в YupSoul — творческие размышления о тебе, а не предсказание событий. По сути YupSoul ближе к психологии самопознания, чем к астрологии: в центре — ты сейчас, твои чувства, отношения и то, на что можно опереться. YupSoul не заменяет психолога или врача.</p></div></div>
         </div>
 
         <div class="search help-search">
@@ -25450,6 +25471,8 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           scBuyDayBtnText: 'Открыть Чат с Оракулом на 24ч — 199 ₽', scQuickBuyDay: 'Доступ на 24 часа — 199 ₽', scToastPaymentReceived: 'Оплата получена, доступ открыт',
           scSubRequiredForReply: 'Для продолжения диалога с Оракулом нужен пакет',
           scPickerTabSynastryText: 'Совместимость', scSynastryTeaserText: 'Совместимость — диалог по двум датам рождения — доступна в тарифе Лаборатория',
+          // Дисклеймер для приложения из App Store (Алла 14.10: «не типичное приложение с астрологией»), блоки data-native-only
+          helpAboutTitle: 'О YupSoul', helpAboutBody: 'YupSoul — творческое музыкальное приложение. Мы пишем песню о человеке по его дате рождения и его словам: текст, мелодию и голос. Дата рождения для нас — творческое задание для песни, а не прогноз. Песни и ответы в YupSoul — творческие размышления о тебе, а не предсказание событий. По сути YupSoul ближе к психологии самопознания, чем к астрологии: в центре — ты сейчас, твои чувства, отношения и то, на что можно опереться. YupSoul не заменяет психолога или врача.', homeAboutLine: 'Творческое музыкальное приложение: песни о тебе, а не предсказания.',
           helpT1: 'Что такое YupSoul', helpB1: '<p>YupSoul создаёт <strong>персональную песню именно для тебя</strong> — на основе даты, времени и места рождения. Система анализирует твою личность и пишет песню о твоих реальных качествах, пути и силе.</p><p>Это не шаблон и не случайный текст — каждая песня уникальна и создана только для тебя.</p>',
           helpT2: 'Что можно создать', helpB2: '<p><strong>Режимы создания:</strong></p><ul><li><strong>Песня о себе</strong> — твой личный звуковой портрет: кто ты, твоя сила и внутренний путь</li><li><strong>Песня для пары</strong> — для двоих (влюблённых, друзей, подруг). Анализирует обе даты рождения и отражает союз</li><li><strong>Энергия дня</strong> — песня под конкретную дату и место. Какие возможности открываются прямо сейчас</li></ul><p><strong>Стиль музыки:</strong></p><ul><li><strong>Свой стиль</strong> — выбери жанр и настроение вручную</li><li><strong>Астро-стиль</strong> — система подберёт стиль на основе твоих данных</li><li><strong>Как у звезды</strong> — укажи любимого артиста, и песня зазвучит в его стиле</li></ul><p><strong>Быстрые запросы</strong> — готовые идеи: песня силы, поздравление с днём рождения, медитативная, про отпускание прошлого и другие.</p><p><strong>Чат с Оракулом</strong> — ИИ-ассистент, который понимает тебя на глубинном уровне. Задавай вопросы о характере, предназначении и пути.</p>',
           helpT3: 'Сколько ждать песню', helpB3: '<p>Обычно <strong>5–15 минут</strong>. Бот пришлёт уведомление в чат, как только песня будет готова.</p><p>Можно закрыть приложение — результат придёт сам, ты ничего не потеряешь.</p>',
@@ -26398,6 +26421,8 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           scBuyDayBtnText: 'Open Soul Chat for 24h — 2.99 $', scToastPaymentReceived: 'Payment received, access granted',
           scSubRequiredForReply: 'Package required to continue the dialogue with the Oracle',
           scPickerTabSynastryText: 'Compatibility', scSynastryTeaserText: 'Compatibility — dialogue for two charts at once — available in Lab plan',
+          // Дисклеймер для приложения из App Store (Алла 14.10: «не типичное приложение с астрологией»), блоки data-native-only
+          helpAboutTitle: 'About YupSoul', helpAboutBody: 'YupSoul is a creative music app. We write a song about a person from their date of birth and their own words: the lyrics, the melody and the voice. To us, a date of birth is a creative brief for a song, not a forecast. The songs and answers in YupSoul are creative reflections about you, not predictions of events. At heart, YupSoul is closer to the psychology of self-reflection than to astrology: it centres on you now — your feelings, your relationships and what you can rely on. YupSoul does not replace a psychologist or a doctor.', homeAboutLine: 'A creative music app: songs about you, not predictions.',
           helpT1: 'What is YupSoul', helpB1: '<p>YupSoul creates a <strong>personal song just for you</strong> — based on your date, time and place of birth. The system analyses your personality and writes a song about your real qualities, path and strength.</p><p>This is not a template — each song is unique and belongs only to you.</p>',
           helpT2: 'What can be created', helpB2: '<p><strong>Creation modes:</strong></p><ul><li><strong>Song about me</strong> — your personal sonic portrait: who you are, your strength and inner path</li><li><strong>Song for two</strong> — for a couple (lovers, friends). Analyses both dates and reflects the union</li><li><strong>Day energy</strong> — a song for a specific date and place. What opportunities are opening right now</li></ul><p><strong>Music style:</strong></p><ul><li><strong>Custom style</strong> — choose genre and mood manually</li><li><strong>Astro-style</strong> — the system picks style based on your data</li><li><strong>Like a star</strong> — name your favourite artist and the song will sound like theirs</li></ul><p><strong>Quick requests</strong> — ready-made ideas: power song, birthday song, meditative, about letting go, and more.</p><p><strong>Soul Chat</strong> — an AI assistant that understands you deeply. Ask questions about your character, purpose and path.</p>',
           helpT3: 'How long to wait', helpB3: '<p>Usually <strong>5–15 minutes</strong>. The bot will send a notification when your song is ready.</p><p>You can close the app — the result will arrive on its own, nothing will be lost.</p>',
@@ -27338,6 +27363,8 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           scBuyDayBtnText: 'Soul Chat 24h öffnen — 2,99 $', scToastPaymentReceived: 'Zahlung erhalten, Zugang aktiv',
           scSubRequiredForReply: 'Paket erforderlich, um den Dialog mit dem Orakel fortzusetzen',
           scPickerTabSynastryText: 'Kompatibilität', scSynastryTeaserText: 'Kompatibilität — Dialog für zwei Charts — im Labor-Tarif verfügbar',
+          // Дисклеймер для приложения из App Store (Алла 14.10: «не типичное приложение с астрологией»), блоки data-native-only
+          helpAboutTitle: 'Über YupSoul', helpAboutBody: 'YupSoul ist eine kreative Musik-App. Wir schreiben ein Lied über einen Menschen aus seinem Geburtsdatum und seinen eigenen Worten: Text, Melodie und Stimme. Das Geburtsdatum ist für uns eine kreative Vorlage für das Lied, keine Prognose. Die Lieder und Antworten in YupSoul sind kreative Gedanken über dich, keine Vorhersage von Ereignissen. Im Kern ist YupSoul näher an der Psychologie der Selbsterkenntnis als an der Astrologie: Im Mittelpunkt stehst du, jetzt – deine Gefühle, deine Beziehungen und das, worauf du dich stützen kannst. YupSoul ersetzt keinen Psychologen und keinen Arzt.', homeAboutLine: 'Eine kreative Musik-App: Lieder über dich, keine Vorhersagen.',
           helpT1: 'Was ist YupSoul', helpB1: '<p>YupSoul erstellt ein <strong>persönliches Lied genau für dich</strong> — basierend auf Datum, Uhrzeit und Geburtsort. Das System analysiert deine Persönlichkeit und schreibt ein Lied über deine echten Qualitäten, Weg und Stärke.</p><p>Dies ist kein Template — jedes Lied ist einzigartig und gehört nur dir.</p>',
           helpT2: 'Was kann erstellt werden', helpB2: '<p><strong>Erstellungsmodi:</strong></p><ul><li><strong>Lied über mich</strong> — dein persönliches Klangportrait: wer du bist, deine Stärke und innerer Weg</li><li><strong>Lied für zwei</strong> — für ein Paar (Verliebte, Freunde). Analysiert beide Daten und spiegelt die Verbindung wider</li><li><strong>Tagesenergie</strong> — ein Lied für ein bestimmtes Datum und Ort. Welche Möglichkeiten öffnen sich gerade jetzt</li></ul><p><strong>Musikstil:</strong></p><ul><li><strong>Eigener Stil</strong> — wähle Genre und Stimmung manuell</li><li><strong>Astro-Stil</strong> — das System wählt den Stil basierend auf deinen Daten</li><li><strong>Wie ein Star</strong> — nenne deinen Lieblingskünstler und der Song klingt wie seiner</li></ul><p><strong>Schnellanfragen</strong> — fertige Ideen: Kraftlied, Geburtstagslied, meditativ, Loslassen und mehr.</p><p><strong>Soul Chat</strong> — ein KI-Assistent, der dich tiefgreifend versteht. Stelle Fragen zu Charakter, Bestimmung und Weg.</p>',
           helpT3: 'Wie lange warten', helpB3: '<p>Normalerweise <strong>5–15 Minuten</strong>. Der Bot schickt eine Benachrichtigung, wenn dein Lied fertig ist.</p><p>Du kannst die App schließen — das Ergebnis kommt von selbst, nichts geht verloren.</p>',
@@ -28277,6 +28304,8 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           scBuyDayBtnText: 'Ouvrir Soul Chat 24h — 2,99 $', scToastPaymentReceived: 'Paiement reçu, accès activé',
           scSubRequiredForReply: 'Forfait requis pour poursuivre le dialogue avec l\'Oracle',
           scPickerTabSynastryText: 'Compatibilité', scSynastryTeaserText: 'Compatibilité — dialogue pour deux cartes — disponible dans l\'offre Laboratoire',
+          // Дисклеймер для приложения из App Store (Алла 14.10: «не типичное приложение с астрологией»), блоки data-native-only
+          helpAboutTitle: 'À propos de YupSoul', helpAboutBody: 'YupSoul est une application musicale créative. Nous écrivons une chanson sur une personne à partir de sa date de naissance et de ses propres mots : les paroles, la mélodie et la voix. Pour nous, la date de naissance est une consigne créative pour la chanson, pas une prévision. Les chansons et les réponses de YupSoul sont des réflexions créatives sur toi, pas des prédictions d\'événements. Au fond, YupSoul est plus proche de la psychologie de la connaissance de soi que de l\'astrologie : au centre, il y a toi, maintenant — tes émotions, tes relations et ce sur quoi tu peux t\'appuyer. YupSoul ne remplace ni un psychologue ni un médecin.', homeAboutLine: 'Une application musicale créative : des chansons sur toi, pas des prédictions.',
           helpT1: 'Qu\'est-ce que YupSoul', helpB1: '<p>YupSoul crée une <strong>chanson personnelle rien que pour toi</strong> — basée sur ta date, heure et lieu de naissance. Le système analyse ta personnalité et écrit une chanson sur tes vraies qualités, ton chemin et ta force.</p><p>Ce n\'est pas un modèle — chaque chanson est unique et t\'appartient.</p>',
           helpT2: 'Ce qu\'on peut créer', helpB2: '<p><strong>Modes de création :</strong></p><ul><li><strong>Chanson sur moi</strong> — ton portrait sonore personnel : qui tu es, ta force et ton chemin intérieur</li><li><strong>Chanson pour deux</strong> — pour un couple (amoureux, amis). Analyse les deux dates et reflète l\'union</li><li><strong>Énergie du jour</strong> — une chanson pour une date et un lieu précis. Quelles opportunités s\'ouvrent en ce moment</li></ul><p><strong>Style musical :</strong></p><ul><li><strong>Style perso</strong> — choisis le genre et l\'ambiance manuellement</li><li><strong>Astro-style</strong> — le système choisit le style selon tes données</li><li><strong>Comme une star</strong> — nomme ton artiste préféré et la chanson sonnera comme la sienne</li></ul><p><strong>Requêtes rapides</strong> — idées prêtes : chanson de force, d\'anniversaire, méditative, lâcher-prise, et plus.</p><p><strong>Soul Chat</strong> — un assistant IA qui te comprend en profondeur. Pose des questions sur ton caractère, ta mission et ton chemin.</p>',
           helpT3: 'Combien de temps attendre', helpB3: '<p>Généralement <strong>5–15 minutes</strong>. Le bot enverra une notification quand ta chanson sera prête.</p><p>Tu peux fermer l\'appli — le résultat arrivera tout seul, rien ne sera perdu.</p>',
@@ -29120,6 +29149,8 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
            Цену показывает Apple на своём экране покупки. */
       var NATIVE_LANG_OVERRIDES = {
         ru: {
+          // Сборка 41 (решение Аллы 14.10): слово «гороскоп» убрано из приложения для iPhone.
+          tagline: 'Узнай, как звучишь ты', taglineAccent: 'ты', diaryPwFeat2Desc: 'Не общие слова — разбор лично для тебя',
           pwSub: 'Искры закончились — а Оракулу ещё есть что тебе сказать. Возьми пакет и продолжай.', // натив: без «привязки карты» (3.1.1)
           // Аудит 23.09: в сдаче 19.09 эти тексты зовут в Telegram/к боту — на нативе их нет.
           payOrderMeta: 'Уникальный трек по твоей дате · появится в Плейлисте за 10–15 минут',
@@ -29190,6 +29221,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           helpB8: '<p><strong>Чат с Оракулом</strong> — разговор с твоей душой на основе твоих данных. Задавай вопросы о характере, предназначении, выборе. Открыт всем: первые 10 вопросов в подарок, дальше 1 вопрос = 1 Искра. Пакет снимает лимит — Душа (50 вопросов за 30 дней), Глубина и Лаборатория (без лимита).</p><p><strong>Пакеты</strong> — Душа (5 треков + Чат с Оракулом), Глубина (15 треков + Чат с Оракулом без лимита + расшифровка), Лаборатория (30 треков, картотека людей, Чат с Оракулом без лимита + расшифровка). Расшифровка — текстовый разбор песни — включена в Глубину и Лабораторию; для Души и разовых треков — первая в подарок, далее отдельно. Получить — в разделе «Профиль» или на экране оплаты.</p>'
         },
         en: {
+          tagline: 'Discover how you sound', taglineAccent: 'you', diaryPwFeat2Desc: 'Nothing generic — a reading just for you',
           pwSub: 'Sparks are gone — but the Oracle still has things to tell you. Get a pack and continue.', // натив: без «привязки карты» (3.1.1)
           // Аудит 23.09: эти ключи были только в RU-блоке, и на EN/DE/FR подставлялся русский текст (fallback на ru).
           footerOffer: 'Terms of Use',
@@ -29254,6 +29286,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           helpB8: '<p><strong>Soul Chat</strong> — talk to your soul based on your data. Ask about character, purpose, choices. Open to everyone: the first 10 questions are a gift, then 1 question = 1 Spark. A package removes the limit — Soul (50 questions within 30 days), Depth and Lab (unlimited).</p><p><strong>Packages</strong> — Soul (5 tracks + Soul Chat), Depth (15 tracks + Soul Chat unlimited + transcript), Lab (30 tracks, people directory, Soul Chat unlimited + transcript). Transcript (detailed analysis) is included in Depth and Lab; for Soul and one-time tracks — the first comes as a gift, then separately. Get one in Profile or on the payment screen.</p>'
         },
         de: {
+          tagline: 'Entdecke, wie du klingst', taglineAccent: 'du', diaryPwFeat2Desc: 'Nichts Allgemeines — eine Deutung nur für dich',
           pwSub: 'Funken aufgebraucht — aber das Orakel hat noch mehr zu sagen. Hol dir ein Paket und mach weiter.', // натив: без «привязки карты» (3.1.1)
           // Аудит 23.09: эти ключи были только в RU-блоке, и на EN/DE/FR подставлялся русский текст (fallback на ru).
           legalTabOffer: 'Bedingungen',
@@ -29318,6 +29351,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           helpB8: '<p><strong>Soul Chat</strong> — Gespräch mit deiner Seele basierend auf deinen Daten. Fragen zu Charakter, Bestimmung, Wahl. Für alle offen: die ersten 10 Fragen sind ein Geschenk, danach 1 Frage = 1 Funke. Ein Paket hebt das Limit auf — Soul (50 Fragen innerhalb von 30 Tagen), Depth und Labor (unbegrenzt).</p><p><strong>Pakete</strong> — Soul (5 Tracks + Soul Chat), Depth (15 Tracks + Soul Chat unbegrenzt), Labor (30 Tracks, Personenverzeichnis, Soul Chat unbegrenzt). Im Profil oder auf der Zahlungsseite.</p>'
         },
         fr: {
+          tagline: 'Découvre comment tu sonnes', taglineAccent: 'tu', diaryPwFeat2Desc: 'Rien de général — une lecture rien que pour toi',
           pwSub: 'Les Étincelles sont épuisées — mais l’Oracle a encore des choses à te dire. Prends un pack et continue.', // натив: без «привязки карты» (3.1.1)
           // Аудит 23.09: эти ключи были только в RU-блоке, и на EN/DE/FR подставлялся русский текст (fallback на ru).
           legalTabOffer: 'Conditions',
