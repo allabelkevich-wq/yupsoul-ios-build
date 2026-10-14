@@ -2349,8 +2349,38 @@
 
       // «Аскеза Юпитера», «Начать аскезу Юпитера»: родительный падеж есть только в русском,
       // остальные языки получают имя как есть.
+      // iOS (Apple 4.3b, Алла 14.10): вместо планеты — сфера жизни, «аскеза» → «практика».
+      // Сферы приходят с сервера по-русски — переводим здесь; Telegram/VK/веб не трогаем.
+      var _ASKEZA_SPHERE_I18N = {
+        'как ты себя подаёшь': { en: 'how you present yourself', de: 'wie du dich zeigst', fr: 'ta façon de te présenter' },
+        'деньги и своя цена': { en: 'money and your own worth', de: 'Geld und dein eigener Wert', fr: 'l’argent et ta propre valeur' },
+        'слова: говорить и писать': { en: 'words: speaking and writing', de: 'Worte: sprechen und schreiben', fr: 'les mots : parler et écrire' },
+        'дом и семья': { en: 'home and family', de: 'Zuhause und Familie', fr: 'la maison et la famille' },
+        'радость и творчество': { en: 'joy and creativity', de: 'Freude und Kreativität', fr: 'la joie et la créativité' },
+        'работа и режим': { en: 'work and daily routine', de: 'Arbeit und Alltag', fr: 'le travail et le rythme quotidien' },
+        'близкие отношения': { en: 'close relationships', de: 'enge Beziehungen', fr: 'les relations proches' },
+        'общие деньги и обязательства': { en: 'shared money and commitments', de: 'gemeinsames Geld und Verpflichtungen', fr: 'l’argent partagé et les engagements' },
+        'знания и убеждения': { en: 'knowledge and beliefs', de: 'Wissen und Überzeugungen', fr: 'le savoir et les convictions' },
+        'дело и репутация': { en: 'your work and reputation', de: 'Beruf und Ruf', fr: 'ton activité et ta réputation' },
+        'люди и аудитория': { en: 'people and audience', de: 'Menschen und Publikum', fr: 'les gens et le public' },
+        'тишина и тревоги': { en: 'silence and worries', de: 'Stille und Sorgen', fr: 'le silence et les inquiétudes' }
+      };
+      function _askezaSphere(p) {
+        var sp = (p && p.sphere) || '';
+        var lg = window.currentLang || 'ru';
+        var tr = _ASKEZA_SPHERE_I18N[sp];
+        return (lg !== 'ru' && tr && tr[lg]) ? tr[lg] : sp;
+      }
+      // «Солнце — уверенность и…» → «Уверенность и…»: на iOS без названия планеты.
+      function _askezaAbout(text) {
+        if (!window._isNativeApp || !text) return text;
+        var s = String(text).replace(/^\s*(Солнце|Луна|Меркурий|Венера|Марс|Юпитер|Сатурн|Уран|Нептун|Плутон)\s*—\s*/, '');
+        return s.charAt(0).toUpperCase() + s.slice(1);
+      }
+
       function _askezaPlanetName(p) {
         if (!p) return '';
+        if (window._isNativeApp) return _askezaSphere(p);
         var nom = p.name_ru || p.planet_ru || '';
         var gen = p.name_gen || p.planet_gen || '';
         return ((window.currentLang || 'ru') === 'ru' && gen) ? gen : nom;
@@ -2509,9 +2539,9 @@
               var body = document.createElement('span');
               body.className = 'sc-askeza-planet-body';
               // Сфера жизни — первой; старый ответ сервера без неё показывает имя планеты.
-              body.appendChild(_askezaSpan('sc-askeza-planet-cap', p.sphere || p.name_ru));
+              body.appendChild(_askezaSpan('sc-askeza-planet-cap', window._isNativeApp ? _askezaSphere(p) : (p.sphere || p.name_ru)));
               if (p.about) {
-                body.appendChild(_askezaSpan('sc-askeza-planet-about', p.about));
+                body.appendChild(_askezaSpan('sc-askeza-planet-about', _askezaAbout(p.about)));
                 if (picked && p.stuck) body.appendChild(_askezaSpan('sc-askeza-planet-stuck', p.stuck));
               } else if (p.debt) {
                 body.appendChild(_askezaSpan('sc-askeza-planet-debt', p.debt));

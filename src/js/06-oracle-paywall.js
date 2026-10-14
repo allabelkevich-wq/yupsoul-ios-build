@@ -260,7 +260,12 @@
         _prismPreloadInFlight = true;
 
         // 3) Прогресс-индикация для первого прогрева (15-30 сек обычно)
-        var progressMessages = [
+        var progressMessages = window._isNativeApp ? ({
+          ru: ['Слушаю твою дату рождения…', 'Собираю твой узор…', 'Готовлю все разборы параллельно…', 'Почти готово…'],
+          en: ['Listening to your date of birth…', 'Putting your pattern together…', 'Preparing all readings at once…', 'Almost ready…'],
+          de: ['Ich lausche deinem Geburtsdatum…', 'Ich setze dein Muster zusammen…', 'Ich bereite alle Deutungen vor…', 'Fast fertig…'],
+          fr: ['J’écoute ta date de naissance…', 'Je rassemble ton motif…', 'Je prépare toutes les lectures…', 'Presque prêt…']
+        }[(typeof currentLang === 'string') ? currentLang : 'ru'] || ['Слушаю твою дату рождения…', 'Собираю твой узор…', 'Готовлю все разборы параллельно…', 'Почти готово…']) : [
           'Считаю положение планет…',
           'Собираю узор карты…',
           'Готовлю все разборы параллельно…',

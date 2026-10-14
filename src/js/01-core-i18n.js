@@ -4252,6 +4252,10 @@
            Цену показывает Apple на своём экране покупки. */
       var NATIVE_LANG_OVERRIDES = {
         ru: {
+          // Сборка 43: строка главной «по мотивам даты рождения»; «аскеза» → «практика» (Алла 14.10) — только iOS
+          homeAboutLine: 'Творческое музыкальное приложение: песни о тебе по мотивам твоей даты рождения.', askezaEntryTitle: 'Твоя практика на 21 день', askezaTitlePrefix: 'Практика:', askezaTitleFallback: 'Твоя практика', askezaStartWith: 'Начать практику: {planet}', askezaTitle: 'Практика на 21 день', askezaCoreShort: 'Практика',
+          // Сборка 43 (Apple 4.3b): убрана «карта/chart», «планеты», «астро» — только iOS
+          ulCardsSub: 'Сохраняй профили родных и друзей — песни и совместимость в один тап.', ulTopicTitle: 'Разборы по твоей дате рождения', ulTopicSub: 'Глубокий разбор темы по твоей дате рождения — и персональная песня к ней.', styleAstro: 'Звучание даты', archLead: 'В твоей дате рождения есть главный образ твоего характера. Назови дату — покажу.', archSoulPlanet: 'Образ души', plBuy2s: 'Совместимость по двум датам рождения', mtAnalyzing: 'Слушаем твою дату…', diaryHeadSub: 'Короткий разбор каждый день — о тебе и о текущем дне', scPrismSubtitle: 'Загляни глубже — твоя история, спетая вслух', scChartLabel: 'Твой профиль', scPrismPayDesc: 'Глубокий персональный разбор по твоей дате рождения — подробно о тебе.', prismBuyDesc: 'Глубокий персональный разбор по твоей дате рождения — подробно о тебе и как это разблокировать.', helpB9: '<p><strong>Картотека и совместимость.</strong> Ведите картотеку клиентов, анализируйте совместимость по двум датам — одна песня на пару. Идеально для коучей и консультантов.</p><p><strong>Масштаб без потери качества.</strong> До 30 треков с пакетом Лаборатория. Уникальный контент для каждого клиента — без шаблонов и повторов.</p><p><strong>Монетизация и подарки.</strong> Дарите песни клиентам, включайте в пакеты консультаций или продавайте отдельно. Минута первой песни в подарок — попробуйте сами.</p>',
           // Сборка 41 (решение Аллы 14.10): слово «гороскоп» убрано из приложения для iPhone.
           tagline: 'Узнай, как звучишь ты', taglineAccent: 'ты', diaryPwFeat2Desc: 'Не общие слова — разбор лично для тебя',
           pwSub: 'Искры закончились — а у Soul Chat ещё есть что тебе сказать. Возьми пакет и продолжай.', // натив: без «привязки карты» (3.1.1)
@@ -4363,7 +4367,7 @@
           ulTopicB3: 'Вопросы в Soul Chat',
           prismBuyNoteOk: 'Разбор откроется сразу в Soul Chat',
           prismOracleRetry: 'Soul Chat задумался. Попробуй ещё раз.',
-          prismReadIntro: 'Soul Chat читает твою карту',
+          prismReadIntro: 'Soul Chat слушает твою дату',
           ariaChatFeed: 'Лента диалога Soul Chat',
           ariaChatHistory: 'История диалога Soul Chat',
           ariaOracleQuestion: 'Вопрос в Soul Chat',
@@ -4405,7 +4409,7 @@
           scTyping: 'Soul Chat печатает…',
           soulChatDefault: 'Soul Chat — диалоги с душой по заявке. Доступ по пакету.',
           soulChatNoAccess: 'Soul Chat — диалоги с душой. Доступ по пакету Душа (до 50 сообщений) или Глубина (без лимита).',
-          helpB2: '<p><strong>Режимы создания:</strong></p><ul><li><strong>Песня о себе</strong> — твой личный звуковой портрет: кто ты, твоя сила и внутренний путь</li><li><strong>Песня для пары</strong> — для двоих (влюблённых, друзей, подруг). Анализирует обе даты рождения и отражает союз</li><li><strong>Энергия дня</strong> — песня под конкретную дату и место. Какие возможности открываются прямо сейчас</li></ul><p><strong>Стиль музыки:</strong></p><ul><li><strong>Свой стиль</strong> — выбери жанр и настроение вручную</li><li><strong>Астро-стиль</strong> — система подберёт стиль на основе твоих данных</li><li><strong>Как у звезды</strong> — укажи любимого артиста, и песня зазвучит в его стиле</li></ul><p><strong>Быстрые запросы</strong> — готовые идеи: песня силы, поздравление с днём рождения, медитативная, про отпускание прошлого и другие.</p><p><strong>Soul Chat</strong> — ИИ-ассистент, который понимает тебя на глубинном уровне. Задавай вопросы о характере, предназначении и пути.</p>',
+          helpB2: '<p><strong>Режимы создания:</strong></p><ul><li><strong>Песня о себе</strong> — твой личный звуковой портрет: кто ты, твоя сила и внутренний путь</li><li><strong>Песня для пары</strong> — для двоих (влюблённых, друзей, подруг). Анализирует обе даты рождения и отражает союз</li><li><strong>Энергия дня</strong> — песня под конкретную дату и место. Какие возможности открываются прямо сейчас</li></ul><p><strong>Стиль музыки:</strong></p><ul><li><strong>Свой стиль</strong> — выбери жанр и настроение вручную</li><li><strong>Звучание даты</strong> — система подберёт стиль по твоей дате рождения</li><li><strong>Как у звезды</strong> — укажи любимого артиста, и песня зазвучит в его стиле</li></ul><p><strong>Быстрые запросы</strong> — готовые идеи: песня силы, поздравление с днём рождения, медитативная, про отпускание прошлого и другие.</p><p><strong>Soul Chat</strong> — ИИ-ассистент, который понимает тебя на глубинном уровне. Задавай вопросы о характере, предназначении и пути.</p>',
           scPrismLockedMsg: 'Этот разбор доступен с пакетом «Soul Chat». Первый разбор «Имя души» — в подарок.',
           helpT8: 'Soul Chat и пакеты',
           scHeroTitle: 'Разговор по душам | Soul Chat',
@@ -4414,6 +4418,10 @@
           scIntroSubtitle: 'Soul Chat — разговор по душам. Задай вопрос, который давно крутится в голове. Читаю твою дату рождения и говорю без общих слов. Один вопрос — одна Искра.'
         },
         en: {
+          // Сборка 43: строка главной «по мотивам даты рождения»; «аскеза» → «практика» (Алла 14.10) — только iOS
+          homeAboutLine: 'A creative music app: songs about you, inspired by your date of birth.', askezaEntryTitle: 'Your 21-day practice', askezaTitlePrefix: 'Practice:', askezaTitleFallback: 'Your practice', askezaStartWith: 'Start the practice: {planet}', askezaTitle: '21-day practice', askezaCoreShort: 'Practice',
+          // Сборка 43 (Apple 4.3b): убрана «карта/chart», «планеты», «астро» — только iOS
+          ulCardsSub: 'Save the profiles of family and friends — songs and compatibility in one tap.', ulTopicTitle: 'Readings by your date of birth', ulTopicSub: 'A deep reading of the topic by your date of birth — and a personal song to match.', styleAstro: 'Sound of your date', archLead: 'Your date of birth holds one main image of your character. Give me the date — I\'ll show you.', archSoulPlanet: 'Soul image', plBuy2s: 'Compatibility by two dates of birth', scSynastryTeaserText: 'Compatibility — a dialogue about two people at once — available in Lab plan', mtAnalyzing: 'Listening to your date…', diaryHeadSub: 'A short reading every day — about you and about the day itself', scPrismSubtitle: 'Look deeper — your story, sung aloud', scChartLabel: 'Your profile', scPrismPayDesc: 'A deep personal reading by your date of birth — detailed about you.', prismBuyDesc: 'A deep personal reading by your date of birth — in detail about you and how to unlock it.', helpB9: '<p><strong>Directory & compatibility.</strong> Keep a client directory, analyse compatibility from two dates of birth — one song per couple. Ideal for coaches and consultants.</p><p><strong>Scale without losing quality.</strong> Up to 30 tracks with Lab package. Unique content for each client — no templates or repeats.</p><p><strong>Monetisation & gifts.</strong> Gift songs to clients, include them in consultation packages or sell separately. A minute of the first song as a gift — try it yourself.</p>',
           tagline: 'Discover how you sound', taglineAccent: 'you', diaryPwFeat2Desc: 'Nothing generic — a reading just for you',
           pwSub: 'Sparks are gone — but Soul Chat still has things to tell you. Get a pack and continue.', // натив: без «привязки карты» (3.1.1)
           // Аудит 23.09: эти ключи были только в RU-блоке, и на EN/DE/FR подставлялся русский текст (fallback на ru).
@@ -4518,7 +4526,7 @@
           ulTopicB3: 'Questions for Soul Chat',
           prismBuyNoteOk: 'The reading opens right in Soul Chat',
           prismOracleRetry: 'Soul Chat got lost in thought. Try once more.',
-          prismReadIntro: 'Soul Chat reads your chart',
+          prismReadIntro: 'Soul Chat is listening to your date',
           ariaChatFeed: 'Soul Chat conversation feed',
           ariaChatHistory: 'Soul Chat conversation history',
           ariaOracleQuestion: 'Question in Soul Chat',
@@ -4560,7 +4568,7 @@
           scTyping: 'Soul Chat is typing…',
           soulChatDefault: 'Soul Chat — dialogues with your soul per request. Available by package.',
           soulChatNoAccess: 'Soul Chat — dialogues with your soul. Available with Soul (up to 50 messages) or Depth (unlimited) package.',
-          helpB2: '<p><strong>Creation modes:</strong></p><ul><li><strong>Song about me</strong> — your personal sonic portrait: who you are, your strength and inner path</li><li><strong>Song for two</strong> — for a couple (lovers, friends). Analyses both dates and reflects the union</li><li><strong>Day energy</strong> — a song for a specific date and place. What opportunities are opening right now</li></ul><p><strong>Music style:</strong></p><ul><li><strong>Custom style</strong> — choose genre and mood manually</li><li><strong>Astro-style</strong> — the system picks style based on your data</li><li><strong>Like a star</strong> — name your favourite artist and the song will sound like theirs</li></ul><p><strong>Quick requests</strong> — ready-made ideas: power song, birthday song, meditative, about letting go, and more.</p><p><strong>Soul Chat</strong> — an AI assistant that understands you deeply. Ask questions about your character, purpose and path.</p>',
+          helpB2: '<p><strong>Creation modes:</strong></p><ul><li><strong>Song about me</strong> — your personal sonic portrait: who you are, your strength and inner path</li><li><strong>Song for two</strong> — for a couple (lovers, friends). Analyses both dates and reflects the union</li><li><strong>Day energy</strong> — a song for a specific date and place. What opportunities are opening right now</li></ul><p><strong>Music style:</strong></p><ul><li><strong>Custom style</strong> — choose genre and mood manually</li><li><strong>Sound of your date</strong> — the system picks the style from your date of birth</li><li><strong>Like a star</strong> — name your favourite artist and the song will sound like theirs</li></ul><p><strong>Quick requests</strong> — ready-made ideas: power song, birthday song, meditative, about letting go, and more.</p><p><strong>Soul Chat</strong> — an AI assistant that understands you deeply. Ask questions about your character, purpose and path.</p>',
           scPrismLockedMsg: 'This reading is available with the Soul Chat package. The first reading «Soul Name» is a gift.',
           helpT8: 'Soul Chat & packages',
           scHeroTitle: 'Heart-to-heart | Soul Chat',
@@ -4569,6 +4577,10 @@
           scIntroSubtitle: 'Soul Chat — a heart-to-heart talk. Ask the question that’s been on your mind for a while. I read your birth date and speak without generalities. One question — one Spark.'
         },
         de: {
+          // Сборка 43: строка главной «по мотивам даты рождения»; «аскеза» → «практика» (Алла 14.10) — только iOS
+          homeAboutLine: 'Eine kreative Musik-App: Lieder über dich, inspiriert von deinem Geburtsdatum.', askezaEntryTitle: 'Deine Praxis für 21 Tage', askezaTitlePrefix: 'Praxis:', askezaTitleFallback: 'Deine Praxis', askezaStartWith: 'Praxis beginnen: {planet}', askezaTitle: 'Praxis für 21 Tage', askezaCoreShort: 'Praxis',
+          // Сборка 43 (Apple 4.3b): убрана «карта/chart», «планеты», «астро» — только iOS
+          ulTopicTitle: 'Deutungen nach deinem Geburtsdatum', ulTopicSub: 'Eine tiefe Deutung des Themas nach deinem Geburtsdatum — und ein persönliches Lied dazu.', styleAstro: 'Klang deines Datums', archLead: 'In deinem Geburtsdatum steckt ein Hauptbild deines Charakters. Nenn das Datum — ich zeige es dir.', archSoulPlanet: 'Seelenbild', plBuy2s: 'Kompatibilität nach zwei Geburtsdaten', scSynastryTeaserText: 'Kompatibilität — ein Dialog über zwei Menschen zugleich — im Labor-Tarif verfügbar', mtAnalyzing: 'Wir lauschen deinem Datum…', diaryHeadSub: 'Jeden Tag eine kurze Deutung — über dich und über den Tag', scPrismSubtitle: 'Blick tiefer — deine Geschichte, laut gesungen', scChartLabel: 'Dein Profil', scPrismPayDesc: 'Eine tiefe persönliche Deutung nach deinem Geburtsdatum — ausführlich über dich.', prismBuyDesc: 'Eine tiefe persönliche Deutung nach deinem Geburtsdatum — ausführlich über dich und wie du es löst.', helpB9: '<p><strong>Kartei & Kompatibilität.</strong> Führe eine Klientenkartei, analysiere die Kompatibilität anhand zweier Geburtsdaten — ein Lied pro Paar. Ideal für Coaches und Berater.</p><p><strong>Skalierung ohne Qualitätsverlust.</strong> Bis zu 30 Tracks mit Labor-Paket. Einzigartiger Inhalt pro Klient — ohne Vorlagen.</p><p><strong>Monetarisierung & Geschenke.</strong> Verschenke Lieder an Klienten, packe sie in Beratungspakete oder verkaufe einzeln. Eine Minute des ersten Songs geschenkt — probier es aus.</p>',
           tagline: 'Entdecke, wie du klingst', taglineAccent: 'du', diaryPwFeat2Desc: 'Nichts Allgemeines — eine Deutung nur für dich',
           pwSub: 'Funken aufgebraucht — aber Soul Chat hat noch mehr zu sagen. Hol dir ein Paket und mach weiter.', // натив: без «привязки карты» (3.1.1)
           // Аудит 23.09: эти ключи были только в RU-блоке, и на EN/DE/FR подставлялся русский текст (fallback на ru).
@@ -4673,7 +4685,7 @@
           ulTopicB3: 'Fragen an Soul Chat',
           prismBuyNoteOk: 'Die Deutung öffnet sich direkt im Soul Chat',
           prismOracleRetry: 'Soul Chat ist in Gedanken versunken. Versuch es noch einmal.',
-          prismReadIntro: 'Soul Chat liest deine Karte',
+          prismReadIntro: 'Soul Chat lauscht deinem Datum',
           ariaChatFeed: 'Gesprächsverlauf im Soul Chat',
           ariaChatHistory: 'Gesprächsverlauf im Soul Chat',
           ariaOracleQuestion: 'Frage im Soul Chat',
@@ -4715,7 +4727,7 @@
           scTyping: 'Soul Chat tippt…',
           soulChatDefault: 'Soul Chat — Dialoge mit deiner Seele pro Anfrage. Per Paket.',
           soulChatNoAccess: 'Soul Chat — Dialoge mit deiner Seele. Mit Soul (bis 50 Nachrichten) oder Depth (unbegrenzt) Paket.',
-          helpB2: '<p><strong>Erstellungsmodi:</strong></p><ul><li><strong>Lied über mich</strong> — dein persönliches Klangportrait: wer du bist, deine Stärke und innerer Weg</li><li><strong>Lied für zwei</strong> — für ein Paar (Verliebte, Freunde). Analysiert beide Daten und spiegelt die Verbindung wider</li><li><strong>Tagesenergie</strong> — ein Lied für ein bestimmtes Datum und Ort. Welche Möglichkeiten öffnen sich gerade jetzt</li></ul><p><strong>Musikstil:</strong></p><ul><li><strong>Eigener Stil</strong> — wähle Genre und Stimmung manuell</li><li><strong>Astro-Stil</strong> — das System wählt den Stil basierend auf deinen Daten</li><li><strong>Wie ein Star</strong> — nenne deinen Lieblingskünstler und der Song klingt wie seiner</li></ul><p><strong>Schnellanfragen</strong> — fertige Ideen: Kraftlied, Geburtstagslied, meditativ, Loslassen und mehr.</p><p><strong>Soul Chat</strong> — ein KI-Assistent, der dich tiefgreifend versteht. Stelle Fragen zu Charakter, Bestimmung und Weg.</p>',
+          helpB2: '<p><strong>Erstellungsmodi:</strong></p><ul><li><strong>Lied über mich</strong> — dein persönliches Klangportrait: wer du bist, deine Stärke und innerer Weg</li><li><strong>Lied für zwei</strong> — für ein Paar (Verliebte, Freunde). Analysiert beide Daten und spiegelt die Verbindung wider</li><li><strong>Tagesenergie</strong> — ein Lied für ein bestimmtes Datum und Ort. Welche Möglichkeiten öffnen sich gerade jetzt</li></ul><p><strong>Musikstil:</strong></p><ul><li><strong>Eigener Stil</strong> — wähle Genre und Stimmung manuell</li><li><strong>Klang deines Datums</strong> — das System wählt den Stil nach deinem Geburtsdatum</li><li><strong>Wie ein Star</strong> — nenne deinen Lieblingskünstler und der Song klingt wie seiner</li></ul><p><strong>Schnellanfragen</strong> — fertige Ideen: Kraftlied, Geburtstagslied, meditativ, Loslassen und mehr.</p><p><strong>Soul Chat</strong> — ein KI-Assistent, der dich tiefgreifend versteht. Stelle Fragen zu Charakter, Bestimmung und Weg.</p>',
           scPrismLockedMsg: 'Diese Deutung ist mit dem Soul-Chat-Paket verfügbar. Die erste Deutung «Seelenname» ist ein Geschenk.',
           helpT8: 'Soul Chat & Pakete',
           scHeroTitle: 'Herzgespräch | Soul Chat',
@@ -4724,6 +4736,10 @@
           scIntroSubtitle: 'Soul Chat — ein Gespräch von Herzen. Stell die Frage, die dir schon lange im Kopf herumgeht. Ich lese dein Geburtsdatum und rede ohne Allgemeinplätze. Eine Frage — ein Funke.'
         },
         fr: {
+          // Сборка 43: строка главной «по мотивам даты рождения»; «аскеза» → «практика» (Алла 14.10) — только iOS
+          homeAboutLine: 'Une application musicale créative : des chansons sur toi, inspirées de ta date de naissance.', askezaEntryTitle: 'Ta pratique de 21 jours', askezaTitlePrefix: 'Pratique :', askezaTitleFallback: 'Ta pratique', askezaStartWith: 'Commencer la pratique : {planet}', askezaTitle: 'Pratique de 21 jours', askezaCoreShort: 'Pratique',
+          // Сборка 43 (Apple 4.3b): убрана «карта/chart», «планеты», «астро» — только iOS
+          ulCardsSub: 'Enregistre les profils de ta famille et de tes amis — chansons et compatibilité en un tap.', ulTopicTitle: 'Lectures selon ta date de naissance', ulTopicSub: 'Une lecture approfondie du thème selon ta date de naissance — et une chanson personnelle qui l\'accompagne.', styleAstro: 'Son de ta date', archLead: 'Dans ta date de naissance il y a une image principale de ton caractère. Donne-moi la date — je te montre.', archSoulPlanet: 'Image de l\'âme', plBuy2s: 'Compatibilité selon deux dates de naissance', scSynastryTeaserText: 'Compatibilité — un dialogue sur deux personnes à la fois — disponible dans l\'offre Laboratoire', mtAnalyzing: 'Nous écoutons ta date…', diaryHeadSub: 'Une lecture courte chaque jour — sur toi et sur la journée', scPrismSubtitle: 'Regarde plus profond — ton histoire, chantée à voix haute', scChartLabel: 'Ton profil', scPrismPayDesc: 'Une lecture personnelle profonde selon ta date de naissance — détaillée sur toi.', prismBuyDesc: 'Une lecture personnelle profonde selon ta date de naissance — en détail sur toi et comment la débloquer.', helpB9: '<p><strong>Répertoire et compatibilité.</strong> Tenez une fiche clients, analysez la compatibilité à partir de deux dates de naissance — une chanson par couple. Idéal pour coachs et consultants.</p><p><strong>Volume sans perdre en qualité.</strong> Jusqu\'à 30 titres avec le forfait Lab. Contenu unique par client — sans modèles ni répétitions.</p><p><strong>Monétisation et cadeaux.</strong> Offrez des chansons aux clients, incluez-les dans vos forfaits ou vendez à part. Une minute de la première chanson en cadeau — essayez.</p>',
           tagline: 'Découvre comment tu sonnes', taglineAccent: 'tu', diaryPwFeat2Desc: 'Rien de général — une lecture rien que pour toi',
           pwSub: 'Les Étincelles sont épuisées — mais Soul Chat a encore des choses à te dire. Prends un pack et continue.', // натив: без «привязки карты» (3.1.1)
           // Аудит 23.09: эти ключи были только в RU-блоке, и на EN/DE/FR подставлялся русский текст (fallback на ru).
@@ -4828,7 +4844,7 @@
           ulTopicB3: 'Questions à Soul Chat',
           prismBuyNoteOk: 'La lecture s’ouvre directement dans Soul Chat',
           prismOracleRetry: 'Soul Chat s’est plongé dans ses pensées. Réessaie.',
-          prismReadIntro: 'Soul Chat lit ta carte',
+          prismReadIntro: 'Soul Chat écoute ta date',
           ariaChatFeed: 'Fil de conversation Soul Chat',
           ariaChatHistory: 'Historique de Soul Chat',
           ariaOracleQuestion: 'Question dans Soul Chat',
@@ -4870,7 +4886,7 @@
           scTyping: 'Soul Chat écrit…',
           soulChatDefault: 'Soul Chat — dialogues avec ton âme par demande. Sur forfait.',
           soulChatNoAccess: 'Soul Chat — dialogues avec ton âme. Avec forfait Soul (jusqu\'à 50 messages) ou Depth (illimité).',
-          helpB2: '<p><strong>Modes de création :</strong></p><ul><li><strong>Chanson sur moi</strong> — ton portrait sonore personnel : qui tu es, ta force et ton chemin intérieur</li><li><strong>Chanson pour deux</strong> — pour un couple (amoureux, amis). Analyse les deux dates et reflète l\'union</li><li><strong>Énergie du jour</strong> — une chanson pour une date et un lieu précis. Quelles opportunités s\'ouvrent en ce moment</li></ul><p><strong>Style musical :</strong></p><ul><li><strong>Style perso</strong> — choisis le genre et l\'ambiance manuellement</li><li><strong>Astro-style</strong> — le système choisit le style selon tes données</li><li><strong>Comme une star</strong> — nomme ton artiste préféré et la chanson sonnera comme la sienne</li></ul><p><strong>Requêtes rapides</strong> — idées prêtes : chanson de force, d\'anniversaire, méditative, lâcher-prise, et plus.</p><p><strong>Soul Chat</strong> — un assistant IA qui te comprend en profondeur. Pose des questions sur ton caractère, ta mission et ton chemin.</p>',
+          helpB2: '<p><strong>Modes de création :</strong></p><ul><li><strong>Chanson sur moi</strong> — ton portrait sonore personnel : qui tu es, ta force et ton chemin intérieur</li><li><strong>Chanson pour deux</strong> — pour un couple (amoureux, amis). Analyse les deux dates et reflète l\'union</li><li><strong>Énergie du jour</strong> — une chanson pour une date et un lieu précis. Quelles opportunités s\'ouvrent en ce moment</li></ul><p><strong>Style musical :</strong></p><ul><li><strong>Style perso</strong> — choisis le genre et l\'ambiance manuellement</li><li><strong>Son de ta date</strong> — le système choisit le style selon ta date de naissance</li><li><strong>Comme une star</strong> — nomme ton artiste préféré et la chanson sonnera comme la sienne</li></ul><p><strong>Requêtes rapides</strong> — idées prêtes : chanson de force, d\'anniversaire, méditative, lâcher-prise, et plus.</p><p><strong>Soul Chat</strong> — un assistant IA qui te comprend en profondeur. Pose des questions sur ton caractère, ta mission et ton chemin.</p>',
           scPrismLockedMsg: 'Cette lecture est disponible avec le pack Soul Chat. La première lecture «Nom de l\'âme» est offerte.',
           helpT8: 'Soul Chat et forfaits',
           scHeroTitle: 'Cœur à cœur | Soul Chat',
