@@ -16326,6 +16326,14 @@ body.theme-light #tourReward.tour-new,html.is-vk-light:not(.dark) #tourReward.to
     retain_resume: { ru: 'Продолжить знакомство', en: 'Continue the tour', de: 'Tour fortsetzen', fr: 'Continuer la visite' },
     retain_quit: { ru: 'Всё равно не нужно', en: 'Leave anyway', de: 'Trotzdem nicht', fr: 'Partir quand même' }
   };
+  // Сборка 42 (Алла 14.10): в приложении для iPhone чат называется Soul Chat — меняем только
+  // имя, шаги, порядок и остальные тексты тура те же (как в NATIVE_LANG_OVERRIDES).
+  if (window._isNativeApp) {
+    TOUR_STEPS[1].title = { ru: 'Soul Chat', en: 'Soul Chat', de: 'Soul Chat', fr: 'Soul Chat' };
+    TOUR_I18N.welcome_reward = { ru: 'Доберёшься до конца — подарю 30 Искр <i class="iskra-ic" aria-hidden="true"></i> Это монетки приложения: на них собирают песни и задают вопросы в Soul Chat.', en: 'Make it to the end — I\'ll gift you 30 Sparks <i class="iskra-ic" aria-hidden="true"></i> They\'re the app\'s coins: craft songs and ask Soul Chat with them.', de: 'Komm bis zum Ende — ich schenke dir 30 Funken <i class="iskra-ic" aria-hidden="true"></i> Das sind die Münzen der App: Songs machen und Soul Chat fragen.', fr: 'Va jusqu\'au bout — je t\'offre 30 Étincelles <i class="iskra-ic" aria-hidden="true"></i> Ce sont les pièces de l\'app : composer des chansons et interroger Soul Chat.' };
+    TOUR_I18N.retain_badge = { ru: '30 Искр = <b>30 вопросов в Soul Chat</b>', en: '30 Sparks = <b>30 questions in Soul Chat</b>', de: '30 Funken = <b>30 Fragen im Soul Chat</b>', fr: '30 Étincelles = <b>30 questions dans Soul Chat</b>' };
+    TOUR_I18N.retain_text = { ru: 'Тур совсем короткий — минутка, и <b>30 Искр</b> твои (это 30 вопросов в Soul Chat). А не сейчас — можно пройти его позже в «Помощи».', en: 'The tour is really short — a minute, and <b>30 Sparks</b> are yours (that\'s 30 questions in Soul Chat). Not now? You can take it later in Help.', de: 'Die Tour ist ganz kurz — eine Minute, und <b>30 Funken</b> gehören dir (das sind 30 Fragen im Soul Chat). Nicht jetzt? Du kannst sie später in der Hilfe machen.', fr: 'La visite est très courte — une minute, et <b>30 Étincelles</b> sont à toi (soit 30 questions dans Soul Chat). Pas maintenant ? Tu peux la faire plus tard dans l\'Aide.' };
+  }
   function _tl(key) {
     var lang = (typeof window._currentLang === 'string' ? window._currentLang : 'ru') || 'ru';
     var obj = typeof key === 'object' ? key : (TOUR_I18N[key] || {});

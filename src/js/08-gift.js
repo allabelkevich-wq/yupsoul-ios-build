@@ -838,7 +838,8 @@
                 if (typeof showToast === 'function') showToast(t('toastScExpired'));
               }
             } else {
-              scPageAddMsg('soul', '🌙 Оракул задумался. Спроси ещё раз — я рядом.');
+              // Сборка 42: на iPhone чат зовётся Soul Chat — меняем только имя.
+              scPageAddMsg('soul', window._isNativeApp ? '🌙 Soul Chat задумался. Спроси ещё раз — я рядом.' : '🌙 Оракул задумался. Спроси ещё раз — я рядом.');
             }
           } catch(e) {
             scPageHideTyping();
