@@ -1974,6 +1974,29 @@
     html.is-ok-light:not(.dark) .form-guide::before {
       box-shadow: none;
     }
+    /* Дим и ореол гида обрезались по краям ленты (видео Аллы с iPhone, 15.10): кольцо живёт
+       ВНУТРИ #formPage .page-scroll (едет со скроллом), а overflow скроллера резал и тень-дим
+       9999px, и пульс-ореол → темнел только прямоугольник ленты, шапка «Создать песню» и поля
+       по 12px слева/справа оставались светлыми, ореол поля «Имя» срезался вертикальной линией.
+       (1) Лента формы на телефоне — на всю ширину экрана, паддинг компенсирует (контент на
+       месте): ореолу есть куда светить до самого края. (2) Пока гид показан — собственная
+       внешняя тень скроллера (её overflow не режет) тем же димом докрашивает всё вне ленты:
+       шапку, кнопку «Назад», низ. z-index:4 — выше шапки (z:3, app.css #formPage .form-header-bar). */
+    #formPage .form-page-glass-card > .page-scroll { transition: box-shadow .45s ease; }
+    #formPage .form-page-glass-card > .page-scroll:has(> .form-guide.show) {
+      z-index: 4 !important; box-shadow: 0 0 0 9999px rgba(18, 9, 28, 0.4);
+    }
+    body.theme-light #formPage .form-page-glass-card > .page-scroll:has(> .form-guide.show),
+    html.is-vk-light:not(.dark) #formPage .form-page-glass-card > .page-scroll:has(> .form-guide.show),
+    html.is-ok-light:not(.dark) #formPage .form-page-glass-card > .page-scroll:has(> .form-guide.show) {
+      box-shadow: none;
+    }
+    @media (max-width: 480px) {
+      #formPage .form-page-glass-card > .page-scroll { margin-left: -12px !important; margin-right: -12px !important; padding-left: 24px !important; padding-right: 24px !important; }
+    }
+    @media (max-width: 340px) { /* тут #formPage{padding:8px} (index.template FIX ≤340) */
+      #formPage .form-page-glass-card > .page-scroll { margin-left: -8px !important; margin-right: -8px !important; padding-left: 20px !important; padding-right: 20px !important; }
+    }
     /* Пульсация: мягкая, широкая, ТЁПЛАЯ (magenta-кольцо + золотой ореол — гамма бейджа
        «Шаг 1» #ec4899→#eab308). Прежняя была узкая/жёсткая розовая (Алла 09.07) */
     @keyframes ysGuidePulse {

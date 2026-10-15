@@ -15997,7 +15997,10 @@ html.is-ok-light:not(.dark) #prismReadView .ora-v2.ora-v2 .w-hint{color:rgba(26,
    панель берёт вид эталона: без белой карточки, а кнопки ряда — в форме .backchip,
    единственного чипа с иконкой и подписью, который есть в эталоне. Значения .backchip
    скопированы дословно; два id в селекторе — чтобы пройти над июньскими правилами. */
-#soulChatPage #scInputArea .composer{background:none !important;border:none !important;padding:0 !important;box-shadow:none !important;backdrop-filter:none !important;border-radius:0 !important}
+/* :focus-within — в списке ОБЯЗАТЕЛЬНО: июньское правило #scInputArea .composer:focus-within (выше)
+   специфичнее и при фокусе возвращало композеру оранжевую тень, а радиус тут 0 → на iPhone с
+   открытой клавиатурой блок ввода висел прямоугольной плитой с ореолом (видео Аллы 15.10). */
+#soulChatPage #scInputArea .composer,#soulChatPage #scInputArea .composer:focus-within{background:none !important;border:none !important;padding:0 !important;box-shadow:none !important;backdrop-filter:none !important;border-radius:0 !important}
 #soulChatPage #scInputArea .comp-opts{display:flex !important;flex-wrap:nowrap !important;min-width:0 !important;gap:2px !important;margin:0 0 8px !important;padding:2px !important;border-radius:26px !important;border:1px solid var(--line) !important;background:var(--surf) !important;backdrop-filter:blur(12px) !important}
 #soulChatPage #scInputArea .comp-opt{flex:1 1 auto !important;width:auto !important;min-width:0 !important;height:44px !important;margin:0 !important;padding:0 8px !important;display:inline-flex !important;align-items:center !important;justify-content:center !important;gap:6px !important;border:none !important;border-radius:22px !important;background:none !important;color:var(--ink2) !important;font-family:inherit !important;font-size:.74rem !important;font-weight:600 !important;letter-spacing:-.01em !important;white-space:nowrap !important;overflow:hidden !important;text-overflow:ellipsis !important;box-shadow:none !important}
 #soulChatPage #scInputArea .comp-opt svg{width:15px !important;height:15px !important;flex:none !important;color:currentColor !important}
