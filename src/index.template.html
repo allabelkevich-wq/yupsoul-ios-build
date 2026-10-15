@@ -17695,6 +17695,24 @@ body.theme-light #tourReward.tour-new,html.is-vk-light:not(.dark) #tourReward.to
     }
     // setProperty(...,'important') — иначе .page-hint{bottom:16px !important} (CSS выше) перебивает
     hint.style.setProperty('bottom', bottomPx, 'important');
+    // soulChatPage: подсказка не должна ложиться на приветствие и карточки «С чего начнём»
+    // (низкий экран / клавиатура, сборка 46). Меряем её высоту невидимой; места нет —
+    // не показываем и 'seen' не ставим: покажется, когда место будет.
+    if (pageId === 'soulChatPage') {
+      var scBar2 = document.getElementById('scInputArea'), scBody = document.getElementById('scChatBody');
+      if (scBar2 && scBody) {
+        hint.style.visibility = 'hidden'; hint.style.display = '';
+        var hintH = hint.offsetHeight || 60;
+        hint.style.display = 'none'; hint.style.visibility = '';
+        var contentBottom = 0;
+        Array.prototype.forEach.call(scBody.children, function(ch) {
+          var r = ch.getBoundingClientRect();
+          if (r.height > 0 && getComputedStyle(ch).display !== 'none') contentBottom = Math.max(contentBottom, r.bottom);
+        });
+        var hintTop = scBar2.getBoundingClientRect().top - 10 - hintH;
+        if (hintTop < contentBottom + 8) { _hidePageHintNow(); return; }
+      }
+    }
     hint.style.display = '';
     hint.classList.remove('hiding');
 
