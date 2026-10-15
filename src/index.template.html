@@ -6022,7 +6022,7 @@ body.theme-light #myTracksPage .mtv2-player .v2act,html.is-vk-light:not(.dark) #
         (function next(i){
           if(i>=keys.length){ _prefetching=false; return; }
           var k=keys[i], cacheKey=wave+'|'+k;
-          fetch(base+'/api/radio/feed?wave='+encodeURIComponent(wave)+'&genre='+encodeURIComponent(k),{headers:rHeaders()})
+          fetch(base+'/api/radio/feed?lang='+encodeURIComponent(window.currentLang||'ru')+'&wave='+encodeURIComponent(wave)+'&genre='+encodeURIComponent(k),{headers:rHeaders()})
             .then(function(r){ return r.json().catch(function(){return null;}); })
             .then(function(d){ if(d&&d.ok&&!_mtRadioFeedCache[cacheKey]){ var tr=d.tracks||[]; _mtRadioFeedCache[cacheKey]={tracks:tr,featured:d.featured||tr[0]||null,genres:d.genres}; } })
             .catch(function(){})
@@ -6037,7 +6037,7 @@ body.theme-light #myTracksPage .mtv2-player .v2act,html.is-vk-light:not(.dark) #
         if(typeof window._ensureOnline==='function' && !window._ensureOnline()) return;
         var cacheKey=wave+'|'+g, reqId=++_mtRadioFeedReqId, cached=_mtRadioFeedCache[cacheKey];
         if(cached){ window._mtRadioFeed=cached.tracks; window._mtRadioFeatured=cached.featured; renderGenreRow(cached.genres); renderAir(cached.featured); renderFeedList(cached.tracks); }
-        fetch(base+'/api/radio/feed?wave='+encodeURIComponent(wave)+'&genre='+encodeURIComponent(g),{headers:rHeaders()})
+        fetch(base+'/api/radio/feed?lang='+encodeURIComponent(window.currentLang||'ru')+'&wave='+encodeURIComponent(wave)+'&genre='+encodeURIComponent(g),{headers:rHeaders()})
           .then(function(r){ return r.json().catch(function(){return null;}); })
           .then(function(d){
             if(reqId!==_mtRadioFeedReqId) return;
@@ -6459,7 +6459,7 @@ body.theme-light #myTracksPage .mtv2-player .v2act,html.is-vk-light:not(.dark) #
         if(!bind()){ document.addEventListener('DOMContentLoaded',bind); setTimeout(bind,1500); setTimeout(bind,4000); }
       })();
       /* непрерывность: в конце волны перешафлить ленту */
-      window._mtRadioRefill=function(){ if(!window._mtRadioMode) return; var base=rApiBase(); var wave=window._mtRadioWave; if(!base||!wave){ if((window._mtTracksData||[]).length && typeof window._mtPlayTrack==='function') window._mtPlayTrack(0); return; } fetch(base+'/api/radio/feed?wave='+encodeURIComponent(wave),{headers:rHeaders()}).then(function(r){return r.json().catch(function(){return null;});}).then(function(d){ if(!window._mtRadioMode) return; var q=buildQueue((d&&d.ok&&d.tracks)?d.tracks:[]); if(q.length){ window._mtTracksData=q; } if((window._mtTracksData||[]).length && typeof window._mtPlayTrack==='function') window._mtPlayTrack(0); }).catch(function(){ if((window._mtTracksData||[]).length && typeof window._mtPlayTrack==='function') window._mtPlayTrack(0); }); };
+      window._mtRadioRefill=function(){ if(!window._mtRadioMode) return; var base=rApiBase(); var wave=window._mtRadioWave; if(!base||!wave){ if((window._mtTracksData||[]).length && typeof window._mtPlayTrack==='function') window._mtPlayTrack(0); return; } fetch(base+'/api/radio/feed?lang='+encodeURIComponent(window.currentLang||'ru')+'&wave='+encodeURIComponent(wave),{headers:rHeaders()}).then(function(r){return r.json().catch(function(){return null;});}).then(function(d){ if(!window._mtRadioMode) return; var q=buildQueue((d&&d.ok&&d.tracks)?d.tracks:[]); if(q.length){ window._mtTracksData=q; } if((window._mtTracksData||[]).length && typeof window._mtPlayTrack==='function') window._mtPlayTrack(0); }).catch(function(){ if((window._mtTracksData||[]).length && typeof window._mtPlayTrack==='function') window._mtPlayTrack(0); }); };
       window._mtExitRadio=function(){ if(window._mtRadioMode){ window._mtRadioMode=false; window._mtCurRadioId=null; window._mtTracksData=window._mtPersonalBackup||[]; } };
     })();
     </script>

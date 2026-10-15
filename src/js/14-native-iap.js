@@ -369,8 +369,9 @@
             } catch(_) {}
           }
 
+          var purchaseRes = null;
           try {
-            await Purchases.purchasePackage({ aPackage: pkg });
+            purchaseRes = await Purchases.purchasePackage({ aPackage: pkg });
           } catch (e) {
             _refreshStorePrices();
             // Отмена пользователем — не ошибка приложения, молча выходим.
@@ -384,12 +385,44 @@
           }
           _refreshStorePrices();
 
+          /* Apple уже показал «You're all set» — на кнопке больше не «Открываем оплату…». */
+          if (sku === 'song_unlock') {
+            var ctaTxt = document.querySelector('#songUnlockPage .cta-txt');
+            if (ctaTxt && typeof t === 'function') ctaTxt.textContent = t('unlockCtaReceived');
+          }
+
+          /* Быстрый путь: номер транзакции сразу на сервер, тот сверяет её у Apple
+             и выдаёт товар за 1–3 с. Вебхук RevenueCat в песочнице идёт 15–20 с —
+             без этого кнопка крутилась ~22 с после «You're all set». Сервер без
+             ключа Apple, отказ или сеть — молча ждём вебхук, как раньше. */
+          var txId = purchaseRes && purchaseRes.transaction && purchaseRes.transaction.transactionIdentifier;
+          if (txId && (await _confirmPurchase(sku, orderReqId, txId))) return { ok: true };
+
           // Чек валидирует RevenueCat, товар выдаёт вебхук. Ждём, пока сервер
           // увидит начисление, и только потом рисуем результат.
           var granted = await _waitForGrant(sku, orderReqId, baseline);
           // Вебхук RevenueCat может опоздать (песочница/TestFlight): отдаём данные, чтобы экран дождался в фоне, а не объявил провал
           return granted ? { ok: true } : { ok: false, error: 'grant_pending', requestId: orderReqId, baseline: baseline };
         };
+
+        /* Прямое подтверждение покупки: true — сервер выдал товар (или он уже был выдан). */
+        async function _confirmPurchase(sku, requestId, transactionId) {
+          try {
+            var url = apiBase + '/api/payments/native/confirm';
+            var opts = {
+              method: 'POST',
+              headers: Object.assign({ 'Content-Type': 'application/json' }, getAuthHeaders()),
+              body: JSON.stringify({ sku: sku, request_id: String(requestId), transaction_id: String(transactionId) })
+            };
+            var r = await (window.fetchWithTimeout ? window.fetchWithTimeout(url, opts, 15000) : fetch(url, opts));
+            var d = await r.json().catch(function() { return {}; });
+            if (r.ok && d && d.ok === true) return true;
+            console.warn('[native] прямое подтверждение не прошло, ждём вебхук', d && d.reason);
+          } catch (e) {
+            console.warn('[native] прямое подтверждение не прошло, ждём вебхук', e);
+          }
+          return false;
+        }
 
         /* Заявка-носитель заводится ДО покупки. Если покупка не состоялась,
            она осталась бы висеть в pending_payment и главная показывала бы

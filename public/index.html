@@ -21680,7 +21680,7 @@ body.theme-light #myTracksPage .mtv2-player .v2act,html.is-vk-light:not(.dark) #
         (function next(i){
           if(i>=keys.length){ _prefetching=false; return; }
           var k=keys[i], cacheKey=wave+'|'+k;
-          fetch(base+'/api/radio/feed?wave='+encodeURIComponent(wave)+'&genre='+encodeURIComponent(k),{headers:rHeaders()})
+          fetch(base+'/api/radio/feed?lang='+encodeURIComponent(window.currentLang||'ru')+'&wave='+encodeURIComponent(wave)+'&genre='+encodeURIComponent(k),{headers:rHeaders()})
             .then(function(r){ return r.json().catch(function(){return null;}); })
             .then(function(d){ if(d&&d.ok&&!_mtRadioFeedCache[cacheKey]){ var tr=d.tracks||[]; _mtRadioFeedCache[cacheKey]={tracks:tr,featured:d.featured||tr[0]||null,genres:d.genres}; } })
             .catch(function(){})
@@ -21695,7 +21695,7 @@ body.theme-light #myTracksPage .mtv2-player .v2act,html.is-vk-light:not(.dark) #
         if(typeof window._ensureOnline==='function' && !window._ensureOnline()) return;
         var cacheKey=wave+'|'+g, reqId=++_mtRadioFeedReqId, cached=_mtRadioFeedCache[cacheKey];
         if(cached){ window._mtRadioFeed=cached.tracks; window._mtRadioFeatured=cached.featured; renderGenreRow(cached.genres); renderAir(cached.featured); renderFeedList(cached.tracks); }
-        fetch(base+'/api/radio/feed?wave='+encodeURIComponent(wave)+'&genre='+encodeURIComponent(g),{headers:rHeaders()})
+        fetch(base+'/api/radio/feed?lang='+encodeURIComponent(window.currentLang||'ru')+'&wave='+encodeURIComponent(wave)+'&genre='+encodeURIComponent(g),{headers:rHeaders()})
           .then(function(r){ return r.json().catch(function(){return null;}); })
           .then(function(d){
             if(reqId!==_mtRadioFeedReqId) return;
@@ -22117,7 +22117,7 @@ body.theme-light #myTracksPage .mtv2-player .v2act,html.is-vk-light:not(.dark) #
         if(!bind()){ document.addEventListener('DOMContentLoaded',bind); setTimeout(bind,1500); setTimeout(bind,4000); }
       })();
       /* непрерывность: в конце волны перешафлить ленту */
-      window._mtRadioRefill=function(){ if(!window._mtRadioMode) return; var base=rApiBase(); var wave=window._mtRadioWave; if(!base||!wave){ if((window._mtTracksData||[]).length && typeof window._mtPlayTrack==='function') window._mtPlayTrack(0); return; } fetch(base+'/api/radio/feed?wave='+encodeURIComponent(wave),{headers:rHeaders()}).then(function(r){return r.json().catch(function(){return null;});}).then(function(d){ if(!window._mtRadioMode) return; var q=buildQueue((d&&d.ok&&d.tracks)?d.tracks:[]); if(q.length){ window._mtTracksData=q; } if((window._mtTracksData||[]).length && typeof window._mtPlayTrack==='function') window._mtPlayTrack(0); }).catch(function(){ if((window._mtTracksData||[]).length && typeof window._mtPlayTrack==='function') window._mtPlayTrack(0); }); };
+      window._mtRadioRefill=function(){ if(!window._mtRadioMode) return; var base=rApiBase(); var wave=window._mtRadioWave; if(!base||!wave){ if((window._mtTracksData||[]).length && typeof window._mtPlayTrack==='function') window._mtPlayTrack(0); return; } fetch(base+'/api/radio/feed?lang='+encodeURIComponent(window.currentLang||'ru')+'&wave='+encodeURIComponent(wave),{headers:rHeaders()}).then(function(r){return r.json().catch(function(){return null;});}).then(function(d){ if(!window._mtRadioMode) return; var q=buildQueue((d&&d.ok&&d.tracks)?d.tracks:[]); if(q.length){ window._mtTracksData=q; } if((window._mtTracksData||[]).length && typeof window._mtPlayTrack==='function') window._mtPlayTrack(0); }).catch(function(){ if((window._mtTracksData||[]).length && typeof window._mtPlayTrack==='function') window._mtPlayTrack(0); }); };
       window._mtExitRadio=function(){ if(window._mtRadioMode){ window._mtRadioMode=false; window._mtCurRadioId=null; window._mtTracksData=window._mtPersonalBackup||[]; } };
     })();
     </script>
@@ -25340,7 +25340,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           unlockR3t: 'Слова песни', unlockR3s: 'весь текст целиком', unlockR4t: 'Поделиться с близкими', unlockR4s: 'подарить эту песню',
           unlockR5t: 'Караоке по песне', unlockR5s: 'петь под свои слова',
           unlockPromoToggle: 'Мне подарили промокод', unlockPromoPh: 'Введите промокод', unlockPromoApply: 'Применить', unlockPromoChecking: 'Проверяю…', unlockPromoWrongProduct: 'Этот промокод не для песни',
-          unlockCtaOpen: 'Открыть целиком', unlockCtaSub: 'открывается сразу', unlockCtaPaying: 'Открываем оплату…', unlockPayCard: 'Картой', unlockPayStars: 'Звёздами', unlockPayPromo: 'Промокод', unlockPayIskry: 'Искрами',
+          unlockCtaOpen: 'Открыть целиком', unlockCtaSub: 'открывается сразу', unlockCtaPaying: 'Открываем оплату…', unlockCtaReceived: 'Оплата прошла — открываем песню…', unlockPayCard: 'Картой', unlockPayStars: 'Звёздами', unlockPayPromo: 'Промокод', unlockPayIskry: 'Искрами',
           unlockGhReplay: 'Ещё минуту', unlockGhBack: 'Вернуться', unlockVkNote: 'Открытие оплачивается картой', unlockIskryUnit: 'Искр',
           openedEyebrow: 'Твоя песня открыта', openedTitle: 'Готово — слушай целиком',
           openedLead: 'Полная версия уже играет. Она твоя — скачивай, читай слова и делись с близкими.',
@@ -26292,7 +26292,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           unlockR3t: 'Song lyrics', unlockR3s: 'the whole text', unlockR4t: 'Share with loved ones', unlockR4s: 'gift this song',
           unlockR5t: 'Karaoke to your song', unlockR5s: 'sing along to your words',
           unlockPromoToggle: 'I was given a promo code', unlockPromoPh: 'Enter promo code', unlockPromoApply: 'Apply', unlockPromoChecking: 'Checking…', unlockPromoWrongProduct: 'This promo code isn’t for a song',
-          unlockCtaOpen: 'Open the full song', unlockCtaSub: 'opens instantly', unlockCtaPaying: 'Opening payment…', unlockPayCard: 'Card', unlockPayStars: 'Stars', unlockPayPromo: 'Promo code', unlockPayIskry: 'Sparks',
+          unlockCtaOpen: 'Open the full song', unlockCtaSub: 'opens instantly', unlockCtaPaying: 'Opening payment…', unlockCtaReceived: 'Payment received — opening your song…', unlockPayCard: 'Card', unlockPayStars: 'Stars', unlockPayPromo: 'Promo code', unlockPayIskry: 'Sparks',
           unlockGhReplay: 'Replay', unlockGhBack: 'Back', unlockVkNote: 'Unlocking is paid by card', unlockIskryUnit: 'Sparks',
           openedEyebrow: 'Your song is open', openedTitle: 'Done — listen in full',
           openedLead: 'The full version is already playing. It’s yours — download it, read the lyrics and share with loved ones.',
@@ -27234,7 +27234,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           unlockR3t: 'Songtext', unlockR3s: 'der ganze Text', unlockR4t: 'Mit Liebsten teilen', unlockR4s: 'diesen Song schenken',
           unlockR5t: 'Karaoke zum Song', unlockR5s: 'zu deinen Worten mitsingen',
           unlockPromoToggle: 'Ich habe einen Promo-Code', unlockPromoPh: 'Promo-Code eingeben', unlockPromoApply: 'Anwenden', unlockPromoChecking: 'Prüfe…', unlockPromoWrongProduct: 'Dieser Promo-Code gilt nicht für einen Song',
-          unlockCtaOpen: 'Ganzen Song öffnen', unlockCtaSub: 'öffnet sofort', unlockCtaPaying: 'Zahlung wird geöffnet…', unlockPayCard: 'Karte', unlockPayStars: 'Sterne', unlockPayPromo: 'Promo-Code', unlockPayIskry: 'Funken',
+          unlockCtaOpen: 'Ganzen Song öffnen', unlockCtaSub: 'öffnet sofort', unlockCtaPaying: 'Zahlung wird geöffnet…', unlockCtaReceived: 'Zahlung erhalten — dein Song wird geöffnet…', unlockPayCard: 'Karte', unlockPayStars: 'Sterne', unlockPayPromo: 'Promo-Code', unlockPayIskry: 'Funken',
           unlockGhReplay: 'Nochmal', unlockGhBack: 'Zurück', unlockVkNote: 'Freischaltung wird per Karte bezahlt', unlockIskryUnit: 'Funken',
           openedEyebrow: 'Dein Song ist frei', openedTitle: 'Fertig — hör ihn ganz',
           openedLead: 'Die volle Version läuft schon. Sie gehört dir — lade sie, lies den Text und teile sie mit Liebsten.',
@@ -28175,7 +28175,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           unlockR3t: 'Paroles', unlockR3s: 'tout le texte', unlockR4t: 'Partager avec tes proches', unlockR4s: 'offrir cette chanson',
           unlockR5t: 'Karaoké sur ta chanson', unlockR5s: 'chanter sur tes paroles',
           unlockPromoToggle: 'On m’a offert un code promo', unlockPromoPh: 'Saisir le code promo', unlockPromoApply: 'Appliquer', unlockPromoChecking: 'Vérification…', unlockPromoWrongProduct: 'Ce code promo n’est pas pour une chanson',
-          unlockCtaOpen: 'Ouvrir en entier', unlockCtaSub: 's’ouvre aussitôt', unlockCtaPaying: 'Ouverture du paiement…', unlockPayCard: 'Carte', unlockPayStars: 'Étoiles', unlockPayPromo: 'Code promo', unlockPayIskry: 'Étincelles',
+          unlockCtaOpen: 'Ouvrir en entier', unlockCtaSub: 's’ouvre aussitôt', unlockCtaPaying: 'Ouverture du paiement…', unlockCtaReceived: 'Paiement reçu — ouverture de ta chanson…', unlockPayCard: 'Carte', unlockPayStars: 'Étoiles', unlockPayPromo: 'Code promo', unlockPayIskry: 'Étincelles',
           unlockGhReplay: 'Réécouter', unlockGhBack: 'Retour', unlockVkNote: 'L’ouverture se paie par carte', unlockIskryUnit: 'Étincelles',
           openedEyebrow: 'Ta chanson est ouverte', openedTitle: 'C’est bon — écoute en entier',
           openedLead: 'La version complète joue déjà. Elle est à toi — télécharge-la, lis les paroles et partage-la avec tes proches.',
@@ -54453,8 +54453,9 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
             } catch(_) {}
           }
 
+          var purchaseRes = null;
           try {
-            await Purchases.purchasePackage({ aPackage: pkg });
+            purchaseRes = await Purchases.purchasePackage({ aPackage: pkg });
           } catch (e) {
             _refreshStorePrices();
             // Отмена пользователем — не ошибка приложения, молча выходим.
@@ -54468,12 +54469,44 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           }
           _refreshStorePrices();
 
+          /* Apple уже показал «You're all set» — на кнопке больше не «Открываем оплату…». */
+          if (sku === 'song_unlock') {
+            var ctaTxt = document.querySelector('#songUnlockPage .cta-txt');
+            if (ctaTxt && typeof t === 'function') ctaTxt.textContent = t('unlockCtaReceived');
+          }
+
+          /* Быстрый путь: номер транзакции сразу на сервер, тот сверяет её у Apple
+             и выдаёт товар за 1–3 с. Вебхук RevenueCat в песочнице идёт 15–20 с —
+             без этого кнопка крутилась ~22 с после «You're all set». Сервер без
+             ключа Apple, отказ или сеть — молча ждём вебхук, как раньше. */
+          var txId = purchaseRes && purchaseRes.transaction && purchaseRes.transaction.transactionIdentifier;
+          if (txId && (await _confirmPurchase(sku, orderReqId, txId))) return { ok: true };
+
           // Чек валидирует RevenueCat, товар выдаёт вебхук. Ждём, пока сервер
           // увидит начисление, и только потом рисуем результат.
           var granted = await _waitForGrant(sku, orderReqId, baseline);
           // Вебхук RevenueCat может опоздать (песочница/TestFlight): отдаём данные, чтобы экран дождался в фоне, а не объявил провал
           return granted ? { ok: true } : { ok: false, error: 'grant_pending', requestId: orderReqId, baseline: baseline };
         };
+
+        /* Прямое подтверждение покупки: true — сервер выдал товар (или он уже был выдан). */
+        async function _confirmPurchase(sku, requestId, transactionId) {
+          try {
+            var url = apiBase + '/api/payments/native/confirm';
+            var opts = {
+              method: 'POST',
+              headers: Object.assign({ 'Content-Type': 'application/json' }, getAuthHeaders()),
+              body: JSON.stringify({ sku: sku, request_id: String(requestId), transaction_id: String(transactionId) })
+            };
+            var r = await (window.fetchWithTimeout ? window.fetchWithTimeout(url, opts, 15000) : fetch(url, opts));
+            var d = await r.json().catch(function() { return {}; });
+            if (r.ok && d && d.ok === true) return true;
+            console.warn('[native] прямое подтверждение не прошло, ждём вебхук', d && d.reason);
+          } catch (e) {
+            console.warn('[native] прямое подтверждение не прошло, ждём вебхук', e);
+          }
+          return false;
+        }
 
         /* Заявка-носитель заводится ДО покупки. Если покупка не состоялась,
            она осталась бы висеть в pending_payment и главная показывала бы
