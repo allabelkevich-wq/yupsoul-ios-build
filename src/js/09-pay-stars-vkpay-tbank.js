@@ -313,10 +313,18 @@
       function _ysTodayStr() { var dt = new Date(); return dt.getFullYear() + '-' + (dt.getMonth() + 1) + '-' + dt.getDate(); }
       window._setDailyState = function _setDailyState(state) {
         var d = document.getElementById('daily'); if (!d) return;
+        // Сборка для стора «только песни» (16.10): «мысли дня» нет — после Искры остаёмся в «claimed».
+        if (state === 'opened' && (window.__YS_NATIVE_OFF__ || {}).soul_chat) state = 'claimed';
         d.dataset.state = state;
         d.querySelectorAll('.s-fresh, .s-claimed, .s-opened').forEach(function (el) {
           if (el.classList.contains('s-' + state)) el.removeAttribute('hidden');
         });
+        // Приложение для iPhone (4.3b, 15.10): заглушка «мысли дня» в разметке — по-русски. Пока сервер не прислал
+        // свою мысль, показываем её на языке интерфейса (и при повторном открытии экрана в тот же день).
+        if (state === 'opened' && window._isNativeApp) {
+          var _cm = d.querySelector('.cmsg');
+          if (_cm && !_cm._fromServer) _cm.textContent = '«' + t('iskraThoughtDefault') + '»';
+        }
       };
       function _wireCookieBtn() {
         var btn = document.getElementById('cookieBtn');
@@ -332,12 +340,18 @@
           try {
             var apiBase = (window.BACKEND_URL || window.HEROES_API_BASE || '').replace(/\/$/, '');
             var hdrs = (typeof getAuthHeaders === 'function') ? getAuthHeaders() : {};
+            // ?lang= — язык интерфейса; сервер, который его не знает, параметр просто игнорирует.
+            var _uiLang = (typeof currentLang === 'string' && currentLang) || window._currentLang || 'ru';
+            var _dsUrl = apiBase + '/api/daily-spread?lang=' + encodeURIComponent(_uiLang);
             var resp = await (window.fetchWithTimeout
-              ? window.fetchWithTimeout(apiBase + '/api/daily-spread', { headers: hdrs }, 15000)
-              : fetch(apiBase + '/api/daily-spread', { headers: hdrs }));
+              ? window.fetchWithTimeout(_dsUrl, { headers: hdrs }, 15000)
+              : fetch(_dsUrl, { headers: hdrs }));
             var d = await resp.json().catch(function () { return {}; });
             var cmsg = document.querySelector('#giftsPage .cmsg');
-            if (d && d.ok && d.available && d.message && cmsg) cmsg.textContent = '«' + d.message + '»';
+            // Приложение для iPhone: сервер пока пишет мысли дня только по-русски. Для EN/DE/FR берём его текст,
+            // лишь когда он ответит на нужном языке (поле lang), иначе остаётся переведённая заглушка.
+            var _dsLangOk = !window._isNativeApp || _uiLang === 'ru' || (d && d.lang === _uiLang);
+            if (d && d.ok && d.available && d.message && cmsg && _dsLangOk) { cmsg.textContent = '«' + d.message + '»'; cmsg._fromServer = true; }
           } catch (e) { /* тихо (закон №37) — остаётся дефолтное послание */ }
           btn._loading = false;
         });
@@ -981,6 +995,12 @@
         var lblEl = document.getElementById('homeSongCountLabel');
         var counterEl = document.getElementById('homeSongCounter');
         if (!numEl) return;
+        // Приложение для iPhone (15.10): число в формате языка интерфейса — в EN «3,567», а не «3 567». Telegram — как раньше.
+        function _cntLoc() {
+          if (!window._isNativeApp) return 'ru-RU';
+          var _l = (typeof currentLang === 'string' && currentLang) || window._currentLang || 'ru';
+          return { en: 'en-US', de: 'de-DE', fr: 'fr-FR' }[_l] || 'ru-RU';
+        }
         // Алла 25.09 (видео App Review): «в Apple пишет, что там только 300 песен» — в нативе счётчик всегда
         // показывал резервные 367. Корень: модуль брал `API_BASE`, которого нет (все остальные — BACKEND_URL),
         // запрос уходил на capacitor://localhost и падал. Резерв больше не выдумывает число: последнее известное
@@ -989,7 +1009,7 @@
           var cached = 0;
           try { cached = parseInt(localStorage.getItem('ys_song_count') || '0', 10) || 0; } catch (_) {}
           if (!cached) { if (counterEl) counterEl.style.display = 'none'; return; }
-          numEl.textContent = cached.toLocaleString('ru-RU');
+          numEl.textContent = cached.toLocaleString(_cntLoc());
           if (typeof t === 'function' && t('songCounterLabel')) {
             lblEl.textContent = t('songCounterLabel');
           }
@@ -1014,7 +1034,7 @@
           var step = Math.max(1, Math.floor((target - start) / 30));
           function tick() {
             current = Math.min(current + step, target);
-            numEl.textContent = current.toLocaleString('ru-RU');
+            numEl.textContent = current.toLocaleString(_cntLoc());
             if (current < target) requestAnimationFrame(tick);
           }
           tick();

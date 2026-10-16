@@ -954,6 +954,9 @@
           console.warn('[goToPage] pageId пустой — переходим на homePage');
           pageId = 'homePage';
         }
+        // Сборка для стора «только песни» (16.10): экрана Soul Chat в ней нет (NATIVE_FEATURES.soul_chat) —
+        // любой забытый переход ведёт на главную, а не на пустую страницу.
+        if (pageId === 'soulChatPage' && (window.__YS_NATIVE_OFF__ || {}).soul_chat) pageId = 'homePage';
         // Тихая доначисление-проверка бонуса за сообщество при заходе в профиль.
         // Ловит тех, кто вступил в группу мимо нашей кнопки (из ленты, по ссылке
         // друга) — без неё Искры не приходили вообще. Один вызов на сессию,
@@ -1115,7 +1118,8 @@
           else _applyTariffToForm();
           // Баг доходимости C: после автозаполнения профиля восстанавливаем черновик
           // формы (приоритет черновика на пустых полях) и включаем автосохранение.
-          Promise.resolve(loadSavedProfileForForm()).then(function(){
+          // window._formPrefill — чтобы пресет «Песня на день рождения» дождался автозаполнения своим профилем.
+          window._formPrefill = Promise.resolve(loadSavedProfileForForm()).then(function(){
             if (typeof _restoreFormDraft === 'function') _restoreFormDraft();
             if (typeof _wireFormDraftSave === 'function') _wireFormDraftSave();
           }).catch(function(){
@@ -1872,11 +1876,14 @@
         paymentThanksBackBtn.addEventListener('click', _handlePtBackBtn);
       }
       (function bindPaymentThanksPaths() {
-        var paths = document.querySelectorAll('#paymentThanksPage .after-first-song-paths button');
-        if (paths.length < 3) return;
-        paths[0].addEventListener('click', function() { if (typeof goToPage === 'function') goToPage('formPage'); });
-        paths[1].addEventListener('click', function() { if (typeof goToSoulChat === 'function') goToSoulChat(); else if (typeof goToPage === 'function') goToPage('soulChatPage'); });
-        paths[2].addEventListener('click', function() { if (typeof shareApp === 'function') shareApp(); });
+        // По ключу кнопки, а не по номеру: в сборке для стора кнопки Soul Chat нет (NATIVE_FEATURES.soul_chat),
+        // и привязка по номерам повесила бы «Пригласить» на вторую кнопку, а третьей не нашлось бы.
+        var box = document.querySelector('#paymentThanksPage .after-first-song-paths');
+        if (!box) return;
+        var on = function(key, fn) { var b = box.querySelector('[data-i18n="' + key + '"]'); if (b) b.addEventListener('click', fn); };
+        on('afsBtnCreate', function() { if (typeof goToPage === 'function') goToPage('formPage'); });
+        on('afsBtnSoulChat', function() { if (typeof goToSoulChat === 'function') goToSoulChat(); else if (typeof goToPage === 'function') goToPage('soulChatPage'); });
+        on('afsBtnInvite', function() { if (typeof shareApp === 'function') shareApp(); });
       })();
 
       // Редирект T-Bank FailURL: ?page=formPage&payment_failed=1 — открыть форму (оплата отменена/ошибка)
@@ -1991,6 +1998,14 @@
         function getPhrases() {
           var lang = (typeof currentLang !== 'undefined' ? currentLang : 'ru');
           var L = (LANG && LANG[lang]) ? LANG[lang] : (LANG && LANG.ru) ? LANG.ru : {};
+          // Приложение для iPhone (повторная подача после 4.3b, 15.10): фразы берём через t(), иначе
+          // NATIVE_LANG_OVERRIDES не применяются и в строке остаются «расшифровка» и «глубинный анализ».
+          if (window._isNativeApp) {
+            L = {};
+            for (var _twi = 1; _twi <= 7; _twi++) L['typewriter' + _twi] = t('typewriter' + _twi);
+            // Сборка для стора «только песни» (16.10): без расшифровки (2), Soul Chat (3) и связок карточек (5, 6).
+            if ((window.__YS_NATIVE_OFF__ || {}).soul_chat) return [L.typewriter1, L.typewriter4, L.typewriter7];
+          }
           // Натив VK (оракул-only, §5.4.1): фразы 1/4/7 зовут создать песню и
           // подарок — там этого нет. Оставляем те, что про оракул и картотеку.
           if (window._vkSongsOff && window._vkSongsOff()) {
@@ -3518,7 +3533,61 @@
       }
       window._pluralizeForCouple = _pluralizeForCouple;
 
+      // Приложение для iPhone (повторная подача после 4.3(b), Алла 16.10): серверный список
+      // (/api/quick-buttons — «финансовый канал», «мантра», «призвание»…) не показываем, вместо него
+      // свой набор. Это только подсказка текста в поле «О чём песня»: quick_button_id = null, стиль
+      // и генерация те же, что у текста, написанного руками. modes — в каких форматах виден пункт.
+      var NATIVE_QUICK_BUTTONS = [
+        { icon: '✦', label: 'homeChoiceBirthday', text: 'quickBirthdayRequest', modes: ['single'] },
+        { icon: '♡', label: 'nqLove', text: 'nqLoveReq', modes: ['single', 'couple'] },
+        { icon: '◇', label: 'nqMom', text: 'nqMomReq', modes: ['single'] },
+        { icon: '◉', label: 'nqFriend', text: 'nqFriendReq', modes: ['single'] },
+        { icon: '◈', label: 'nqWhoNow', text: 'nqWhoNowReq', modes: ['single'] },
+        { icon: '▲', label: 'nqCourage', text: 'nqCourageReq', modes: ['single'] },
+        { icon: '⌘', label: 'nqFunny', text: 'nqFunnyReq', modes: ['single'] },
+        { icon: '∞', label: 'nqAnniversary', text: 'nqAnniversaryReq', modes: ['couple'] },
+        { icon: '○', label: 'nqChild', text: 'nqChildReq', modes: ['single'] },
+        { icon: '△', label: 'nqMoment', text: 'nqMomentReq', modes: ['single'] }
+      ];
+      function renderNativeQuickButtons(mode) {
+        var sheet = document.getElementById('quickPickerSheet');
+        var loading = document.getElementById('quickPickerLoading');
+        if (!sheet) return;
+        if (loading) loading.style.display = 'none';
+        sheet.querySelectorAll('.quick-item').forEach(function(el){ el.remove(); });
+        var m = mode === 'couple' ? 'couple' : 'single';
+        NATIVE_QUICK_BUTTONS.forEach(function(item) {
+          if (item.modes.indexOf(m) === -1) return;
+          var el = document.createElement('button');
+          el.type = 'button';
+          el.className = 'quick-item example-btn';
+          // Один дочерний узел, как у серверных (значок+подпись слева); подпись — с data-i18n, смена языка её обновит
+          var wrap = document.createElement('span');
+          wrap.appendChild(document.createTextNode(item.icon + ' '));
+          var lbl = document.createElement('span');
+          lbl.setAttribute('data-i18n', item.label);
+          lbl.textContent = t(item.label);
+          wrap.appendChild(lbl);
+          el.appendChild(wrap);
+          el.addEventListener('click', function() {
+            var requestField = document.getElementById('request');
+            if (requestField) requestField.value = window._nativeQuickText = t(item.text);
+            document.body.classList.remove('form-keyboard-open'); // как у серверных: без фокуса и клавиатуры
+            window._quickButtonId = null;
+            var hintEl = document.getElementById('quickPickerHint');
+            if (hintEl) hintEl.style.display = 'none';
+            sheet.style.display = 'none';
+            var toggleBtn = document.getElementById('quickPickerBtn');
+            if (toggleBtn) toggleBtn.classList.remove('open');
+            var arrow = document.getElementById('quickPickerArrow');
+            if (arrow) arrow.style.transform = '';
+          });
+          sheet.appendChild(el);
+        });
+      }
+
       function renderQuickButtons(buttons, mode) {
+        if (window._isNativeApp) { renderNativeQuickButtons(mode); return; }
         var sheet = document.getElementById('quickPickerSheet');
         var loading = document.getElementById('quickPickerLoading');
         if (!sheet) return;
@@ -3638,6 +3707,13 @@
       // Загрузить кнопки при старте и закешировать
       (function() {
         var mode = 'single';
+        if (window._isNativeApp) {
+          // iPhone: свой набор вместо серверного (NATIVE_QUICK_BUTTONS выше), сервер не спрашиваем
+          window._quickButtonsCache = NATIVE_QUICK_BUTTONS;
+          var modeActiveN = document.querySelector('.mode-btn.active');
+          renderQuickButtons(NATIVE_QUICK_BUTTONS, modeActiveN && modeActiveN.getAttribute('data-mode') === 'couple' ? 'couple' : 'single');
+          return;
+        }
         // На нативе (Capacitor WebView) origin не yupsoul.ru — голый '/api/...' уходил в локальную
         // схему WebView и молча падал, #quickPickerSheet навсегда пустой (Алла нашла на iPhone, 22.09).
         var apiBase = (window.BACKEND_URL || window.HEROES_API_BASE || '').replace(/\/$/, '');
@@ -3691,9 +3767,10 @@
               var submitHintEl = document.getElementById('submitHint');
               if (submitHintEl) { submitHintEl.textContent = ''; submitHintEl.style.display = 'none'; }
               // 1. Текст из quick-button: очищаем если был выбор кнопки (юзер сможет выбрать couple-версию)
-              if (window._quickButtonId) {
-                var requestField = document.getElementById('request');
-                if (requestField) requestField.value = '';
+              // iPhone: подсказка из своего набора (quick_button_id нет) тоже очищается, если её не правили
+              var requestField = document.getElementById('request');
+              if (requestField && (window._quickButtonId || (window._nativeQuickText && requestField.value === window._nativeQuickText))) {
+                requestField.value = '';
               }
               // 2. Выбранная quick-button — сброс
               window._quickButtonId = null;

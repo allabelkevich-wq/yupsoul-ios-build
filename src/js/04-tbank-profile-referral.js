@@ -1884,7 +1884,9 @@
           // его перезатирать. Возврат к форме из платёжного экрана сохранит
           // ручной выбор. Только если поле пустое — заполняем из профиля/TG.
           if (langEl && !langEl.value) {
-            var tgLc = ((tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.language_code) || '').toLowerCase();
+            // Нет Telegram (iPhone, веб) — язык песни по языку приложения, а не «русский» по умолчанию
+            // (сборка 48: проверяющий с английским телефоном получал песню на русском).
+            var tgLc = ((tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.language_code) || window._currentLang || window.currentLang || '').toLowerCase();
             var telegramSongLang = /^uk/.test(tgLc) ? 'uk' : /^en/.test(tgLc) ? 'en' : /^de/.test(tgLc) ? 'de' : /^fr/.test(tgLc) ? 'fr' : 'ru';
             var profileLang = p.language || '';
             if (profileLang && !(profileLang === 'ru' && telegramSongLang !== 'ru')) {
@@ -1923,7 +1925,7 @@
         // Дефолтный язык по Telegram
         var langElFallback = document.getElementById('language');
         if (langElFallback && !langElFallback.value) {
-          var tgLcFb = ((tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.language_code) || '').toLowerCase();
+          var tgLcFb = ((tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.language_code) || window._currentLang || window.currentLang || '').toLowerCase();
           langElFallback.value = /^uk/.test(tgLcFb) ? 'uk' : /^en/.test(tgLcFb) ? 'en' : /^de/.test(tgLcFb) ? 'de' : /^fr/.test(tgLcFb) ? 'fr' : 'ru';
         }
         // Пол/язык выставлены программно (sel.value=…) — MutationObserver кастом-дропдауна

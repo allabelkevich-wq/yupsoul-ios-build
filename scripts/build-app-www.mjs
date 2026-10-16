@@ -43,36 +43,47 @@ mkdirSync(www, { recursive: true });
 // целиком. Ниже — гейт: если след остался, сборка падает, и это видно сразу,
 // а не на ревью Apple.
 const STRIP = /(?:<!--|\/\*)\s*@@native-strip:begin[\s\S]*?(?:<!--|\/\*)\s*@@native-strip:end\s*(?:-->|\*\/)/g;
-const STRIP_EXPECTED = 4; // согласие первого входа, документы продавца, 2 блока партнёрских ссылок
+const STRIP_EXPECTED = 6; // согласие первого входа, документы продавца, 2 блока партнёрских ссылок, отзывы в Помощи и на экране входа (16.10: подлинность не подтверждена)
 
 // ═══════════════════════════════════════════════════════════════════════════
 // ПЕРЕКЛЮЧАТЕЛИ ФУНКЦИЙ ДЛЯ СТОРА (04.10.2026) — единственное место.
-// Решение Аллы 04.10: приложение подаём «как есть» — ВСЕ группы включены (true),
-// iOS-сборка содержит всё, что есть в Telegram. Механизм оставлен на случай, если
-// какую-то группу понадобится выключить в сборке для стора. В src/ группы
+// Решение Аллы 16.10 (повторная подача после отказа 4.3(b) «fortune telling»):
+// в App Store подаём ТОЛЬКО ПЕСНИ — «вернуться к истокам». Soul Chat, разборы,
+// совместимость в процентах, «Кто ты», расшифровка песни выключены; остальные
+// функции потом можно подавать на модерацию по одной (поставить true). Песни —
+// без ограничений: форматы «Энергия дня» и «Звучание даты» — это песни, они
+// включены (на iPhone только переименованы). Раньше (04.10) было «всё true». В src/ группы
 // обёрнуты метками <!-- @@native-feature:ГРУППА:begin --> … <!-- @@native-feature:ГРУППА:end -->
 // (в JS/CSS — /* … */). Группа false — блок вырезается из app/www целиком
 // (вместе со всеми входами: кнопки, вкладки, шаги обучалки, пункты пакетов).
 // Включить в iOS — поставить true и пересобрать. Telegram/VK/веб не меняются:
 // public/index.html метки только комментирует. Переходы из кода (мостики,
 // пресеты формы) смотрят window.__YS_NATIVE_OFF__ — его вставляем ниже.
+// Обратная метка <!--@@native-feature-off:ГРУППА:begin … @@native-feature-off:ГРУППА:end-->
+// — замена на время, пока группа выключена: в public/index.html это целиком
+// комментарий, в app/www при выключенной группе содержимое раскомментируется
+// (при включённой — вырезается). Так вкладка «Главная» встаёт на место Soul Chat.
 const NATIVE_FEATURES = {
-  razbory_askezy: true, // Разборы (призмы) и Аскезы — вкладка в Оракуле и входы в неё
-  compat_percent: true, // Совместимость в процентах: экран и режим «Совместимость» в чате
-  who_are_you: true,    // «Кто ты на самом деле»: архетип, «планета души»
-  energy_of_day: true,  // режим «Энергия дня» (транзиты), поля события, «Песня дня» на главной
-  planet_sound: true,   // стиль музыки «Звучание планет»
-  song_analysis: true,  // «Расшифровка» песни: кнопка в плеере, «Глубокая расшифровка», разбор в истории карточки
+  razbory_askezy: false, // Разборы (призмы) и Аскезы — вкладка в Оракуле и входы в неё
+  compat_percent: false, // Совместимость в процентах: экран, режим «Совместимость» в чате, слайд онбординга
+  who_are_you: false,    // «Кто ты на самом деле»: архетип, «планета души»
+  energy_of_day: true,   // формат песни «Энергия дня» (на iPhone — «Песня о сегодня»), поля события, «Песня дня» на главной
+  planet_sound: true,    // стиль музыки «Звучание планет» (на iPhone — «Звучание даты»)
+  song_analysis: false,  // «Расшифровка» песни: кнопка в плеере, «Глубокая расшифровка», разбор в истории карточки
+  // Soul Chat целиком: вкладка меню, экран, все входы (мостики, «Помощь», тур, слайд онбординга),
+  // Дневник и утренние заметки, «мысль дня» в Подарках. Последней: её блок обнимает метки других групп.
+  soul_chat: false,
 };
 // Чего не должно остаться в файле, если группа выключена, — страховка
 // от забытой или сломанной метки.
 const FEATURE_GONE = {
   razbory_askezy: ['data-tab="prism" onclick', 'id="scPrismPane"', 'id="ulSegTopic"'],
-  compat_percent: ['id="compatResultPage"', 'id="scPickerTabSynastry"', 'id="scSynastryTeaser"', 'data-i18n-aria="ctxCompatBtn"'],
+  compat_percent: ['id="compatResultPage"', 'id="scPickerTabSynastry"', 'id="scSynastryTeaser"', 'data-i18n-aria="ctxCompatBtn"', 'data-i18n="obSlide3Title"'],
   who_are_you: ['id="archetypePage"', 'id="profileArchBtn"'],
   energy_of_day: ['data-mode="transit" data-effect', 'data-u="pf" data-mode="transit"', 'id="transitAccordion"', 'data-quick-action="song_of_day"', 'data-i18n="plBuy3"'],
   planet_sound: ['data-smode="astro" data-effect'],
   song_analysis: ['id="mtNpAnalysisBtn"', 'id="whileGeneratingUpsell"', "t('mtAnalysisTitle')", "t('heroAnalysisBtn')"],
+  soul_chat: ['id="soulChatPage"', 'id="soulChatBtn"', 'id="navFlowSoulChat"', 'id="giftsSpend"', 'id="cookieBtn"', 'class="cask"', 'id="soOptin"', 'data-i18n="afsBtnSoulChat"', "_leaveSuccessTo('soulChatPage')", 'data-i18n="obSlide2Title"', 'data-i18n="iskraValueQuestion"'],
 };
 
 // Продавец в словарях веб-версии. Значения — те же, что в NATIVE_LANG_OVERRIDES.
@@ -122,13 +133,30 @@ if (unknownFeature.length) {
   process.exit(1);
 }
 const featureOff = {};
-for (const [name, on] of Object.entries(NATIVE_FEATURES)) {
+// Парность проверяем по исходному файлу для всех групп сразу: блок soul_chat обнимает
+// метки других групп, и после его вырезания счёт у них был бы ложным.
+for (const name of Object.keys(NATIVE_FEATURES)) {
   const count = kind => (html.match(new RegExp(`@@native-feature:${name}:${kind}\\b`, 'g')) || []).length;
   const begins = count('begin');
   if (!begins || begins !== count('end')) {
     console.error(`[build-app-www] Группа ${name}: меток begin ${begins}, end ${count('end')} — должны быть парными и хотя бы одна.`);
     process.exit(1);
   }
+}
+// Обратные метки (замена на время выключенной группы): имена — только из NATIVE_FEATURES.
+const OFF_ALT = /<!--\s*@@native-feature-off:([a-z_]+):begin([\s\S]*?)@@native-feature-off:\1:end\s*-->/g;
+const offAltNames = [...html.matchAll(/@@native-feature-off:([a-z_]+):(?:begin|end)/g)].map(m => m[1]);
+const unknownOffAlt = [...new Set(offAltNames)].filter(n => !(n in NATIVE_FEATURES));
+if (unknownOffAlt.length) {
+  console.error(`[build-app-www] Метки @@native-feature-off с неизвестной группой: ${unknownOffAlt.join(', ')}.`);
+  process.exit(1);
+}
+if (offAltNames.length !== 2 * (html.match(OFF_ALT) || []).length) {
+  console.error('[build-app-www] Метки @@native-feature-off не парные — проверьте src/.');
+  process.exit(1);
+}
+html = html.replace(OFF_ALT, (m, name, body) => (NATIVE_FEATURES[name] ? '' : body));
+for (const [name, on] of Object.entries(NATIVE_FEATURES)) {
   if (on) continue;
   featureOff[name] = true;
   html = html.replace(new RegExp(`(?:<!--|\\/\\*)\\s*@@native-feature:${name}:begin[\\s\\S]*?(?:<!--|\\/\\*)\\s*@@native-feature:${name}:end\\s*(?:-->|\\*\\/)`, 'g'), '');

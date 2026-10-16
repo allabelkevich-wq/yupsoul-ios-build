@@ -37,6 +37,7 @@
           <button class="d-btn s-fresh" id="iskraClaimBtn" onclick="claimIskra()"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.2L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4z"></path></svg><span data-i18n="iskraClaimBtn">Забрать +2 Искры</span></button>
           <!-- сбой начисления: причина + код + повтор (эталон showcase-gifts 09.09) -->
           <div class="d-err" role="alert"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v4.5M12 16h.01"></path></svg><span class="d-err-tx"><span data-i18n="iskraClaimErr">Искра не начислилась, баланс не изменился.</span><b id="iskraErrCode"></b></span><button type="button" id="iskraErrRetry"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M19.4 12a7.4 7.4 0 1 1-2.2-5.3"></path><path d="M19.6 3.6v3.6h-3.6"></path></g></svg><span data-i18n="iskraClaimRetry">Повторить</span></button></div>
+          <!-- @@native-feature:soul_chat:begin «мысль дня» (печенька) и вопрос о ней в Soul Chat -->
           <!-- claimed: открыть печеньку -->
           <button class="d-btn ghost s-claimed" id="cookieBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 9 9c0-1.4-2-1.2-2.5-2.6-.5-1.5 1.2-2 .6-3.2C18.3 4.6 14.9 3 12 3Z"></path><circle cx="9" cy="11" r="1"></circle><circle cx="13" cy="9" r="1"></circle><circle cx="14" cy="14" r="1"></circle></svg> <span data-i18n="iskraCookieBtn">Открыть печеньку предсказаний</span></button>
           <!-- opened: послание -->
@@ -46,6 +47,7 @@
             <div class="csave"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.55" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg> <span data-i18n="iskraSaved">Сохранено в Дневник посланий</span></div>
             <button class="cask" onclick="if(window._askOracleAboutDay)window._askOracleAboutDay()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.55" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-11.6 7.8L3 21l1.8-6.2A8.4 8.4 0 1 1 21 11.5Z"></path></svg> <span data-i18n="iskraAskDay">Спросить Оракула про это</span><span class="cask-cost"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.4 7.2L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4z"></path></svg>1</span></button>
           </div>
+          <!-- @@native-feature:soul_chat:end -->
 
           <div class="d-div"></div>
 
@@ -70,11 +72,13 @@
         </div>
 
         <!-- спросить оракула -->
+        <!-- @@native-feature:soul_chat:begin -->
         <button class="spend" id="giftsSpend" onclick="if(window.goToSoulChat)window.goToSoulChat()" style="display:none;">
           <span class="spend-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.55" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-11.6 7.8L3 21l1.8-6.2A8.4 8.4 0 1 1 21 11.5Z"></path></svg></span>
           <span class="spend-tx"><b data-i18n="iskraValueCta">Спросить оракула</b><span data-i18n="giftsSpendSub">Задай в диалоге любой вопрос о себе</span></span>
           <span class="cost"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.2L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4z"></path></svg> 1</span>
         </button>
+        <!-- @@native-feature:soul_chat:end -->
 
         <!-- ═══ ПОДАРИ БЛИЗКОМУ ═══ -->
         <div class="gift" id="giftCard">
@@ -123,10 +127,12 @@
         <!-- что можно с искрами -->
         <div class="card value" id="iskraValueCard" style="display:none;">
           <h3 data-i18n="iskraValueTitle">Что можно с Искрами</h3>
+          <!-- @@native-feature:soul_chat:begin -->
           <div class="vrow">
             <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-11.6 7.8L3 21l1.8-6.2A8.4 8.4 0 1 1 21 11.5Z"></path></svg></span>
             <span class="tx" data-i18n="iskraValueQuestion"><b>1 Искра</b> — задай оракулу любой вопрос о себе</span>
           </div>
+          <!-- @@native-feature:soul_chat:end -->
           <div class="vrow" id="iskraValueSongRow">
             <span class="ic pink"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg></span>
             <span class="tx" data-i18n="iskraValueSong"><b>100 Искр</b> — родится песня твоей души</span>

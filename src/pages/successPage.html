@@ -67,7 +67,9 @@
           <div class="suggest-h" data-i18n="csWhileWaiting">Пока ждёшь песню</div>
           <div class="sgrid">
             <button class="scard" type="button" id="successShareBtn" onclick="if(typeof shareApp==='function')shareApp()"><span class="sic v1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg></span><b data-i18n="successShareShort">Поделиться</b></button>
+            <!-- @@native-feature:soul_chat:begin плитка «Soul Chat» -->
             <button class="scard" type="button" onclick="if(typeof _leaveSuccessTo==='function'){_leaveSuccessTo('soulChatPage')}else{window.returnToPage='homePage';goToPage('soulChatPage')}if(typeof initSoulChatPage==='function')setTimeout(initSoulChatPage,300)"><span class="sic v2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-11.6 7.8L3 21l1.8-6.2A8.4 8.4 0 1 1 21 11.5Z"/></svg></span><b data-i18n="homeChoice3">Чат с Оракулом</b></button>
+            <!-- @@native-feature:soul_chat:end -->
             <button class="scard" type="button" id="newKeyBtn"><span class="sic v3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg></span><b data-i18n="csNewSong">Ещё песню</b></button>
           </div>
         </div>

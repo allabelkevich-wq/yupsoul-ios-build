@@ -55,7 +55,8 @@
         <!-- Расширенная инфо (статистика + примеры) — ВИДНА ПО УМОЛЧАНИЮ (закон №13):
              пользователь сразу видит ЦЕННОСТЬ Чат с Оракулом, а не paywall. -->
         <div id="scMoreContent" style="display:block;margin-bottom:18px;">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;">
+          <!-- id — для html.is-native: в приложении для iPhone цифры 78%/91%/3×/84% не показываем (не подтверждены исследованием) -->
+          <div id="scStatsGrid" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;">
             <div style="background:rgba(var(--primary-rgb),0.06);border:1px solid rgba(var(--primary-rgb),0.14);border-radius:14px;padding:12px;text-align:center;">
               <div style="font-size:1.4rem;font-weight:700;color:var(--primary-color);line-height:1;">78%</div>
               <div id="scStat1" style="font-size:0.7rem;color:rgba(255,255,255,0.5);margin-top:4px;line-height:1.4;">отмечают снижение тревоги</div>

@@ -52,9 +52,13 @@
           <p class="home-card-choices-head" style="margin-top:18px;" data-i18n="homeChoicesHeadMain">Попробуй сегодня</p>
           <div class="home-card-choices-grid">
             <!-- @@native-feature:energy_of_day:begin --><button type="button" class="home-choice" data-quick-action="song_of_day" data-i18n="homeChoiceMain1">Песня дня</button><!-- @@native-feature:energy_of_day:end -->
-            <button type="button" class="home-choice" data-quick-action="who_am_i" data-i18n="homeChoiceMain2">Кто я?</button>
+            <!-- @@native-feature:soul_chat:begin чип «Кто я?» --><button type="button" class="home-choice" data-quick-action="who_am_i" data-i18n="homeChoiceMain2">Кто я?</button><!-- @@native-feature:soul_chat:end -->
             <button type="button" class="home-choice" data-quick-action="star_style" data-i18n="homeChoiceMain3">Как у звезды</button>
-            <button type="button" class="home-choice" data-quick-action="couple_song" data-i18n="homeChoiceMain4">Совместимость</button>
+            <!-- @@native-feature:soul_chat:begin чип «Совместимость» --><button type="button" class="home-choice" data-quick-action="couple_song" data-i18n="homeChoiceMain4">Совместимость</button><!-- @@native-feature:soul_chat:end -->
+            <!-- Чип «Песня на день рождения» — только в сборке для стора «только песни» (Алла 16.10): в Telegram это комментарий. -->
+            <!--@@native-feature-off:soul_chat:begin
+            <button type="button" class="home-choice" data-quick-action="birthday_song" data-i18n="homeChoiceBirthday">Песня на день рождения</button>
+            @@native-feature-off:soul_chat:end-->
           </div>
         </article>
         <!-- Дисклеймер под главной карточкой — только приложение из App Store (Алла 14.10). Стиль — как у подписи
@@ -105,7 +109,7 @@
         <div class="glass-specular" aria-hidden="true"></div>
         <!-- аудит iPhone 24.09: aria-label без i18n -->
         <nav class="glass-content home-nav" aria-label="Навигация" data-i18n-aria="ariaNav">
-          <button type="button" class="home-nav-link glass-item" onclick="goToSoulChat()" aria-label="Разговор по душам" data-i18n-aria="navSoulChatFull"><span id="navFlowSoulChat">Оракул</span></button>
+          <!-- @@native-feature:soul_chat:begin --><button type="button" class="home-nav-link glass-item" onclick="goToSoulChat()" aria-label="Разговор по душам" data-i18n-aria="navSoulChatFull"><span id="navFlowSoulChat">Оракул</span></button><!-- @@native-feature:soul_chat:end -->
           <button type="button" class="home-nav-link glass-item" onclick="goToHelpFrom('homePage')" aria-label="Помощь" data-i18n-aria="myHelp"><span id="navFlowHelp">Помощь</span></button>
           <button type="button" class="home-nav-link glass-item" onclick="goToHeroesFrom('homePage')" aria-label="Контакты" data-i18n-aria="myHeroes"><span id="navFlowLab">Контакты</span></button>
           <button type="button" class="home-nav-link glass-item" onclick="window.returnToPage='homePage';goToPage('myTracksPage');if(typeof window.loadMyTracks==='function')window.loadMyTracks(false)" aria-label="Мои треки" data-i18n-aria="navMyTracks"><span id="navFlowTracks">Плейлист</span></button>

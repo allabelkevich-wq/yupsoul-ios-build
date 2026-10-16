@@ -13697,6 +13697,8 @@ html.is-ok-light:not(.dark) #homeCommCard .task-body b { color: #241526 !importa
     html.is-native #scPageBuyDayWrap,
     html.is-native #scQuickBuyDayBtn,
     html.is-native #soulChatPage [data-i18n="webLoginOr"] { display: none !important; }
+    /* Промо Soul Chat: цифры 78% «снижение тревоги» / 91% / 3× / 84% не подтверждены исследованием и звучат как обещание про здоровье (повторная подача после 4.3b, 15.10). Остальное промо видно. */
+    html.is-native #scStatsGrid { display: none !important; } /* !important: у сетки inline display:grid */
 
     /* Пакеты на нативе продаются встроенной покупкой (тип Non-Renewing
        Subscription — автопродления у нас нет). Карточки видны, цену на них

@@ -15507,6 +15507,8 @@ html.is-ok-light:not(.dark) #homeCommCard .task-body b { color: #241526 !importa
     html.is-native #scPageBuyDayWrap,
     html.is-native #scQuickBuyDayBtn,
     html.is-native #soulChatPage [data-i18n="webLoginOr"] { display: none !important; }
+    /* Промо Soul Chat: цифры 78% «снижение тревоги» / 91% / 3× / 84% не подтверждены исследованием и звучат как обещание про здоровье (повторная подача после 4.3b, 15.10). Остальное промо видно. */
+    html.is-native #scStatsGrid { display: none !important; } /* !important: у сетки inline display:grid */
 
     /* Пакеты на нативе продаются встроенной покупкой (тип Non-Renewing
        Subscription — автопродления у нас нет). Карточки видны, цену на них
@@ -16608,7 +16610,9 @@ html:not(.is-native) #nativeAiConsentOverlay{display:none !important}
              значения цвета/размера — как в #homePage .home-footer a (app.css:12927); светлая тема уже
              перекрывается общим правилом body.theme-light #webLoginScreen * (app.css:7537) -->
         <p style="margin-top:12px;text-align:center;"><a href="javascript:void(0)" onclick="if(window.showLegalModal)window.showLegalModal('offer')" data-i18n="footerOffer" style="color:rgba(255,255,255,.64);font-size:0.75rem;">Оферта</a> · <a href="javascript:void(0)" onclick="if(window.showLegalModal)window.showLegalModal('privacy')" data-i18n="footerPrivacy" style="color:rgba(255,255,255,.64);font-size:0.75rem;">Конфиденциальность</a></p>
+        <!-- @@native-strip:begin отзывы на экране входа: добавлены 26.03.2026 из TikTok-лендинга, подлинность не подтверждена — в приложение для iPhone не берём (Алла 16.10, переподача 4.3(b)) -->
         <div class="start-reviews" aria-hidden="true"><div class="start-reviews-track" id="startReviewsTrack"><div class="start-review"><div class="start-review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="start-review-text" data-i18n="review1">Это просто фантастика! Серьёзно, вы считали меня! Это просто супер проект!</div><div class="start-review-author" data-i18n="reviewAuthor1">Роман</div></div><div class="start-review"><div class="start-review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="start-review-text" data-i18n="review2">Кайф! Стиль тот что люблю, слова прямо в сердце!</div><div class="start-review-author" data-i18n="reviewAuthor2">Юлия</div></div><div class="start-review"><div class="start-review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="start-review-text" data-i18n="review3">Зашло то как. Откуда ИИ могло знать про чертежи, про кофе, про отчеты. Браво!!!</div><div class="start-review-author" data-i18n="reviewAuthor3">Геннадий</div></div><div class="start-review"><div class="start-review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="start-review-text" data-i18n="review4">Очень понравилась динамика: от спокойного к мощному. Определенные моменты совпадают!</div><div class="start-review-author" data-i18n="reviewAuthor4">Александр</div></div><div class="start-review"><div class="start-review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="start-review-text" data-i18n="review5">Первая просто шедевр! Удивили, прослушал её раз 15, маме переслал.</div><div class="start-review-author" data-i18n="reviewAuthor5">Владимир</div></div><div class="start-review"><div class="start-review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="start-review-text" data-i18n="review6">Очень красивая и легкая песня, прям можно медитировать слушая её!</div><div class="start-review-author" data-i18n="reviewAuthor6">Пользователь</div></div></div></div>
+        <!-- @@native-strip:end -->
         <!-- "ТОЛЬКО ЗДЕСЬ" блок убран со стартовой (по запросу) -->
       </article>
     </main>
@@ -16704,6 +16708,7 @@ html:not(.is-native) #nativeAiConsentOverlay{display:none !important}
         </div>
 
         <!-- 2 -->
+        <!-- @@native-feature:soul_chat:begin слайд «Спроси о себе» (Soul Chat) -->
         <div class="ob-slide">
           <div class="ob-art">
             <div class="ob-art-disc"><div class="ob-art-fill" style="background:radial-gradient(120% 120% at 28% 20%,hsl(286,90%,66%),transparent 52%),radial-gradient(128% 128% at 80% 28%,hsl(330,92%,62%),transparent 55%),radial-gradient(140% 140% at 64% 104%,hsl(24,84%,50%),transparent 60%),linear-gradient(160deg,hsl(280,48%,17%),hsl(320,46%,12%))"></div>
@@ -16717,8 +16722,10 @@ html:not(.is-native) #nativeAiConsentOverlay{display:none !important}
           <div class="ob-tline"></div>
           <p class="ob-sub" data-i18n="obSlide2Sub">Задавай вопросы о своём пути, отношениях и характере. Оракул отвечает тепло и по делу.</p>
         </div>
+        <!-- @@native-feature:soul_chat:end -->
 
         <!-- 3 -->
+        <!-- @@native-feature:compat_percent:begin слайд «Совместимость» (проценты) -->
         <div class="ob-slide">
           <div class="ob-art">
             <div class="ob-art-disc"><div class="ob-art-fill" style="background:radial-gradient(120% 120% at 26% 18%,hsl(20,94%,62%),transparent 52%),radial-gradient(128% 128% at 82% 28%,hsl(332,92%,64%),transparent 55%),radial-gradient(140% 140% at 60% 104%,hsl(286,68%,46%),transparent 60%),linear-gradient(160deg,hsl(16,48%,16%),hsl(320,44%,11%))"></div>
@@ -16732,6 +16739,7 @@ html:not(.is-native) #nativeAiConsentOverlay{display:none !important}
           <div class="ob-tline"></div>
           <p class="ob-sub" data-i18n="obSlide3Sub">Добавь родных и друзей в картотеку — и смотри вашу совместимость по дате рождения.</p>
         </div>
+        <!-- @@native-feature:compat_percent:end -->
 
         <!-- 4 -->
         <div class="ob-slide">
@@ -16811,9 +16819,13 @@ html:not(.is-native) #nativeAiConsentOverlay{display:none !important}
           <p class="home-card-choices-head" style="margin-top:18px;" data-i18n="homeChoicesHeadMain">Попробуй сегодня</p>
           <div class="home-card-choices-grid">
             <!-- @@native-feature:energy_of_day:begin --><button type="button" class="home-choice" data-quick-action="song_of_day" data-i18n="homeChoiceMain1">Песня дня</button><!-- @@native-feature:energy_of_day:end -->
-            <button type="button" class="home-choice" data-quick-action="who_am_i" data-i18n="homeChoiceMain2">Кто я?</button>
+            <!-- @@native-feature:soul_chat:begin чип «Кто я?» --><button type="button" class="home-choice" data-quick-action="who_am_i" data-i18n="homeChoiceMain2">Кто я?</button><!-- @@native-feature:soul_chat:end -->
             <button type="button" class="home-choice" data-quick-action="star_style" data-i18n="homeChoiceMain3">Как у звезды</button>
-            <button type="button" class="home-choice" data-quick-action="couple_song" data-i18n="homeChoiceMain4">Совместимость</button>
+            <!-- @@native-feature:soul_chat:begin чип «Совместимость» --><button type="button" class="home-choice" data-quick-action="couple_song" data-i18n="homeChoiceMain4">Совместимость</button><!-- @@native-feature:soul_chat:end -->
+            <!-- Чип «Песня на день рождения» — только в сборке для стора «только песни» (Алла 16.10): в Telegram это комментарий. -->
+            <!--@@native-feature-off:soul_chat:begin
+            <button type="button" class="home-choice" data-quick-action="birthday_song" data-i18n="homeChoiceBirthday">Песня на день рождения</button>
+            @@native-feature-off:soul_chat:end-->
           </div>
         </article>
         <!-- Дисклеймер под главной карточкой — только приложение из App Store (Алла 14.10). Стиль — как у подписи
@@ -16864,7 +16876,7 @@ html:not(.is-native) #nativeAiConsentOverlay{display:none !important}
         <div class="glass-specular" aria-hidden="true"></div>
         <!-- аудит iPhone 24.09: aria-label без i18n -->
         <nav class="glass-content home-nav" aria-label="Навигация" data-i18n-aria="ariaNav">
-          <button type="button" class="home-nav-link glass-item" onclick="goToSoulChat()" aria-label="Разговор по душам" data-i18n-aria="navSoulChatFull"><span id="navFlowSoulChat">Оракул</span></button>
+          <!-- @@native-feature:soul_chat:begin --><button type="button" class="home-nav-link glass-item" onclick="goToSoulChat()" aria-label="Разговор по душам" data-i18n-aria="navSoulChatFull"><span id="navFlowSoulChat">Оракул</span></button><!-- @@native-feature:soul_chat:end -->
           <button type="button" class="home-nav-link glass-item" onclick="goToHelpFrom('homePage')" aria-label="Помощь" data-i18n-aria="myHelp"><span id="navFlowHelp">Помощь</span></button>
           <button type="button" class="home-nav-link glass-item" onclick="goToHeroesFrom('homePage')" aria-label="Контакты" data-i18n-aria="myHeroes"><span id="navFlowLab">Контакты</span></button>
           <button type="button" class="home-nav-link glass-item" onclick="window.returnToPage='homePage';goToPage('myTracksPage');if(typeof window.loadMyTracks==='function')window.loadMyTracks(false)" aria-label="Мои треки" data-i18n-aria="navMyTracks"><span id="navFlowTracks">Плейлист</span></button>
@@ -16894,10 +16906,20 @@ html:not(.is-native) #nativeAiConsentOverlay{display:none !important}
     <!-- аудит iPhone 24.09: aria-label без i18n -->
     <nav id="homeAppMenu" class="home-app-menu" aria-label="Главное меню" data-i18n-aria="ariaMainMenu">
       <!-- Нижнее меню: только подписи, без иконок (по договорённости). -->
+      <!-- @@native-feature:soul_chat:begin вкладка Soul Chat -->
       <button type="button" id="soulChatBtn" class="home-app-menu-btn" data-nav="soulChatPage" data-return="homePage" aria-label="Разговор по душам" data-i18n-aria="navSoulChatFull">
         <svg class="home-app-menu-icon" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/><circle cx="9.5" cy="11.5" r="0.8" fill="currentColor" stroke="none"/><circle cx="12" cy="11.5" r="0.8" fill="currentColor" stroke="none"/><circle cx="14.5" cy="11.5" r="0.8" fill="currentColor" stroke="none"/></svg>
         <span id="navMenuSoulChat" class="home-app-menu-label">Оракул</span>
       </button>
+      <!-- @@native-feature:soul_chat:end -->
+      <!-- Вкладка «Главная» на месте Soul Chat — только в сборке для стора «только песни» (16.10). Здесь она целиком
+           в комментарии; build-app-www раскомментирует её, пока soul_chat выключен. Иконка — домик того же набора (24×24, линия 1.5). -->
+      <!--@@native-feature-off:soul_chat:begin
+      <button type="button" id="goHomeTabBtn" class="home-app-menu-btn" data-nav="homePage" data-return="homePage" aria-label="Главная" data-i18n-aria="navHome">
+        <svg class="home-app-menu-icon" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5l9-7 9 7V20a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>
+        <span id="navMenuHome" class="home-app-menu-label" data-i18n="navHome">Главная</span>
+      </button>
+      @@native-feature-off:soul_chat:end-->
       <button type="button" id="goMyTracksBtn" class="home-app-menu-btn" data-nav="myTracksPage" data-return="homePage" aria-label="Мои треки" data-i18n-aria="navMyTracks">
         <svg class="home-app-menu-icon" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="18" r="4"/><path d="M12 18V2l7 4"/><circle cx="8" cy="18" r="1.2" fill="currentColor" stroke="none"/></svg>
         <span id="navTracksBadge" class="nav-badge" style="display:none !important"></span>
@@ -17485,6 +17507,7 @@ body.theme-light #giftsPage .cask-cost{color:#f7c873 !important}
           <button class="d-btn s-fresh" id="iskraClaimBtn" onclick="claimIskra()"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.2L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4z"></path></svg><span data-i18n="iskraClaimBtn">Забрать +2 Искры</span></button>
           <!-- сбой начисления: причина + код + повтор (эталон showcase-gifts 09.09) -->
           <div class="d-err" role="alert"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v4.5M12 16h.01"></path></svg><span class="d-err-tx"><span data-i18n="iskraClaimErr">Искра не начислилась, баланс не изменился.</span><b id="iskraErrCode"></b></span><button type="button" id="iskraErrRetry"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M19.4 12a7.4 7.4 0 1 1-2.2-5.3"></path><path d="M19.6 3.6v3.6h-3.6"></path></g></svg><span data-i18n="iskraClaimRetry">Повторить</span></button></div>
+          <!-- @@native-feature:soul_chat:begin «мысль дня» (печенька) и вопрос о ней в Soul Chat -->
           <!-- claimed: открыть печеньку -->
           <button class="d-btn ghost s-claimed" id="cookieBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 9 9c0-1.4-2-1.2-2.5-2.6-.5-1.5 1.2-2 .6-3.2C18.3 4.6 14.9 3 12 3Z"></path><circle cx="9" cy="11" r="1"></circle><circle cx="13" cy="9" r="1"></circle><circle cx="14" cy="14" r="1"></circle></svg> <span data-i18n="iskraCookieBtn">Открыть печеньку предсказаний</span></button>
           <!-- opened: послание -->
@@ -17494,6 +17517,7 @@ body.theme-light #giftsPage .cask-cost{color:#f7c873 !important}
             <div class="csave"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.55" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg> <span data-i18n="iskraSaved">Сохранено в Дневник посланий</span></div>
             <button class="cask" onclick="if(window._askOracleAboutDay)window._askOracleAboutDay()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.55" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-11.6 7.8L3 21l1.8-6.2A8.4 8.4 0 1 1 21 11.5Z"></path></svg> <span data-i18n="iskraAskDay">Спросить Оракула про это</span><span class="cask-cost"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.4 7.2L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4z"></path></svg>1</span></button>
           </div>
+          <!-- @@native-feature:soul_chat:end -->
 
           <div class="d-div"></div>
 
@@ -17518,11 +17542,13 @@ body.theme-light #giftsPage .cask-cost{color:#f7c873 !important}
         </div>
 
         <!-- спросить оракула -->
+        <!-- @@native-feature:soul_chat:begin -->
         <button class="spend" id="giftsSpend" onclick="if(window.goToSoulChat)window.goToSoulChat()" style="display:none;">
           <span class="spend-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.55" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-11.6 7.8L3 21l1.8-6.2A8.4 8.4 0 1 1 21 11.5Z"></path></svg></span>
           <span class="spend-tx"><b data-i18n="iskraValueCta">Спросить оракула</b><span data-i18n="giftsSpendSub">Задай в диалоге любой вопрос о себе</span></span>
           <span class="cost"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.2L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4z"></path></svg> 1</span>
         </button>
+        <!-- @@native-feature:soul_chat:end -->
 
         <!-- ═══ ПОДАРИ БЛИЗКОМУ ═══ -->
         <div class="gift" id="giftCard">
@@ -17571,10 +17597,12 @@ body.theme-light #giftsPage .cask-cost{color:#f7c873 !important}
         <!-- что можно с искрами -->
         <div class="card value" id="iskraValueCard" style="display:none;">
           <h3 data-i18n="iskraValueTitle">Что можно с Искрами</h3>
+          <!-- @@native-feature:soul_chat:begin -->
           <div class="vrow">
             <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-11.6 7.8L3 21l1.8-6.2A8.4 8.4 0 1 1 21 11.5Z"></path></svg></span>
             <span class="tx" data-i18n="iskraValueQuestion"><b>1 Искра</b> — задай оракулу любой вопрос о себе</span>
           </div>
+          <!-- @@native-feature:soul_chat:end -->
           <div class="vrow" id="iskraValueSongRow">
             <span class="ic pink"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg></span>
             <span class="tx" data-i18n="iskraValueSong"><b>100 Искр</b> — родится песня твоей души</span>
@@ -17877,6 +17905,7 @@ body.theme-light #giftsPage .cask-cost{color:#f7c873 !important}
         </div>
 
         <!-- Чат с Оракулом и пакеты -->
+        <!-- @@native-feature:soul_chat:begin вопрос «Soul Chat и пакеты» (без чата пакеты описаны в «Оплате») -->
         <div class="qa" id="helpSec8">
           <button type="button" class="qa-q" onclick="this.closest('.qa').classList.toggle('open')">
             <span class="qa-ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11.5a7.6 7.6 0 0 1-10.5 7L4 20.2l1.7-5.5A7.6 7.6 0 1 1 20 11.5Z"/><path d="M12 8.7l.62 1.86 1.86.62-1.86.62L12 13.7l-.62-1.86-1.86-.62 1.86-.62z" fill="currentColor" stroke="none"/></svg></span>
@@ -17889,6 +17918,8 @@ body.theme-light #giftsPage .cask-cost{color:#f7c873 !important}
           </div></div>
         </div>
 
+        <!-- @@native-feature:soul_chat:end -->
+
         <!-- Возможности для мастеров (перенесено с главной) -->
         <div class="qa" id="helpSec9">
           <button type="button" class="qa-q" onclick="this.closest('.qa').classList.toggle('open')">
@@ -17900,6 +17931,7 @@ body.theme-light #giftsPage .cask-cost{color:#f7c873 !important}
         </div>
 
         <!-- Отзывы пользователей (перенесено с главной) -->
+        <!-- @@native-strip:begin отзывы: тексты и имена (Anna M., Dmitry K., Elena V.) появились 03.03.2026 в 39539f2d5 не от пользователей — в приложении для iPhone их нет -->
         <div class="qa">
           <button type="button" class="qa-q" onclick="this.closest('.qa').classList.toggle('open')">
             <span class="qa-ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></span>
@@ -17908,6 +17940,7 @@ body.theme-light #giftsPage .cask-cost{color:#f7c873 !important}
           </button>
           <div class="qa-a"><div class="qa-a-in" id="helpB10">…</div></div>
         </div>
+        <!-- @@native-strip:end -->
 
         <!-- Проблемы и ошибки -->
         <div class="qa">
@@ -19081,8 +19114,10 @@ body.theme-light #profilePage #pfNew .foot-note{color:#6f5a66 !important}
           <div class="u-benefits">
             <!-- Картотека -->
             <div class="u-benefit for-cards"><span class="bi b1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg></span><span class="bt"><b data-i18n="ulCardsB1">Песни в один тап</b><small data-i18n="ulCardsB1s">по сохранённой дате</small></span></div>
-            <div class="u-benefit for-cards"><span class="bi b2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path></svg></span><span class="bt"><b data-i18n="ulCardsB2">Совместимость</b><small data-i18n="ulCardsB2s">разбор пары для двоих</small></span></div>
-            <div class="u-benefit for-cards"><span class="bi b3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 12 20 22 4 22 4 12"></polyline><rect x="2" y="7" width="20" height="5"></rect><line x1="12" y1="22" x2="12" y2="7"></line><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path></svg></span><span class="bt"><b data-i18n="ulCardsB3">Дари близким</b><small data-i18n="ulCardsB3s">песня в подарок прямо отсюда</small></span></div>
+            <!-- @@native-feature:compat_percent:begin «Совместимость — разбор пары» --><div class="u-benefit for-cards"><span class="bi b2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path></svg></span><span class="bt"><b data-i18n="ulCardsB2">Совместимость</b><small data-i18n="ulCardsB2s">разбор пары для двоих</small></span></div><!-- @@native-feature:compat_percent:end -->
+            <div class="u-benefit for-cards"><span class="bi b3"><!-- @@native-feature:soul_chat:begin подарок: покупка подарка на iPhone выключена, в сборке «только песни» строка про сохранённых близких --><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 12 20 22 4 22 4 12"></polyline><rect x="2" y="7" width="20" height="5"></rect><line x1="12" y1="22" x2="12" y2="7"></line><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path></svg><!-- @@native-feature:soul_chat:end --><!--@@native-feature-off:soul_chat:begin
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-4.5-9.5-9A5.2 5.2 0 0 1 12 6a5.2 5.2 0 0 1 9.5 6c-2.5 4.5-9.5 9-9.5 9Z"></path></svg>
+@@native-feature-off:soul_chat:end--></span><span class="bt"><b data-i18n="ulCardsB3">Дари близким</b><small data-i18n="ulCardsB3s">песня в подарок прямо отсюда</small></span></div>
             <!-- Тема -->
             <div class="u-benefit for-topic"><span class="bi b1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 7.2L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4z"></path></svg></span><span class="bt"><b data-i18n="ulTopicB1">Глубокий разбор</b><small data-i18n="ulTopicB1s">по твоей дате рождения</small></span></div>
             <div class="u-benefit for-topic"><span class="bi b2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg></span><span class="bt"><b data-i18n="ulTopicB2">Песня к теме</b><small data-i18n="ulTopicB2s">персональный трек в подарок</small></span></div>
@@ -21358,6 +21393,7 @@ body.theme-light #myTracksPage .mtv2-player .v2act,html.is-vk-light:not(.dark) #
           <span class="ngo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
         </button>
 
+        <!-- @@native-feature:soul_chat:begin утренние заметки (Дневник Soul Chat) -->
         <div class="optin" id="soOptin">
           <div class="optin-h">
             <span class="oic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5 19 19M19 5l-1.5 1.5M6.5 17.5 5 19"/></svg></span>
@@ -21370,6 +21406,7 @@ body.theme-light #myTracksPage .mtv2-player .v2act,html.is-vk-light:not(.dark) #
             <button class="optin-no" data-i18n="openedOptinNo">Не сейчас</button>
           </div>
         </div>
+        <!-- @@native-feature:soul_chat:end -->
       </div>
     </div>
 
@@ -23000,7 +23037,9 @@ html.is-native #successPage .while-generating-upsell{display:none !important}
           <div class="suggest-h" data-i18n="csWhileWaiting">Пока ждёшь песню</div>
           <div class="sgrid">
             <button class="scard" type="button" id="successShareBtn" onclick="if(typeof shareApp==='function')shareApp()"><span class="sic v1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg></span><b data-i18n="successShareShort">Поделиться</b></button>
+            <!-- @@native-feature:soul_chat:begin плитка «Soul Chat» -->
             <button class="scard" type="button" onclick="if(typeof _leaveSuccessTo==='function'){_leaveSuccessTo('soulChatPage')}else{window.returnToPage='homePage';goToPage('soulChatPage')}if(typeof initSoulChatPage==='function')setTimeout(initSoulChatPage,300)"><span class="sic v2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-11.6 7.8L3 21l1.8-6.2A8.4 8.4 0 1 1 21 11.5Z"/></svg></span><b data-i18n="homeChoice3">Чат с Оракулом</b></button>
+            <!-- @@native-feature:soul_chat:end -->
             <button class="scard" type="button" id="newKeyBtn"><span class="sic v3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg></span><b data-i18n="csNewSong">Ещё песню</b></button>
           </div>
         </div>
@@ -24285,6 +24324,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
       </div>
     </div>
 
+    <!-- @@native-feature:soul_chat:begin экран Soul Chat целиком (чат, Дневник, Разборы) — в сборке для стора выключен (scripts/build-app-www.mjs) -->
     <div class="page" id="soulChatPage" data-state="loading">
       <!-- Фон-подсветка = ДОСЛОВНО из showcase-chat.html (Алла 18.06: «подсветка» = эти блобы):
            .bg .blob b1 #ec4899 / b2 #7c3aed / b3 #f97316, blur60 mix-blend:screen + звёзды -->
@@ -24342,7 +24382,8 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
         <!-- Расширенная инфо (статистика + примеры) — ВИДНА ПО УМОЛЧАНИЮ (закон №13):
              пользователь сразу видит ЦЕННОСТЬ Чат с Оракулом, а не paywall. -->
         <div id="scMoreContent" style="display:block;margin-bottom:18px;">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;">
+          <!-- id — для html.is-native: в приложении для iPhone цифры 78%/91%/3×/84% не показываем (не подтверждены исследованием) -->
+          <div id="scStatsGrid" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;">
             <div style="background:rgba(var(--primary-rgb),0.06);border:1px solid rgba(var(--primary-rgb),0.14);border-radius:14px;padding:12px;text-align:center;">
               <div style="font-size:1.4rem;font-weight:700;color:var(--primary-color);line-height:1;">78%</div>
               <div id="scStat1" style="font-size:0.7rem;color:rgba(255,255,255,0.5);margin-top:4px;line-height:1.4;">отмечают снижение тревоги</div>
@@ -24868,6 +24909,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
 
       </div><!-- /sc-page-main-wrap -->
     </div>
+    <!-- @@native-feature:soul_chat:end -->
     <!-- ═══════════════════════════════════════════ -->
 
     <!-- Страница «Спасибо за оплату» — тот же фон, что на главной -->
@@ -24896,7 +24938,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           <div class="afs-subtitle" style="font-size:0.75rem;font-weight:300;color:var(--muted);margin-bottom:14px;" data-i18n="afsSubtitle">Готова идти глубже?</div>
           <div class="after-first-song-paths" style="gap:8px;">
             <button type="button" class="btn btn-primary" data-i18n="afsBtnCreate">Создать ещё трек</button>
-            <button type="button" class="btn btn-secondary" data-i18n="afsBtnSoulChat">Попробовать Чат с Оракулом</button>
+            <!-- @@native-feature:soul_chat:begin --><button type="button" class="btn btn-secondary" data-i18n="afsBtnSoulChat">Попробовать Чат с Оракулом</button><!-- @@native-feature:soul_chat:end -->
             <button type="button" class="btn btn-secondary" data-i18n="afsBtnInvite">Пригласить друга</button>
           </div>
         </div>
@@ -25968,6 +26010,11 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           successWhileWaiting: 'Пока ждёшь песню', successMoreSong: 'Ещё песню',
           footerOffer: 'Оферта', footerPrivacy: 'Конфиденциальность', footerSubManage: 'Управление пакетами',
           navOracle: 'Оракул', navPlaylist: 'Плейлист', navContacts: 'Контакты', navHelp: 'Помощь',
+          // Сборка для стора «только песни» (16.10): вкладка «Главная» вместо Soul Chat и чип «Песня на день рождения»
+          navHome: 'Главная', homeChoiceBirthday: 'Песня на день рождения', quickBirthdayRequest: 'Песня на день рождения близкому человеку',
+          // Быстрые запросы приложения для iPhone (свой набор вместо серверного, Алла 16.10): подпись → текст в поле «О чём песня»
+          nqLove: 'О любви', nqLoveReq: 'Песня о любви — для моего человека', nqMom: 'Спасибо маме', nqMomReq: 'Песня-благодарность маме', nqFriend: 'Лучшей подруге', nqFriendReq: 'Песня лучшей подруге или другу', nqWhoNow: 'Кто я сейчас', nqWhoNowReq: 'Песня о том, кто я сейчас', nqCourage: 'Смелость', nqCourageReq: 'Песня, которая даст смелость начать заново',
+          nqFunny: 'С самоиронией', nqFunnyReq: 'Смешная песня с самоиронией обо мне', nqAnniversary: 'Наша годовщина', nqAnniversaryReq: 'Песня к нашей годовщине', nqChild: 'Моему ребёнку', nqChildReq: 'Песня моему ребёнку', nqMoment: 'Особый момент', nqMomentReq: 'Песня об особом моменте в моей жизни',
           heroesTitle: 'Лаборатория', heroFormTitle: 'Добавить героя',
           mtTitle: 'мой плейлист', mtEmpty: 'Пока нет треков',
           mtEmptyDesc: 'Создай первую — по дате рождения',
@@ -26072,6 +26119,8 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           iskraClaimTitle: 'Искра дня', iskraClaimTextCan: 'Заходи каждый день и забирай Искру 🤍 С ней можно задать оракулу любой вопрос о себе.', iskraClaimTextDone: 'Сегодня Искра уже твоя 🤍 Возвращайся завтра за новой.', iskraClaimStreak: 'Серия: {n}', iskraClaimBtn: 'Забрать Искру', iskraClaimBtnDone: 'Приходи завтра',
           navGifts: 'Подарки', navMenuGifts: 'Подарки', giftsTitle: 'Подарки', giftsSubtitle: 'Заходи каждый день — забирай Искру', giftsExplainer: 'Каждый день тут тебя ждёт Искра — просто за то, что ты с нами 🤍 Одной хватит, чтобы задать оракулу вопрос о себе, а сотня — это целая песня про тебя.', iskraValueTitle: 'Что можно с Искрами', iskraValueQuestion: 'Задай оракулу любой вопрос о себе — это одна Искра', iskraValueSong: 'Собери сотню — и родится песня твоей души', iskraValueCta: 'Спросить оракула', giftsEmptyHint: 'Создай первую песню — и здесь откроется ежедневная Искра 🤍', iskraClaimErr: 'Искра не начислилась, баланс не изменился.', iskraClaimRetry: 'Повторить', iskraCookieFrom: 'Послание Оракула на сегодня', giftsProgLabel: 'на балансе', giftsBalanceTopup: 'Баланс Искр — пополнить', giftsFirstRunTitle: 'Искра дня откроется после первой песни', giftsFirstRunSub: 'Каждый день — +2 Искры, за 7 дней подряд — ещё +10. Искры идут на вопросы Оракулу и на следующую песню.', giftsFirstRunCta: 'Создать первую песню', giftsEmptyTitle: 'Здесь появятся твои Искры', giftsEmptySub: 'Создай первую песню — и каждый день сможешь забирать Искру дня', giftsBackHome: '← На главную',
           giftsSpendCta: 'Задать вопрос', giftsSpendSub: 'Задай в диалоге любой вопрос о себе', giftsRefTitle: 'Пригласи друга', giftsRefSub: 'Искры за подписку друга', giftsRefReward: '+Искры', giftsRefTag: 'Делись ссылкой — когда друг оформляет подписку, тебе начисляются Искры.', giftsRefStatInvited: 'Приглашено', giftsRefStatSongs: 'Создали песню', giftsRefStatEarned: 'Искр получено', giftsRefCopy: 'Копировать', giftsRefCopied: 'Скопировано', giftsRefShare: 'Поделиться ссылкой', giftsWeekTitle: 'Твоя серия', giftsWeekStreak: '{n} дней подряд', giftsWeekDays: 'Пн,Вт,Ср,Чт,Пт,Сб,Вс', giftsProgTitle: 'До песни твоей души', giftsProgSub: 'Собери 100 Искр — и она родится', giftsProgSubPack: 'Песню открывает первый пакет Искр — дальше платишь накопленным', iskrySongNeedPack: 'Искры открывают песню после первого пакета Искр. Сейчас они идут на вопросы Оракулу и разборы.', errSongIskryNeedPack: 'Песню Искрами открывает пакет Искр — или оплата напрямую.', errGiftIskryNeedPack: 'Подарить песню за Искры можно после первого пакета Искр.', giftsFoot: '✦ Возвращайся завтра — серия растёт ✦', giftCardTitle: 'Подари близкому', giftCardSub: 'Подари свою песню — близкий услышит её', giftCardCta: 'Подарить песню', iskraClaimedTitle: 'Искра у тебя ✦', iskraFreshSub: 'Маленький подарок за то, что ты с нами.', iskraClaimedSub: 'Разломи печеньку — Оракул оставил тебе послание.', iskraCookieBtn: 'Открыть печеньку предсказаний', iskraSaved: 'Сохранено в Дневник посланий', iskraAskDay: 'Спросить Оракула про это', iskraGoal: 'Ещё {n} дн. подряд → +10 Искр за серию 7 дней', questsTitle: 'Квесты', homeCommT: 'Больше о твоих возможностях', homeCommS: 'Новости и подсказки — в нашем сообществе', questJoinT: 'Вступить в сообщество', questJoinS: 'Присоединяйся к нам', questJoinBtn: '+30', questJoinDone: 'Готово', questJoinAlready: 'Ты уже в сообществе', questJoinToast: 'Спасибо! +30 Искр', questJoinCheck: 'Я вступил(а)', questJoinNeedMember: 'Сначала вступи в сообщество, потом вернись', scCommInviteT: 'Энергия дня — каждое утро в сообществе', scCommInviteS: 'Короткий настрой на день и новости Оракула. За вступление — +30 Искр.', scCommInviteBtn: 'Вступить', profileVkCommunity: 'Сообщество: Энергия дня — каждое утро',
+          // Натив (App Store, 15.10): «мысль дня» и вопрос о дне на языке интерфейса — используются только в ветке window._isNativeApp
+          iskraThoughtDefault: 'Сегодня твоя сила — в тишине. Дай себе паузу: ответ часто приходит, когда перестаёшь его искать.', iskraAskDayQ: 'Помоги мягко прожить мой сегодняшний день — на что опереться и что в нём хорошего?',
           // gift create/redeem pages (giftPage / giftRedeemPage)
           giftPageTitle: 'Подарить песню', gpEyebrow: 'Подарок близкому', gpTitle: 'Оформление подарка', gpWhat: 'Что дарим', gpItem: 'Песня души', gpInGift: 'в подарок', gpToClose: 'близкому', gpPayMethod: 'Способ оплаты', gpMStars: 'Telegram Stars', gpMStarsSub: 'Оплата звёздами Telegram', gpMCard: 'Картой · T-Bank', gpMCardSub: 'Visa / Mastercard / МИР', gpNote: 'После оплаты ты получишь промокод — отправь его близкому, он активирует подарок при создании песни.', gpPay: 'Оплатить', gpSecure: 'Безопасная оплата · промокод придёт сразу', gpDoneTitle: 'Подарок готов 🤍', gpDoneText: 'Промокод на песню души — отправь близкому, он введёт его при создании.', gpDoneShare: 'Отправить подарок', gpDoneCopy: 'Скопировать код', gpCodeCopied: 'Код скопирован ✓', giftsMyTitle: 'Мои подарки', giftCodePending: 'Ждёт активации', giftCodeUsed: 'Активирован', giftCodeFor: 'Для: ', giftCodeCopy: 'Копировать', giftCodeSend: 'Отправить', gpShareText: 'Дарю тебе песню души 🤍 Промокод: ', giftToPlaceholder: 'Выбери, для кого', giftToName: 'Для · {name}', giftNoSongs: 'Нет готовых песен', giftCreateFirst: 'Создать песню', giftNeedSongTitle: 'Сначала создай песню', giftNeedSongSub: 'Подаришь её, когда будет готова', giftSoulSong: 'Песня души', giftSongFallback: 'Песня', giftDediPlaceholderPreview: 'Здесь появится твоё посвящение…', giftSecRecip: 'Для кого песня', giftSecWords: 'Тёплые слова', giftSecHow: 'Как подарить', giftRecipAdd: 'Добавить', giftDediPlaceholder: 'Напиши пару строк тому, кому даришь…', giftPresetBday: 'С днём рождения', giftPresetJust: 'Просто так, для тебя', giftPresetSpecial: 'Ты особенный человек', giftDlvLink: 'Ссылкой', giftDlvTg: 'Telegram', giftDlvQr: 'QR-код', giftReward: '+5 Искр, когда подарок откроют', giftSendBtn: 'Подарить песню', giftDoneTitle: 'Подарок готов!', giftDoneText: '«{name}» для {to}. Поделись ссылкой ниже — когда подарок откроют, ты узнаешь.', giftDoneCopy: 'Копировать', giftToLovedOne: 'близкого', giftDoneClose: 'Готово', giftPromptRecipName: 'Кому подарок? Имя:', giftAddNamePh: 'Для кого? Напр.: мамы, Ани', giftAddNameOk: 'Готово', giftLinkCopied: 'Ссылка скопирована', giftSelectFirst: 'Сначала выбери песню', giftFailed: 'Не получилось', giftSongYours: 'Песня твоя 🤍', giftLoginToRedeem: 'Войди, чтобы получить подарок', giftPlaying: '🎵 {title} играет', giftIskryCredited: '+{n} Искр зачислено 🤍', giftSongCredited: 'Песня в подарок 🤍 Создай свою', giftSongUnlocked: 'Твоя песня открыта 🤍', giftDeliverShareText: 'Тебе подарили песню души 🤍 Открой подарок: {url}', giftNotFound: 'Подарок не найден', giftFromLovedOne: 'Близкий человек', grFromSealedDefault: 'Тебе подарок', grFromSealedName: 'Тебе подарок от {name}', grTitleSealed: 'Тебе подарили<br>песню души 🤍', grLeadDefault: 'Открой подарок, чтобы услышать персональную песню.', grFromOpenDefault: 'Подарок', grFromOpenName: 'Подарок от {name}', grTitleOpen: 'С теплом 🤍', grLeadNew: '{name} дарит тебе <b>персональную песню</b> по твоей дате рождения. Открой подарок, чтобы создать её.', grLeadExisting: '{name} дарит тебе <b>песню души</b>. Открой подарок, чтобы услышать её.', giftInsidePersonalSong: 'Персональная песня', giftInsideByBirthdate: 'по твоей дате рождения', giftInside100: '+100 Искр в подарок', giftInside100Sub: 'на твои будущие песни', giftInsideFromName: 'от {name}', grNoteNew: 'Дату рождения уточним на следующем шаге · подарок уже оплачен', grOpenBtn: 'Открыть подарок', grGetBtn: 'Получить мою песню', grCreateSong: 'Создать свою песню', grRedeemedNote: 'Подарок твой 🤍', giftPromoWillApply: 'Промокод применится при создании песни 🤍', gpPayUnavailable: 'Оплата сейчас недоступна, попробуй позже', sharedSongEyebrow: 'Тебе поделились песней', sharedSongCta: 'Создать песню про себя', sharedSongLoading: 'Открываю песню…', sharedSongFallback: 'Песня души', sharedSaveFav: 'В любимые', sharedCreateOwn: 'Создать свою песню', sharedLockedLead: 'Послушай отрывок — 60 секунд. Полную песню открывает автор.', sharedLockedSub: 'Отрывок · 60 сек', sharedSavedFav: 'Добавлено в любимые', sharedSavedFavBtn: 'В любимых', favoritesTitle: 'Любимые', favSharedBadge: 'Поделились с тобой', favEmpty: 'Здесь появятся песни, которые ты добавишь в любимые.',
           profileContactsTitle: 'Контакты', profileContactsSub: 'Песни для близких — картотека людей', helpReplayTour: 'Посмотреть обучение заново',
@@ -26912,6 +26961,9 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           successWhileWaiting: 'While you wait', successMoreSong: 'One more song',
           footerOffer: 'Terms', footerPrivacy: 'Privacy', footerSubManage: 'Manage packages',
           navOracle: 'Oracle', navPlaylist: 'Playlist', navContacts: 'Contacts', navHelp: 'Help',
+          navHome: 'Home', homeChoiceBirthday: 'Birthday song', quickBirthdayRequest: 'A birthday song for someone I love',
+          nqLove: 'Love', nqLoveReq: 'A song about love — for my person', nqMom: 'Thank you, Mom', nqMomReq: 'A song to thank my mom', nqFriend: 'Best friend', nqFriendReq: 'A song for my best friend', nqWhoNow: 'Who I am now', nqWhoNowReq: 'A song about who I am right now', nqCourage: 'Courage', nqCourageReq: 'A song that gives me the courage to start again',
+          nqFunny: 'Funny about me', nqFunnyReq: 'A funny, self-ironic song about me', nqAnniversary: 'Our anniversary', nqAnniversaryReq: 'A song for our anniversary', nqChild: 'For my child', nqChildReq: 'A song for my child', nqMoment: 'A special moment', nqMomentReq: 'A song about a special moment in my life',
           heroesTitle: 'Laboratory', heroFormTitle: 'Add a hero',
           mtTitle: 'my playlist', mtEmpty: 'No tracks yet',
           mtEmptyDesc: 'Create your first one — from your birth date',
@@ -27016,6 +27068,8 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           iskraClaimTitle: 'Daily spark', iskraClaimTextCan: 'Drop by each day and grab a Spark 🤍 With it you can ask the Oracle anything about yourself.', iskraClaimTextDone: 'Today\'s Spark is yours 🤍 Come back tomorrow for a new one.', iskraClaimStreak: 'Streak: {n}', iskraClaimBtn: 'Claim Spark', iskraClaimBtnDone: 'Back tomorrow',
           navGifts: 'Gifts', navMenuGifts: 'Gifts', giftsTitle: 'Gifts', giftsSubtitle: 'Drop by daily — grab your Spark', giftsExplainer: 'Every day a Spark waits for you here — just for dropping by 🤍 One is enough to ask the Oracle about yourself, and a hundred make a whole song about you.', iskraValueTitle: 'What Sparks are for', iskraValueQuestion: 'Ask the Oracle anything about you — that\'s one Spark', iskraValueSong: 'Gather a hundred — and a song of your soul is born', iskraValueCta: 'Ask the Oracle', giftsEmptyHint: 'Create your first song — and the daily Spark unlocks here 🤍', iskraClaimErr: 'The Spark was not credited, your balance is unchanged.', iskraClaimRetry: 'Try again', iskraCookieFrom: 'The Oracle\'s message for today', giftsProgLabel: 'in balance', giftsBalanceTopup: 'Spark balance — top up', giftsFirstRunTitle: 'The daily Spark unlocks after your first song', giftsFirstRunSub: 'Every day — +2 Sparks, and +10 more for 7 days in a row. Sparks go to Oracle questions and to your next song.', giftsFirstRunCta: 'Create your first song', giftsEmptyTitle: 'Your Sparks will appear here', giftsEmptySub: 'Create your first song — and claim a daily Spark every day', giftsBackHome: '← Home',
           giftsSpendCta: 'Ask a question', giftsSpendSub: 'Ask anything about yourself in the chat', giftsRefTitle: 'Invite a friend', giftsRefSub: 'Sparks when a friend subscribes', giftsRefReward: '+Sparks', giftsRefTag: 'Share your link — when a friend gets a subscription, you earn Sparks.', giftsRefStatInvited: 'Invited', giftsRefStatSongs: 'Made a song', giftsRefStatEarned: 'Sparks earned', giftsRefCopy: 'Copy', giftsRefCopied: 'Copied', giftsRefShare: 'Share link', giftsWeekTitle: 'Your streak', giftsWeekStreak: '{n} days in a row', giftsWeekDays: 'Mon,Tue,Wed,Thu,Fri,Sat,Sun', giftsProgTitle: 'To the song of your soul', giftsProgSub: 'Gather 100 Sparks — and it is born', giftsProgSubPack: 'Your first Spark pack unlocks a song — after that you pay with what you gather', iskrySongNeedPack: 'Sparks unlock a song after your first Spark pack. For now they go to Oracle questions and readings.', errSongIskryNeedPack: 'A Spark pack unlocks a song with Sparks — or pay directly.', errGiftIskryNeedPack: 'Gifting a song with Sparks opens after your first Spark pack.', giftsFoot: '✦ Come back tomorrow — your streak grows ✦', giftCardTitle: 'Gift to a loved one', giftCardSub: 'Gift your song — a loved one will hear it', giftCardCta: 'Gift a song', iskraClaimedTitle: 'The Spark is yours ✦', iskraFreshSub: 'A little gift for being with us.', iskraClaimedSub: 'Break the cookie — the Oracle left you a message.', iskraCookieBtn: 'Open the fortune cookie', iskraSaved: 'Saved to the Messages Diary', iskraAskDay: 'Ask the Oracle about this', iskraGoal: '{n} more days in a row → +10 Sparks for a 7-day streak', questsTitle: 'Quests', homeCommT: 'More of what you can do here', homeCommS: 'News and tips — in our community', questJoinT: 'Join our community', questJoinS: 'Come hang out with us', questJoinBtn: '+30', questJoinDone: 'Done', questJoinAlready: 'You are already in the community', questJoinToast: 'Thank you! +30 Sparks', questJoinCheck: 'I joined', questJoinNeedMember: 'Join the community first, then come back', scCommInviteT: 'Energy of the day — every morning in our community', scCommInviteS: 'A short daily tune-in and Oracle news. +30 Sparks for joining.', scCommInviteBtn: 'Join', profileVkCommunity: 'Community: Energy of the day, every morning',
+          // Натив (App Store, 15.10): «мысль дня» и вопрос о дне на языке интерфейса — используются только в ветке window._isNativeApp
+          iskraThoughtDefault: 'Today your strength is in quiet. Give yourself a pause: the answer often comes once you stop chasing it.', iskraAskDayQ: 'Help me get through today gently — what can I lean on, and what is good about it?',
           // gift create/redeem pages (giftPage / giftRedeemPage)
           giftPageTitle: 'Gift a song', gpEyebrow: 'A gift for someone close', gpTitle: 'Gift checkout', gpWhat: 'What you gift', gpItem: 'Soul song', gpInGift: 'as a gift', gpToClose: 'a loved one', gpPayMethod: 'Payment method', gpMStars: 'Telegram Stars', gpMStarsSub: 'Pay with Telegram Stars', gpMCard: 'Card · T-Bank', gpMCardSub: 'Visa / Mastercard / MIR', gpNote: 'After payment you\'ll get a promo code — send it to your loved one, they activate the gift when creating a song.', gpPay: 'Pay', gpSecure: 'Secure payment · promo code arrives instantly', gpDoneTitle: 'Gift ready 🤍', gpDoneText: 'A promo code for a soul song — send it to your loved one, they enter it when creating.', gpDoneShare: 'Send the gift', gpDoneCopy: 'Copy code', gpCodeCopied: 'Code copied ✓', giftsMyTitle: 'My gifts', giftCodePending: 'Awaiting activation', giftCodeUsed: 'Activated', giftCodeFor: 'For: ', giftCodeCopy: 'Copy', giftCodeSend: 'Send', gpShareText: 'I\'m gifting you a soul song 🤍 Promo code: ', giftToPlaceholder: 'For · choose someone', giftToName: 'For · {name}', giftNoSongs: 'No ready songs', giftCreateFirst: 'Create a song', giftNeedSongTitle: 'Create a song first', giftNeedSongSub: 'You\'ll gift it once it\'s ready', giftSoulSong: 'Soul song', giftSongFallback: 'Song', giftDediPlaceholderPreview: 'Your dedication will appear here…', giftSecRecip: 'Who it\'s for', giftSecWords: 'Warm words', giftSecHow: 'How to gift', giftRecipAdd: 'Add', giftDediPlaceholder: 'Write a few lines for the one you\'re gifting…', giftPresetBday: 'Happy birthday', giftPresetJust: 'Just because, for you', giftPresetSpecial: 'You\'re someone special', giftDlvLink: 'Link', giftDlvTg: 'Telegram', giftDlvQr: 'QR code', giftReward: '+5 Sparks when your gift is opened', giftSendBtn: 'Gift the song', giftDoneTitle: 'Gift ready!', giftDoneText: '«{name}» for {to}. Share the link below — you\'ll know when it\'s opened.', giftDoneCopy: 'Copy', giftToLovedOne: 'your loved one', giftDoneClose: 'Done', giftPromptRecipName: 'Who is the gift for? Name:', giftAddNamePh: 'For whom? (e.g. Mom)', giftAddNameOk: 'Done', giftLinkCopied: 'Link copied', giftSelectFirst: 'Choose a song first', giftFailed: 'It didn\'t work', giftSongYours: 'The song is yours 🤍', giftLoginToRedeem: 'Sign in to get your gift', giftPlaying: '🎵 {title} is playing', giftIskryCredited: '+{n} Sparks credited 🤍', giftSongCredited: 'A song as a gift 🤍 Create yours', giftSongUnlocked: 'Your song is unlocked 🤍', giftDeliverShareText: 'You\'ve been gifted a soul song 🤍 Open it: {url}', giftNotFound: 'Gift not found', giftFromLovedOne: 'Someone dear', grFromSealedDefault: 'A gift for you', grFromSealedName: 'A gift from {name}', grTitleSealed: 'You\'ve been gifted<br>a soul song 🤍', grLeadDefault: 'Open the gift to hear your personal song.', grFromOpenDefault: 'Gift', grFromOpenName: 'Gift from {name}', grTitleOpen: 'With love 🤍', grLeadNew: '{name} is gifting you a <b>personal song</b> based on your date of birth. Open the gift to create it.', grLeadExisting: '{name} is gifting you a <b>soul song</b>. Open the gift to hear it.', giftInsidePersonalSong: 'Personal song', giftInsideByBirthdate: 'based on your date of birth', giftInside100: '+100 Sparks as a gift', giftInside100Sub: 'for your future songs', giftInsideFromName: 'from {name}', grNoteNew: 'We\'ll confirm the date of birth on the next step · the gift is already paid', grOpenBtn: 'Open the gift', grGetBtn: 'Get my song', grCreateSong: 'Create your own song', grRedeemedNote: 'The gift is yours 🤍', giftPromoWillApply: 'The promo code applies when you create the song 🤍', gpPayUnavailable: 'Payment is unavailable right now, try later', sharedSongEyebrow: 'A song was shared with you', sharedSongCta: 'Create a song about you', sharedSongLoading: 'Opening the song…', sharedSongFallback: 'Soul song', sharedSaveFav: 'To favorites', sharedCreateOwn: 'Create your own song', sharedLockedLead: 'Listen to a 60-second preview. The author opens the full song.', sharedLockedSub: 'Preview · 60 sec', sharedSavedFav: 'Added to favorites', sharedSavedFavBtn: 'In favorites', favoritesTitle: 'Favorites', favSharedBadge: 'Shared with you', favEmpty: 'Songs you add to favorites will appear here.',
           profileContactsTitle: 'Contacts', profileContactsSub: 'Songs for loved ones — your people', helpReplayTour: 'Watch the tour again',
@@ -27855,6 +27909,9 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           successWhileWaiting: 'Während du wartest', successMoreSong: 'Noch ein Lied',
           footerOffer: 'AGB', footerPrivacy: 'Datenschutz', footerSubManage: 'Pakete verwalten',
           navOracle: 'Orakel', navPlaylist: 'Playlist', navContacts: 'Kontakte', navHelp: 'Hilfe',
+          navHome: 'Start', homeChoiceBirthday: 'Geburtstagslied', quickBirthdayRequest: 'Ein Geburtstagslied für einen Menschen, den ich liebe',
+          nqLove: 'Liebe', nqLoveReq: 'Ein Liebeslied – für meinen Lieblingsmenschen', nqMom: 'Danke, Mama', nqMomReq: 'Ein Lied, um meiner Mama zu danken', nqFriend: 'Beste Freundin', nqFriendReq: 'Ein Lied für meine beste Freundin oder meinen besten Freund', nqWhoNow: 'Wer ich jetzt bin', nqWhoNowReq: 'Ein Lied darüber, wer ich gerade bin', nqCourage: 'Mut', nqCourageReq: 'Ein Lied, das mir den Mut gibt, neu anzufangen',
+          nqFunny: 'Lustig über mich', nqFunnyReq: 'Ein lustiges, selbstironisches Lied über mich', nqAnniversary: 'Unser Jahrestag', nqAnniversaryReq: 'Ein Lied zu unserem Jahrestag', nqChild: 'Für mein Kind', nqChildReq: 'Ein Lied für mein Kind', nqMoment: 'Ein besonderer Moment', nqMomentReq: 'Ein Lied über einen besonderen Moment in meinem Leben',
           heroesTitle: 'Labor', heroFormTitle: 'Held hinzufügen',
           mtTitle: 'meine Playlist', mtEmpty: 'Noch keine Tracks',
           mtEmptyDesc: 'Erstelle deinen ersten — anhand deines Geburtsdatums',
@@ -27959,6 +28016,8 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           iskraClaimTitle: 'Funke des Tages', iskraClaimTextCan: 'Schau täglich vorbei und hol dir einen Funken 🤍 Damit kannst du das Orakel alles über dich fragen.', iskraClaimTextDone: 'Der heutige Funke gehört dir 🤍 Komm morgen für einen neuen wieder.', iskraClaimStreak: 'Serie: {n}', iskraClaimBtn: 'Funken holen', iskraClaimBtnDone: 'Morgen wieder',
           navGifts: 'Geschenke', navMenuGifts: 'Geschenke', giftsTitle: 'Geschenke', giftsSubtitle: 'Schau täglich vorbei — hol dir deinen Funken', giftsExplainer: 'Jeden Tag wartet hier ein Funke auf dich — einfach fürs Vorbeischauen 🤍 Einer reicht, um das Orakel über dich zu fragen, und hundert ergeben einen ganzen Song über dich.', iskraValueTitle: 'Wofür Funken da sind', iskraValueQuestion: 'Frag das Orakel alles über dich — das ist ein Funke', iskraValueSong: 'Sammle hundert — und ein Song deiner Seele entsteht', iskraValueCta: 'Das Orakel fragen', giftsEmptyHint: 'Erstelle deinen ersten Song — und hier öffnet sich der tägliche Funken 🤍', iskraClaimErr: 'Der Funke wurde nicht gutgeschrieben, dein Guthaben blieb unverändert.', iskraClaimRetry: 'Erneut versuchen', iskraCookieFrom: 'Die Botschaft des Orakels für heute', giftsProgLabel: 'im Guthaben', giftsBalanceTopup: 'Funken-Guthaben — aufladen', giftsFirstRunTitle: 'Der Funke des Tages öffnet sich nach dem ersten Song', giftsFirstRunSub: '+2 Funken pro Tag, nach 7 Tagen in Folge noch +10. Funken gehen an Fragen ans Orakel und an den nächsten Song.', giftsFirstRunCta: 'Ersten Song erstellen', giftsEmptyTitle: 'Hier erscheinen deine Funken', giftsEmptySub: 'Erstelle deinen ersten Song — und hol dir jeden Tag deinen Funken', giftsBackHome: '← Zur Startseite',
           giftsSpendCta: 'Frage stellen', giftsSpendSub: 'Frag im Chat alles über dich', giftsRefTitle: 'Lade einen Freund ein', giftsRefSub: 'Funken fürs Abo deines Freundes', giftsRefReward: '+Funken', giftsRefTag: 'Teile deinen Link — wenn ein Freund ein Abo abschließt, bekommst du Funken.', giftsRefStatInvited: 'Eingeladen', giftsRefStatSongs: 'Song erstellt', giftsRefStatEarned: 'Funken erhalten', giftsRefCopy: 'Kopieren', giftsRefCopied: 'Kopiert', giftsRefShare: 'Link teilen', giftsWeekTitle: 'Deine Serie', giftsWeekStreak: '{n} Tage in Folge', giftsWeekDays: 'Mo,Di,Mi,Do,Fr,Sa,So', giftsProgTitle: 'Zum Song deiner Seele', giftsProgSub: 'Sammle 100 Funken — und er entsteht', giftsProgSubPack: 'Das erste Funken-Paket schaltet einen Song frei — danach zahlst du mit Gesammeltem', iskrySongNeedPack: 'Funken schalten einen Song nach deinem ersten Funken-Paket frei. Bis dahin gehen sie an Orakel-Fragen und Deutungen.', errSongIskryNeedPack: 'Ein Funken-Paket schaltet den Song mit Funken frei — oder zahle direkt.', errGiftIskryNeedPack: 'Einen Song mit Funken verschenken geht ab dem ersten Funken-Paket.', giftsFoot: '✦ Komm morgen wieder — deine Serie wächst ✦', giftCardTitle: 'Schenk einem Lieben', giftCardSub: 'Verschenke deinen Song — ein lieber Mensch hört ihn', giftCardCta: 'Einen Song verschenken', iskraClaimedTitle: 'Der Funken ist deiner ✦', iskraFreshSub: 'Ein kleines Geschenk dafür, dass du da bist.', iskraClaimedSub: 'Brich den Keks — das Orakel hat dir eine Botschaft hinterlassen.', iskraCookieBtn: 'Glückskeks öffnen', iskraSaved: 'Im Botschaften-Tagebuch gespeichert', iskraAskDay: 'Das Orakel dazu fragen', iskraGoal: 'Noch {n} Tage in Folge → +10 Funken für eine 7-Tage-Serie', questsTitle: 'Quests', homeCommT: 'Mehr über deine Möglichkeiten', homeCommS: 'News und Tipps — in unserer Community', questJoinT: 'Unserer Community beitreten', questJoinS: 'Sei dabei', questJoinBtn: '+30', questJoinDone: 'Erledigt', questJoinAlready: 'Du bist schon in der Community', questJoinToast: 'Danke! +30 Funken', questJoinCheck: 'Ich bin dabei', questJoinNeedMember: 'Tritt zuerst der Community bei und komm dann zurück', scCommInviteT: 'Energie des Tages — jeden Morgen in der Community', scCommInviteS: 'Kurze Einstimmung auf den Tag und Orakel-News. +30 Funken fürs Beitreten.', scCommInviteBtn: 'Beitreten', profileVkCommunity: 'Community: Energie des Tages, jeden Morgen',
+          // Натив (App Store, 15.10): «мысль дня» и вопрос о дне на языке интерфейса — используются только в ветке window._isNativeApp
+          iskraThoughtDefault: 'Heute liegt deine Stärke in der Ruhe. Gönn dir eine Pause: Die Antwort kommt oft, wenn du aufhörst, ihr nachzujagen.', iskraAskDayQ: 'Hilf mir, den heutigen Tag sanft zu leben — worauf kann ich mich stützen, und was ist gut an ihm?',
           // gift create/redeem pages (giftPage / giftRedeemPage)
           giftPageTitle: 'Song verschenken', gpEyebrow: 'Geschenk für einen lieben Menschen', gpTitle: 'Geschenk-Bestellung', gpWhat: 'Was du schenkst', gpItem: 'Seelensong', gpInGift: 'als Geschenk', gpToClose: 'einem lieben Menschen', gpPayMethod: 'Zahlungsart', gpMStars: 'Telegram Stars', gpMStarsSub: 'Mit Telegram Stars bezahlen', gpMCard: 'Karte · T-Bank', gpMCardSub: 'Visa / Mastercard / MIR', gpNote: 'Nach der Zahlung erhältst du einen Promo-Code — sende ihn deinem Liebsten, er aktiviert das Geschenk beim Erstellen eines Songs.', gpPay: 'Bezahlen', gpSecure: 'Sichere Zahlung · Promo-Code kommt sofort', gpDoneTitle: 'Geschenk bereit 🤍', gpDoneText: 'Ein Promo-Code für einen Seelensong — sende ihn deinem Liebsten, er gibt ihn beim Erstellen ein.', gpDoneShare: 'Geschenk senden', gpDoneCopy: 'Code kopieren', gpCodeCopied: 'Code kopiert ✓', giftsMyTitle: 'Meine Geschenke', giftCodePending: 'Wartet auf Aktivierung', giftCodeUsed: 'Aktiviert', giftCodeFor: 'Für: ', giftCodeCopy: 'Kopieren', giftCodeSend: 'Senden', gpShareText: 'Ich schenke dir einen Seelensong 🤍 Promo-Code: ', giftToPlaceholder: 'Für · wähle jemanden', giftToName: 'Für · {name}', giftNoSongs: 'Keine fertigen Songs', giftCreateFirst: 'Song erstellen', giftNeedSongTitle: 'Erst einen Song erstellen', giftNeedSongSub: 'Du verschenkst ihn, sobald er fertig ist', giftSoulSong: 'Seelensong', giftSongFallback: 'Song', giftDediPlaceholderPreview: 'Hier erscheint deine Widmung…', giftSecRecip: 'Für wen', giftSecWords: 'Warme Worte', giftSecHow: 'Wie verschenken', giftRecipAdd: 'Hinzufügen', giftDediPlaceholder: 'Schreib ein paar Zeilen für die beschenkte Person…', giftPresetBday: 'Alles Gute zum Geburtstag', giftPresetJust: 'Einfach so, für dich', giftPresetSpecial: 'Du bist etwas Besonderes', giftDlvLink: 'Link', giftDlvTg: 'Telegram', giftDlvQr: 'QR-Code', giftReward: '+5 Funken, wenn dein Geschenk geöffnet wird', giftSendBtn: 'Song verschenken', giftDoneTitle: 'Geschenk bereit!', giftDoneText: '«{name}» für {to}. Teile den Link unten — du erfährst es, sobald es geöffnet wird.', giftDoneCopy: 'Kopieren', giftToLovedOne: 'einen lieben Menschen', giftDoneClose: 'Fertig', giftPromptRecipName: 'Für wen ist das Geschenk? Name:', giftAddNamePh: 'Für wen? (z.B. Mama)', giftAddNameOk: 'Fertig', giftLinkCopied: 'Link kopiert', giftSelectFirst: 'Wähle zuerst einen Song', giftFailed: 'Hat nicht geklappt', giftSongYours: 'Der Song gehört dir 🤍', giftLoginToRedeem: 'Melde dich an, um dein Geschenk zu erhalten', giftPlaying: '🎵 {title} läuft', giftIskryCredited: '+{n} Funken gutgeschrieben 🤍', giftSongCredited: 'Ein Song geschenkt 🤍 Erstelle deinen', giftSongUnlocked: 'Dein Song ist freigeschaltet 🤍', giftDeliverShareText: 'Du hast einen Seelensong geschenkt bekommen 🤍 Öffne ihn: {url}', giftNotFound: 'Geschenk nicht gefunden', giftFromLovedOne: 'Ein lieber Mensch', grFromSealedDefault: 'Ein Geschenk für dich', grFromSealedName: 'Ein Geschenk von {name}', grTitleSealed: 'Du hast einen<br>Seelensong erhalten 🤍', grLeadDefault: 'Öffne das Geschenk, um deinen persönlichen Song zu hören.', grFromOpenDefault: 'Geschenk', grFromOpenName: 'Geschenk von {name}', grTitleOpen: 'Mit Liebe 🤍', grLeadNew: '{name} schenkt dir einen <b>persönlichen Song</b> nach deinem Geburtsdatum. Öffne das Geschenk, um ihn zu erstellen.', grLeadExisting: '{name} schenkt dir einen <b>Seelensong</b>. Öffne das Geschenk, um ihn zu hören.', giftInsidePersonalSong: 'Persönlicher Song', giftInsideByBirthdate: 'nach deinem Geburtsdatum', giftInside100: '+100 Funken geschenkt', giftInside100Sub: 'für deine künftigen Songs', giftInsideFromName: 'von {name}', grNoteNew: 'Das Geburtsdatum klären wir im nächsten Schritt · das Geschenk ist bereits bezahlt', grOpenBtn: 'Geschenk öffnen', grGetBtn: 'Meinen Song holen', grCreateSong: 'Erstelle deinen Song', grRedeemedNote: 'Das Geschenk gehört dir 🤍', giftPromoWillApply: 'Der Promo-Code wird beim Erstellen des Songs angewendet 🤍', gpPayUnavailable: 'Zahlung ist gerade nicht verfügbar, versuche es später', sharedSongEyebrow: 'Ein Song wurde mit dir geteilt', sharedSongCta: 'Erstelle einen Song über dich', sharedSongLoading: 'Song wird geöffnet…', sharedSongFallback: 'Seelensong', sharedSaveFav: 'Zu Favoriten', sharedCreateOwn: 'Erstelle dein eigenes Lied', sharedLockedLead: 'Hör dir einen 60-Sekunden-Ausschnitt an. Das ganze Lied schaltet der Autor frei.', sharedLockedSub: 'Ausschnitt · 60 Sek.', sharedSavedFav: 'Zu Favoriten hinzugefügt', sharedSavedFavBtn: 'In Favoriten', favoritesTitle: 'Favoriten', favSharedBadge: 'Mit dir geteilt', favEmpty: 'Hier erscheinen Lieder, die du zu Favoriten hinzufügst.',
           profileContactsTitle: 'Kontakte', profileContactsSub: 'Lieder für Lieblingsmenschen — deine Kartei', helpReplayTour: 'Tour erneut ansehen',
@@ -28795,6 +28854,9 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           successWhileWaiting: 'En attendant ta chanson', successMoreSong: 'Encore une chanson',
           footerOffer: 'CGU', footerPrivacy: 'Confidentialité', footerSubManage: 'Gérer les forfaits',
           navOracle: 'Oracle', navPlaylist: 'Playlist', navContacts: 'Contacts', navHelp: 'Aide',
+          navHome: 'Accueil', homeChoiceBirthday: 'Chanson d’anniversaire', quickBirthdayRequest: 'Une chanson d’anniversaire pour quelqu’un que j’aime',
+          nqLove: 'Amour', nqLoveReq: 'Une chanson d’amour — pour celui ou celle que j’aime', nqMom: 'Merci maman', nqMomReq: 'Une chanson pour remercier ma maman', nqFriend: 'Meilleure amie', nqFriendReq: 'Une chanson pour ma meilleure amie ou mon meilleur ami', nqWhoNow: 'Qui je suis maintenant', nqWhoNowReq: 'Une chanson sur qui je suis en ce moment', nqCourage: 'Courage', nqCourageReq: 'Une chanson qui me donne le courage de recommencer',
+          nqFunny: 'Autodérision', nqFunnyReq: 'Une chanson drôle et autodérisoire sur moi', nqAnniversary: 'Notre anniversaire', nqAnniversaryReq: 'Une chanson pour notre anniversaire de couple', nqChild: 'Pour mon enfant', nqChildReq: 'Une chanson pour mon enfant', nqMoment: 'Un moment spécial', nqMomentReq: 'Une chanson sur un moment spécial de ma vie',
           heroesTitle: 'Laboratoire', heroFormTitle: 'Ajouter un héros',
           mtTitle: 'ma playlist', mtEmpty: 'Pas encore de titres',
           mtEmptyDesc: 'Crée la première — à partir de ta date de naissance',
@@ -28899,6 +28961,8 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           iskraClaimTitle: 'Étincelle du jour', iskraClaimTextCan: 'Passe chaque jour et prends une Étincelle 🤍 Avec elle, tu peux poser n\'importe quelle question sur toi à l\'Oracle.', iskraClaimTextDone: 'L\'Étincelle du jour est à toi 🤍 Reviens demain pour une nouvelle.', iskraClaimStreak: 'Série : {n}', iskraClaimBtn: 'Prendre l\'Étincelle', iskraClaimBtnDone: 'Reviens demain',
           navGifts: 'Cadeaux', navMenuGifts: 'Cadeaux', giftsTitle: 'Cadeaux', giftsSubtitle: 'Passe chaque jour — prends ton Étincelle', giftsExplainer: 'Chaque jour, une Étincelle t\'attend ici — juste parce que tu es là 🤍 Une seule suffit pour poser une question sur toi à l\'Oracle, et cent forment une chanson entière sur toi.', iskraValueTitle: 'À quoi servent les Étincelles', iskraValueQuestion: 'Demande à l\'Oracle tout sur toi — c\'est une Étincelle', iskraValueSong: 'Réunis-en cent — et une chanson de ton âme naît', iskraValueCta: 'Demander à l\'Oracle', giftsEmptyHint: 'Crée ta première chanson — et l\'étincelle quotidienne s\'ouvrira ici 🤍', iskraClaimErr: 'L\'Étincelle n\'a pas été créditée, ton solde n\'a pas changé.', iskraClaimRetry: 'Réessayer', iskraCookieFrom: 'Le message de l\'Oracle pour aujourd\'hui', giftsProgLabel: 'sur le solde', giftsBalanceTopup: 'Solde d\u0027Étincelles — recharger', giftsFirstRunTitle: 'L\'Étincelle du jour s\'ouvre après ta première chanson', giftsFirstRunSub: '+2 Étincelles par jour, et +10 après 7 jours d\'affilée. Les Étincelles servent aux questions à l\'Oracle et à ta prochaine chanson.', giftsFirstRunCta: 'Créer ta première chanson', giftsEmptyTitle: 'Tes Étincelles apparaîtront ici', giftsEmptySub: 'Crée ta première chanson — et récupère ton Étincelle du jour chaque jour', giftsBackHome: '← Accueil',
           giftsSpendCta: 'Poser une question', giftsSpendSub: 'Pose n\'importe quelle question sur toi dans le chat', giftsRefTitle: 'Invite un ami', giftsRefSub: "Des Étincelles quand ton ami s'abonne", giftsRefReward: '+Étincelles', giftsRefTag: 'Partage ton lien — quand un ami prend un abonnement, tu reçois des Étincelles.', giftsRefStatInvited: 'Invités', giftsRefStatSongs: 'Ont créé', giftsRefStatEarned: 'Étincelles reçues', giftsRefCopy: 'Copier', giftsRefCopied: 'Copié', giftsRefShare: 'Partager le lien', giftsWeekTitle: 'Ta série', giftsWeekStreak: '{n} jours d\'affilée', giftsWeekDays: 'Lun,Mar,Mer,Jeu,Ven,Sam,Dim', giftsProgTitle: 'Vers la chanson de ton âme', giftsProgSub: 'Réunis 100 Étincelles — et elle naît', giftsProgSubPack: "Le premier pack d'Étincelles ouvre une chanson — ensuite tu paies avec ce que tu as réuni", iskrySongNeedPack: "Les Étincelles ouvrent une chanson après ton premier pack d'Étincelles. Pour l'instant elles servent aux questions à l'Oracle et aux lectures.", errSongIskryNeedPack: "Un pack d'Étincelles ouvre la chanson en Étincelles — ou paie directement.", errGiftIskryNeedPack: "Offrir une chanson en Étincelles s'ouvre après ton premier pack d'Étincelles.", giftsFoot: '✦ Reviens demain — ta série grandit ✦', giftCardTitle: 'Offre à un proche', giftCardSub: 'Offre ta chanson — un proche l\'entendra', giftCardCta: 'Offrir une chanson', iskraClaimedTitle: "L'Étincelle est à toi ✦", iskraFreshSub: 'Un petit cadeau pour ta présence.', iskraClaimedSub: "Casse le biscuit — l'Oracle t'a laissé un message.", iskraCookieBtn: 'Ouvrir le biscuit de prédiction', iskraSaved: 'Enregistré dans le Journal des messages', iskraAskDay: "Demander à l'Oracle", iskraGoal: "Encore {n} jours d'affilée → +10 Étincelles pour une série de 7 jours", questsTitle: 'Quêtes', homeCommT: 'Plus de possibilités pour toi', homeCommS: 'Actus et astuces — dans notre communauté', questJoinT: 'Rejoindre notre communauté', questJoinS: 'Viens avec nous', questJoinBtn: '+30', questJoinDone: 'Fait', questJoinAlready: 'Tu es déjà dans la communauté', questJoinToast: 'Merci ! +30 Étincelles', questJoinCheck: "J'ai rejoint", questJoinNeedMember: "Rejoins d'abord la communauté, puis reviens", scCommInviteT: "Énergie du jour — chaque matin dans la communauté", scCommInviteS: "Un court réglage du jour et les nouvelles de l'Oracle. +30 Étincelles pour l'adhésion.", scCommInviteBtn: 'Rejoindre', profileVkCommunity: 'Communauté : Énergie du jour, chaque matin',
+          // Натив (App Store, 15.10): «мысль дня» и вопрос о дне на языке интерфейса — используются только в ветке window._isNativeApp
+          iskraThoughtDefault: 'Aujourd’hui, ta force est dans le calme. Accorde-toi une pause : la réponse vient souvent quand on cesse de la chercher.', iskraAskDayQ: 'Aide-moi à vivre ma journée en douceur — sur quoi m’appuyer, et qu’y a-t-il de bon aujourd’hui ?',
           // gift create/redeem pages (giftPage / giftRedeemPage)
           giftPageTitle: 'Offrir une chanson', gpEyebrow: 'Un cadeau pour un proche', gpTitle: 'Commande du cadeau', gpWhat: 'Ce que tu offres', gpItem: 'Chanson de l\'âme', gpInGift: 'en cadeau', gpToClose: 'un proche', gpPayMethod: 'Moyen de paiement', gpMStars: 'Telegram Stars', gpMStarsSub: 'Payer avec Telegram Stars', gpMCard: 'Carte · T-Bank', gpMCardSub: 'Visa / Mastercard / MIR', gpNote: 'Après le paiement tu recevras un code promo — envoie-le à ton proche, il active le cadeau en créant une chanson.', gpPay: 'Payer', gpSecure: 'Paiement sécurisé · le code promo arrive aussitôt', gpDoneTitle: 'Cadeau prêt 🤍', gpDoneText: 'Un code promo pour une chanson de l\'âme — envoie-le à ton proche, il le saisit à la création.', gpDoneShare: 'Envoyer le cadeau', gpDoneCopy: 'Copier le code', gpCodeCopied: 'Code copié ✓', giftsMyTitle: 'Mes cadeaux', giftCodePending: 'En attente d’activation', giftCodeUsed: 'Activé', giftCodeFor: 'Pour : ', giftCodeCopy: 'Copier', giftCodeSend: 'Envoyer', gpShareText: 'Je t\'offre une chanson de l\'âme 🤍 Code promo : ', giftToPlaceholder: 'Pour · choisis qui', giftToName: 'Pour · {name}', giftNoSongs: 'Aucune chanson prête', giftCreateFirst: 'Créer une chanson', giftNeedSongTitle: 'Crée d\'abord une chanson', giftNeedSongSub: 'Tu l\'offriras une fois prête', giftSoulSong: 'Chanson de l\'âme', giftSongFallback: 'Chanson', giftDediPlaceholderPreview: 'Ta dédicace apparaîtra ici…', giftSecRecip: 'Pour qui', giftSecWords: 'Mots tendres', giftSecHow: 'Comment offrir', giftRecipAdd: 'Ajouter', giftDediPlaceholder: 'Écris quelques mots pour la personne à qui tu offres…', giftPresetBday: 'Joyeux anniversaire', giftPresetJust: 'Juste pour toi', giftPresetSpecial: 'Tu es quelqu\'un de spécial', giftDlvLink: 'Lien', giftDlvTg: 'Telegram', giftDlvQr: 'Code QR', giftReward: '+5 Étincelles à l\'ouverture du cadeau', giftSendBtn: 'Offrir la chanson', giftDoneTitle: 'Cadeau prêt !', giftDoneText: '«{name}» pour {to}. Partage le lien ci-dessous — tu le sauras à l\'ouverture.', giftDoneCopy: 'Copier', giftToLovedOne: 'un proche', giftDoneClose: 'Terminé', giftPromptRecipName: 'Pour qui est le cadeau ? Prénom :', giftAddNamePh: 'Pour qui ? (ex. Maman)', giftAddNameOk: 'OK', giftLinkCopied: 'Lien copié', giftSelectFirst: 'Choisis d\'abord une chanson', giftFailed: 'Ça n\'a pas marché', giftSongYours: 'La chanson est à toi 🤍', giftLoginToRedeem: 'Connecte-toi pour recevoir ton cadeau', giftPlaying: '🎵 {title} joue', giftIskryCredited: '+{n} Étincelles créditées 🤍', giftSongCredited: 'Une chanson en cadeau 🤍 Crée la tienne', giftSongUnlocked: 'Ta chanson est débloquée 🤍', giftDeliverShareText: 'On t\'offre une chanson de l\'âme 🤍 Ouvre-la : {url}', giftNotFound: 'Cadeau introuvable', giftFromLovedOne: 'Un proche', grFromSealedDefault: 'Un cadeau pour toi', grFromSealedName: 'Un cadeau de {name}', grTitleSealed: 'On t\'offre<br>une chanson de l\'âme 🤍', grLeadDefault: 'Ouvre le cadeau pour écouter ta chanson personnelle.', grFromOpenDefault: 'Cadeau', grFromOpenName: 'Cadeau de {name}', grTitleOpen: 'Avec tendresse 🤍', grLeadNew: '{name} t\'offre une <b>chanson personnelle</b> d\'après ta date de naissance. Ouvre le cadeau pour la créer.', grLeadExisting: '{name} t\'offre une <b>chanson de l\'âme</b>. Ouvre le cadeau pour l\'écouter.', giftInsidePersonalSong: 'Chanson personnelle', giftInsideByBirthdate: 'd\'après ta date de naissance', giftInside100: '+100 Étincelles en cadeau', giftInside100Sub: 'pour tes futures chansons', giftInsideFromName: 'de {name}', grNoteNew: 'Nous préciserons la date de naissance à l\'étape suivante · le cadeau est déjà payé', grOpenBtn: 'Ouvrir le cadeau', grGetBtn: 'Recevoir ma chanson', grCreateSong: 'Crée ta chanson', grRedeemedNote: 'Le cadeau est à toi 🤍', giftPromoWillApply: 'Le code promo s\'applique à la création de la chanson 🤍', gpPayUnavailable: 'Le paiement est indisponible, réessaie plus tard', sharedSongEyebrow: 'On a partagé une chanson avec toi', sharedSongCta: 'Crée une chanson sur toi', sharedSongLoading: 'Ouverture de la chanson…', sharedSongFallback: 'Chanson de l\'âme', sharedSaveFav: 'Aux favoris', sharedCreateOwn: 'Crée ta propre chanson', sharedLockedLead: 'Écoute un extrait de 60 secondes. L\'auteur ouvre la chanson complète.', sharedLockedSub: 'Extrait · 60 s', sharedSavedFav: 'Ajouté aux favoris', sharedSavedFavBtn: 'Dans les favoris', favoritesTitle: 'Favoris', favSharedBadge: 'Partagé avec toi', favEmpty: 'Les chansons que tu ajoutes aux favoris apparaîtront ici.',
           profileContactsTitle: 'Contacts', profileContactsSub: 'Chansons pour tes proches — ton répertoire', helpReplayTour: 'Revoir le tutoriel',
@@ -29281,7 +29345,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           iskraAskDay: 'Спросить в Soul Chat про это',
           compatCtaAsk: 'Спросить в Soul Chat о связи',
           iskraValueQuestion: 'Задай в Soul Chat любой вопрос о себе — это одна Искра',
-          iskraCookieFrom: 'Послание Soul Chat на сегодня',
+          iskraCookieFrom: 'Мысль дня для тебя',
           iskryPackQuestions: 'вопросов в Soul Chat',
           tuWhy2: 'Тратятся на песни, вопросы в Soul Chat и подарки',
           scGreeting: 'Привет, я Soul Chat 🤍 Спрашивай о чём угодно: о себе, пути, отношениях. Я рядом.',
@@ -29304,7 +29368,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           scCommInviteS: 'Короткий настрой на день и новости Soul Chat. За вступление — +30 Искр.',
           histEmptyS: 'Спроси в Soul Chat о чём угодно — здесь останется всё, о чём вы говорили, чтобы можно было вернуться.',
           iskraClaimTextCan: 'Заходи каждый день и забирай Искру 🤍 С ней можно задать в Soul Chat любой вопрос о себе.',
-          iskraClaimedSub: 'Разломи печеньку — Soul Chat оставил тебе послание.',
+          iskraClaimedSub: 'Мысль дня уже ждёт — открой её.',
           tourRewardText: 'Ты прошёл знакомство — лови подарок на старт. 30 Искр — это <b>30 вопросов в Soul Chat</b>.',
           ctxEmptyS: 'Добавь дату рождения близкого — Soul Chat сможет говорить о нём и разбирать вашу совместимость.',
           ctxHintPickOne: '<b>Выбери карточку</b> — Soul Chat будет говорить об этом человеке.',
@@ -29330,19 +29394,43 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           scEnterChat: 'Войти в Soul Chat',
           scNoRequestText: 'Soul Chat строит персональный разговор на основе твоих данных.',
           scPlanBasicDesc: '5 треков + Soul Chat',
-          scPromoIntro: 'Soul Chat — твой ИИ-ассистент, который понимает тебя словно лучший друг или Высшее Я. Отвечает на вопросы о характере, предназначении и пути.',
+          scPromoIntro: 'Soul Chat — твой ИИ-ассистент, который понимает тебя словно близкий друг. Отвечает на вопросы о характере, предназначении и пути.',
           scPromoText: 'Soul Chat — твой ИИ-ассистент, который понимает тебя на глубоком уровне.',
           scSubIncluded: 'Soul Chat включён в пакет',
           scTyping: 'Soul Chat печатает…',
           soulChatDefault: 'Soul Chat — диалоги с душой по заявке. Доступ по пакету.',
           soulChatNoAccess: 'Soul Chat — диалоги с душой. Доступ по пакету Душа (до 50 сообщений) или Глубина (без лимита).',
-          helpB2: '<p><strong>Режимы создания:</strong></p><ul><li><strong>Песня о себе</strong> — твой личный звуковой портрет: кто ты, твоя сила и внутренний путь</li><li><strong>Песня для пары</strong> — для двоих (влюблённых, друзей, подруг). Анализирует обе даты рождения и отражает союз</li><li><strong>Энергия дня</strong> — песня под конкретную дату и место. Какие возможности открываются прямо сейчас</li></ul><p><strong>Стиль музыки:</strong></p><ul><li><strong>Свой стиль</strong> — выбери жанр и настроение вручную</li><li><strong>Звучание даты</strong> — система подберёт стиль по твоей дате рождения</li><li><strong>Как у звезды</strong> — укажи любимого артиста, и песня зазвучит в его стиле</li></ul><p><strong>Быстрые запросы</strong> — готовые идеи: песня силы, поздравление с днём рождения, медитативная, про отпускание прошлого и другие.</p><p><strong>Soul Chat</strong> — ИИ-ассистент, который понимает тебя на глубинном уровне. Задавай вопросы о характере, предназначении и пути.</p>',
+          helpB2: '<p><strong>Режимы создания:</strong></p><ul><li><strong>Песня о себе</strong> — твой личный звуковой портрет: кто ты, твоя сила и внутренний путь</li><li><strong>Песня для пары</strong> — для двоих (влюблённых, друзей, подруг). По двум датам рождения — песня о вас двоих</li><li><strong>Энергия дня</strong> — песня для выбранного тобой дня</li></ul><p><strong>Стиль музыки:</strong></p><ul><li><strong>Свой стиль</strong> — выбери жанр и настроение вручную</li><li><strong>Звучание даты</strong> — система подберёт стиль по твоей дате рождения</li><li><strong>Стиль артиста</strong> — укажи любимого артиста, и песня зазвучит в его стиле</li></ul><p><strong>Быстрые запросы</strong> — готовые идеи: песня силы, поздравление с днём рождения, медитативная, про отпускание прошлого и другие.</p><p><strong>Soul Chat</strong> — ИИ-ассистент, который понимает тебя на глубинном уровне. Задавай вопросы о характере, предназначении и пути.</p>',
           scPrismLockedMsg: 'Этот разбор доступен с пакетом «Soul Chat». Первый разбор «Имя души» — в подарок.',
           helpT8: 'Soul Chat и пакеты',
           scHeroTitle: 'Разговор по душам | Soul Chat',
           soulChatPageTitle: 'Разговор по душам | Soul Chat',
           toastScExpired: 'Время доступа истекло — открой Soul Chat снова',
-          scIntroSubtitle: 'Soul Chat — разговор по душам. Задай вопрос, который давно крутится в голове. Читаю твою дату рождения и говорю без общих слов. Один вопрос — одна Искра.'
+          scIntroSubtitle: 'Soul Chat — разговор по душам. Задай вопрос, который давно крутится в голове. Читаю твою дату рождения и говорю без общих слов. Один вопрос — одна Искра.',
+          // Повторная подача после отказа 4.3b (15.10): без «печеньки предсказаний», «звёзд», «скрытого дара»,
+          // «анализа/расшифровки» и непроверенных цифр; счётчик — это песни; ИИ — сторонние сервисы из Политики (5.1.2(i)).
+          iskraCookieBtn: 'Открыть мысль дня',
+          songCounterLabel: 'песен уже создано',
+          openedOptinP: 'Могу присылать короткую заметку каждое утро: как ты сегодня и на что можно опереться. Выключить можно в любой момент.',
+          oracleOptinDesc: 'Пока песня рождается — могу присылать короткую заметку каждое утро: как ты сегодня и на что можно опереться.',
+          helpB1: '<p>YupSoul пишет <strong>персональную песню только для тебя</strong> — по твоей дате рождения и твоим словам.</p><p>Это не шаблон: каждая песня уникальна и принадлежит только тебе.</p>',
+          genStage2: 'Слушаю, как звучит твоя дата',
+          homeChoiceMain3: 'Стиль артиста',
+          typewriter2: 'Прочитай простыми словами, что твоя песня говорит о тебе.',
+          typewriter3: 'Говори по душам в Soul Chat.',
+          homeTeaser: 'В твоей дате рождения живёт песня. Давай её напишем.',
+          homeTeaserHtml: 'В твоей <span class="tagline-glow">дате рождения</span> живёт <span class="tagline-glow">песня</span>. Давай её напишем.',
+          unlockLead: 'Прозвучала первая минута. <b>Полная песня — около 4 минут</b>, написана по твоей дате рождения. Впереди — припев, финал и твоё имя в словах.',
+          unlockR1s: 'около 4 минут',
+          aiConsentDesc: 'Песню и ответы помогает писать искусственный интеллект: твой рассказ и дата рождения передаются сторонним сервисам ИИ из Политики конфиденциальности — только для этого.',
+          guideTipRequest: 'Пара слов о теме — и песня получится точнее. Не хочешь — пропускай, соберём по твоей дате рождения.',
+          advSettingsHint: 'По желанию. Место и время рождения добавят песне деталей — можно пропустить.',
+          scGiftHeading: 'Попробуй Soul Chat — 24 часа',
+          toastScOpened: 'Soul Chat открыт на 24 часа',
+          payOvSubtitleSc: 'Soul Chat на 24 часа',
+          scPrismCopy: 'Скопировать разбор',
+          scPrismCopied: 'Разбор скопирован',
+          ariaSynastryTeaser: 'Совместимость доступна в тарифе Лаборатория' // VoiceOver: без «синастрии»
         },
         en: {
           // Сборка 43: строка главной «по мотивам даты рождения»; «аскеза» → «практика» (Алла 14.10) — только iOS
@@ -29440,7 +29528,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           iskraAskDay: 'Ask Soul Chat about this',
           compatCtaAsk: 'Ask Soul Chat about your bond',
           iskraValueQuestion: 'Ask Soul Chat anything about you — that’s one Spark',
-          iskraCookieFrom: 'Soul Chat’s message for today',
+          iskraCookieFrom: 'Today’s thought for you',
           iskryPackQuestions: 'Soul Chat questions',
           tuWhy2: 'Spend them on songs, Soul Chat questions and gifts',
           scGreeting: 'Hi, I’m Soul Chat 🤍 Ask me anything: about yourself, your path, your relationships. I’m here.',
@@ -29463,7 +29551,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           scCommInviteS: 'A short daily tune-in and Soul Chat news. +30 Sparks for joining.',
           histEmptyS: 'Ask Soul Chat anything — everything you talked about stays here so you can come back to it.',
           iskraClaimTextCan: 'Drop by each day and grab a Spark 🤍 With it you can ask Soul Chat anything about yourself.',
-          iskraClaimedSub: 'Break the cookie — Soul Chat left you a message.',
+          iskraClaimedSub: 'Today’s thought is waiting — open it.',
           tourRewardText: 'You\'ve finished the tour — here\'s a gift to start with. 30 Sparks is <b>30 questions in Soul Chat</b>.',
           ctxEmptyS: 'Add a loved one’s birth date — Soul Chat will be able to talk about them and read your compatibility.',
           ctxHintPickOne: '<b>Pick a card</b> — Soul Chat will talk about this person.',
@@ -29489,19 +29577,43 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           scEnterChat: 'Enter Soul Chat',
           scNoRequestText: 'Soul Chat builds a personalized conversation based on your data.',
           scPlanBasicDesc: '5 tracks + Soul Chat',
-          scPromoIntro: 'Soul Chat is your AI assistant that understands you like a best friend or your Higher Self. Answers questions about your character, purpose and path.',
+          scPromoIntro: 'Soul Chat is your AI assistant that understands you like a close friend. Answers questions about your character, purpose and path.',
           scPromoText: 'Soul Chat — your AI assistant that understands you deeply.',
           scSubIncluded: 'Soul Chat included in package',
           scTyping: 'Soul Chat is typing…',
           soulChatDefault: 'Soul Chat — dialogues with your soul per request. Available by package.',
           soulChatNoAccess: 'Soul Chat — dialogues with your soul. Available with Soul (up to 50 messages) or Depth (unlimited) package.',
-          helpB2: '<p><strong>Creation modes:</strong></p><ul><li><strong>Song about me</strong> — your personal sonic portrait: who you are, your strength and inner path</li><li><strong>Song for two</strong> — for a couple (lovers, friends). Analyses both dates and reflects the union</li><li><strong>Day energy</strong> — a song for a specific date and place. What opportunities are opening right now</li></ul><p><strong>Music style:</strong></p><ul><li><strong>Custom style</strong> — choose genre and mood manually</li><li><strong>Sound of your date</strong> — the system picks the style from your date of birth</li><li><strong>Like a star</strong> — name your favourite artist and the song will sound like theirs</li></ul><p><strong>Quick requests</strong> — ready-made ideas: power song, birthday song, meditative, about letting go, and more.</p><p><strong>Soul Chat</strong> — an AI assistant that understands you deeply. Ask questions about your character, purpose and path.</p>',
+          helpB2: '<p><strong>Creation modes:</strong></p><ul><li><strong>Song about me</strong> — your personal sonic portrait: who you are, your strength and inner path</li><li><strong>Song for two</strong> — for a couple (lovers, friends). Built from both dates of birth — a song about the two of you</li><li><strong>Energy of the day</strong> — a song for a day you choose</li></ul><p><strong>Music style:</strong></p><ul><li><strong>Custom style</strong> — choose genre and mood manually</li><li><strong>Sound of your date</strong> — the system picks the style from your date of birth</li><li><strong>Artist style</strong> — name your favourite artist and the song will sound in their style</li></ul><p><strong>Quick requests</strong> — ready-made ideas: power song, birthday song, meditative, about letting go, and more.</p><p><strong>Soul Chat</strong> — an AI assistant that understands you deeply. Ask questions about your character, purpose and path.</p>',
           scPrismLockedMsg: 'This reading is available with the Soul Chat package. The first reading «Soul Name» is a gift.',
           helpT8: 'Soul Chat & packages',
           scHeroTitle: 'Heart-to-heart | Soul Chat',
           soulChatPageTitle: 'Soul Chat',
           toastScExpired: 'Access time expired — open Soul Chat again',
-          scIntroSubtitle: 'Soul Chat — a heart-to-heart talk. Ask the question that’s been on your mind for a while. I read your birth date and speak without generalities. One question — one Spark.'
+          scIntroSubtitle: 'Soul Chat — a heart-to-heart talk. Ask the question that’s been on your mind for a while. I read your birth date and speak without generalities. One question — one Spark.',
+          // Повторная подача после отказа 4.3b (15.10): без «печеньки предсказаний», «звёзд», «скрытого дара»,
+          // «анализа/расшифровки» и непроверенных цифр; счётчик — это песни; ИИ — сторонние сервисы из Политики (5.1.2(i)).
+          iskraCookieBtn: 'Open today’s thought',
+          songCounterLabel: 'songs already created',
+          openedOptinP: 'I can send you a short note each morning: how you are today and what you can lean on. Turn it off anytime.',
+          oracleOptinDesc: 'While your song is being born, I can send you a short note each morning: how you are today and what you can lean on.',
+          helpB1: '<p>YupSoul writes a <strong>personal song just for you</strong> from your date of birth and your own words.</p><p>Not a template: each song is unique and belongs only to you.</p>',
+          genStage2: 'Listening to how your date sounds',
+          homeChoiceMain3: 'Artist style',
+          typewriter2: 'Read what your song says about you — in plain words.',
+          typewriter3: 'Have a heart-to-heart talk in Soul Chat.',
+          homeTeaser: 'Your date of birth holds a song. Let’s write it.',
+          homeTeaserHtml: 'Your <span class="tagline-glow">date of birth</span> holds a <span class="tagline-glow">song</span>. Let’s write it.',
+          unlockLead: 'The first minute has played. <b>The full song is about 4 minutes</b>, written from your birth date. Ahead — the chorus, the finale and your name in the words.',
+          unlockR1s: 'about 4 minutes',
+          aiConsentDesc: 'An AI helps write your song and answers: your story and date of birth are sent to third-party AI services listed in our Privacy Policy, only for that.',
+          guideTipRequest: 'A few words about the theme and the song comes out truer. Not in the mood? Skip it — we’ll shape it from your date of birth.',
+          advSettingsHint: 'Optional. Birth place and time add detail to your song — you can skip them.',
+          scGiftHeading: 'Try Soul Chat — 24 hours',
+          toastScOpened: 'Soul Chat opened for 24 hours',
+          payOvSubtitleSc: 'Soul Chat for 24 hours',
+          scPrismCopy: 'Copy reading',
+          scPrismCopied: 'Reading copied',
+          ariaSynastryTeaser: 'Compatibility is available in the Lab plan'
         },
         de: {
           // Сборка 43: строка главной «по мотивам даты рождения»; «аскеза» → «практика» (Алла 14.10) — только iOS
@@ -29599,7 +29711,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           iskraAskDay: 'Soul Chat dazu fragen',
           compatCtaAsk: 'Soul Chat zu eurer Verbindung fragen',
           iskraValueQuestion: 'Frag Soul Chat alles über dich — das ist ein Funke',
-          iskraCookieFrom: 'Die Botschaft von Soul Chat für heute',
+          iskraCookieFrom: 'Dein Gedanke für heute',
           iskryPackQuestions: 'Fragen im Soul Chat',
           tuWhy2: 'Für Songs, Fragen im Soul Chat und Geschenke',
           scGreeting: 'Hallo, ich bin Soul Chat 🤍 Frag mich alles: über dich, deinen Weg, deine Beziehungen. Ich bin da.',
@@ -29622,7 +29734,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           scCommInviteS: 'Kurze Einstimmung auf den Tag und Soul-Chat-News. +30 Funken fürs Beitreten.',
           histEmptyS: 'Frag Soul Chat, was du willst — hier bleibt alles, worüber ihr gesprochen habt, damit du zurückkehren kannst.',
           iskraClaimTextCan: 'Schau täglich vorbei und hol dir einen Funken 🤍 Damit kannst du Soul Chat alles über dich fragen.',
-          iskraClaimedSub: 'Brich den Keks — Soul Chat hat dir eine Botschaft hinterlassen.',
+          iskraClaimedSub: 'Der Gedanke des Tages wartet — öffne ihn.',
           tourRewardText: 'Du hast die Tour geschafft — hier ist dein Startgeschenk. 30 Funken sind <b>30 Fragen im Soul Chat</b>.',
           ctxEmptyS: 'Füge das Geburtsdatum eines nahen Menschen hinzu — Soul Chat kann dann über ihn sprechen und eure Verträglichkeit deuten.',
           ctxHintPickOne: '<b>Wähle eine Karte</b> — Soul Chat spricht über diese Person.',
@@ -29648,19 +29760,45 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           scEnterChat: 'Soul Chat betreten',
           scNoRequestText: 'Soul Chat baut ein persönliches Gespräch auf deinen Daten auf.',
           scPlanBasicDesc: '5 Lieder + Soul Chat',
-          scPromoIntro: 'Soul Chat ist dein KI-Assistent, der dich versteht wie ein bester Freund oder dein Höheres Selbst. Beantwortet Fragen zu Charakter, Bestimmung und Weg.',
+          scPromoIntro: 'Soul Chat ist dein KI-Assistent, der dich versteht wie ein guter Freund. Beantwortet Fragen zu Charakter, Bestimmung und Weg.',
           scPromoText: 'Soul Chat — dein KI-Assistent, der dich tiefgehend versteht.',
           scSubIncluded: 'Soul Chat im Paket enthalten',
           scTyping: 'Soul Chat tippt…',
           soulChatDefault: 'Soul Chat — Dialoge mit deiner Seele pro Anfrage. Per Paket.',
           soulChatNoAccess: 'Soul Chat — Dialoge mit deiner Seele. Mit Soul (bis 50 Nachrichten) oder Depth (unbegrenzt) Paket.',
-          helpB2: '<p><strong>Erstellungsmodi:</strong></p><ul><li><strong>Lied über mich</strong> — dein persönliches Klangportrait: wer du bist, deine Stärke und innerer Weg</li><li><strong>Lied für zwei</strong> — für ein Paar (Verliebte, Freunde). Analysiert beide Daten und spiegelt die Verbindung wider</li><li><strong>Tagesenergie</strong> — ein Lied für ein bestimmtes Datum und Ort. Welche Möglichkeiten öffnen sich gerade jetzt</li></ul><p><strong>Musikstil:</strong></p><ul><li><strong>Eigener Stil</strong> — wähle Genre und Stimmung manuell</li><li><strong>Klang deines Datums</strong> — das System wählt den Stil nach deinem Geburtsdatum</li><li><strong>Wie ein Star</strong> — nenne deinen Lieblingskünstler und der Song klingt wie seiner</li></ul><p><strong>Schnellanfragen</strong> — fertige Ideen: Kraftlied, Geburtstagslied, meditativ, Loslassen und mehr.</p><p><strong>Soul Chat</strong> — ein KI-Assistent, der dich tiefgreifend versteht. Stelle Fragen zu Charakter, Bestimmung und Weg.</p>',
+          helpB2: '<p><strong>Erstellungsmodi:</strong></p><ul><li><strong>Lied über mich</strong> — dein persönliches Klangportrait: wer du bist, deine Stärke und innerer Weg</li><li><strong>Lied für zwei</strong> — für ein Paar (Verliebte, Freunde). Aus beiden Geburtsdaten — ein Lied über euch zwei</li><li><strong>Tagesenergie</strong> — ein Lied für einen Tag deiner Wahl</li></ul><p><strong>Musikstil:</strong></p><ul><li><strong>Eigener Stil</strong> — wähle Genre und Stimmung manuell</li><li><strong>Klang deines Datums</strong> — das System wählt den Stil nach deinem Geburtsdatum</li><li><strong>Künstler-Stil</strong> — nenne deinen Lieblingskünstler, und der Song klingt in seinem Stil</li></ul><p><strong>Schnellanfragen</strong> — fertige Ideen: Kraftlied, Geburtstagslied, meditativ, Loslassen und mehr.</p><p><strong>Soul Chat</strong> — ein KI-Assistent, der dich tiefgreifend versteht. Stelle Fragen zu Charakter, Bestimmung und Weg.</p>',
           scPrismLockedMsg: 'Diese Deutung ist mit dem Soul-Chat-Paket verfügbar. Die erste Deutung «Seelenname» ist ein Geschenk.',
           helpT8: 'Soul Chat & Pakete',
           scHeroTitle: 'Herzgespräch | Soul Chat',
           soulChatPageTitle: 'Seelengespräch | Soul Chat',
           toastScExpired: 'Zugriffszeit abgelaufen — öffne Soul Chat erneut',
-          scIntroSubtitle: 'Soul Chat — ein Gespräch von Herzen. Stell die Frage, die dir schon lange im Kopf herumgeht. Ich lese dein Geburtsdatum und rede ohne Allgemeinplätze. Eine Frage — ein Funke.'
+          scIntroSubtitle: 'Soul Chat — ein Gespräch von Herzen. Stell die Frage, die dir schon lange im Kopf herumgeht. Ich lese dein Geburtsdatum und rede ohne Allgemeinplätze. Eine Frage — ein Funke.',
+          // Повторная подача после отказа 4.3b (15.10): без «печеньки предсказаний», «звёзд», «скрытого дара»,
+          // «анализа/расшифровки» и непроверенных цифр; счётчик — это песни; ИИ — сторонние сервисы из Политики (5.1.2(i)).
+          iskraCookieBtn: 'Gedanken des Tages öffnen',
+          songCounterLabel: 'Songs bereits erstellt',
+          openedOptinP: 'Ich kann dir jeden Morgen eine kurze Notiz schicken: wie es dir heute geht und worauf du dich stützen kannst. Jederzeit abschaltbar.',
+          oracleOptinDesc: 'Während dein Lied entsteht, kann ich dir jeden Morgen eine kurze Notiz schicken: wie es dir heute geht und worauf du dich stützen kannst.',
+          helpB1: '<p>YupSoul schreibt ein <strong>persönliches Lied nur für dich</strong> — aus deinem Geburtsdatum und deinen eigenen Worten.</p><p>Keine Vorlage: Jedes Lied ist einzigartig und gehört nur dir.</p>',
+          genStage2: 'Ich höre, wie dein Datum klingt',
+          homeChoiceMain3: 'Künstler-Stil',
+          typewriter2: 'Lies in einfachen Worten, was dein Lied über dich sagt.',
+          typewriter3: 'Führe ein offenes Gespräch im Soul Chat.',
+          homeTeaser: 'In deinem Geburtsdatum steckt ein Lied. Lass es uns schreiben.',
+          homeTeaserHtml: 'In deinem <span class="tagline-glow">Geburtsdatum</span> steckt ein <span class="tagline-glow">Lied</span>. Lass es uns schreiben.',
+          unlockLead: 'Die erste Minute ist erklungen. <b>Der ganze Song dauert etwa 4 Minuten</b>, geschrieben nach deinem Geburtsdatum. Es folgen Refrain, Finale und dein Name in den Worten.',
+          unlockR1s: 'etwa 4 Minuten',
+          aiConsentDesc: 'Eine KI hilft, deinen Song und die Antworten zu schreiben: Deine Geschichte und dein Geburtsdatum gehen nur dafür an externe KI-Dienste, die in der Datenschutzerklärung aufgeführt sind.',
+          guideTipRequest: 'Ein paar Worte zum Thema, und das Lied trifft es genauer. Keine Lust? Überspring es einfach — wir gestalten es nach deinem Geburtsdatum.',
+          advSettingsHint: 'Optional. Geburtsort und -zeit geben deinem Lied mehr Details — du kannst sie überspringen.',
+          scGiftHeading: 'Probiere Soul Chat — 24 Stunden',
+          toastScOpened: 'Soul Chat für 24 Stunden geöffnet',
+          payOvSubtitleSc: 'Soul Chat für 24 Stunden',
+          scPrismCopy: 'Deutung kopieren',
+          scPrismCopied: 'Deutung kopiert',
+          ariaSynastryTeaser: 'Kompatibilität ist im Labor-Paket verfügbar',
+          // Не было в DE — на немецком айфоне показывался русский текст из NATIVE_LANG_OVERRIDES.ru
+          ulCardsSub: 'Speichere die Profile von Familie und Freunden — Lieder und Übereinstimmung mit einem Tipp.'
         },
         fr: {
           // Сборка 43: строка главной «по мотивам даты рождения»; «аскеза» → «практика» (Алла 14.10) — только iOS
@@ -29758,7 +29896,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           iskraAskDay: 'Demander à Soul Chat',
           compatCtaAsk: 'Demander à Soul Chat à propos de votre lien',
           iskraValueQuestion: 'Demande à Soul Chat tout sur toi — c’est une Étincelle',
-          iskraCookieFrom: 'Le message de Soul Chat pour aujourd’hui',
+          iskraCookieFrom: 'Ta pensée du jour',
           iskryPackQuestions: 'questions dans Soul Chat',
           tuWhy2: 'Pour des chansons, des questions dans Soul Chat et des cadeaux',
           scGreeting: 'Salut, je suis Soul Chat 🤍 Demande-moi ce que tu veux : sur toi, ton chemin, tes relations. Je suis là.',
@@ -29781,7 +29919,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           scCommInviteS: 'Un court réglage du jour et les nouvelles de Soul Chat. +30 Étincelles pour l\'adhésion.',
           histEmptyS: 'Demande à Soul Chat ce que tu veux — tout ce dont vous avez parlé reste ici pour que tu puisses y revenir.',
           iskraClaimTextCan: 'Passe chaque jour et prends une Étincelle 🤍 Avec elle, tu peux poser n\'importe quelle question sur toi à Soul Chat.',
-          iskraClaimedSub: 'Casse le biscuit — Soul Chat t\'a laissé un message.',
+          iskraClaimedSub: 'La pensée du jour t’attend — ouvre-la.',
           tourRewardText: 'Tu as terminé la visite — voici un cadeau pour commencer. 30 Étincelles, c\'est <b>30 questions dans Soul Chat</b>.',
           ctxEmptyS: 'Ajoute la date de naissance d’un proche — Soul Chat pourra parler de lui et lire votre compatibilité.',
           ctxHintPickOne: '<b>Choisis une carte</b> — Soul Chat parlera de cette personne.',
@@ -29807,19 +29945,258 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           scEnterChat: 'Entrer dans Soul Chat',
           scNoRequestText: 'Soul Chat construit une conversation personnalisée basée sur tes données.',
           scPlanBasicDesc: '5 titres + Soul Chat',
-          scPromoIntro: 'Soul Chat est ton assistant IA qui te comprend comme un meilleur ami ou ton Moi Supérieur. Répond aux questions sur ton caractère, ta vocation et ton chemin.',
+          scPromoIntro: 'Soul Chat est ton assistant IA qui te comprend comme un ami proche. Répond aux questions sur ton caractère, ta vocation et ton chemin.',
           scPromoText: 'Soul Chat — ton assistant IA qui te comprend en profondeur.',
           scSubIncluded: 'Soul Chat inclus dans le forfait',
           scTyping: 'Soul Chat écrit…',
           soulChatDefault: 'Soul Chat — dialogues avec ton âme par demande. Sur forfait.',
           soulChatNoAccess: 'Soul Chat — dialogues avec ton âme. Avec forfait Soul (jusqu\'à 50 messages) ou Depth (illimité).',
-          helpB2: '<p><strong>Modes de création :</strong></p><ul><li><strong>Chanson sur moi</strong> — ton portrait sonore personnel : qui tu es, ta force et ton chemin intérieur</li><li><strong>Chanson pour deux</strong> — pour un couple (amoureux, amis). Analyse les deux dates et reflète l\'union</li><li><strong>Énergie du jour</strong> — une chanson pour une date et un lieu précis. Quelles opportunités s\'ouvrent en ce moment</li></ul><p><strong>Style musical :</strong></p><ul><li><strong>Style perso</strong> — choisis le genre et l\'ambiance manuellement</li><li><strong>Son de ta date</strong> — le système choisit le style selon ta date de naissance</li><li><strong>Comme une star</strong> — nomme ton artiste préféré et la chanson sonnera comme la sienne</li></ul><p><strong>Requêtes rapides</strong> — idées prêtes : chanson de force, d\'anniversaire, méditative, lâcher-prise, et plus.</p><p><strong>Soul Chat</strong> — un assistant IA qui te comprend en profondeur. Pose des questions sur ton caractère, ta mission et ton chemin.</p>',
+          helpB2: '<p><strong>Modes de création :</strong></p><ul><li><strong>Chanson sur moi</strong> — ton portrait sonore personnel : qui tu es, ta force et ton chemin intérieur</li><li><strong>Chanson pour deux</strong> — pour un couple (amoureux, amis). À partir des deux dates de naissance — une chanson sur vous deux</li><li><strong>Énergie du jour</strong> — une chanson pour le jour de ton choix</li></ul><p><strong>Style musical :</strong></p><ul><li><strong>Style perso</strong> — choisis le genre et l\'ambiance manuellement</li><li><strong>Son de ta date</strong> — le système choisit le style selon ta date de naissance</li><li><strong>Style d’artiste</strong> — nomme ton artiste préféré et la chanson sonnera dans son style</li></ul><p><strong>Requêtes rapides</strong> — idées prêtes : chanson de force, d\'anniversaire, méditative, lâcher-prise, et plus.</p><p><strong>Soul Chat</strong> — un assistant IA qui te comprend en profondeur. Pose des questions sur ton caractère, ta mission et ton chemin.</p>',
           scPrismLockedMsg: 'Cette lecture est disponible avec le pack Soul Chat. La première lecture «Nom de l\'âme» est offerte.',
           helpT8: 'Soul Chat et forfaits',
           scHeroTitle: 'Cœur à cœur | Soul Chat',
           soulChatPageTitle: 'Dialogue de l\'âme | Soul Chat',
           toastScExpired: 'Temps d\'accès expiré — ouvre Soul Chat à nouveau',
-          scIntroSubtitle: 'Soul Chat — une conversation à cœur ouvert. Pose la question qui te trotte dans la tête depuis longtemps. Je lis ta date de naissance et je parle sans généralités. Une question — une Étincelle.'
+          scIntroSubtitle: 'Soul Chat — une conversation à cœur ouvert. Pose la question qui te trotte dans la tête depuis longtemps. Je lis ta date de naissance et je parle sans généralités. Une question — une Étincelle.',
+          // Повторная подача после отказа 4.3b (15.10): без «печеньки предсказаний», «звёзд», «скрытого дара»,
+          // «анализа/расшифровки» и непроверенных цифр; счётчик — это песни; ИИ — сторонние сервисы из Политики (5.1.2(i)).
+          iskraCookieBtn: 'Ouvrir la pensée du jour',
+          songCounterLabel: 'chansons déjà créées',
+          openedOptinP: 'Je peux t’envoyer une petite note chaque matin : comment tu vas aujourd’hui et sur quoi t’appuyer. Désactivable à tout moment.',
+          oracleOptinDesc: 'Pendant que ta chanson prend vie, je peux t’envoyer une petite note chaque matin : comment tu vas aujourd’hui et sur quoi t’appuyer.',
+          helpB1: '<p>YupSoul écrit une <strong>chanson personnelle rien que pour toi</strong> — à partir de ta date de naissance et de tes propres mots.</p><p>Pas de modèle : chaque chanson est unique et n’appartient qu’à toi.</p>',
+          genStage2: 'J’écoute comment sonne ta date',
+          homeChoiceMain3: 'Style d’artiste',
+          typewriter2: 'Lis avec des mots simples ce que ta chanson dit de toi.',
+          typewriter3: 'Parle à cœur ouvert dans Soul Chat.',
+          homeTeaser: 'Ta date de naissance porte une chanson. Écrivons-la.',
+          homeTeaserHtml: 'Ta <span class="tagline-glow">date de naissance</span> porte une <span class="tagline-glow">chanson</span>. Écrivons-la.',
+          unlockLead: 'La première minute a joué. <b>La chanson complète dure environ 4 minutes</b>, écrite d’après ta date de naissance. À venir — le refrain, le final et ton nom dans les paroles.',
+          unlockR1s: 'environ 4 minutes',
+          aiConsentDesc: 'Une IA aide à écrire ta chanson et les réponses : ton histoire et ta date de naissance sont transmises à des services d’IA tiers, listés dans la Politique de confidentialité, uniquement pour cela.',
+          guideTipRequest: 'Quelques mots sur le thème, et la chanson sonnera plus juste. Pas envie ? Passe — on la composera à partir de ta date de naissance.',
+          advSettingsHint: 'Facultatif. Le lieu et l’heure de naissance ajoutent des détails à ta chanson — tu peux les ignorer.',
+          scGiftHeading: 'Essaie Soul Chat — 24 heures',
+          toastScOpened: 'Soul Chat ouvert pour 24 heures',
+          payOvSubtitleSc: 'Soul Chat pour 24 heures',
+          scPrismCopy: 'Copier la lecture',
+          scPrismCopied: 'Lecture copiée',
+          ariaSynastryTeaser: 'La compatibilité est disponible dans l’offre Laboratoire'
+        }
+      };
+
+      /* Тексты, которые действуют, только пока группа функций выключена в сборке для стора
+         (window.__YS_NATIVE_OFF__ из scripts/build-app-www.mjs). Приоритет выше NATIVE_LANG_OVERRIDES.
+         soul_chat — сборка «только песни» (решение Аллы 16.10, повторная подача после 4.3(b)): пакеты
+         и Искры описывают только песни, нет Soul Chat, вопросов, разборов, дневника и «мысли дня».
+         Включат группу обратно — вернутся обычные тексты. Ключи — во всех 4 языках. */
+      var NATIVE_OFF_LANG_OVERRIDES = {
+        soul_chat: {
+          ru: {
+            confirmDesc1: 'Создаю твою уникальную песню.',
+            confirmDescHtml: 'Создаю твою уникальную песню.<br><br>Песня появится в разделе «Плейлист». Можешь закрыть приложение — ничего не пропадёт.',
+            confirmDesc2Bot: 'Песня появится в разделе «Плейлист». Можешь закрыть приложение — ничего не пропадёт.',
+            songInProgressConfirmed: 'Заявка принята. Песня создаётся — платить ещё раз не нужно. Когда будет готова, появится в разделе «Плейлист».',
+            formLangTooltip: 'На каком языке будет текст песни',
+            formLangTooltipNoLyrics: 'На каком языке придут тексты к песне',
+            formAnalysisLang: 'Язык текстов',
+            spubNudge: 'У тебя уже 2 трека. <strong>Пакет Душа окупается с 3го</strong> — 5 песен за 30 дней, разовая покупка.',
+            formTransitDate: 'День песни',
+            formTransitTime: 'Время',
+            formTransitCity: 'Город, где ты сейчас',
+            transitLocationPh: 'Город, где ты сейчас',
+            transitIntentPh: 'О чём этот день для тебя',
+            plBasicF2: 'Разовая покупка, без продления',
+            plBasicF3: 'Все песни остаются в Плейлисте',
+            plPlusF2: 'Разовая покупка, без продления',
+            plLabF2: 'Разовая покупка, без продления',
+            plLabF3: 'Приоритет в очереди генерации',
+            plBuy1s: 'По дате рождения и твоим словам', // было «Звуковой ключ по твоему узору» — звучит как гадание (финальная причёска 16.10)
+            plBuy2s: 'Песня о вас двоих — по двум датам рождения',
+            plBuy3: 'Песня о сегодня',
+            plBuy3s: 'Песня о том, как ты сегодня',
+            modeTransit: 'Песня<br>о сегодня',
+            modeTransitDesc: 'Песня о том, как ты сегодня',
+            transitTitle: 'Песня о сегодня',
+            formTransitMode: 'Песня о сегодня',
+            pfTileTransit: 'Песня о сегодня',
+            ptiTransitName: 'Песня о сегодня',
+            ptiTransitDesc: 'Песня о том, как ты сегодня',
+            payOvCardTitleTransit: 'Песня о сегодня',
+            mtModeTransit: 'Песня о сегодня',
+            rdSongOfDaySub: 'Песня о сегодня',
+            payOvUpsellFeat2: 'Разовая покупка на 30 дней',
+            limOptUpgradeSub: '{n} песен за 30 дней',
+            tuWhy2: 'Тратятся на песни и подарки',
+            giftsFirstRunSub: 'Каждый день — +2 Искры, за 7 дней подряд — ещё +10. Искры идут на следующую песню.',
+            giftsExplainer: 'Каждый день тут тебя ждёт Искра — просто за то, что ты с нами 🤍 Сотня Искр — это целая песня про тебя.',
+            iskraClaimTextCan: 'Заходи каждый день и забирай Искру 🤍 Сотня Искр — это целая песня про тебя.',
+            iskraClaimedSub: 'Заходи завтра — здесь будет новая Искра.',
+            tourRewardText: 'Ты прошёл знакомство — лови подарок на старт: <b>30 Искр</b> на твои песни.',
+            iskrySongNeedPack: 'Искры открывают песню после первого пакета Искр.',
+            heroIntro: 'По <b>дате рождения</b> YupSoul соберёт для героя персональную песню.',
+            ulCardsSub: 'Имена и даты рождения близких — в одном месте.',
+            genStage1: 'Читаю твою дату рождения',
+            helpB2: '<p><strong>Режимы создания:</strong></p><ul><li><strong>Песня о себе</strong> — твой личный звуковой портрет: кто ты, твоя сила и внутренний путь</li><li><strong>Песня для пары</strong> — для двоих (влюблённых, друзей, подруг). По двум датам рождения — песня о вас двоих</li><li><strong>Песня о сегодня</strong> — песня о том, как ты сегодня</li></ul><p><strong>Стиль музыки:</strong></p><ul><li><strong>Свой стиль</strong> — выбери жанр и настроение вручную</li><li><strong>Звучание даты</strong> — система подберёт стиль по твоей дате рождения</li><li><strong>Стиль артиста</strong> — укажи любимого артиста, и песня зазвучит в его стиле</li></ul><p><strong>Быстрые запросы</strong> — готовые идеи: песня силы, поздравление с днём рождения, медитативная, про отпускание прошлого и другие.</p>',
+            helpB6: '<p>Дополнительные песни и пакеты оплачиваются внутри приложения: цену и подтверждение показывает App Store.</p><p><strong>Пакеты</strong> — Душа (5 песен), Глубина (15 песен), Лаборатория (30 песен). Каждый — разовая покупка на 30 дней, без продления. Любая песня — 100 Искр.</p><p>Других способов оплаты здесь нет. Всё, что открыл, остаётся с тобой — песни ждут в разделе «Плейлист».</p>',
+            helpB9: '<p><strong>Песни для клиентов.</strong> Сохраняйте профили людей, с которыми работаете, и создавайте персональную песню для каждого — или одну песню на пару. Идеально для коучей и консультантов.</p><p><strong>Масштаб без потери качества.</strong> До 30 песен с пакетом Лаборатория. Уникальная песня для каждого клиента — без шаблонов и повторов.</p><p><strong>Подарки.</strong> Дарите песни клиентам или включайте их в свои встречи. Минута первой песни в подарок — попробуйте сами.</p>',
+            helpAboutBody: 'YupSoul — творческое музыкальное приложение. Мы пишем песню о человеке по его дате рождения и его словам: текст, мелодию и голос. Дата рождения — творческое зерно: из неё алгоритм выбирает жанр, инструменты, настроение и голос, поэтому двух одинаковых песен не бывает. Песни YupSoul — творческое отражение человека, а не предсказание событий. YupSoul не заменяет психолога или врача.',
+            // Контакты: покупка подарка на iPhone выключена — строка про сохранённых близких (Алла 16.10)
+            ulCardsB3: 'Сохраняй близких', ulCardsB3s: 'песни для них в один тап'
+          },
+          en: {
+            confirmDesc1: 'Creating your unique song.',
+            confirmDescHtml: 'Creating your unique song.<br><br>It will appear in the Playlist. You can close the app — nothing will be lost.',
+            confirmDesc2Bot: 'Your song will appear in the Playlist. You can close the app — nothing will be lost.',
+            songInProgressConfirmed: 'Request accepted. Your song is being created — no need to pay again. When it’s ready, it will appear in the Playlist.',
+            formLangTooltip: 'Language of the song lyrics',
+            formLangTooltipNoLyrics: 'Language of the texts that come with your song',
+            formAnalysisLang: 'Text language',
+            spubNudge: 'You’ve already created 2 tracks. <strong>The Soul package pays for itself from the 3rd</strong> — 5 songs within 30 days, a one-time purchase.',
+            formTransitDate: 'Day of the song',
+            formTransitTime: 'Time',
+            formTransitCity: 'City where you are now',
+            transitLocationPh: 'City where you are now',
+            transitIntentPh: 'What this day is about for you',
+            plBasicF2: 'One-time purchase, no renewal',
+            plBasicF3: 'All songs stay in your Playlist',
+            plPlusF2: 'One-time purchase, no renewal',
+            plLabF2: 'One-time purchase, no renewal',
+            plLabF3: 'Priority in the generation queue',
+            plBuy1s: 'From your date of birth and your words',
+            plBuy2s: 'A song about the two of you, from two dates of birth',
+            plBuy3: 'Today’s song',
+            plBuy3s: 'A song about how you are today',
+            modeTransit: 'Today’s<br>song',
+            modeTransitDesc: 'A song about how you are today',
+            transitTitle: 'Today’s song',
+            formTransitMode: 'Today’s song',
+            pfTileTransit: 'Today’s song',
+            ptiTransitName: 'Today’s song',
+            ptiTransitDesc: 'A song about how you are today',
+            payOvCardTitleTransit: 'Today’s song',
+            mtModeTransit: 'Today’s song',
+            rdSongOfDaySub: 'Today’s song',
+            payOvUpsellFeat2: 'One-time purchase for 30 days',
+            limOptUpgradeSub: '{n} songs within 30 days',
+            tuWhy2: 'Spend them on songs and gifts',
+            giftsFirstRunSub: 'Every day — +2 Sparks, and +10 more for 7 days in a row. Sparks go to your next song.',
+            giftsExplainer: 'Every day a Spark waits for you here — just for dropping by 🤍 A hundred make a whole song about you.',
+            iskraClaimTextCan: 'Drop by each day and grab a Spark 🤍 A hundred make a whole song about you.',
+            iskraClaimedSub: 'Come back tomorrow — a new Spark will be waiting.',
+            tourRewardText: 'You finished the tour — here’s a starter gift: <b>30 Sparks</b> for your songs.',
+            iskrySongNeedPack: 'Sparks unlock a song after your first Sparks pack.',
+            heroIntro: 'From the <b>date of birth</b> YupSoul composes a personal song for them.',
+            ulCardsSub: 'Names and dates of birth of the people you love, in one place.',
+            genStage1: 'Looking at your date of birth',
+            helpB2: '<p><strong>Creation modes:</strong></p><ul><li><strong>Song about me</strong> — your personal sonic portrait: who you are, your strength and inner path</li><li><strong>Song for two</strong> — for a couple (lovers, friends). Built from both dates of birth — a song about the two of you</li><li><strong>Today’s song</strong> — a song about how you are today</li></ul><p><strong>Music style:</strong></p><ul><li><strong>Custom style</strong> — choose genre and mood manually</li><li><strong>Sound of your date</strong> — the system picks the style from your date of birth</li><li><strong>Artist style</strong> — name your favourite artist and the song will sound in their style</li></ul><p><strong>Quick requests</strong> — ready-made ideas: power song, birthday song, meditative, about letting go, and more.</p>',
+            helpB6: '<p>Extra songs and packages are paid inside the app: the App Store shows the price and the confirmation.</p><p><strong>Packages</strong> — Soul (5 songs), Depth (15 songs), Laboratory (30 songs). Each is a one-time purchase for 30 days, with no renewal. Any song — 100 Sparks.</p><p>There are no other payment options here. Whatever you unlock stays with you — your songs wait in the Playlist.</p>',
+            helpB9: '<p><strong>Songs for clients.</strong> Save the profiles of the people you work with and create a personal song for each — or one song for a couple. Ideal for coaches and consultants.</p><p><strong>Scale without losing quality.</strong> Up to 30 songs with the Laboratory package. A unique song for each client — no templates or repeats.</p><p><strong>Gifts.</strong> Gift songs to clients or include them in your sessions. A minute of the first song as a gift — try it yourself.</p>',
+            helpAboutBody: 'YupSoul is a creative music app. We write a song about a person from their date of birth and their own words: the lyrics, the melody and the voice. The date of birth is a creative seed: from it, our algorithm picks the genre, instruments, mood and voice, so no two songs are alike. YupSoul songs are creative reflections of a person, not predictions of events. YupSoul does not replace a psychologist or a doctor.',
+            ulCardsB3: 'Save the people you love', ulCardsB3s: 'songs for them in one tap'
+          },
+          de: {
+            confirmDesc1: 'Dein einzigartiges Lied entsteht.',
+            confirmDescHtml: 'Dein einzigartiges Lied entsteht.<br><br>Es erscheint in der Playlist. Du kannst die App schließen — nichts geht verloren.',
+            confirmDesc2Bot: 'Das Lied erscheint in der Playlist. Du kannst die App schließen — nichts geht verloren.',
+            songInProgressConfirmed: 'Anfrage angenommen. Dein Lied entsteht — erneute Zahlung nicht nötig. Sobald es fertig ist, erscheint es in der Playlist.',
+            formLangTooltip: 'Sprache des Liedtextes',
+            formLangTooltipNoLyrics: 'Sprache der Texte zu deinem Lied',
+            formAnalysisLang: 'Sprache der Texte',
+            spubNudge: 'Du hast bereits 2 Tracks erstellt. <strong>Das Seele-Paket lohnt sich ab dem 3.</strong> — 5 Songs in 30 Tagen, einmaliger Kauf.',
+            formTransitDate: 'Tag des Liedes',
+            formTransitTime: 'Uhrzeit',
+            formTransitCity: 'Stadt, in der du gerade bist',
+            transitLocationPh: 'Stadt, in der du gerade bist',
+            transitIntentPh: 'Worum es heute für dich geht',
+            plBasicF2: 'Einmaliger Kauf, ohne Verlängerung',
+            plBasicF3: 'Alle Songs bleiben in deiner Playlist',
+            plPlusF2: 'Einmaliger Kauf, ohne Verlängerung',
+            plLabF2: 'Einmaliger Kauf, ohne Verlängerung',
+            plLabF3: 'Priorität in der Warteschlange',
+            plBuy1s: 'Aus deinem Geburtsdatum und deinen Worten',
+            plBuy2s: 'Ein Lied über euch zwei, aus zwei Geburtsdaten',
+            plBuy3: 'Lied über heute',
+            plBuy3s: 'Ein Lied darüber, wie es dir heute geht',
+            modeTransit: 'Lied<br>über heute',
+            modeTransitDesc: 'Ein Lied darüber, wie es dir heute geht',
+            transitTitle: 'Lied über heute',
+            formTransitMode: 'Lied über heute',
+            pfTileTransit: 'Lied über heute',
+            ptiTransitName: 'Lied über heute',
+            ptiTransitDesc: 'Ein Lied darüber, wie es dir heute geht',
+            payOvCardTitleTransit: 'Lied über heute',
+            mtModeTransit: 'Lied über heute',
+            rdSongOfDaySub: 'Lied über heute',
+            payOvUpsellFeat2: 'Einmaliger Kauf für 30 Tage',
+            limOptUpgradeSub: '{n} Songs innerhalb von 30 Tagen',
+            tuWhy2: 'Für Songs und Geschenke',
+            giftsFirstRunSub: '+2 Funken pro Tag, nach 7 Tagen in Folge noch +10. Funken gehen an deinen nächsten Song.',
+            giftsExplainer: 'Jeden Tag wartet hier ein Funke auf dich — einfach fürs Vorbeischauen 🤍 Hundert ergeben einen ganzen Song über dich.',
+            iskraClaimTextCan: 'Schau täglich vorbei und hol dir einen Funken 🤍 Hundert ergeben einen ganzen Song über dich.',
+            iskraClaimedSub: 'Komm morgen wieder — dann wartet ein neuer Funke.',
+            tourRewardText: 'Du hast die Tour geschafft — hier ist dein Startgeschenk: <b>30 Funken</b> für deine Songs.',
+            iskrySongNeedPack: 'Funken schalten einen Song nach deinem ersten Funken-Paket frei.',
+            heroIntro: 'Aus dem <b>Geburtsdatum</b> stellt YupSoul ein persönliches Lied zusammen.',
+            ulCardsSub: 'Namen und Geburtsdaten deiner Liebsten an einem Ort.',
+            genStage1: 'Lese dein Geburtsdatum',
+            helpB2: '<p><strong>Erstellungsmodi:</strong></p><ul><li><strong>Lied über mich</strong> — dein persönliches Klangportrait: wer du bist, deine Stärke und innerer Weg</li><li><strong>Lied für zwei</strong> — für ein Paar (Verliebte, Freunde). Aus beiden Geburtsdaten — ein Lied über euch zwei</li><li><strong>Lied über heute</strong> — ein Lied darüber, wie es dir heute geht</li></ul><p><strong>Musikstil:</strong></p><ul><li><strong>Eigener Stil</strong> — wähle Genre und Stimmung manuell</li><li><strong>Klang deines Datums</strong> — das System wählt den Stil nach deinem Geburtsdatum</li><li><strong>Künstler-Stil</strong> — nenne deinen Lieblingskünstler, und der Song klingt in seinem Stil</li></ul><p><strong>Schnellanfragen</strong> — fertige Ideen: Kraftlied, Geburtstagslied, meditativ, Loslassen und mehr.</p>',
+            helpB6: '<p>Zusätzliche Songs und Pakete werden in der App bezahlt: Preis und Bestätigung zeigt der App Store.</p><p><strong>Pakete</strong> — Seele (5 Songs), Tiefe (15 Songs), Labor (30 Songs). Jedes Paket ist ein einmaliger Kauf für 30 Tage, ohne Verlängerung. Jeder Song — 100 Funken.</p><p>Andere Zahlungswege gibt es hier nicht. Was du freischaltest, bleibt bei dir — deine Lieder warten im Bereich Playlist.</p>',
+            helpB9: '<p><strong>Lieder für Klienten.</strong> Speichere die Profile der Menschen, mit denen du arbeitest, und erstelle für jeden ein persönliches Lied — oder ein Lied für ein Paar. Ideal für Coaches und Berater.</p><p><strong>Skalierung ohne Qualitätsverlust.</strong> Bis zu 30 Songs mit dem Labor-Paket. Ein einzigartiges Lied pro Klient — ohne Vorlagen.</p><p><strong>Geschenke.</strong> Verschenke Lieder an Klienten oder baue sie in deine Sitzungen ein. Eine Minute des ersten Songs geschenkt — probier es aus.</p>',
+            helpAboutBody: 'YupSoul ist eine kreative Musik-App. Wir schreiben ein Lied über einen Menschen aus seinem Geburtsdatum und seinen eigenen Worten: Text, Melodie und Stimme. Das Geburtsdatum ist der kreative Ausgangspunkt: Daraus wählt unser Algorithmus Genre, Instrumente, Stimmung und Stimme – deshalb gleicht kein Lied dem anderen. Die Lieder von YupSoul sind kreative Spiegelbilder eines Menschen, keine Vorhersagen von Ereignissen. YupSoul ersetzt keinen Psychologen und keinen Arzt.',
+            ulCardsB3: 'Speichere deine Liebsten', ulCardsB3s: 'Lieder für sie mit einem Tipp'
+          },
+          fr: {
+            confirmDesc1: 'Ta chanson unique est en création.',
+            confirmDescHtml: 'Ta chanson unique est en création.<br><br>Elle apparaîtra dans la Playlist. Tu peux fermer l’appli — rien ne sera perdu.',
+            confirmDesc2Bot: 'La chanson apparaîtra dans la Playlist. Tu peux fermer l’appli — rien ne sera perdu.',
+            songInProgressConfirmed: 'Demande acceptée. Ta chanson est en création — pas besoin de payer à nouveau. Dès qu’elle sera prête, elle apparaîtra dans la Playlist.',
+            formLangTooltip: 'Langue des paroles de la chanson',
+            formLangTooltipNoLyrics: 'Langue des textes qui accompagnent ta chanson',
+            formAnalysisLang: 'Langue des textes',
+            spubNudge: 'Tu as déjà créé 2 morceaux. <strong>Le pack Âme est rentable dès le 3e</strong> — 5 chansons sous 30 jours, achat unique.',
+            formTransitDate: 'Jour de la chanson',
+            formTransitTime: 'Heure',
+            formTransitCity: 'Ville où tu es maintenant',
+            transitLocationPh: 'Ville où tu es maintenant',
+            transitIntentPh: 'Ce que cette journée représente pour toi',
+            plBasicF2: 'Achat unique, sans renouvellement',
+            plBasicF3: 'Toutes les chansons restent dans ta Playlist',
+            plPlusF2: 'Achat unique, sans renouvellement',
+            plLabF2: 'Achat unique, sans renouvellement',
+            plLabF3: 'Priorité dans la file de génération',
+            plBuy1s: 'D’après ta date de naissance et tes mots',
+            plBuy2s: 'Une chanson sur vous deux, à partir de deux dates de naissance',
+            plBuy3: 'Chanson d’aujourd’hui',
+            plBuy3s: 'Une chanson sur ce que tu vis aujourd’hui',
+            modeTransit: 'Chanson<br>d’aujourd’hui',
+            modeTransitDesc: 'Une chanson sur ce que tu vis aujourd’hui',
+            transitTitle: 'Chanson d’aujourd’hui',
+            formTransitMode: 'Chanson d’aujourd’hui',
+            pfTileTransit: 'Chanson d’aujourd’hui',
+            ptiTransitName: 'Chanson d’aujourd’hui',
+            ptiTransitDesc: 'Une chanson sur ce que tu vis aujourd’hui',
+            payOvCardTitleTransit: 'Chanson d’aujourd’hui',
+            mtModeTransit: 'Chanson d’aujourd’hui',
+            rdSongOfDaySub: 'Chanson d’aujourd’hui',
+            payOvUpsellFeat2: 'Achat unique pour 30 jours',
+            limOptUpgradeSub: '{n} chansons sous 30 jours',
+            tuWhy2: 'Pour des chansons et des cadeaux',
+            giftsFirstRunSub: '+2 Étincelles par jour, et +10 après 7 jours d’affilée. Les Étincelles servent à ta prochaine chanson.',
+            giftsExplainer: 'Chaque jour, une Étincelle t’attend ici — juste parce que tu es là 🤍 Cent forment une chanson entière sur toi.',
+            iskraClaimTextCan: 'Passe chaque jour et prends une Étincelle 🤍 Cent forment une chanson entière sur toi.',
+            iskraClaimedSub: 'Reviens demain — une nouvelle Étincelle t’attendra.',
+            tourRewardText: 'Tu as terminé la visite — voici un cadeau pour commencer : <b>30 Étincelles</b> pour tes chansons.',
+            iskrySongNeedPack: 'Les Étincelles ouvrent une chanson après ton premier pack d’Étincelles.',
+            heroIntro: 'À partir de la <b>date de naissance</b>, YupSoul compose une chanson personnelle.',
+            ulCardsSub: 'Les noms et dates de naissance de tes proches, au même endroit.',
+            genStage1: 'Je lis ta date de naissance',
+            helpB2: '<p><strong>Modes de création :</strong></p><ul><li><strong>Chanson sur moi</strong> — ton portrait sonore personnel : qui tu es, ta force et ton chemin intérieur</li><li><strong>Chanson pour deux</strong> — pour un couple (amoureux, amis). À partir des deux dates de naissance — une chanson sur vous deux</li><li><strong>Chanson d’aujourd’hui</strong> — une chanson sur ce que tu vis aujourd’hui</li></ul><p><strong>Style musical :</strong></p><ul><li><strong>Style perso</strong> — choisis le genre et l’ambiance manuellement</li><li><strong>Son de ta date</strong> — le système choisit le style selon ta date de naissance</li><li><strong>Style d’artiste</strong> — nomme ton artiste préféré et la chanson sonnera dans son style</li></ul><p><strong>Requêtes rapides</strong> — idées prêtes : chanson de force, d’anniversaire, méditative, lâcher-prise, et plus.</p>',
+            helpB6: '<p>Les chansons supplémentaires et les packs se paient dans l’application : l’App Store affiche le prix et la confirmation.</p><p><strong>Packs</strong> — Âme (5 chansons), Profondeur (15 chansons), Laboratoire (30 chansons). Chacun est un achat unique pour 30 jours, sans renouvellement. Toute chanson — 100 Étincelles.</p><p>Il n’y a pas d’autre moyen de paiement ici. Ce que tu ouvres te reste — tes chansons t’attendent dans la Playlist.</p>',
+            helpB9: '<p><strong>Des chansons pour vos clients.</strong> Enregistrez les profils des personnes avec qui vous travaillez et créez une chanson personnelle pour chacune — ou une chanson pour un couple. Idéal pour coachs et consultants.</p><p><strong>Volume sans perdre en qualité.</strong> Jusqu’à 30 chansons avec le pack Laboratoire. Une chanson unique par client — sans modèles ni répétitions.</p><p><strong>Cadeaux.</strong> Offrez des chansons à vos clients ou intégrez-les à vos séances. Une minute de la première chanson en cadeau — essayez.</p>',
+            helpAboutBody: 'YupSoul est une application musicale créative. Nous écrivons une chanson sur une personne à partir de sa date de naissance et de ses propres mots : les paroles, la mélodie et la voix. La date de naissance est une graine créative : à partir d’elle, notre algorithme choisit le genre, les instruments, l’ambiance et la voix, si bien qu’aucune chanson ne ressemble à une autre. Les chansons de YupSoul sont des reflets créatifs d’une personne, pas des prédictions d’événements. YupSoul ne remplace ni un psychologue ni un médecin.',
+            ulCardsB3: 'Enregistre tes proches', ulCardsB3s: 'leurs chansons en un tap'
+          }
         }
       };
 
@@ -29833,8 +30210,19 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
         // OK-override: приоритет выше VK (потому что в ОК нельзя упоминать VK).
         // Если запущено внутри OK Mini App и есть альтернативный текст — возвращаем его.
         var s;
-        // Натив первым: требования Apple жёстче правил ВК и ОК, и площадки не пересекаются.
-        if (window._isNativeApp && NATIVE_LANG_OVERRIDES[currentLang] && NATIVE_LANG_OVERRIDES[currentLang][k] !== undefined) {
+        // Сборка для стора с выключенными группами — самый высокий приоритет (NATIVE_OFF_LANG_OVERRIDES).
+        var _offG = window._isNativeApp && window.__YS_NATIVE_OFF__;
+        if (_offG) {
+          for (var _og in NATIVE_OFF_LANG_OVERRIDES) {
+            if (!_offG[_og] || s !== undefined) continue;
+            var _od = NATIVE_OFF_LANG_OVERRIDES[_og];
+            if (_od[currentLang] && _od[currentLang][k] !== undefined) s = _od[currentLang][k];
+            else if (_od.ru && _od.ru[k] !== undefined) s = _od.ru[k];
+          }
+        }
+        if (s !== undefined) {
+          // текст из сборки для стора уже выбран
+        } else if (window._isNativeApp && NATIVE_LANG_OVERRIDES[currentLang] && NATIVE_LANG_OVERRIDES[currentLang][k] !== undefined) {
           s = NATIVE_LANG_OVERRIDES[currentLang][k];
         } else if (window._isNativeApp && NATIVE_LANG_OVERRIDES.ru && NATIVE_LANG_OVERRIDES.ru[k] !== undefined) {
           s = NATIVE_LANG_OVERRIDES.ru[k];
@@ -36067,7 +36455,9 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           // его перезатирать. Возврат к форме из платёжного экрана сохранит
           // ручной выбор. Только если поле пустое — заполняем из профиля/TG.
           if (langEl && !langEl.value) {
-            var tgLc = ((tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.language_code) || '').toLowerCase();
+            // Нет Telegram (iPhone, веб) — язык песни по языку приложения, а не «русский» по умолчанию
+            // (сборка 48: проверяющий с английским телефоном получал песню на русском).
+            var tgLc = ((tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.language_code) || window._currentLang || window.currentLang || '').toLowerCase();
             var telegramSongLang = /^uk/.test(tgLc) ? 'uk' : /^en/.test(tgLc) ? 'en' : /^de/.test(tgLc) ? 'de' : /^fr/.test(tgLc) ? 'fr' : 'ru';
             var profileLang = p.language || '';
             if (profileLang && !(profileLang === 'ru' && telegramSongLang !== 'ru')) {
@@ -36106,7 +36496,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
         // Дефолтный язык по Telegram
         var langElFallback = document.getElementById('language');
         if (langElFallback && !langElFallback.value) {
-          var tgLcFb = ((tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.language_code) || '').toLowerCase();
+          var tgLcFb = ((tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.language_code) || window._currentLang || window.currentLang || '').toLowerCase();
           langElFallback.value = /^uk/.test(tgLcFb) ? 'uk' : /^en/.test(tgLcFb) ? 'en' : /^de/.test(tgLcFb) ? 'de' : /^fr/.test(tgLcFb) ? 'fr' : 'ru';
         }
         // Пол/язык выставлены программно (sel.value=…) — MutationObserver кастом-дропдауна
@@ -38150,7 +38540,8 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
         setTimeout(function () {
           var q = document.getElementById('scPageQuestion');
           if (q) {
-            q.value = 'Помоги мягко прожить мой сегодняшний день — на что опереться и что в нём хорошего?';
+            // Приложение для iPhone: вопрос на языке интерфейса (было только по-русски). Telegram/VK — как раньше.
+            q.value = window._isNativeApp ? t('iskraAskDayQ') : 'Помоги мягко прожить мой сегодняшний день — на что опереться и что в нём хорошего?';
             try { q.dispatchEvent(new Event('input', { bubbles: true })); } catch (e) {}
             try { q.focus(); } catch (e) {}
           }
@@ -38283,6 +38674,22 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
             break;
           case 'soul_chat':
             if(typeof goToSoulChat==='function')goToSoulChat();
+            break;
+          case 'birthday_song':
+            // Чип главной «Песня на день рождения» (приложение для iPhone, Алла 16.10): тот же путь, что
+            // песня близкому (gift_song ниже — поля человека пустые), плюс готовый запрос-поздравление.
+            // Готового быстрого запроса «день рождения» на сервере нет (/api/quick-buttons) — пишем текст
+            // запроса в поле, как написал бы сам человек. Оплата и генерация — без изменений.
+            goToPage('formPage');
+            // Вход на форму сам подставляет СВОЙ профиль и черновик (асинхронно, _formPrefill) — ждём его,
+            // потом чистим поля под человека, которому песня, и раскрываем их (аккордеон своего профиля прячем).
+            Promise.resolve(window._formPrefill).catch(function(){}).then(function(){
+              var b=document.querySelector('.mode-btn[data-mode="single"]');if(b&&!b.classList.contains('active'))b.click();
+              if(typeof window.resetFormState==='function')window.resetFormState();
+              var fw=document.getElementById('formFieldsWrap');if(fw)fw.classList.remove('pfw-collapsed');
+              var rq=document.getElementById('request');if(rq)rq.value=t('quickBirthdayRequest');
+              window._quickButtonId=null;
+            });
             break;
           case 'gift_song':
             window._formPreset={mode:'single',quickId:'gift_song',clearFields:true};
@@ -43879,6 +44286,9 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           console.warn('[goToPage] pageId пустой — переходим на homePage');
           pageId = 'homePage';
         }
+        // Сборка для стора «только песни» (16.10): экрана Soul Chat в ней нет (NATIVE_FEATURES.soul_chat) —
+        // любой забытый переход ведёт на главную, а не на пустую страницу.
+        if (pageId === 'soulChatPage' && (window.__YS_NATIVE_OFF__ || {}).soul_chat) pageId = 'homePage';
         // Тихая доначисление-проверка бонуса за сообщество при заходе в профиль.
         // Ловит тех, кто вступил в группу мимо нашей кнопки (из ленты, по ссылке
         // друга) — без неё Искры не приходили вообще. Один вызов на сессию,
@@ -44040,7 +44450,8 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           else _applyTariffToForm();
           // Баг доходимости C: после автозаполнения профиля восстанавливаем черновик
           // формы (приоритет черновика на пустых полях) и включаем автосохранение.
-          Promise.resolve(loadSavedProfileForForm()).then(function(){
+          // window._formPrefill — чтобы пресет «Песня на день рождения» дождался автозаполнения своим профилем.
+          window._formPrefill = Promise.resolve(loadSavedProfileForForm()).then(function(){
             if (typeof _restoreFormDraft === 'function') _restoreFormDraft();
             if (typeof _wireFormDraftSave === 'function') _wireFormDraftSave();
           }).catch(function(){
@@ -44797,11 +45208,14 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
         paymentThanksBackBtn.addEventListener('click', _handlePtBackBtn);
       }
       (function bindPaymentThanksPaths() {
-        var paths = document.querySelectorAll('#paymentThanksPage .after-first-song-paths button');
-        if (paths.length < 3) return;
-        paths[0].addEventListener('click', function() { if (typeof goToPage === 'function') goToPage('formPage'); });
-        paths[1].addEventListener('click', function() { if (typeof goToSoulChat === 'function') goToSoulChat(); else if (typeof goToPage === 'function') goToPage('soulChatPage'); });
-        paths[2].addEventListener('click', function() { if (typeof shareApp === 'function') shareApp(); });
+        // По ключу кнопки, а не по номеру: в сборке для стора кнопки Soul Chat нет (NATIVE_FEATURES.soul_chat),
+        // и привязка по номерам повесила бы «Пригласить» на вторую кнопку, а третьей не нашлось бы.
+        var box = document.querySelector('#paymentThanksPage .after-first-song-paths');
+        if (!box) return;
+        var on = function(key, fn) { var b = box.querySelector('[data-i18n="' + key + '"]'); if (b) b.addEventListener('click', fn); };
+        on('afsBtnCreate', function() { if (typeof goToPage === 'function') goToPage('formPage'); });
+        on('afsBtnSoulChat', function() { if (typeof goToSoulChat === 'function') goToSoulChat(); else if (typeof goToPage === 'function') goToPage('soulChatPage'); });
+        on('afsBtnInvite', function() { if (typeof shareApp === 'function') shareApp(); });
       })();
 
       // Редирект T-Bank FailURL: ?page=formPage&payment_failed=1 — открыть форму (оплата отменена/ошибка)
@@ -44916,6 +45330,14 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
         function getPhrases() {
           var lang = (typeof currentLang !== 'undefined' ? currentLang : 'ru');
           var L = (LANG && LANG[lang]) ? LANG[lang] : (LANG && LANG.ru) ? LANG.ru : {};
+          // Приложение для iPhone (повторная подача после 4.3b, 15.10): фразы берём через t(), иначе
+          // NATIVE_LANG_OVERRIDES не применяются и в строке остаются «расшифровка» и «глубинный анализ».
+          if (window._isNativeApp) {
+            L = {};
+            for (var _twi = 1; _twi <= 7; _twi++) L['typewriter' + _twi] = t('typewriter' + _twi);
+            // Сборка для стора «только песни» (16.10): без расшифровки (2), Soul Chat (3) и связок карточек (5, 6).
+            if ((window.__YS_NATIVE_OFF__ || {}).soul_chat) return [L.typewriter1, L.typewriter4, L.typewriter7];
+          }
           // Натив VK (оракул-only, §5.4.1): фразы 1/4/7 зовут создать песню и
           // подарок — там этого нет. Оставляем те, что про оракул и картотеку.
           if (window._vkSongsOff && window._vkSongsOff()) {
@@ -46443,7 +46865,61 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
       }
       window._pluralizeForCouple = _pluralizeForCouple;
 
+      // Приложение для iPhone (повторная подача после 4.3(b), Алла 16.10): серверный список
+      // (/api/quick-buttons — «финансовый канал», «мантра», «призвание»…) не показываем, вместо него
+      // свой набор. Это только подсказка текста в поле «О чём песня»: quick_button_id = null, стиль
+      // и генерация те же, что у текста, написанного руками. modes — в каких форматах виден пункт.
+      var NATIVE_QUICK_BUTTONS = [
+        { icon: '✦', label: 'homeChoiceBirthday', text: 'quickBirthdayRequest', modes: ['single'] },
+        { icon: '♡', label: 'nqLove', text: 'nqLoveReq', modes: ['single', 'couple'] },
+        { icon: '◇', label: 'nqMom', text: 'nqMomReq', modes: ['single'] },
+        { icon: '◉', label: 'nqFriend', text: 'nqFriendReq', modes: ['single'] },
+        { icon: '◈', label: 'nqWhoNow', text: 'nqWhoNowReq', modes: ['single'] },
+        { icon: '▲', label: 'nqCourage', text: 'nqCourageReq', modes: ['single'] },
+        { icon: '⌘', label: 'nqFunny', text: 'nqFunnyReq', modes: ['single'] },
+        { icon: '∞', label: 'nqAnniversary', text: 'nqAnniversaryReq', modes: ['couple'] },
+        { icon: '○', label: 'nqChild', text: 'nqChildReq', modes: ['single'] },
+        { icon: '△', label: 'nqMoment', text: 'nqMomentReq', modes: ['single'] }
+      ];
+      function renderNativeQuickButtons(mode) {
+        var sheet = document.getElementById('quickPickerSheet');
+        var loading = document.getElementById('quickPickerLoading');
+        if (!sheet) return;
+        if (loading) loading.style.display = 'none';
+        sheet.querySelectorAll('.quick-item').forEach(function(el){ el.remove(); });
+        var m = mode === 'couple' ? 'couple' : 'single';
+        NATIVE_QUICK_BUTTONS.forEach(function(item) {
+          if (item.modes.indexOf(m) === -1) return;
+          var el = document.createElement('button');
+          el.type = 'button';
+          el.className = 'quick-item example-btn';
+          // Один дочерний узел, как у серверных (значок+подпись слева); подпись — с data-i18n, смена языка её обновит
+          var wrap = document.createElement('span');
+          wrap.appendChild(document.createTextNode(item.icon + ' '));
+          var lbl = document.createElement('span');
+          lbl.setAttribute('data-i18n', item.label);
+          lbl.textContent = t(item.label);
+          wrap.appendChild(lbl);
+          el.appendChild(wrap);
+          el.addEventListener('click', function() {
+            var requestField = document.getElementById('request');
+            if (requestField) requestField.value = window._nativeQuickText = t(item.text);
+            document.body.classList.remove('form-keyboard-open'); // как у серверных: без фокуса и клавиатуры
+            window._quickButtonId = null;
+            var hintEl = document.getElementById('quickPickerHint');
+            if (hintEl) hintEl.style.display = 'none';
+            sheet.style.display = 'none';
+            var toggleBtn = document.getElementById('quickPickerBtn');
+            if (toggleBtn) toggleBtn.classList.remove('open');
+            var arrow = document.getElementById('quickPickerArrow');
+            if (arrow) arrow.style.transform = '';
+          });
+          sheet.appendChild(el);
+        });
+      }
+
       function renderQuickButtons(buttons, mode) {
+        if (window._isNativeApp) { renderNativeQuickButtons(mode); return; }
         var sheet = document.getElementById('quickPickerSheet');
         var loading = document.getElementById('quickPickerLoading');
         if (!sheet) return;
@@ -46563,6 +47039,13 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
       // Загрузить кнопки при старте и закешировать
       (function() {
         var mode = 'single';
+        if (window._isNativeApp) {
+          // iPhone: свой набор вместо серверного (NATIVE_QUICK_BUTTONS выше), сервер не спрашиваем
+          window._quickButtonsCache = NATIVE_QUICK_BUTTONS;
+          var modeActiveN = document.querySelector('.mode-btn.active');
+          renderQuickButtons(NATIVE_QUICK_BUTTONS, modeActiveN && modeActiveN.getAttribute('data-mode') === 'couple' ? 'couple' : 'single');
+          return;
+        }
         // На нативе (Capacitor WebView) origin не yupsoul.ru — голый '/api/...' уходил в локальную
         // схему WebView и молча падал, #quickPickerSheet навсегда пустой (Алла нашла на iPhone, 22.09).
         var apiBase = (window.BACKEND_URL || window.HEROES_API_BASE || '').replace(/\/$/, '');
@@ -46616,9 +47099,10 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
               var submitHintEl = document.getElementById('submitHint');
               if (submitHintEl) { submitHintEl.textContent = ''; submitHintEl.style.display = 'none'; }
               // 1. Текст из quick-button: очищаем если был выбор кнопки (юзер сможет выбрать couple-версию)
-              if (window._quickButtonId) {
-                var requestField = document.getElementById('request');
-                if (requestField) requestField.value = '';
+              // iPhone: подсказка из своего набора (quick_button_id нет) тоже очищается, если её не правили
+              var requestField = document.getElementById('request');
+              if (requestField && (window._quickButtonId || (window._nativeQuickText && requestField.value === window._nativeQuickText))) {
+                requestField.value = '';
               }
               // 2. Выбранная quick-button — сброс
               window._quickButtonId = null;
@@ -47617,10 +48101,18 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
       function _ysTodayStr() { var dt = new Date(); return dt.getFullYear() + '-' + (dt.getMonth() + 1) + '-' + dt.getDate(); }
       window._setDailyState = function _setDailyState(state) {
         var d = document.getElementById('daily'); if (!d) return;
+        // Сборка для стора «только песни» (16.10): «мысли дня» нет — после Искры остаёмся в «claimed».
+        if (state === 'opened' && (window.__YS_NATIVE_OFF__ || {}).soul_chat) state = 'claimed';
         d.dataset.state = state;
         d.querySelectorAll('.s-fresh, .s-claimed, .s-opened').forEach(function (el) {
           if (el.classList.contains('s-' + state)) el.removeAttribute('hidden');
         });
+        // Приложение для iPhone (4.3b, 15.10): заглушка «мысли дня» в разметке — по-русски. Пока сервер не прислал
+        // свою мысль, показываем её на языке интерфейса (и при повторном открытии экрана в тот же день).
+        if (state === 'opened' && window._isNativeApp) {
+          var _cm = d.querySelector('.cmsg');
+          if (_cm && !_cm._fromServer) _cm.textContent = '«' + t('iskraThoughtDefault') + '»';
+        }
       };
       function _wireCookieBtn() {
         var btn = document.getElementById('cookieBtn');
@@ -47636,12 +48128,18 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           try {
             var apiBase = (window.BACKEND_URL || window.HEROES_API_BASE || '').replace(/\/$/, '');
             var hdrs = (typeof getAuthHeaders === 'function') ? getAuthHeaders() : {};
+            // ?lang= — язык интерфейса; сервер, который его не знает, параметр просто игнорирует.
+            var _uiLang = (typeof currentLang === 'string' && currentLang) || window._currentLang || 'ru';
+            var _dsUrl = apiBase + '/api/daily-spread?lang=' + encodeURIComponent(_uiLang);
             var resp = await (window.fetchWithTimeout
-              ? window.fetchWithTimeout(apiBase + '/api/daily-spread', { headers: hdrs }, 15000)
-              : fetch(apiBase + '/api/daily-spread', { headers: hdrs }));
+              ? window.fetchWithTimeout(_dsUrl, { headers: hdrs }, 15000)
+              : fetch(_dsUrl, { headers: hdrs }));
             var d = await resp.json().catch(function () { return {}; });
             var cmsg = document.querySelector('#giftsPage .cmsg');
-            if (d && d.ok && d.available && d.message && cmsg) cmsg.textContent = '«' + d.message + '»';
+            // Приложение для iPhone: сервер пока пишет мысли дня только по-русски. Для EN/DE/FR берём его текст,
+            // лишь когда он ответит на нужном языке (поле lang), иначе остаётся переведённая заглушка.
+            var _dsLangOk = !window._isNativeApp || _uiLang === 'ru' || (d && d.lang === _uiLang);
+            if (d && d.ok && d.available && d.message && cmsg && _dsLangOk) { cmsg.textContent = '«' + d.message + '»'; cmsg._fromServer = true; }
           } catch (e) { /* тихо (закон №37) — остаётся дефолтное послание */ }
           btn._loading = false;
         });
@@ -48285,6 +48783,12 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
         var lblEl = document.getElementById('homeSongCountLabel');
         var counterEl = document.getElementById('homeSongCounter');
         if (!numEl) return;
+        // Приложение для iPhone (15.10): число в формате языка интерфейса — в EN «3,567», а не «3 567». Telegram — как раньше.
+        function _cntLoc() {
+          if (!window._isNativeApp) return 'ru-RU';
+          var _l = (typeof currentLang === 'string' && currentLang) || window._currentLang || 'ru';
+          return { en: 'en-US', de: 'de-DE', fr: 'fr-FR' }[_l] || 'ru-RU';
+        }
         // Алла 25.09 (видео App Review): «в Apple пишет, что там только 300 песен» — в нативе счётчик всегда
         // показывал резервные 367. Корень: модуль брал `API_BASE`, которого нет (все остальные — BACKEND_URL),
         // запрос уходил на capacitor://localhost и падал. Резерв больше не выдумывает число: последнее известное
@@ -48293,7 +48797,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           var cached = 0;
           try { cached = parseInt(localStorage.getItem('ys_song_count') || '0', 10) || 0; } catch (_) {}
           if (!cached) { if (counterEl) counterEl.style.display = 'none'; return; }
-          numEl.textContent = cached.toLocaleString('ru-RU');
+          numEl.textContent = cached.toLocaleString(_cntLoc());
           if (typeof t === 'function' && t('songCounterLabel')) {
             lblEl.textContent = t('songCounterLabel');
           }
@@ -48318,7 +48822,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           var step = Math.max(1, Math.floor((target - start) / 30));
           function tick() {
             current = Math.min(current + step, target);
-            numEl.textContent = current.toLocaleString('ru-RU');
+            numEl.textContent = current.toLocaleString(_cntLoc());
             if (current < target) requestAnimationFrame(tick);
           }
           tick();
@@ -50462,6 +50966,9 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           if (priceEl) priceEl.textContent = _hStub ? '' : rub;
           if (sparkEl) sparkEl.style.display = 'none';
         }
+        // Без цены (натив: цену показывает Apple) плашка цены на кнопке оставалась пустой пилюлей — прячем её.
+        var _chipEl = document.getElementById('ulCtaChip');
+        if (_chipEl) _chipEl.style.display = (priceEl && !priceEl.textContent) ? 'none' : '';
         // На stub-клиентах (натив iOS/Android) покупка пакета запрещена — showPlanConfirm
         // там тихо выходит, и кнопка выглядела мёртвой (отказ ВК 24.08, скриншот 1:
         // «кнопки для оплаты, которые не кликабельны»). Кнопку и подпись пакета прячем
@@ -63743,6 +64250,14 @@ body.theme-light #tourReward.tour-new,html.is-vk-light:not(.dark) #tourReward.to
     TOUR_I18N.welcome_reward = { ru: 'Доберёшься до конца — подарю 30 Искр <i class="iskra-ic" aria-hidden="true"></i> Это монетки приложения: на них собирают песни и задают вопросы в Soul Chat.', en: 'Make it to the end — I\'ll gift you 30 Sparks <i class="iskra-ic" aria-hidden="true"></i> They\'re the app\'s coins: craft songs and ask Soul Chat with them.', de: 'Komm bis zum Ende — ich schenke dir 30 Funken <i class="iskra-ic" aria-hidden="true"></i> Das sind die Münzen der App: Songs machen und Soul Chat fragen.', fr: 'Va jusqu\'au bout — je t\'offre 30 Étincelles <i class="iskra-ic" aria-hidden="true"></i> Ce sont les pièces de l\'app : composer des chansons et interroger Soul Chat.' };
     TOUR_I18N.retain_badge = { ru: '30 Искр = <b>30 вопросов в Soul Chat</b>', en: '30 Sparks = <b>30 questions in Soul Chat</b>', de: '30 Funken = <b>30 Fragen im Soul Chat</b>', fr: '30 Étincelles = <b>30 questions dans Soul Chat</b>' };
     TOUR_I18N.retain_text = { ru: 'Тур совсем короткий — минутка, и <b>30 Искр</b> твои (это 30 вопросов в Soul Chat). А не сейчас — можно пройти его позже в «Помощи».', en: 'The tour is really short — a minute, and <b>30 Sparks</b> are yours (that\'s 30 questions in Soul Chat). Not now? You can take it later in Help.', de: 'Die Tour ist ganz kurz — eine Minute, und <b>30 Funken</b> gehören dir (das sind 30 Fragen im Soul Chat). Nicht jetzt? Du kannst sie später in der Hilfe machen.', fr: 'La visite est très courte — une minute, et <b>30 Étincelles</b> sont à toi (soit 30 questions dans Soul Chat). Pas maintenant ? Tu peux la faire plus tard dans l\'Aide.' };
+  }
+  // Сборка для стора «только песни» (16.10): вкладки Soul Chat нет — шаг про неё убираем (иначе он встал бы
+  // на всё меню через fallback), Искры в текстах — только на песни. Остальные шаги и порядок те же.
+  if (window._isNativeApp && (window.__YS_NATIVE_OFF__ || {}).soul_chat) {
+    TOUR_STEPS = TOUR_STEPS.filter(function(st) { return st.selector !== '#soulChatBtn'; });
+    TOUR_I18N.welcome_reward = { ru: 'Доберёшься до конца — подарю 30 Искр <i class="iskra-ic" aria-hidden="true"></i> Это монетки приложения: на них собирают песни.', en: 'Make it to the end — I\'ll gift you 30 Sparks <i class="iskra-ic" aria-hidden="true"></i> They\'re the app\'s coins: you craft songs with them.', de: 'Komm bis zum Ende — ich schenke dir 30 Funken <i class="iskra-ic" aria-hidden="true"></i> Das sind die Münzen der App: damit entstehen Songs.', fr: 'Va jusqu\'au bout — je t\'offre 30 Étincelles <i class="iskra-ic" aria-hidden="true"></i> Ce sont les pièces de l\'app : elles servent à composer des chansons.' };
+    TOUR_I18N.retain_badge = { ru: '<b>30 Искр</b> — на твои песни', en: '<b>30 Sparks</b> — for your songs', de: '<b>30 Funken</b> — für deine Songs', fr: '<b>30 Étincelles</b> — pour tes chansons' };
+    TOUR_I18N.retain_text = { ru: 'Тур совсем короткий — минутка, и <b>30 Искр</b> твои. А не сейчас — можно пройти его позже в «Помощи».', en: 'The tour is really short — a minute, and <b>30 Sparks</b> are yours. Not now? You can take it later in Help.', de: 'Die Tour ist ganz kurz — eine Minute, und <b>30 Funken</b> gehören dir. Nicht jetzt? Du kannst sie später in der Hilfe machen.', fr: 'La visite est très courte — une minute, et <b>30 Étincelles</b> sont à toi. Pas maintenant ? Tu peux la faire plus tard dans l\'Aide.' };
   }
   function _tl(key) {
     var lang = (typeof window._currentLang === 'string' ? window._currentLang : 'ru') || 'ru';

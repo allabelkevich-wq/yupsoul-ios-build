@@ -1848,7 +1848,8 @@
         setTimeout(function () {
           var q = document.getElementById('scPageQuestion');
           if (q) {
-            q.value = 'Помоги мягко прожить мой сегодняшний день — на что опереться и что в нём хорошего?';
+            // Приложение для iPhone: вопрос на языке интерфейса (было только по-русски). Telegram/VK — как раньше.
+            q.value = window._isNativeApp ? t('iskraAskDayQ') : 'Помоги мягко прожить мой сегодняшний день — на что опереться и что в нём хорошего?';
             try { q.dispatchEvent(new Event('input', { bubbles: true })); } catch (e) {}
             try { q.focus(); } catch (e) {}
           }
@@ -1981,6 +1982,22 @@
             break;
           case 'soul_chat':
             if(typeof goToSoulChat==='function')goToSoulChat();
+            break;
+          case 'birthday_song':
+            // Чип главной «Песня на день рождения» (приложение для iPhone, Алла 16.10): тот же путь, что
+            // песня близкому (gift_song ниже — поля человека пустые), плюс готовый запрос-поздравление.
+            // Готового быстрого запроса «день рождения» на сервере нет (/api/quick-buttons) — пишем текст
+            // запроса в поле, как написал бы сам человек. Оплата и генерация — без изменений.
+            goToPage('formPage');
+            // Вход на форму сам подставляет СВОЙ профиль и черновик (асинхронно, _formPrefill) — ждём его,
+            // потом чистим поля под человека, которому песня, и раскрываем их (аккордеон своего профиля прячем).
+            Promise.resolve(window._formPrefill).catch(function(){}).then(function(){
+              var b=document.querySelector('.mode-btn[data-mode="single"]');if(b&&!b.classList.contains('active'))b.click();
+              if(typeof window.resetFormState==='function')window.resetFormState();
+              var fw=document.getElementById('formFieldsWrap');if(fw)fw.classList.remove('pfw-collapsed');
+              var rq=document.getElementById('request');if(rq)rq.value=t('quickBirthdayRequest');
+              window._quickButtonId=null;
+            });
             break;
           case 'gift_song':
             window._formPreset={mode:'single',quickId:'gift_song',clearFields:true};

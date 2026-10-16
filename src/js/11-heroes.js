@@ -87,6 +87,9 @@
           if (priceEl) priceEl.textContent = _hStub ? '' : rub;
           if (sparkEl) sparkEl.style.display = 'none';
         }
+        // Без цены (натив: цену показывает Apple) плашка цены на кнопке оставалась пустой пилюлей — прячем её.
+        var _chipEl = document.getElementById('ulCtaChip');
+        if (_chipEl) _chipEl.style.display = (priceEl && !priceEl.textContent) ? 'none' : '';
         // На stub-клиентах (натив iOS/Android) покупка пакета запрещена — showPlanConfirm
         // там тихо выходит, и кнопка выглядела мёртвой (отказ ВК 24.08, скриншот 1:
         // «кнопки для оплаты, которые не кликабельны»). Кнопку и подпись пакета прячем
