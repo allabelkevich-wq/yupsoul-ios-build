@@ -10879,6 +10879,17 @@ body.theme-light #planConfirmOverlay .cf-old{-webkit-text-fill-color:#6f5a66 !im
       _playing = false; updatePlayBtn(); highlightTrack(_currentIdx);
     };
 
+    // «Минуту ещё раз» с экрана «Открыть целиком» — превью с начала. Раньше кнопка только
+    // возвращала на плеер, стоящий на конце минуты: «Play» доигрывал полсекунды и снова
+    // выкидывал на экран открытия (сборка 49, Алла 17.10).
+    window._mtReplayPreview = function() {
+      if (!_audio) return;
+      var a = _audio, idx = _currentIdx;
+      try { a.currentTime = 0; } catch (_) {}
+      a._tasteGateShown = false;
+      a.play().then(function() { if (_audio !== a) return; _playing = true; updatePlayBtn(); highlightTrack(idx); }).catch(function() {});
+    };
+
     window._mtPlayTrack = function(idx) {
       var tracks = window._mtTracksData || [];
       var track = tracks[idx];

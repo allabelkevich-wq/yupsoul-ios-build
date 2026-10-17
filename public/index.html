@@ -53281,8 +53281,8 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
         // «Вернуться» → назад; «Минуту ещё раз» → повтор превью (Фаза 2)
         var backBtn = document.getElementById('suBackBtn');
         if (backBtn) backBtn.addEventListener('click', function(){ if (typeof goBack === 'function') goBack(); });
-        // «Минуту ещё раз» — возврат на плеер (превью там же); кнопка была мертва.
-        window.replaySongPreview = function(){ if (typeof goBack === 'function') goBack(); };
+        // «Минуту ещё раз» — возврат на плеер и превью с начала (раньше плеер стоял на конце минуты).
+        window.replaySongPreview = function(){ if (typeof goBack === 'function') goBack(); if (typeof window._mtReplayPreview === 'function') window._mtReplayPreview(); };
         var replayBtn = document.getElementById('suReplayBtn');
         if (replayBtn) replayBtn.addEventListener('click', function(){ if (typeof window.replaySongPreview === 'function') window.replaySongPreview(); });
 
@@ -58823,6 +58823,17 @@ body.theme-light #planConfirmOverlay .cf-old{-webkit-text-fill-color:#6f5a66 !im
       _audio.src = ''; try { _audio.load(); } catch (_) {}
       _audio = null; window._audio = null;
       _playing = false; updatePlayBtn(); highlightTrack(_currentIdx);
+    };
+
+    // «Минуту ещё раз» с экрана «Открыть целиком» — превью с начала. Раньше кнопка только
+    // возвращала на плеер, стоящий на конце минуты: «Play» доигрывал полсекунды и снова
+    // выкидывал на экран открытия (сборка 49, Алла 17.10).
+    window._mtReplayPreview = function() {
+      if (!_audio) return;
+      var a = _audio, idx = _currentIdx;
+      try { a.currentTime = 0; } catch (_) {}
+      a._tasteGateShown = false;
+      a.play().then(function() { if (_audio !== a) return; _playing = true; updatePlayBtn(); highlightTrack(idx); }).catch(function() {});
     };
 
     window._mtPlayTrack = function(idx) {

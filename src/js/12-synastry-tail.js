@@ -387,8 +387,8 @@
         // «Вернуться» → назад; «Минуту ещё раз» → повтор превью (Фаза 2)
         var backBtn = document.getElementById('suBackBtn');
         if (backBtn) backBtn.addEventListener('click', function(){ if (typeof goBack === 'function') goBack(); });
-        // «Минуту ещё раз» — возврат на плеер (превью там же); кнопка была мертва.
-        window.replaySongPreview = function(){ if (typeof goBack === 'function') goBack(); };
+        // «Минуту ещё раз» — возврат на плеер и превью с начала (раньше плеер стоял на конце минуты).
+        window.replaySongPreview = function(){ if (typeof goBack === 'function') goBack(); if (typeof window._mtReplayPreview === 'function') window._mtReplayPreview(); };
         var replayBtn = document.getElementById('suReplayBtn');
         if (replayBtn) replayBtn.addEventListener('click', function(){ if (typeof window.replaySongPreview === 'function') window.replaySongPreview(); });
 
