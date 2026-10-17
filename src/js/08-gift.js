@@ -3026,13 +3026,20 @@
       // Источник: user_profiles.has_purchased_package (ставит grantPurchaseBySku при любом
       // провайдере пакета). Подписка тоже снимает замок (подписчик — платящий).
       // localStorage-кэш: раз купил — замок больше никогда не мигает, даже до ответа /api/me.
+      // Отметка «пакет куплен» — у каждого аккаунта своя: на одном телефоне бывают разные аккаунты
+      // (выход/вход, удаление). Общая на устройство отметка прошлого аккаунта отправляла «Открыть
+      // целиком» в Искры, сервер отвечал «нужен пакет» — тупик (сборка 52, Алла 18.10).
+      window._pkgUnlockedKey = function() {
+        var uid = ''; try { uid = localStorage.getItem('yupsoul_user_id') || ''; } catch(_) {}
+        return 'ys_pkg_unlocked:' + (uid || 'anon');
+      };
       window._applyModeLocks = function() {
         var unlocked = false;
-        try { unlocked = localStorage.getItem('ys_pkg_unlocked') === '1'; } catch(_) {}
+        try { localStorage.removeItem('ys_pkg_unlocked'); unlocked = localStorage.getItem(window._pkgUnlockedKey()) === '1'; } catch(_) {}
         var p = window._cachedProfile;
         if (!unlocked && p && p.has_purchased_package) unlocked = true;
         if (!unlocked && typeof userTariff !== 'undefined' && userTariff && userTariff !== 'basic') unlocked = true;
-        if (unlocked) { try { localStorage.setItem('ys_pkg_unlocked', '1'); } catch(_) {} }
+        if (unlocked) { try { localStorage.setItem(window._pkgUnlockedKey(), '1'); } catch(_) {} }
         // Профиль ещё не загружен и кэша нет → не запираем (не мигаем у платящих на старте)
         var locked = !unlocked && !!p;
         window._modeLocksActive = locked;

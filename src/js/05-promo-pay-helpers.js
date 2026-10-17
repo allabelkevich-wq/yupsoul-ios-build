@@ -339,6 +339,7 @@
                 // открытыми даже после сброса → снимаем ТОЛЬКО для force_newcomer, чтобы замок вернулся
                 // (Алла 10.07: как новичок видела форматы незапертыми). Реальных юзеров не трогает.
                 localStorage.removeItem('ys_pkg_unlocked');
+                localStorage.removeItem((window._pkgUnlockedKey ? window._pkgUnlockedKey() : 'ys_pkg_unlocked'));
                 for (var _fi = localStorage.length - 1; _fi >= 0; _fi--) {
                   var _fk = localStorage.key(_fi);
                   if (_fk && _fk.indexOf('ys_edu_reset_') === 0) localStorage.removeItem(_fk);

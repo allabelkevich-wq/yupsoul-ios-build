@@ -97,7 +97,7 @@
           // показываем — там есть звёзды/карта. OK — единственный путь Искрами, кнопка всегда
           // (без пакета сервер вернёт подсказку → plansPage за пакетом). Паттерн флага как в _applyModeLocks.
           var _suHasPack = false;
-          try { _suHasPack = localStorage.getItem('ys_pkg_unlocked') === '1'; } catch(_) {}
+          try { _suHasPack = localStorage.getItem((window._pkgUnlockedKey ? window._pkgUnlockedKey() : 'ys_pkg_unlocked')) === '1'; } catch(_) {}
           if (!_suHasPack && window._cachedProfile && window._cachedProfile.has_purchased_package) _suHasPack = true;
           if (!_suHasPack && typeof userTariff !== 'undefined' && userTariff && userTariff !== 'basic') _suHasPack = true;
           var _hasIskry = _iskryBal >= _iskryPrice && (plat === 'ok' || _suHasPack);
@@ -183,9 +183,16 @@
                 // Пробник стоит денег: тур-Искры первую песню не открывают. Подсказка (не error).
                 // VK → topupPage (пакет за карту, vk.ru), OK → plansPage (пакет за карту);
                 // TG/web — остаёмся на экране открытия: звёзды/карта уже перед глазами.
+                // Пакета нет — значит отметка «пакет куплен» на устройстве устарела: снимаем её и Искры
+                // как способ, иначе кнопка снова поведёт в Искры. Web и iPhone (кнопка сама выбрала
+                // Искры) — сразу прямая оплата: карта / покупка Apple (сборка 52, Алла 18.10).
+                try { localStorage.removeItem((window._pkgUnlockedKey ? window._pkgUnlockedKey() : 'ys_pkg_unlocked')); } catch(_) {}
+                suRoot.dataset.hasIskry = '0';
+                var _suMi = document.getElementById('suMethodIskry'); if (_suMi) _suMi.style.display = 'none';
                 suReset();
-                if (typeof showToast === 'function' && typeof t === 'function') showToast(t('unlockIskryNeedPack'));
                 var _suNpPlat = suPlatform();
+                if (_suNpPlat === 'web') { startSuPay(); return; }
+                if (typeof showToast === 'function' && typeof t === 'function') showToast(t('unlockIskryNeedPack'));
                 if (_suNpPlat === 'vk' || _suNpPlat === 'ok') {
                   if (typeof goToPage === 'function') setTimeout(function(){
                     goToPage(_suNpPlat === 'vk' ? 'topupPage' : 'plansPage');
