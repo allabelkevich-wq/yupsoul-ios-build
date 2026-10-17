@@ -15590,6 +15590,13 @@ html.is-ok-light:not(.dark) #homeCommCard .task-body b { color: #241526 !importa
        иначе правило 4.8 требует объяснений, а сторонние входы на iOS лишние. */
     html.is-native .login-icons-row,
     html.is-native .login-icons-label { display: none !important; }
+
+/* Покупка в App Store: «Подключаемся к App Store…», пока Apple готовит своё окно (сборка 49) */
+.ys-iap-busy{position:fixed;inset:0;z-index:2147483000;display:none;align-items:center;justify-content:center;background:rgba(8,5,20,.55)}
+.ys-iap-busy-card{display:flex;align-items:center;gap:12px;padding:16px 22px;border-radius:9999px;background:rgba(30,20,48,.96);border:1px solid rgba(255,255,255,.12);color:#fff;font-size:15px;font-weight:600}
+.ys-iap-busy-spin{width:18px;height:18px;border-radius:50%;border:2px solid rgba(255,255,255,.25);border-top-color:#ec4899;animation:ysIapSpin .8s linear infinite}
+@keyframes ysIapSpin{to{transform:rotate(360deg)}}
+body.theme-light .ys-iap-busy-card{background:rgba(255,255,255,.97);color:#1a1a2e;border-color:rgba(26,26,46,.12)}
 </style>
   <!-- Sentry Error Tracking (errors only, no tracing).
        НЕ загружается в VK Mini App по правилам платформы VK §1.7 (сторонние
@@ -26191,7 +26198,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           // (аудит iPhone 24.09: заголовок вкладки браузера/PWA не переводился)
           appTitle: 'YupSoul — песня о тебе',
           // Экран согласия на передачу данных сторонним ИИ (натив, App Store 5.1.2(i))
-          aiConsentTitle: 'Перед первой песней',
+          aiConsentTitle: 'Перед первой песней', iapConnecting: 'Подключаемся к App Store…',
           aiConsentDesc: 'Песню и ответы помогает писать искусственный интеллект: твой рассказ и дата рождения передаются ему только для этого.',
           aiConsentLegalHtml: 'Подробнее — в <u>Политике конфиденциальности</u>',
           aiConsentAgree: 'Разрешаю', aiConsentLater: 'Не сейчас',
@@ -27139,7 +27146,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           adminTitle: 'Admin', adminDesc: 'Request management, architecture map and settings — in the web admin panel.',
           adminOpenBtn: 'Open web admin',
           appTitle: 'YupSoul — a song about you',
-          aiConsentTitle: 'Before your first song',
+          aiConsentTitle: 'Before your first song', iapConnecting: 'Connecting to the App Store…',
           aiConsentDesc: 'An AI helps write your song and answers: your story and date of birth are shared with it only for that.',
           aiConsentLegalHtml: 'Details in our <u>Privacy Policy</u>',
           aiConsentAgree: 'Allow', aiConsentLater: 'Not now',
@@ -28086,7 +28093,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           adminTitle: 'Admin', adminDesc: 'Anfragenverwaltung, Architekturkarte und Einstellungen — im Web-Adminbereich.',
           adminOpenBtn: 'Web-Admin öffnen',
           appTitle: 'YupSoul — ein Lied über dich',
-          aiConsentTitle: 'Vor deinem ersten Song',
+          aiConsentTitle: 'Vor deinem ersten Song', iapConnecting: 'Verbindung zum App Store…',
           aiConsentDesc: 'Eine KI hilft, deinen Song und die Antworten zu schreiben: Deine Geschichte und dein Geburtsdatum bekommt sie nur dafür.',
           aiConsentLegalHtml: 'Mehr dazu in der <u>Datenschutzerklärung</u>',
           aiConsentAgree: 'Erlauben', aiConsentLater: 'Nicht jetzt',
@@ -29031,7 +29038,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           adminTitle: 'Admin', adminDesc: 'Gestion des demandes, carte d\'architecture et paramètres — dans le panneau d\'admin web.',
           adminOpenBtn: 'Ouvrir l\'admin web',
           appTitle: 'YupSoul — une chanson sur toi',
-          aiConsentTitle: 'Avant ta première chanson',
+          aiConsentTitle: 'Avant ta première chanson', iapConnecting: 'Connexion à l’App Store…',
           aiConsentDesc: 'Une IA aide à écrire ta chanson et les réponses : ton histoire et ta date de naissance lui sont transmises uniquement pour cela.',
           aiConsentLegalHtml: 'Plus de détails dans la <u>Politique de confidentialité</u>',
           aiConsentAgree: 'Autoriser', aiConsentLater: 'Pas maintenant',
@@ -54741,7 +54748,14 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
            localStorage — копия на случай, если запись не дошла до сервера:
            тогда доотправляем её при следующей проверке. Ошибку сети не
            показываем (закон №37). Отмена — заявка или вопрос не уходят. */
+        // Согласие — у каждого аккаунта своё (сборка 49): общий ключ на устройство переживал
+        // удаление и сброс аккаунта, и новому аккаунту на том же телефоне окно не показывалось.
         var AI_CONSENT_KEY = 'ys_ai_consent';
+        function _aiConsentKey() {
+          var uid = '';
+          try { uid = localStorage.getItem('yupsoul_user_id') || ''; } catch (_) {}
+          return AI_CONSENT_KEY + ':' + (uid || 'anon');
+        }
         var _aiConsentResolve = null;
         var _aiConsentPending = null;
         var _aiConsentResent = false;
@@ -54771,7 +54785,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
         window._nativeEnsureAiConsent = function() {
           if (window._meAiConsent === true) return Promise.resolve(true);
           var local = false;
-          try { local = localStorage.getItem(AI_CONSENT_KEY) === '1'; } catch (_) {}
+          try { local = localStorage.getItem(_aiConsentKey()) === '1'; } catch (_) {}
           if (local) {
             // Сервер ответил «нет», а на устройстве согласие есть — значит, запись
             // не долетела. Отправляем её снова, один раз за запуск.
@@ -54784,7 +54798,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           if (!ov._wired) {
             ov._wired = true;
             document.getElementById('nativeAiConsentAgree').addEventListener('click', function() {
-              try { localStorage.setItem(AI_CONSENT_KEY, '1'); } catch (_) {}
+              try { localStorage.setItem(_aiConsentKey(), '1'); } catch (_) {}
               _aiConsentSend();
               _aiConsentClose(true);
             });
@@ -54914,7 +54928,31 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
 
         /* Покупка. Возвращает { ok:true } только после того, как СЕРВЕР
            подтвердил выдачу товара, иначе баланс разъедется с реальностью. */
+        /* Пока одна покупка идёт — повторные нажатия не заводят новые заказы, а на экране
+           видно «Подключаемся к App Store…» (сборка 49: в песочнице окно Apple открывалось
+           с задержкой, кнопки казались мёртвыми, 10 нажатий = 10 заказов и 10 окон оплаты). */
+        var _nativeBuyBusy = false;
+        function _iapBusyShow(on) {
+          var el = document.getElementById('ysIapBusy');
+          if (on && !el) {
+            el = document.createElement('div'); el.id = 'ysIapBusy'; el.className = 'ys-iap-busy';
+            el.setAttribute('role', 'status'); el.setAttribute('aria-live', 'polite');
+            el.innerHTML = '<div class="ys-iap-busy-card"><span class="ys-iap-busy-spin"></span><span class="ys-iap-busy-txt"></span></div>';
+            document.body.appendChild(el);
+          }
+          if (!el) return;
+          var txt = el.querySelector('.ys-iap-busy-txt');
+          if (txt) txt.textContent = (typeof t === 'function' && t('iapConnecting')) || 'Подключаемся к App Store…';
+          el.style.display = on ? 'flex' : 'none';
+        }
         window._nativeBuy = async function(sku, opts) {
+          if (_nativeBuyBusy) return { ok: false, error: 'busy' };
+          _nativeBuyBusy = true;
+          _iapBusyShow(true);
+          try { return await _nativeBuyRun(sku, opts); }
+          finally { _nativeBuyBusy = false; _iapBusyShow(false); }
+        };
+        async function _nativeBuyRun(sku, opts) {
           opts = opts || {};
           var productId = PRODUCT_BY_SKU[sku];
           if (!productId) return { ok: false, error: 'unknown_sku' };
@@ -55017,7 +55055,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           var granted = await _waitForGrant(sku, orderReqId, baseline);
           // Вебхук RevenueCat может опоздать (песочница/TestFlight): отдаём данные, чтобы экран дождался в фоне, а не объявил провал
           return granted ? { ok: true } : { ok: false, error: 'grant_pending', requestId: orderReqId, baseline: baseline };
-        };
+        }
 
         /* Прямое подтверждение покупки: true — сервер выдал товар (или он уже был выдан). */
         async function _confirmPurchase(sku, requestId, transactionId) {
@@ -55318,6 +55356,8 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
         async function _buyAndRefresh(sku, opts) {
           var suRoot = document.getElementById('suRoot');
           var res = await window._nativeBuy(sku, opts);
+          // Повторное нажатие, пока первая покупка идёт: ничего не меняем и не пишем «не завершилась».
+          if (res && res.error === 'busy') return res;
           if (res && res.error === 'grant_pending') {
             /* Аудит 24.09 (перед записью для App Review): вебхук RevenueCat до сервера ещё не дошёл, а Apple покупку
                уже провёл — раньше тут через 14 с показывался тост «Покупка не завершилась», хотя деньги списаны
@@ -58976,6 +59016,9 @@ body.theme-light #planConfirmOverlay .cf-old{-webkit-text-fill-color:#6f5a66 !im
         // Модель «вкус»: запертая первая песня играет только превью (~60с). На исходе минуты —
         // пауза + экран «Открыть целиком за 75⭐». track.locked/preview_sec приходят из /api/my-tracks.
         // Проверяем ДО early-return на !duration: труб-стрим (сервер режет по байтам) может дать NaN duration.
+        // Повторное прослушивание с начала — экран «Открыть целиком» снова должен появиться на минуте
+        // (сборка 49: отметка «уже показали» не снималась, и на втором прослушивании песня молча затихала).
+        if (track && track.locked && audio._tasteGateShown && audio.currentTime < ((track.preview_sec || 60) - 2)) audio._tasteGateShown = false;
         if (track && track.locked && !audio._tasteGateShown && audio.currentTime >= ((track.preview_sec || 60) - 0.5)) {
           audio._tasteGateShown = true;
           try { audio.pause(); } catch (_) {}
@@ -59013,7 +59056,10 @@ body.theme-light #planConfirmOverlay .cf-old{-webkit-text-fill-color:#6f5a66 !im
         // Вкус: запертая песня завершила превью (сервер обрезал поток ~60с) → экран «Открыть целиком»,
         // без авто-следующего трека. Фолбэк на случай если timeupdate-порог не успел сработать.
         if (track && track.locked) {
-          if (!audio._tasteGateShown && typeof window.openSongUnlock === 'function') {
+          // Превью доиграло до конца — экран «Открыть целиком» показываем всегда, если он не открыт прямо сейчас.
+          var _suOpen = document.getElementById('songUnlockPage');
+          if (_suOpen && _suOpen.classList.contains('active')) return;
+          if (typeof window.openSongUnlock === 'function') {
             audio._tasteGateShown = true;
             window._songUnlockTrack = track;
             window.openSongUnlock({ priceKind: 'first', requestId: track.id });

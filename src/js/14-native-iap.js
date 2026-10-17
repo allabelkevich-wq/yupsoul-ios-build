@@ -127,7 +127,14 @@
            localStorage — копия на случай, если запись не дошла до сервера:
            тогда доотправляем её при следующей проверке. Ошибку сети не
            показываем (закон №37). Отмена — заявка или вопрос не уходят. */
+        // Согласие — у каждого аккаунта своё (сборка 49): общий ключ на устройство переживал
+        // удаление и сброс аккаунта, и новому аккаунту на том же телефоне окно не показывалось.
         var AI_CONSENT_KEY = 'ys_ai_consent';
+        function _aiConsentKey() {
+          var uid = '';
+          try { uid = localStorage.getItem('yupsoul_user_id') || ''; } catch (_) {}
+          return AI_CONSENT_KEY + ':' + (uid || 'anon');
+        }
         var _aiConsentResolve = null;
         var _aiConsentPending = null;
         var _aiConsentResent = false;
@@ -157,7 +164,7 @@
         window._nativeEnsureAiConsent = function() {
           if (window._meAiConsent === true) return Promise.resolve(true);
           var local = false;
-          try { local = localStorage.getItem(AI_CONSENT_KEY) === '1'; } catch (_) {}
+          try { local = localStorage.getItem(_aiConsentKey()) === '1'; } catch (_) {}
           if (local) {
             // Сервер ответил «нет», а на устройстве согласие есть — значит, запись
             // не долетела. Отправляем её снова, один раз за запуск.
@@ -170,7 +177,7 @@
           if (!ov._wired) {
             ov._wired = true;
             document.getElementById('nativeAiConsentAgree').addEventListener('click', function() {
-              try { localStorage.setItem(AI_CONSENT_KEY, '1'); } catch (_) {}
+              try { localStorage.setItem(_aiConsentKey(), '1'); } catch (_) {}
               _aiConsentSend();
               _aiConsentClose(true);
             });
@@ -300,7 +307,31 @@
 
         /* Покупка. Возвращает { ok:true } только после того, как СЕРВЕР
            подтвердил выдачу товара, иначе баланс разъедется с реальностью. */
+        /* Пока одна покупка идёт — повторные нажатия не заводят новые заказы, а на экране
+           видно «Подключаемся к App Store…» (сборка 49: в песочнице окно Apple открывалось
+           с задержкой, кнопки казались мёртвыми, 10 нажатий = 10 заказов и 10 окон оплаты). */
+        var _nativeBuyBusy = false;
+        function _iapBusyShow(on) {
+          var el = document.getElementById('ysIapBusy');
+          if (on && !el) {
+            el = document.createElement('div'); el.id = 'ysIapBusy'; el.className = 'ys-iap-busy';
+            el.setAttribute('role', 'status'); el.setAttribute('aria-live', 'polite');
+            el.innerHTML = '<div class="ys-iap-busy-card"><span class="ys-iap-busy-spin"></span><span class="ys-iap-busy-txt"></span></div>';
+            document.body.appendChild(el);
+          }
+          if (!el) return;
+          var txt = el.querySelector('.ys-iap-busy-txt');
+          if (txt) txt.textContent = (typeof t === 'function' && t('iapConnecting')) || 'Подключаемся к App Store…';
+          el.style.display = on ? 'flex' : 'none';
+        }
         window._nativeBuy = async function(sku, opts) {
+          if (_nativeBuyBusy) return { ok: false, error: 'busy' };
+          _nativeBuyBusy = true;
+          _iapBusyShow(true);
+          try { return await _nativeBuyRun(sku, opts); }
+          finally { _nativeBuyBusy = false; _iapBusyShow(false); }
+        };
+        async function _nativeBuyRun(sku, opts) {
           opts = opts || {};
           var productId = PRODUCT_BY_SKU[sku];
           if (!productId) return { ok: false, error: 'unknown_sku' };
@@ -403,7 +434,7 @@
           var granted = await _waitForGrant(sku, orderReqId, baseline);
           // Вебхук RevenueCat может опоздать (песочница/TestFlight): отдаём данные, чтобы экран дождался в фоне, а не объявил провал
           return granted ? { ok: true } : { ok: false, error: 'grant_pending', requestId: orderReqId, baseline: baseline };
-        };
+        }
 
         /* Прямое подтверждение покупки: true — сервер выдал товар (или он уже был выдан). */
         async function _confirmPurchase(sku, requestId, transactionId) {
@@ -704,6 +735,8 @@
         async function _buyAndRefresh(sku, opts) {
           var suRoot = document.getElementById('suRoot');
           var res = await window._nativeBuy(sku, opts);
+          // Повторное нажатие, пока первая покупка идёт: ничего не меняем и не пишем «не завершилась».
+          if (res && res.error === 'busy') return res;
           if (res && res.error === 'grant_pending') {
             /* Аудит 24.09 (перед записью для App Review): вебхук RevenueCat до сервера ещё не дошёл, а Apple покупку
                уже провёл — раньше тут через 14 с показывался тост «Покупка не завершилась», хотя деньги списаны

@@ -13780,3 +13780,10 @@ html.is-ok-light:not(.dark) #homeCommCard .task-body b { color: #241526 !importa
        иначе правило 4.8 требует объяснений, а сторонние входы на iOS лишние. */
     html.is-native .login-icons-row,
     html.is-native .login-icons-label { display: none !important; }
+
+/* Покупка в App Store: «Подключаемся к App Store…», пока Apple готовит своё окно (сборка 49) */
+.ys-iap-busy{position:fixed;inset:0;z-index:2147483000;display:none;align-items:center;justify-content:center;background:rgba(8,5,20,.55)}
+.ys-iap-busy-card{display:flex;align-items:center;gap:12px;padding:16px 22px;border-radius:9999px;background:rgba(30,20,48,.96);border:1px solid rgba(255,255,255,.12);color:#fff;font-size:15px;font-weight:600}
+.ys-iap-busy-spin{width:18px;height:18px;border-radius:50%;border:2px solid rgba(255,255,255,.25);border-top-color:#ec4899;animation:ysIapSpin .8s linear infinite}
+@keyframes ysIapSpin{to{transform:rotate(360deg)}}
+body.theme-light .ys-iap-busy-card{background:rgba(255,255,255,.97);color:#1a1a2e;border-color:rgba(26,26,46,.12)}

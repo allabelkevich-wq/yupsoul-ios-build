@@ -11076,6 +11076,9 @@ body.theme-light #planConfirmOverlay .cf-old{-webkit-text-fill-color:#6f5a66 !im
         // Модель «вкус»: запертая первая песня играет только превью (~60с). На исходе минуты —
         // пауза + экран «Открыть целиком за 75⭐». track.locked/preview_sec приходят из /api/my-tracks.
         // Проверяем ДО early-return на !duration: труб-стрим (сервер режет по байтам) может дать NaN duration.
+        // Повторное прослушивание с начала — экран «Открыть целиком» снова должен появиться на минуте
+        // (сборка 49: отметка «уже показали» не снималась, и на втором прослушивании песня молча затихала).
+        if (track && track.locked && audio._tasteGateShown && audio.currentTime < ((track.preview_sec || 60) - 2)) audio._tasteGateShown = false;
         if (track && track.locked && !audio._tasteGateShown && audio.currentTime >= ((track.preview_sec || 60) - 0.5)) {
           audio._tasteGateShown = true;
           try { audio.pause(); } catch (_) {}
@@ -11113,7 +11116,10 @@ body.theme-light #planConfirmOverlay .cf-old{-webkit-text-fill-color:#6f5a66 !im
         // Вкус: запертая песня завершила превью (сервер обрезал поток ~60с) → экран «Открыть целиком»,
         // без авто-следующего трека. Фолбэк на случай если timeupdate-порог не успел сработать.
         if (track && track.locked) {
-          if (!audio._tasteGateShown && typeof window.openSongUnlock === 'function') {
+          // Превью доиграло до конца — экран «Открыть целиком» показываем всегда, если он не открыт прямо сейчас.
+          var _suOpen = document.getElementById('songUnlockPage');
+          if (_suOpen && _suOpen.classList.contains('active')) return;
+          if (typeof window.openSongUnlock === 'function') {
             audio._tasteGateShown = true;
             window._songUnlockTrack = track;
             window.openSongUnlock({ priceKind: 'first', requestId: track.id });
