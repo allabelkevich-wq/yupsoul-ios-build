@@ -308,10 +308,12 @@
         /* Покупка. Возвращает { ok:true } только после того, как СЕРВЕР
            подтвердил выдачу товара, иначе баланс разъедется с реальностью. */
         /* Пока одна покупка идёт — повторные нажатия не заводят новые заказы, а на экране
-           видно «Подключаемся к App Store…» (сборка 49: в песочнице окно Apple открывалось
-           с задержкой, кнопки казались мёртвыми, 10 нажатий = 10 заказов и 10 окон оплаты). */
+           видно «Ждём App Store…» (сборка 49: в песочнице окно Apple открывалось
+           с задержкой, кнопки казались мёртвыми, 10 нажатий = 10 заказов и 10 окон оплаты).
+           Когда Apple подтвердил оплату — «Оплата прошла — …» (сборка 52: после «You're all set»
+           плашка ещё секунды говорила «Подключаемся к App Store…», Алла 18.10). */
         var _nativeBuyBusy = false;
-        function _iapBusyShow(on) {
+        function _iapBusyShow(on, key) {
           var el = document.getElementById('ysIapBusy');
           if (on && !el) {
             el = document.createElement('div'); el.id = 'ysIapBusy'; el.className = 'ys-iap-busy';
@@ -321,7 +323,7 @@
           }
           if (!el) return;
           var txt = el.querySelector('.ys-iap-busy-txt');
-          if (txt) txt.textContent = (typeof t === 'function' && t('iapConnecting')) || 'Подключаемся к App Store…';
+          if (txt) txt.textContent = (typeof t === 'function' && t(key || 'iapConnecting')) || 'Ждём App Store…';
           el.style.display = on ? 'flex' : 'none';
         }
         window._nativeBuy = async function(sku, opts) {
@@ -415,6 +417,7 @@
             return { ok: false, error: 'purchase_failed' };
           }
           _refreshStorePrices();
+          _iapBusyShow(true, sku === 'song_unlock' ? 'unlockCtaReceived' : (PACK_SKUS[sku] ? 'iapReceivedPack' : 'iapReceivedIskry'));
 
           /* Apple уже показал «You're all set» — на кнопке больше не «Открываем оплату…». */
           if (sku === 'song_unlock') {

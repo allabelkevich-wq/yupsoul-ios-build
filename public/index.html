@@ -26198,7 +26198,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           // (аудит iPhone 24.09: заголовок вкладки браузера/PWA не переводился)
           appTitle: 'YupSoul — песня о тебе',
           // Экран согласия на передачу данных сторонним ИИ (натив, App Store 5.1.2(i))
-          aiConsentTitle: 'Перед первой песней', iapConnecting: 'Подключаемся к App Store…',
+          aiConsentTitle: 'Перед первой песней', iapConnecting: 'Ждём App Store…', iapReceivedIskry: 'Оплата прошла — добавляем Искры…', iapReceivedPack: 'Оплата прошла — подключаем пакет…',
           aiConsentDesc: 'Песню и ответы помогает писать искусственный интеллект: твой рассказ и дата рождения передаются ему только для этого.',
           aiConsentLegalHtml: 'Подробнее — в <u>Политике конфиденциальности</u>',
           aiConsentAgree: 'Разрешаю', aiConsentLater: 'Не сейчас',
@@ -27146,7 +27146,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           adminTitle: 'Admin', adminDesc: 'Request management, architecture map and settings — in the web admin panel.',
           adminOpenBtn: 'Open web admin',
           appTitle: 'YupSoul — a song about you',
-          aiConsentTitle: 'Before your first song', iapConnecting: 'Connecting to the App Store…',
+          aiConsentTitle: 'Before your first song', iapConnecting: 'Waiting for the App Store…', iapReceivedIskry: 'Payment received — adding your Sparks…', iapReceivedPack: 'Payment received — activating your package…',
           aiConsentDesc: 'An AI helps write your song and answers: your story and date of birth are shared with it only for that.',
           aiConsentLegalHtml: 'Details in our <u>Privacy Policy</u>',
           aiConsentAgree: 'Allow', aiConsentLater: 'Not now',
@@ -28093,7 +28093,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           adminTitle: 'Admin', adminDesc: 'Anfragenverwaltung, Architekturkarte und Einstellungen — im Web-Adminbereich.',
           adminOpenBtn: 'Web-Admin öffnen',
           appTitle: 'YupSoul — ein Lied über dich',
-          aiConsentTitle: 'Vor deinem ersten Song', iapConnecting: 'Verbindung zum App Store…',
+          aiConsentTitle: 'Vor deinem ersten Song', iapConnecting: 'Warten auf den App Store…', iapReceivedIskry: 'Zahlung erhalten — Funken werden gutgeschrieben…', iapReceivedPack: 'Zahlung erhalten — Paket wird aktiviert…',
           aiConsentDesc: 'Eine KI hilft, deinen Song und die Antworten zu schreiben: Deine Geschichte und dein Geburtsdatum bekommt sie nur dafür.',
           aiConsentLegalHtml: 'Mehr dazu in der <u>Datenschutzerklärung</u>',
           aiConsentAgree: 'Erlauben', aiConsentLater: 'Nicht jetzt',
@@ -29038,7 +29038,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           adminTitle: 'Admin', adminDesc: 'Gestion des demandes, carte d\'architecture et paramètres — dans le panneau d\'admin web.',
           adminOpenBtn: 'Ouvrir l\'admin web',
           appTitle: 'YupSoul — une chanson sur toi',
-          aiConsentTitle: 'Avant ta première chanson', iapConnecting: 'Connexion à l’App Store…',
+          aiConsentTitle: 'Avant ta première chanson', iapConnecting: 'En attente de l’App Store…', iapReceivedIskry: 'Paiement reçu — ajout de tes Étincelles…', iapReceivedPack: 'Paiement reçu — activation de ton pack…',
           aiConsentDesc: 'Une IA aide à écrire ta chanson et les réponses : ton histoire et ta date de naissance lui sont transmises uniquement pour cela.',
           aiConsentLegalHtml: 'Plus de détails dans la <u>Politique de confidentialité</u>',
           aiConsentAgree: 'Autoriser', aiConsentLater: 'Pas maintenant',
@@ -54935,10 +54935,12 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
         /* Покупка. Возвращает { ok:true } только после того, как СЕРВЕР
            подтвердил выдачу товара, иначе баланс разъедется с реальностью. */
         /* Пока одна покупка идёт — повторные нажатия не заводят новые заказы, а на экране
-           видно «Подключаемся к App Store…» (сборка 49: в песочнице окно Apple открывалось
-           с задержкой, кнопки казались мёртвыми, 10 нажатий = 10 заказов и 10 окон оплаты). */
+           видно «Ждём App Store…» (сборка 49: в песочнице окно Apple открывалось
+           с задержкой, кнопки казались мёртвыми, 10 нажатий = 10 заказов и 10 окон оплаты).
+           Когда Apple подтвердил оплату — «Оплата прошла — …» (сборка 52: после «You're all set»
+           плашка ещё секунды говорила «Подключаемся к App Store…», Алла 18.10). */
         var _nativeBuyBusy = false;
-        function _iapBusyShow(on) {
+        function _iapBusyShow(on, key) {
           var el = document.getElementById('ysIapBusy');
           if (on && !el) {
             el = document.createElement('div'); el.id = 'ysIapBusy'; el.className = 'ys-iap-busy';
@@ -54948,7 +54950,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           }
           if (!el) return;
           var txt = el.querySelector('.ys-iap-busy-txt');
-          if (txt) txt.textContent = (typeof t === 'function' && t('iapConnecting')) || 'Подключаемся к App Store…';
+          if (txt) txt.textContent = (typeof t === 'function' && t(key || 'iapConnecting')) || 'Ждём App Store…';
           el.style.display = on ? 'flex' : 'none';
         }
         window._nativeBuy = async function(sku, opts) {
@@ -55042,6 +55044,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
             return { ok: false, error: 'purchase_failed' };
           }
           _refreshStorePrices();
+          _iapBusyShow(true, sku === 'song_unlock' ? 'unlockCtaReceived' : (PACK_SKUS[sku] ? 'iapReceivedPack' : 'iapReceivedIskry'));
 
           /* Apple уже показал «You're all set» — на кнопке больше не «Открываем оплату…». */
           if (sku === 'song_unlock') {
