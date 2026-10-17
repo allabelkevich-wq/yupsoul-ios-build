@@ -10860,6 +10860,25 @@ body.theme-light #planConfirmOverlay .cf-old{-webkit-text-fill-color:#6f5a66 !im
       return true;
     };
 
+    // Песня открыта (Искры / покупка / промокод), а плеер держит запертую копию: объект трека с
+    // locked:true и аудио, начатое как минутное превью (сервер режет поток на минуте). Тап по той же
+    // песне в «Моих треках» шёл в _sameTrack и доигрывал превью → снова «Открыть целиком»
+    // (сборка 49, Алла 17.10). Снимаем замок со всех копий трека и выбрасываем аудио превью —
+    // следующий запуск возьмёт полный поток.
+    window._mtMarkUnlocked = function(id) {
+      if (id == null) return;
+      var sid = String(id);
+      (window._mtTracksData || []).concat([window._mtCurrentTrack, window._songUnlockTrack]).forEach(function(tr) {
+        if (tr && String(tr.id) === sid) tr.locked = false;
+      });
+      if (!_audio || !window._mtCurrentTrack || String(window._mtCurrentTrack.id) !== sid) return;
+      cleanupAudioListeners();
+      try { _audio.pause(); } catch (_) {}
+      _audio.src = ''; try { _audio.load(); } catch (_) {}
+      _audio = null; window._audio = null;
+      _playing = false; updatePlayBtn(); highlightTrack(_currentIdx);
+    };
+
     window._mtPlayTrack = function(idx) {
       var tracks = window._mtTracksData || [];
       var track = tracks[idx];
@@ -10871,7 +10890,9 @@ body.theme-light #planConfirmOverlay .cf-old{-webkit-text-fill-color:#6f5a66 !im
       // подменяется целиком, а _currentIdx не сбрасывается — совпадение номеров ложно считалось «тем же
       // треком», и audio.src не менялся: новое название и обложка, а играет старый трек (Алла, TestFlight 26,
       // радио → духовный жанр). Сверяем ещё и id того, что реально играет.
-      var _sameTrack = _currentIdx === idx && _audio && window._mtCurrentTrack && String(window._mtCurrentTrack.id) === String(track.id);
+      // Запертая копия при уже открытой песне — не тот же трек: у неё поток превью.
+      var _sameTrack = _currentIdx === idx && _audio && window._mtCurrentTrack && String(window._mtCurrentTrack.id) === String(track.id)
+        && !(window._mtCurrentTrack.locked && !track.locked);
       if (_sameTrack) {
         // Тот же трек. Если полноэкранный плеер ЗАКРЫТ/свёрнут — тап по треку ОТКРЫВАЕТ его заново
         // (баг Аллы «через раз»: _currentIdx не сбрасывался при выходе из плеера → повторный тап той

@@ -112,6 +112,8 @@
           suRoot.dataset.platform = (plat === 'vk') ? 'vk' : 'web';
           suRoot.dataset.plat = plat; // реальная платформа (tg/vk/web/ok)
           suRoot.dataset.state = 'offer';
+          // Подпись кнопки — под состояние «оффер»: после прошлой оплаты оставалось «Открываем оплату…» (сборка 49)
+          var _suCta = suCtaTxt(); if (_suCta) _suCta.textContent = suT('unlockCtaOpen');
           if (opts.requestId != null) suRoot.dataset.requestId = String(opts.requestId);
           if (typeof goToPage === 'function') goToPage('songUnlockPage');
         };
@@ -522,7 +524,9 @@
         };
 
         // «Полная песня · 3:12»: длительность подставляем настоящую
-        function _soSetSub(){ var ps=document.getElementById('soPlaySub'); if(!ps) return; var base=(typeof t==='function' && t('openedPlaySub')) || 'Полная песня · 3:12'; ps.textContent = String(base).replace(/\d+:\d\d/, fmt(TOTAL)); }
+        // Пока реальное аудио не отдало длительность — без цифр: заготовка 3:12 мелькала у песни на 4:31 (сборка 49)
+        function _soDurKnown(){ return !soAudio || (isFinite(soAudio.duration) && soAudio.duration > 0); }
+        function _soSetSub(){ var ps=document.getElementById('soPlaySub'); if(!ps) return; var base=(typeof t==='function' && t('openedPlaySub')) || 'Полная песня · 3:12'; ps.textContent = _soDurKnown() ? String(base).replace(/\d+:\d\d/, fmt(TOTAL)) : String(base).replace(/\s*·\s*\d+:\d\d/, ''); }
         // Привязать реальное аудио к плееру экрана B. Нет трека → демо-волна (тест-вход).
         function _attachRealAudio(track){
           if (soAudio){ try{ soAudio.pause(); }catch(_){} try{ soAudio.src=''; }catch(_){} soAudio=null; }
@@ -552,6 +556,8 @@
           } }catch(_){}
           var track = opts.track || window._songUnlockTrack || null;
           window._soCurrentTrack = track;
+          // Песня открыта — плеер «Моих треков» не должен доигрывать запертое превью этой песни
+          if (!opts.shared && typeof window._mtMarkUnlocked === 'function') window._mtMarkUnlocked(opts.requestId != null ? opts.requestId : (track && track.id));
           // Песня без слов: караоке и «Слова песни» открыли бы пустой экран, а lead
           // обещал бы текст, которого нет. Гейт по треку, а не безусловный показ выше.
           try {
@@ -576,10 +582,10 @@
           // Без data-i18n: applyTranslations при переходах затирал название на «Твоя песня» (TestFlight 43)
           var title = (track && (track.title || track.name)) || opts.title || '';
           var t2=document.getElementById('soPlayTitle'); if(t2) t2.textContent = title || ((typeof t==='function' && t('soPlayTitleFallback')) || 'Твоя песня');
-          _soSetSub();
           var hasReal = _attachRealAudio(track);
           if (!hasReal && opts.durationSec) TOTAL = opts.durationSec;
-          var tt=document.getElementById('soTTot'); if(tt) tt.textContent=fmt(TOTAL);
+          _soSetSub();
+          var tt=document.getElementById('soTTot'); if(tt) tt.textContent = _soDurKnown() ? fmt(TOTAL) : '';
           render();
           if (typeof goToPage==='function') goToPage('songOpenedPage');
           salute();

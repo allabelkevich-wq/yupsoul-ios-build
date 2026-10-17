@@ -53006,6 +53006,8 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           suRoot.dataset.platform = (plat === 'vk') ? 'vk' : 'web';
           suRoot.dataset.plat = plat; // реальная платформа (tg/vk/web/ok)
           suRoot.dataset.state = 'offer';
+          // Подпись кнопки — под состояние «оффер»: после прошлой оплаты оставалось «Открываем оплату…» (сборка 49)
+          var _suCta = suCtaTxt(); if (_suCta) _suCta.textContent = suT('unlockCtaOpen');
           if (opts.requestId != null) suRoot.dataset.requestId = String(opts.requestId);
           if (typeof goToPage === 'function') goToPage('songUnlockPage');
         };
@@ -53416,7 +53418,9 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
         };
 
         // «Полная песня · 3:12»: длительность подставляем настоящую
-        function _soSetSub(){ var ps=document.getElementById('soPlaySub'); if(!ps) return; var base=(typeof t==='function' && t('openedPlaySub')) || 'Полная песня · 3:12'; ps.textContent = String(base).replace(/\d+:\d\d/, fmt(TOTAL)); }
+        // Пока реальное аудио не отдало длительность — без цифр: заготовка 3:12 мелькала у песни на 4:31 (сборка 49)
+        function _soDurKnown(){ return !soAudio || (isFinite(soAudio.duration) && soAudio.duration > 0); }
+        function _soSetSub(){ var ps=document.getElementById('soPlaySub'); if(!ps) return; var base=(typeof t==='function' && t('openedPlaySub')) || 'Полная песня · 3:12'; ps.textContent = _soDurKnown() ? String(base).replace(/\d+:\d\d/, fmt(TOTAL)) : String(base).replace(/\s*·\s*\d+:\d\d/, ''); }
         // Привязать реальное аудио к плееру экрана B. Нет трека → демо-волна (тест-вход).
         function _attachRealAudio(track){
           if (soAudio){ try{ soAudio.pause(); }catch(_){} try{ soAudio.src=''; }catch(_){} soAudio=null; }
@@ -53446,6 +53450,8 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           } }catch(_){}
           var track = opts.track || window._songUnlockTrack || null;
           window._soCurrentTrack = track;
+          // Песня открыта — плеер «Моих треков» не должен доигрывать запертое превью этой песни
+          if (!opts.shared && typeof window._mtMarkUnlocked === 'function') window._mtMarkUnlocked(opts.requestId != null ? opts.requestId : (track && track.id));
           // Песня без слов: караоке и «Слова песни» открыли бы пустой экран, а lead
           // обещал бы текст, которого нет. Гейт по треку, а не безусловный показ выше.
           try {
@@ -53470,10 +53476,10 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           // Без data-i18n: applyTranslations при переходах затирал название на «Твоя песня» (TestFlight 43)
           var title = (track && (track.title || track.name)) || opts.title || '';
           var t2=document.getElementById('soPlayTitle'); if(t2) t2.textContent = title || ((typeof t==='function' && t('soPlayTitleFallback')) || 'Твоя песня');
-          _soSetSub();
           var hasReal = _attachRealAudio(track);
           if (!hasReal && opts.durationSec) TOTAL = opts.durationSec;
-          var tt=document.getElementById('soTTot'); if(tt) tt.textContent=fmt(TOTAL);
+          _soSetSub();
+          var tt=document.getElementById('soTTot'); if(tt) tt.textContent = _soDurKnown() ? fmt(TOTAL) : '';
           render();
           if (typeof goToPage==='function') goToPage('songOpenedPage');
           salute();
@@ -58800,6 +58806,25 @@ body.theme-light #planConfirmOverlay .cf-old{-webkit-text-fill-color:#6f5a66 !im
       return true;
     };
 
+    // Песня открыта (Искры / покупка / промокод), а плеер держит запертую копию: объект трека с
+    // locked:true и аудио, начатое как минутное превью (сервер режет поток на минуте). Тап по той же
+    // песне в «Моих треках» шёл в _sameTrack и доигрывал превью → снова «Открыть целиком»
+    // (сборка 49, Алла 17.10). Снимаем замок со всех копий трека и выбрасываем аудио превью —
+    // следующий запуск возьмёт полный поток.
+    window._mtMarkUnlocked = function(id) {
+      if (id == null) return;
+      var sid = String(id);
+      (window._mtTracksData || []).concat([window._mtCurrentTrack, window._songUnlockTrack]).forEach(function(tr) {
+        if (tr && String(tr.id) === sid) tr.locked = false;
+      });
+      if (!_audio || !window._mtCurrentTrack || String(window._mtCurrentTrack.id) !== sid) return;
+      cleanupAudioListeners();
+      try { _audio.pause(); } catch (_) {}
+      _audio.src = ''; try { _audio.load(); } catch (_) {}
+      _audio = null; window._audio = null;
+      _playing = false; updatePlayBtn(); highlightTrack(_currentIdx);
+    };
+
     window._mtPlayTrack = function(idx) {
       var tracks = window._mtTracksData || [];
       var track = tracks[idx];
@@ -58811,7 +58836,9 @@ body.theme-light #planConfirmOverlay .cf-old{-webkit-text-fill-color:#6f5a66 !im
       // подменяется целиком, а _currentIdx не сбрасывается — совпадение номеров ложно считалось «тем же
       // треком», и audio.src не менялся: новое название и обложка, а играет старый трек (Алла, TestFlight 26,
       // радио → духовный жанр). Сверяем ещё и id того, что реально играет.
-      var _sameTrack = _currentIdx === idx && _audio && window._mtCurrentTrack && String(window._mtCurrentTrack.id) === String(track.id);
+      // Запертая копия при уже открытой песне — не тот же трек: у неё поток превью.
+      var _sameTrack = _currentIdx === idx && _audio && window._mtCurrentTrack && String(window._mtCurrentTrack.id) === String(track.id)
+        && !(window._mtCurrentTrack.locked && !track.locked);
       if (_sameTrack) {
         // Тот же трек. Если полноэкранный плеер ЗАКРЫТ/свёрнут — тап по треку ОТКРЫВАЕТ его заново
         // (баг Аллы «через раз»: _currentIdx не сбрасывался при выходе из плеера → повторный тап той
