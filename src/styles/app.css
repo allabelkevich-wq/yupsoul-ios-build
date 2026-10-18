@@ -13787,3 +13787,9 @@ html.is-ok-light:not(.dark) #homeCommCard .task-body b { color: #241526 !importa
 .ys-iap-busy-spin{width:18px;height:18px;border-radius:50%;border:2px solid rgba(255,255,255,.25);border-top-color:#ec4899;animation:ysIapSpin .8s linear infinite}
 @keyframes ysIapSpin{to{transform:rotate(360deg)}}
 body.theme-light .ys-iap-busy-card{background:rgba(255,255,255,.97);color:#1a1a2e;border-color:rgba(26,26,46,.12)}
+
+/* Плеер: звук ещё грузится — кольцо вокруг Play (видео Аллы 18.10: 2–4 с «0:00 / 0:00»
+   с обычной кнопкой Play выглядели как зависание). Класс ставит/снимает _mtPlayTrack. */
+#mtNpPlayBtn.is-loading::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:2px solid rgba(255,255,255,.18);border-top-color:#fff;animation:mtNpSpin .8s linear infinite;pointer-events:none}
+@keyframes mtNpSpin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){#mtNpPlayBtn.is-loading::after{animation-duration:2.4s}}

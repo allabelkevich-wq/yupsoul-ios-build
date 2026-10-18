@@ -56,6 +56,20 @@
           }, 140);
         };
 
+        // «Полная песня — около N минут» — по настоящей длине песни (duration_sec из /api/my-tracks).
+        // Раньше всем обещали «около 4 минут», а песня бывает 1:51 (17.10, заявка 42ee4ffd).
+        function suApplyDuration(track){
+          var sec = track ? Number(track.duration_sec) : 0;
+          // Длина неизвестна — текст словаря как есть (иначе осталась бы длина прошлой песни)
+          var fix = function(str){ return sec > 0 ? String(str).replace(/\d+/, String(Math.max(2, Math.round(sec / 60)))) : String(str); };
+          var lead = document.getElementById('suLead');
+          var leadBase = typeof t === 'function' ? t('unlockLead') : '';
+          if (lead && leadBase && leadBase !== 'unlockLead') lead.innerHTML = fix(leadBase);
+          var r1 = document.querySelector('#songUnlockPage [data-i18n="unlockR1s"]');
+          var r1Base = typeof t === 'function' ? t('unlockR1s') : '';
+          if (r1 && r1Base && r1Base !== 'unlockR1s') r1.textContent = fix(r1Base);
+        }
+
         window.openSongUnlock = function(opts){
           opts = opts || {};
           // Пейволл не должен обещать «весь текст целиком» там, где текста нет —
@@ -116,6 +130,9 @@
           var _suCta = suCtaTxt(); if (_suCta) _suCta.textContent = suT('unlockCtaOpen');
           if (opts.requestId != null) suRoot.dataset.requestId = String(opts.requestId);
           if (typeof goToPage === 'function') goToPage('songUnlockPage');
+          var _suDurTrack = opts.track || window._songUnlockTrack || null;
+          suApplyDuration(_suDurTrack);
+          setTimeout(function(){ suApplyDuration(_suDurTrack); }, 60); // после перевода экрана при переходе
         };
 
         function suReset(){ clearTimeout(watchdog); clearTimeout(payTimer); clearTimeout(suPollTimer); suRoot.dataset.state = 'offer'; var c = suCtaTxt(); if (c) c.textContent = suT('unlockCtaOpen'); }
@@ -481,7 +498,11 @@
         function _soLeave(){ if (soAudio) { try{ soAudio.pause(); }catch(_){} } clearInterval(tick); playing=false; soRoot.classList.remove('playing'); }
         function _soOpenLyrics(){
           var tr=_soTrack(); if(!tr) return;
-          _soLeave();
+          // Играющий звук отдаём плееру «Моих треков» — караоке продолжит с той же секунды.
+          // Экран B его больше не трогает (иначе _attachRealAudio следующего открытия остановил бы плеер).
+          var _handover = (soAudio && soAudio.src) ? soAudio : null;
+          if (_handover) { soAudio = null; window._soAudioRef = null; clearInterval(tick); playing = false; soRoot.classList.remove('playing'); }
+          else _soLeave();
           if (window.goToPage) goToPage('myTracksPage');
           var tries=0;
           (function wait(){
@@ -489,7 +510,7 @@
             for (var i=0;i<list.length;i++) if (list[i] && String(list[i].id)===String(tr.id)) { idx=i; break; }
             if (idx<0 && tries++<30) { setTimeout(wait, 200); return; }
             var t0 = idx>=0 ? list[idx] : tr;
-            if (idx>=0 && typeof window._mtPlayTrack==='function') window._mtPlayTrack(idx);
+            if (idx>=0 && typeof window._mtPlayTrack==='function') window._mtPlayTrack(idx, _handover ? { adoptAudio: _handover } : undefined);
             var ens = (typeof window._mtEnsureTrackDetails==='function') ? window._mtEnsureTrackDetails(t0) : Promise.resolve(t0);
             Promise.resolve(ens).then(function(full){ if (window._mtOpenKaraoke) window._mtOpenKaraoke(full||t0); });
           })();

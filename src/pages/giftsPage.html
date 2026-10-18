@@ -53,9 +53,9 @@
 
           <!-- серия (id-обёртка iskraWeek — для рендер-функции, без класса = без влияния на CSS) -->
           <div id="iskraWeek">
-            <div class="s-top"><span class="l" data-i18n="giftsWeekTitle">Твоя серия</span><span class="r" id="iskraWeekStreak"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c1 3 4 4.5 4 8a4 4 0 0 1-8 0c0-1 .4-1.8 1-2.5C9 9 12 7 12 2Z"></path></svg> 5 дней подряд</span></div>
+            <div class="s-top"><span class="l" data-i18n="giftsWeekTitle">Твоя серия</span><span class="r" id="iskraWeekStreak"></span></div>
             <div class="week" id="iskraWeekDots"></div>
-            <div class="s-goal" id="sGoal">Ещё 2 дня подряд → +10 Искр за серию 7 дней</div>
+            <div class="s-goal" id="sGoal" style="display:none"></div>
           </div>
 
           <div class="d-div"></div>
@@ -65,7 +65,7 @@
             <div class="prog-top">
               <span class="prog-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg></span>
               <span class="prog-tt"><b data-i18n="giftsProgTitle">До песни твоей души</b><span data-i18n="giftsProgSub">100 Искр — и она родится</span></span>
-              <span class="prog-num" id="iskraProgNum"><span>47<i>/100</i></span><small data-i18n="giftsProgLabel">на балансе</small></span>
+              <span class="prog-num" id="iskraProgNum"><span>–<i>/100</i></span><small data-i18n="giftsProgLabel">на балансе</small></span>
             </div>
             <div class="bar"><i id="iskraProgBar" style="width:47%"></i></div>
           </div>

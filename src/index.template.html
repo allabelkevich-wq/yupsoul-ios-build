@@ -10890,7 +10890,7 @@ body.theme-light #planConfirmOverlay .cf-old{-webkit-text-fill-color:#6f5a66 !im
       a.play().then(function() { if (_audio !== a) return; _playing = true; updatePlayBtn(); highlightTrack(idx); }).catch(function() {});
     };
 
-    window._mtPlayTrack = function(idx) {
+    window._mtPlayTrack = function(idx, opts) {
       var tracks = window._mtTracksData || [];
       var track = tracks[idx];
       if (!track || !track.audio_url) return;
@@ -10956,10 +10956,19 @@ body.theme-light #planConfirmOverlay .cf-old{-webkit-text-fill-color:#6f5a66 !im
       // Только для своих треков: /details проверяет владельца (чужой радио-трек → 403).
       if (!(track.is_radio || window._mtRadioMode) && typeof _mtEnsureTrackDetails === 'function') { try { _mtEnsureTrackDetails(track); } catch(_) {} }
 
-      var audio = new Audio();
+      // Экран «Песня открыта» передаёт уже играющий звук (opts.adoptAudio): «Текст»/караоке продолжают
+      // с той же секунды, без перезагрузки — раньше 10 с висел текст без музыки (сборка 52, Алла 18.10).
+      var _adopt = (opts && opts.adoptAudio && opts.adoptAudio.src) ? opts.adoptAudio : null;
+      var audio = _adopt || new Audio();
       audio.preload = 'auto';
       audio._radio = !!window._mtRadioMode; // метка контекста: радио vs личный плейлист
-      audio.src = window._absMediaUrl(track.audio_url);
+      if (!_adopt) audio.src = window._absMediaUrl(track.audio_url);
+      // Пока звук грузится — кольцо загрузки на Play (2–4 с «0:00» с кнопкой Play выглядели зависанием).
+      var _npBtnL = document.getElementById('mtNpPlayBtn');
+      if (_npBtnL) _npBtnL.classList.toggle('is-loading', !_adopt);
+      var _npLoaded = function() { if (_npBtnL && _audio === audio) _npBtnL.classList.remove('is-loading'); };
+      audio.addEventListener('playing', _npLoaded);
+      audio.addEventListener('error', _npLoaded);
       _audio = audio;
       // VK Testers 7263771 ПЕРЕОТКРЫТ (Android): expose _audio в window чтобы goToPage()
       // мог его pause() при переходе с myTracksPage в другие разделы.
@@ -11247,6 +11256,15 @@ body.theme-light #planConfirmOverlay .cf-old{-webkit-text-fill-color:#6f5a66 !im
       // элемент и трек стартует с первого раза. На Win/Android оставляем буфер-флоу onCanPlay
       // (там play в canplay работает + защита от premature canplaythrough — не регрессим).
       // Если gesture-play успел — ставим _canplayFired, чтобы onCanPlay не сыграл повторно.
+      if (_adopt) {
+        // Звук уже загружен и играет — буфер-флоу не нужен (canplay больше не придёт).
+        _canplayFired = true;
+        Promise.resolve(audio.paused ? audio.play() : null).then(function() {
+          if (_audio !== audio) return;
+          _playing = !audio.paused; updatePlayBtn(); highlightTrack(_currentIdx);
+        }).catch(function() {});
+        return;
+      }
       var _isIOSplay = /iP(hone|ad|od)/i.test(navigator.userAgent || '') || ((navigator.maxTouchPoints || 0) > 1 && /Mac/i.test(navigator.platform || ''));
       if (_isIOSplay) {
         try {

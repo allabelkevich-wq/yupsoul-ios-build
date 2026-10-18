@@ -15597,6 +15597,12 @@ html.is-ok-light:not(.dark) #homeCommCard .task-body b { color: #241526 !importa
 .ys-iap-busy-spin{width:18px;height:18px;border-radius:50%;border:2px solid rgba(255,255,255,.25);border-top-color:#ec4899;animation:ysIapSpin .8s linear infinite}
 @keyframes ysIapSpin{to{transform:rotate(360deg)}}
 body.theme-light .ys-iap-busy-card{background:rgba(255,255,255,.97);color:#1a1a2e;border-color:rgba(26,26,46,.12)}
+
+/* Плеер: звук ещё грузится — кольцо вокруг Play (видео Аллы 18.10: 2–4 с «0:00 / 0:00»
+   с обычной кнопкой Play выглядели как зависание). Класс ставит/снимает _mtPlayTrack. */
+#mtNpPlayBtn.is-loading::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:2px solid rgba(255,255,255,.18);border-top-color:#fff;animation:mtNpSpin .8s linear infinite;pointer-events:none}
+@keyframes mtNpSpin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){#mtNpPlayBtn.is-loading::after{animation-duration:2.4s}}
 </style>
   <!-- Sentry Error Tracking (errors only, no tracing).
        НЕ загружается в VK Mini App по правилам платформы VK §1.7 (сторонние
@@ -17530,9 +17536,9 @@ body.theme-light #giftsPage .cask-cost{color:#f7c873 !important}
 
           <!-- серия (id-обёртка iskraWeek — для рендер-функции, без класса = без влияния на CSS) -->
           <div id="iskraWeek">
-            <div class="s-top"><span class="l" data-i18n="giftsWeekTitle">Твоя серия</span><span class="r" id="iskraWeekStreak"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c1 3 4 4.5 4 8a4 4 0 0 1-8 0c0-1 .4-1.8 1-2.5C9 9 12 7 12 2Z"></path></svg> 5 дней подряд</span></div>
+            <div class="s-top"><span class="l" data-i18n="giftsWeekTitle">Твоя серия</span><span class="r" id="iskraWeekStreak"></span></div>
             <div class="week" id="iskraWeekDots"></div>
-            <div class="s-goal" id="sGoal">Ещё 2 дня подряд → +10 Искр за серию 7 дней</div>
+            <div class="s-goal" id="sGoal" style="display:none"></div>
           </div>
 
           <div class="d-div"></div>
@@ -17542,7 +17548,7 @@ body.theme-light #giftsPage .cask-cost{color:#f7c873 !important}
             <div class="prog-top">
               <span class="prog-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg></span>
               <span class="prog-tt"><b data-i18n="giftsProgTitle">До песни твоей души</b><span data-i18n="giftsProgSub">100 Искр — и она родится</span></span>
-              <span class="prog-num" id="iskraProgNum"><span>47<i>/100</i></span><small data-i18n="giftsProgLabel">на балансе</small></span>
+              <span class="prog-num" id="iskraProgNum"><span>–<i>/100</i></span><small data-i18n="giftsProgLabel">на балансе</small></span>
             </div>
             <div class="bar"><i id="iskraProgBar" style="width:47%"></i></div>
           </div>
@@ -52958,6 +52964,20 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           }, 140);
         };
 
+        // «Полная песня — около N минут» — по настоящей длине песни (duration_sec из /api/my-tracks).
+        // Раньше всем обещали «около 4 минут», а песня бывает 1:51 (17.10, заявка 42ee4ffd).
+        function suApplyDuration(track){
+          var sec = track ? Number(track.duration_sec) : 0;
+          // Длина неизвестна — текст словаря как есть (иначе осталась бы длина прошлой песни)
+          var fix = function(str){ return sec > 0 ? String(str).replace(/\d+/, String(Math.max(2, Math.round(sec / 60)))) : String(str); };
+          var lead = document.getElementById('suLead');
+          var leadBase = typeof t === 'function' ? t('unlockLead') : '';
+          if (lead && leadBase && leadBase !== 'unlockLead') lead.innerHTML = fix(leadBase);
+          var r1 = document.querySelector('#songUnlockPage [data-i18n="unlockR1s"]');
+          var r1Base = typeof t === 'function' ? t('unlockR1s') : '';
+          if (r1 && r1Base && r1Base !== 'unlockR1s') r1.textContent = fix(r1Base);
+        }
+
         window.openSongUnlock = function(opts){
           opts = opts || {};
           // Пейволл не должен обещать «весь текст целиком» там, где текста нет —
@@ -53018,6 +53038,9 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           var _suCta = suCtaTxt(); if (_suCta) _suCta.textContent = suT('unlockCtaOpen');
           if (opts.requestId != null) suRoot.dataset.requestId = String(opts.requestId);
           if (typeof goToPage === 'function') goToPage('songUnlockPage');
+          var _suDurTrack = opts.track || window._songUnlockTrack || null;
+          suApplyDuration(_suDurTrack);
+          setTimeout(function(){ suApplyDuration(_suDurTrack); }, 60); // после перевода экрана при переходе
         };
 
         function suReset(){ clearTimeout(watchdog); clearTimeout(payTimer); clearTimeout(suPollTimer); suRoot.dataset.state = 'offer'; var c = suCtaTxt(); if (c) c.textContent = suT('unlockCtaOpen'); }
@@ -53383,7 +53406,11 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
         function _soLeave(){ if (soAudio) { try{ soAudio.pause(); }catch(_){} } clearInterval(tick); playing=false; soRoot.classList.remove('playing'); }
         function _soOpenLyrics(){
           var tr=_soTrack(); if(!tr) return;
-          _soLeave();
+          // Играющий звук отдаём плееру «Моих треков» — караоке продолжит с той же секунды.
+          // Экран B его больше не трогает (иначе _attachRealAudio следующего открытия остановил бы плеер).
+          var _handover = (soAudio && soAudio.src) ? soAudio : null;
+          if (_handover) { soAudio = null; window._soAudioRef = null; clearInterval(tick); playing = false; soRoot.classList.remove('playing'); }
+          else _soLeave();
           if (window.goToPage) goToPage('myTracksPage');
           var tries=0;
           (function wait(){
@@ -53391,7 +53418,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
             for (var i=0;i<list.length;i++) if (list[i] && String(list[i].id)===String(tr.id)) { idx=i; break; }
             if (idx<0 && tries++<30) { setTimeout(wait, 200); return; }
             var t0 = idx>=0 ? list[idx] : tr;
-            if (idx>=0 && typeof window._mtPlayTrack==='function') window._mtPlayTrack(idx);
+            if (idx>=0 && typeof window._mtPlayTrack==='function') window._mtPlayTrack(idx, _handover ? { adoptAudio: _handover } : undefined);
             var ens = (typeof window._mtEnsureTrackDetails==='function') ? window._mtEnsureTrackDetails(t0) : Promise.resolve(t0);
             Promise.resolve(ens).then(function(full){ if (window._mtOpenKaraoke) window._mtOpenKaraoke(full||t0); });
           })();
@@ -58854,7 +58881,7 @@ body.theme-light #planConfirmOverlay .cf-old{-webkit-text-fill-color:#6f5a66 !im
       a.play().then(function() { if (_audio !== a) return; _playing = true; updatePlayBtn(); highlightTrack(idx); }).catch(function() {});
     };
 
-    window._mtPlayTrack = function(idx) {
+    window._mtPlayTrack = function(idx, opts) {
       var tracks = window._mtTracksData || [];
       var track = tracks[idx];
       if (!track || !track.audio_url) return;
@@ -58920,10 +58947,19 @@ body.theme-light #planConfirmOverlay .cf-old{-webkit-text-fill-color:#6f5a66 !im
       // Только для своих треков: /details проверяет владельца (чужой радио-трек → 403).
       if (!(track.is_radio || window._mtRadioMode) && typeof _mtEnsureTrackDetails === 'function') { try { _mtEnsureTrackDetails(track); } catch(_) {} }
 
-      var audio = new Audio();
+      // Экран «Песня открыта» передаёт уже играющий звук (opts.adoptAudio): «Текст»/караоке продолжают
+      // с той же секунды, без перезагрузки — раньше 10 с висел текст без музыки (сборка 52, Алла 18.10).
+      var _adopt = (opts && opts.adoptAudio && opts.adoptAudio.src) ? opts.adoptAudio : null;
+      var audio = _adopt || new Audio();
       audio.preload = 'auto';
       audio._radio = !!window._mtRadioMode; // метка контекста: радио vs личный плейлист
-      audio.src = window._absMediaUrl(track.audio_url);
+      if (!_adopt) audio.src = window._absMediaUrl(track.audio_url);
+      // Пока звук грузится — кольцо загрузки на Play (2–4 с «0:00» с кнопкой Play выглядели зависанием).
+      var _npBtnL = document.getElementById('mtNpPlayBtn');
+      if (_npBtnL) _npBtnL.classList.toggle('is-loading', !_adopt);
+      var _npLoaded = function() { if (_npBtnL && _audio === audio) _npBtnL.classList.remove('is-loading'); };
+      audio.addEventListener('playing', _npLoaded);
+      audio.addEventListener('error', _npLoaded);
       _audio = audio;
       // VK Testers 7263771 ПЕРЕОТКРЫТ (Android): expose _audio в window чтобы goToPage()
       // мог его pause() при переходе с myTracksPage в другие разделы.
@@ -59211,6 +59247,15 @@ body.theme-light #planConfirmOverlay .cf-old{-webkit-text-fill-color:#6f5a66 !im
       // элемент и трек стартует с первого раза. На Win/Android оставляем буфер-флоу onCanPlay
       // (там play в canplay работает + защита от premature canplaythrough — не регрессим).
       // Если gesture-play успел — ставим _canplayFired, чтобы onCanPlay не сыграл повторно.
+      if (_adopt) {
+        // Звук уже загружен и играет — буфер-флоу не нужен (canplay больше не придёт).
+        _canplayFired = true;
+        Promise.resolve(audio.paused ? audio.play() : null).then(function() {
+          if (_audio !== audio) return;
+          _playing = !audio.paused; updatePlayBtn(); highlightTrack(_currentIdx);
+        }).catch(function() {});
+        return;
+      }
       var _isIOSplay = /iP(hone|ad|od)/i.test(navigator.userAgent || '') || ((navigator.maxTouchPoints || 0) > 1 && /Mac/i.test(navigator.platform || ''));
       if (_isIOSplay) {
         try {
