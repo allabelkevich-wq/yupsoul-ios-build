@@ -810,8 +810,78 @@
           }
         }
 
+        /* ── Push-уведомления (APNs/FCM через Capacitor) ──────────────────────
+           Разрешение спрашиваем В КОНТЕКСТЕ — на первом заходе на экран живой
+           доставки песни (#successPage, память «Доставка=#successPage»), а не
+           на старте приложения (правило Apple: prompt должен объяснять зачем).
+           Токен уходит на /api/me/push-token; тап по пушу открывает экран из
+           notification.data.page (payload собирает bot/apns.js / sendAppPush). */
+        var _pushListenersWired = false;
+
+        function _wirePushListeners(PN) {
+          if (_pushListenersWired) return;
+          _pushListenersWired = true;
+          try {
+            PN.addListener('registration', function(t) {
+              try {
+                fetch(apiBase + '/api/me/push-token', {
+                  method: 'POST',
+                  headers: Object.assign({ 'Content-Type': 'application/json' }, getAuthHeaders()),
+                  body: JSON.stringify({ platform: window._nativePlatform || 'ios', token: t.value })
+                }).catch(function() {});
+              } catch (_) {}
+            });
+            PN.addListener('registrationError', function(e) {
+              console.warn('[native] push registration error', e);
+            });
+            PN.addListener('pushNotificationActionPerformed', function(action) {
+              try {
+                var page = action && action.notification && action.notification.data && action.notification.data.page;
+                if (page && typeof window.goToPage === 'function') window.goToPage(page);
+              } catch (_) {}
+            });
+            PN.addListener('pushNotificationReceived', function(n) {
+              console.log('[native] push получен на переднем плане', n);
+            });
+          } catch (_) {}
+        }
+
+        /* promptIfNeeded=true может показать системный диалог — только из
+           контекстной точки входа (successPage). promptIfNeeded=false просто
+           досылает register(), если разрешение уже granted (токен мог смениться
+           между запусками — переустановка, смена устройства). */
+        async function _nativePushEnsure(promptIfNeeded) {
+          var PN = plugin('PushNotifications');
+          if (!PN) return;
+          try {
+            _wirePushListeners(PN);
+            var perm = await PN.checkPermissions();
+            if (perm && perm.receive === 'prompt' && promptIfNeeded) {
+              perm = await PN.requestPermissions();
+            }
+            if (perm && perm.receive === 'granted') {
+              await PN.register();
+            }
+          } catch (e) {
+            console.warn('[native] push register не удался', e);
+          }
+        }
+        window._nativePushRegister = function() { return _nativePushEnsure(true); };
+
+        (function watchSuccessPageForPushPrompt() {
+          new MutationObserver(function() {
+            if (document.body.dataset.page !== 'successPage') return;
+            try {
+              if (localStorage.getItem('ys_push_asked')) return;
+              localStorage.setItem('ys_push_asked', '1');
+            } catch (_) { return; }
+            window._nativePushRegister();
+          }).observe(document.body, { attributes: true, attributeFilter: ['data-page'] });
+        })();
+
         /* Если пользователь уже авторизован с прошлого запуска — сразу
-           связываем его с RevenueCat, чтобы вебхук знал получателя. */
+           связываем его с RevenueCat, чтобы вебхук знал получателя, и досылаем
+           push-токен на случай, если он сменился. */
         (function bindExistingUser() {
           var tries = 0;
           (function tick() {
@@ -821,6 +891,7 @@
               try { uid = localStorage.getItem('yupsoul_user_id'); } catch(_) {}
               if (typeof hasAuth === 'function' && hasAuth() && uid) {
                 _rcIdentify(uid);
+                _nativePushEnsure(false);
                 return;
               }
             } catch(_) {}
