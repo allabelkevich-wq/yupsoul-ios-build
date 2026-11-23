@@ -27,7 +27,7 @@ const ROOT_FILES = [
   'manifest.webmanifest',
 ];
 // Папки с ассетами, нужные офлайн.
-const ASSET_DIRS = ['assets/icons'];
+const ASSET_DIRS = ['assets/icons', 'assets/audio']; // audio: фоновая мелодия экрана входа (23.11)
 
 rmSync(www, { recursive: true, force: true });
 mkdirSync(www, { recursive: true });
