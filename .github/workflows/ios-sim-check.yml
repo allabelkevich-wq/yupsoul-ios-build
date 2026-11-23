@@ -1,0 +1,180 @@
+# Диагностический прогон: собрать приложение под симулятор БЕЗ подписи, запустить
+# на iPhone 17, снять скриншоты первого экрана и шторки эфира. В собранный
+# index.html на время прогона вставляется пробник (плашка с audio/safe-top/...);
+# в подписанную сборку (ios-build.yml) он не попадает.
+name: iOS simulator check
+
+on:
+  workflow_dispatch:
+
+env:
+  BUNDLE_ID: com.yupsoul.app
+  SCHEME: App
+
+jobs:
+  sim:
+    name: Симулятор и скриншоты
+    runs-on: macos-26
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+
+      - name: Инструменты раннера
+        run: |
+          xcodebuild -version
+          swift --version
+
+      - name: Собрать app/www
+        env:
+          BUILD_NUMBER: ${{ github.run_number }}
+        run: |
+          npm run build:index:check
+          node scripts/build-app-www.mjs
+          node scripts/inject-rc-key.mjs
+
+      - name: Вставить пробник в app/www/index.html (только этот прогон)
+        run: |
+          cat > "$RUNNER_TEMP/probe.js" <<'EOF'
+          (function () {
+            var auds = [];
+            try {
+              var A = window.Audio;
+              var W = function (s) { var a = new A(s); auds.push(a); return a; };
+              W.prototype = A.prototype;
+              window.Audio = W;
+            } catch (e) {}
+            var extra = { rs: 'rsheet-top=n/a close-top=n/a' };
+            var bar = null;
+            function mk() {
+              bar = document.createElement('div');
+              bar.style.cssText = 'position:fixed;left:6px;right:6px;bottom:90px;z-index:2147483647;background:rgba(0,0,0,.72);color:#0f0;font:11px/1.35 monospace;padding:6px 8px;border-radius:8px;pointer-events:none;word-break:break-all';
+              document.body.appendChild(bar);
+            }
+            function safeTop() {
+              var d = document.createElement('div');
+              d.style.cssText = 'position:absolute;visibility:hidden;padding-top:env(safe-area-inset-top)';
+              document.body.appendChild(d);
+              var v = parseFloat(getComputedStyle(d).paddingTop) || 0;
+              d.remove();
+              return v;
+            }
+            function audioState() {
+              if (!auds.length) return 'audio: none';
+              var a = auds[auds.length - 1];
+              return 'audio: ' + (a.paused ? 'paused' : 'playing') + ' t=' + a.currentTime.toFixed(2) + ' muted=' + a.muted + ' n=' + auds.length;
+            }
+            function paint() {
+              if (!bar) mk();
+              var nat = document.documentElement.classList.contains('is-native') || document.body.classList.contains('is-native');
+              bar.textContent = audioState() + ' | safe-top=' + safeTop() + ' native=' + nat +
+                ' lang=' + (document.documentElement.lang || localStorage.getItem('yupsoul_lang') || '?') +
+                ' inner=' + innerWidth + 'x' + innerHeight + ' | ' + extra.rs;
+            }
+            function click(sel) { var e = document.querySelector(sel); if (e) e.click(); else console.log('probe: no ' + sel); }
+            window.addEventListener('load', function () {
+              setTimeout(function () { paint(); setInterval(paint, 1000); }, 6000);
+              setTimeout(function () { click('#nfsCtaBtn'); }, 12000);
+              setTimeout(function () { click('#startLangSwitcherBtn'); }, 20000);
+              setTimeout(function () {
+                click('#startLangSwitcherBtn');
+                try {
+                  var ls = document.getElementById('webLoginScreen'); if (ls) ls.style.display = 'none';
+                  var TRACK = { id: 't1', title: 'ЗОВ ТИШИНЫ', name: 'ЗОВ ТИШИНЫ', status: 'completed', generation_status: 'completed', audio_url: 'data:audio/mpeg;base64,', lyrics: '[verse]\nСтрока песни\nтишина зовёт', cover_url: '', style_label: 'Поп', created_at: new Date().toISOString(), duration: 200, is_taste: false };
+                  goToPage('myTracksPage');
+                  setTimeout(function () {
+                    try { window._mtRadioPubClick(TRACK); } catch (e) { extra.rs = 'rsheet-err=' + e.message; }
+                    setTimeout(function () {
+                      var r = document.getElementById('rsheet'), x = document.querySelector('#rsheet .rsheet-x');
+                      extra.rs = 'rsheet-top=' + (r ? r.getBoundingClientRect().top.toFixed(1) : 'none') + ' close-top=' + (x ? x.getBoundingClientRect().top.toFixed(1) : 'none') + ' show=' + (r ? r.classList.contains('show') : 'n/a');
+                      paint();
+                    }, 900);
+                  }, 600);
+                } catch (e) { extra.rs = 'rsheet-err=' + e.message; }
+              }, 28000);
+            });
+          })();
+          EOF
+          node -e '
+            const fs=require("fs");
+            const f="app/www/index.html";
+            let h=fs.readFileSync(f,"utf8");
+            const p="<script>"+fs.readFileSync(process.env.RUNNER_TEMP+"/probe.js","utf8")+"</script>";
+            if(!/<head[^>]*>/.test(h)) throw new Error("no head");
+            h=h.replace(/<head[^>]*>/, m=>m+p);
+            fs.writeFileSync(f,h);
+            console.log("probe injected");
+          '
+          grep -c "probe: no" app/www/index.html
+
+      - name: Зависимости приложения
+        working-directory: app
+        run: npm install --ignore-scripts --no-audit --no-fund
+
+      - name: Capacitor sync (копирует www с пробником)
+        working-directory: app
+        run: npx cap sync ios
+
+      - name: Разрешить пакеты Swift
+        working-directory: app/ios/App/CapApp-SPM
+        run: |
+          for i in 1 2 3; do swift package resolve && break; echo "попытка $i не удалась, жду 40 с"; sleep 40; done
+          swift package resolve
+
+      - name: Компиляция под симулятор (без подписи)
+        working-directory: app/ios/App
+        run: |
+          set -o pipefail
+          xcodebuild \
+            -project App.xcodeproj \
+            -scheme "$SCHEME" \
+            -configuration Debug \
+            -sdk iphonesimulator \
+            -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO \
+            build 2>&1 | tail -40
+
+      - name: Запуск на симуляторе и скриншоты
+        timeout-minutes: 12
+        run: |
+          set -o pipefail
+          OUT="$RUNNER_TEMP/shots"; mkdir -p "$OUT"
+          APP_PATH="$GITHUB_WORKSPACE/app/ios/App/build/Build/Products/Debug-iphonesimulator/App.app"
+          test -d "$APP_PATH" || { echo "нет .app"; exit 1; }
+          xcrun simctl list devices available | tee "$OUT/devices.txt"
+          UDID=""; NAME=""
+          for n in "iPhone 17" "iPhone 17 Pro" "iPhone 17 Pro Max" "iPhone Air" "iPhone 16 Pro" "iPhone 16"; do
+            L=$(xcrun simctl list devices available | grep -E "^\s+$n \(" | head -1 || true)
+            if [ -n "$L" ]; then NAME="$n"; UDID=$(echo "$L" | grep -oE '[0-9A-F-]{36}'); break; fi
+          done
+          [ -n "$UDID" ] || { echo "нет подходящего iPhone"; exit 1; }
+          RT=$(xcrun simctl list devices available | awk -v u="$UDID" '/^-- /{r=$0} index($0,u){print r; exit}')
+          echo "Выбран: $NAME ($UDID) runtime: $RT" | tee "$OUT/device.txt"
+          xcrun simctl boot "$UDID" || true
+          xcrun simctl bootstatus "$UDID" -b
+          xcrun simctl install "$UDID" "$APP_PATH"
+          START=$(date +%s)
+          xcrun simctl launch --console-pty "$UDID" "$BUNDLE_ID" > "$OUT/console.log" 2>&1 &
+          shot() { # метка секунд после запуска, имя
+            now=$(( $(date +%s) - START )); wait_s=$(( $1 - now )); [ $wait_s -gt 0 ] && sleep $wait_s
+            xcrun simctl io "$UDID" screenshot "$OUT/$2" && echo "снимок $2 на t=$(( $(date +%s) - START ))с"
+          }
+          shot 9 1-step1.png
+          shot 16 2-step2.png
+          shot 24 3-lang.png
+          shot 36 4-rsheet.png
+          xcrun simctl terminate "$UDID" "$BUNDLE_ID" || true
+          tail -60 "$OUT/console.log" || true
+
+      - name: Выложить артефакт
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-sim-shots
+          path: ${{ runner.temp }}/shots
+          retention-days: 7
+          if-no-files-found: warn
