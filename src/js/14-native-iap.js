@@ -37,6 +37,20 @@
         };
 
         var Purchases = plugin('Purchases');
+        /* Окно «Оцените приложение» (версия 1.0.1, 23.11.2026): зовёт плеер, когда своя открытая
+           песня дослушана до конца. Не чаще раза в 60 дней на аккаунт (ключ с user_id — телефон
+           может перейти к другому аккаунту); показывать ли окно, решает Apple (AppDelegate.swift). */
+        window._askAppReview = function() {
+          var uid = ''; try { uid = localStorage.getItem('yupsoul_user_id') || ''; } catch (_) {}
+          if (!uid) return;
+          var key = 'ys_review_asked:' + uid, now = Date.now(), last = 0;
+          try { last = Number(localStorage.getItem(key)) || 0; } catch (_) {}
+          if (now - last < 60 * 86400000) return;
+          var AppReview = plugin('AppReview');
+          if (!AppReview || typeof AppReview.request !== 'function') return;
+          try { localStorage.setItem(key, String(now)); } catch (_) {}
+          AppReview.request().catch(function() {});
+        };
         /* Вход Apple живёт в @capgo/capacitor-social-login, а не в
            @capacitor-community/apple-sign-in: у последнего манифест требует
            capacitor-swift-pm 7.x, а RevenueCat — 8.x, и сборка падала на

@@ -11167,6 +11167,10 @@ body.theme-light #planConfirmOverlay .cf-old{-webkit-text-fill-color:#6f5a66 !im
           }
           return;
         }
+        // Окно «Оцените приложение» (iPhone, версия 1.0.1): своя открытая песня дослушана до конца
+        // (не Радио, не превью) → системный запрос Apple. Не чаще раза в 60 дней на аккаунт;
+        // сколько раз реально показать окно, решает сама Apple.
+        if (!audio._radio && !window._mtRadioMode && audio.duration > 60) { try { window._askAppReview && window._askAppReview(); } catch (_e) {} }
         // Auto-play next — только если трек реально проиграл (>2 сек)
         if (audio.duration > 2) {
           // Контекст не сменился пока трек играл (радио ↔ личный плейлист)

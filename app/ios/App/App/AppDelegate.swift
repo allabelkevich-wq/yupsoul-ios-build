@@ -165,5 +165,30 @@ public class SystemVolumePlugin: CAPPlugin, CAPBridgedPlugin {
 class ViewController: CAPBridgeViewController {
     override open func capacitorDidLoad() {
         bridge?.registerPluginInstance(SystemVolumePlugin())
+        bridge?.registerPluginInstance(AppReviewPlugin())
+    }
+}
+
+// Окно «Оцените приложение» (версия 1.0.1, 23.11.2026): системный запрос Apple.
+// Apple сама решает, показывать ли окно (не чаще 3 раз в год), в TestFlight не показывает.
+// Когда звать — решает веб-слой (после дослушанной до конца песни).
+import StoreKit
+
+public class AppReviewPlugin: CAPPlugin, CAPBridgedPlugin {
+    public let identifier = "AppReviewPlugin"
+    public let jsName = "AppReview"
+    public let pluginMethods: [CAPPluginMethod] = [
+        CAPPluginMethod(name: "request", returnType: CAPPluginReturnPromise)
+    ]
+
+    @objc func request(_ call: CAPPluginCall) {
+        DispatchQueue.main.async {
+            if let scene = self.bridge?.viewController?.view.window?.windowScene {
+                SKStoreReviewController.requestReview(in: scene)
+                call.resolve(["requested": true])
+            } else {
+                call.resolve(["requested": false])
+            }
+        }
     }
 }
