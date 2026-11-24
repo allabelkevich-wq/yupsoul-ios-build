@@ -104,8 +104,16 @@ jobs:
                 if (v === '2') click('#nfsCtaBtn');
                 else if (v === '3') click('#startLangSwitcherBtn');
                 else if (v === '4') { click('#startLangSwitcherBtn'); openRsheet(); }
+                else if (v === '5') { click('#startLangSwitcherBtn'); try { var l5 = document.getElementById('webLoginScreen'); if (l5) l5.style.display = 'none'; goToPage('myTracksPage'); } catch (e) { console.log('probe5 err ' + e.message); } }
+                else if (v === '6') { try { goToPage('homePage'); } catch (e) { console.log('probe6 err ' + e.message); } }
               }).catch(function (e) { net = 'net=ERR ' + e.message; });
             }
+            var rafN = 0, beatN = 0;
+            (function loop() { rafN++; requestAnimationFrame(loop); })();
+            setInterval(function () {
+              var r = rafN; rafN = 0; beatN++;
+              fetch('http://127.0.0.1:8099/beat?n=' + beatN + '&st=' + cur + '&raf=' + r).catch(function () {});
+            }, 1000);
             window.addEventListener('load', function () {
               setInterval(function () { sample(); paint(); }, 500);
               setInterval(poll, 700);
@@ -160,7 +168,7 @@ jobs:
             build 2>&1 | tail -40
 
       - name: Запуск на симуляторе и скриншоты
-        timeout-minutes: 12
+        timeout-minutes: 20
         run: |
           set -o pipefail
           OUT="$RUNNER_TEMP/shots"; mkdir -p "$OUT"
@@ -182,13 +190,15 @@ jobs:
           # занимает минуты, по таймеру состояния не поймать.
           mkdir -p "$RUNNER_TEMP/sig"; echo 0 > "$RUNNER_TEMP/sig/state"
           cat > "$RUNNER_TEMP/sig.py" <<'PY'
-          import http.server, sys, os
+          import http.server, sys, os, time
           D = sys.argv[1]
+          BL = open(sys.argv[2], 'a', buffering=1)
           class H(http.server.BaseHTTPRequestHandler):
               def do_GET(self):
                   p = self.path.split('?')[0]
                   body = open(D + '/state').read().encode() if p == '/state' else b'ok'
                   if p == '/ready': open(D + '/ready', 'w').write('1')
+                  if p == '/beat': BL.write(time.strftime('%H:%M:%S') + ' ' + self.path.split('?',1)[-1] + '\n')
                   self.send_response(200)
                   self.send_header('Access-Control-Allow-Origin', '*')
                   self.send_header('Cache-Control', 'no-store')
@@ -197,21 +207,30 @@ jobs:
               def log_message(self, *a): pass
           http.server.ThreadingHTTPServer(('127.0.0.1', 8099), H).serve_forever()
           PY
-          python3 "$RUNNER_TEMP/sig.py" "$RUNNER_TEMP/sig" &
+          python3 "$RUNNER_TEMP/sig.py" "$RUNNER_TEMP/sig" "$OUT/beat.log" &
           sleep 1
           START=$(date +%s)
           xcrun simctl launch --console-pty "$UDID" "$BUNDLE_ID" > "$OUT/console.log" 2>&1 &
           for i in $(seq 1 90); do [ -f "$RUNNER_TEMP/sig/ready" ] && break; sleep 3; done
           echo "приложение сообщило ready: $([ -f "$RUNNER_TEMP/sig/ready" ] && echo да || echo НЕТ) на t=$(( $(date +%s) - START ))с"
+          tmo() { perl -e 'alarm shift; exec @ARGV' "$@"; }
           shot() { # состояние, имя
-            echo "$1" > "$RUNNER_TEMP/sig/state"; sleep 12
-            xcrun simctl io "$UDID" screenshot "$OUT/$2" && echo "снимок $2 на t=$(( $(date +%s) - START ))с"
+            echo "$1" > "$RUNNER_TEMP/sig/state"; echo "$(date +%H:%M:%S) === STATE $1 ($2) ===" >> "$OUT/beat.log"; sleep 12
+            if tmo 90 xcrun simctl io "$UDID" screenshot "$OUT/$2"; then echo "снимок $2 на t=$(( $(date +%s) - START ))с"; else echo "СНИМОК $2 ЗАВИС (или упал) на t=$(( $(date +%s) - START ))с"; fi
+            echo "$(date +%H:%M:%S) === SHOT DONE $2 ===" >> "$OUT/beat.log"
+            ps -A -o pid,%cpu,rss,comm | sort -k2 -nr | head -15 > "$OUT/ps-$2.txt" || true
+            echo "--- beat после $2:"; tail -4 "$OUT/beat.log" || true
           }
           sleep 10
           shot 1 1-step1.png
           shot 2 2-step2.png
           shot 3 3-lang.png
+          shot 5 5-playlist-only.png
+          shot 6 6-home-again.png
           shot 4 4-rsheet.png
+          tmo 150 xcrun simctl spawn "$UDID" log show --last 6m --predicate 'process == "App" OR process CONTAINS "WebContent" OR process == "backboardd"' --style compact 2>&1 | tail -200 > "$OUT/simlog.txt" || echo "log show не завершился"
+          ps -A -o pid,%cpu,rss,comm | sort -k2 -nr | head -15 > "$OUT/ps-final.txt" || true
+          echo "=== итоговый beat.log (последние 40) ==="; tail -40 "$OUT/beat.log" || true
           xcrun simctl terminate "$UDID" "$BUNDLE_ID" || true
           tail -60 "$OUT/console.log" || true
 
