@@ -1747,11 +1747,6 @@
         // Мгновенный fallback из localStorage — показываем аккордеон сразу, не дожидаясь API
         // Но если герой уже выбран в forWho (переход с Лаборатории) — не перезатираем
         var cached = getCachedProfile();
-        // Следы прошлого аккаунта/визита на устройстве — снимок ДО await (черновик, который юзер
-        // пишет пока ждёт ответ сервера, сюда не попадает). Нужен ниже: сброс формы — только если
-        // есть что сбрасывать, иначе ответ сервера стирает то, что человек выбирает прямо сейчас.
-        var _hadStaleTraces = !!(cached && cached.birthdate);
-        try { if (sessionStorage.getItem('yup_form_draft')) _hadStaleTraces = true; } catch(_) {}
         var _fwCheck = document.getElementById('forWho');
         var _fwHasHero = _fwCheck && _fwCheck.value;
         if (cached) {
@@ -1772,13 +1767,6 @@
         }
         var initData = getInitData();
         var formAuthH = getAuthHeaders();
-        // Что человек успел выбрать, пока ждём сервер, не стираем никогда: снимок полей до ответа,
-        // ниже сброс пропускается, если хоть одно поменялось (TikTok 22.11 — «выбираю месяц, день исчезает»).
-        var _userFieldIds = ['birthdateDay', 'birthdateMonth', 'birthdateYear', 'birthplace', 'gender', 'birthtime'];
-        var _userFieldsBefore = _userFieldIds.map(function(id) { var el = document.getElementById(id); return el ? el.value : ''; }).join('|');
-        var _userEditedMeanwhile = function() {
-          return _userFieldIds.map(function(id) { var el = document.getElementById(id); return el ? el.value : ''; }).join('|') !== _userFieldsBefore;
-        };
         try {
           // Закон №36: таймаут обязателен — на холодном старте бэкенда голый fetch висел
           // 2-5 мин (браузерный дефолт) → «медленно грузится форма» (жалобы юзеров). 20с + json-guard.
@@ -1816,9 +1804,7 @@
             try { localStorage.removeItem('yup_profile_cache'); } catch(_) {}
             try { sessionStorage.removeItem('yup_form_draft'); } catch(_) {}
             window._savedFormProfile = p.name ? { name: p.name } : {};
-            // Новичок (на устройстве нет следов — форма уже чистая после входа): сброс по позднему ответу
-            // сервера стирал выбранный день при выборе месяца («пишешь первое — второе стирает первое», TikTok 22.11).
-            if (_hadStaleTraces && !_userEditedMeanwhile() && typeof window.resetFormState === 'function') { try { window.resetFormState(); } catch(_) {} }
+            if (typeof window.resetFormState === 'function') { try { window.resetFormState(); } catch(_) {} }
             // TG-префилл имени возвращаем (остальное — чистый лист)
             if (p.name) { var _nmEl = document.getElementById('name'); if (_nmEl) _nmEl.value = p.name; }
             if (formWrap) { formWrap.classList.add('no-anim'); formWrap.classList.remove('pfw-collapsed'); }

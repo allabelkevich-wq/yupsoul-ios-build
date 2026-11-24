@@ -166,7 +166,6 @@ class ViewController: CAPBridgeViewController {
     override open func capacitorDidLoad() {
         bridge?.registerPluginInstance(SystemVolumePlugin())
         bridge?.registerPluginInstance(AppReviewPlugin())
-        bridge?.registerPluginInstance(AudioSessionModePlugin())
     }
 }
 
@@ -190,34 +189,6 @@ public class AppReviewPlugin: CAPPlugin, CAPBridgedPlugin {
             } else {
                 call.resolve(["requested": false])
             }
-        }
-    }
-}
-
-// Фоновая мелодия первого экрана (23.11.2026): пока виден экран входа, сессия .ambient —
-// мелодия уважает переключатель «без звука» и не перебивает музыку из других приложений.
-// После входа веб-слой возвращает .playback (плеер песен: фон, блокировка экрана, беззвучный режим).
-// Стартовая категория на запуске остаётся .playback (application:didFinishLaunching…).
-public class AudioSessionModePlugin: CAPPlugin, CAPBridgedPlugin {
-    public let identifier = "AudioSessionModePlugin"
-    public let jsName = "AudioSessionMode"
-    public let pluginMethods: [CAPPluginMethod] = [
-        CAPPluginMethod(name: "set", returnType: CAPPluginReturnPromise)
-    ]
-
-    @objc func set(_ call: CAPPluginCall) {
-        let mode = call.getString("mode") ?? "playback"
-        let session = AVAudioSession.sharedInstance()
-        do {
-            if mode == "ambient" {
-                try session.setCategory(.ambient, mode: .default)
-            } else {
-                try session.setCategory(.playback, mode: .default)
-            }
-            try session.setActive(true)
-            call.resolve()
-        } catch {
-            call.reject("audio session: \(error.localizedDescription)")
         }
     }
 }

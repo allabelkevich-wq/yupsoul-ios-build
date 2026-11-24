@@ -1662,6 +1662,15 @@ document.addEventListener('DOMContentLoaded', function() {
       // падал «Load failed» (оплата подарка не открывалась, fetch не доходил до бэкенда). Тот же домен,
       // что и мини-апп = надёжно (мини-апп уже грузится с этого origin, значит он доступен).
       var fallback = 'https://www.yupsoul.ru';
+      // Приложение App Store (23.11.2026, как у Сонника): витрина России — сервер в Москве, остальные
+      // страны — копия в Амстердаме. Страну витрины узнаёт 14-native-iap.js у RevenueCat и запоминает
+      // в ys_store_region; здесь выбор читается синхронно, до первого запроса.
+      if (/^(capacitor|ionic):/i.test(origin)) {
+        var _ysReg = '';
+        try { _ysReg = localStorage.getItem('ys_store_region') || ''; } catch (_e) {}
+        window._ysStoreRegion = _ysReg;
+        if (_ysReg === 'intl') fallback = 'https://yupsoul-intl.yupsoul.ru';
+      }
       if (isOurHost && origin) {
         window.HEROES_API_BASE = origin;
       } else {
@@ -14028,24 +14037,6 @@ html.is-vk-light #soulChatPage .sc-send-btn-icon:disabled svg path {
     border-color: rgba(220,38,38,0.45) !important;
     color: #b91c1c !important;
   }
-  /* Подсказка под незаполненным полем (_ysInlineFieldHint, 18.11.2026) — тот же вид, что #submitHint */
-  .form-inline-hint {
-    background: rgba(244,63,94,0.12);
-    border: 1px solid rgba(244,63,94,0.35);
-    border-radius: 12px;
-    padding: 10px 14px;
-    color: #fda4af;
-    font-size: 0.85rem;
-    line-height: 1.4;
-    margin: 8px 0 0;
-  }
-  body.theme-light .form-inline-hint,
-  html.is-vk-light .form-inline-hint,
-  html.is-ok-light .form-inline-hint {
-    background: rgba(220,38,38,0.08);
-    border-color: rgba(220,38,38,0.45);
-    color: #b91c1c;
-  }
 
   /* ═══ VK Testers 11.05.2026 — Batch 7.10: визуальное выделение required полей ═══
      ID 7256232 (iOS Средний): «Обязательные поля в форме не выделены» — тестер
@@ -15588,6 +15579,22 @@ html.is-ok-light:not(.dark) #homeCommCard .task-body b { color: #241526 !importa
     html.is-native #partnerApplyPage,
     html.is-native #partnerDashPage { display: none !important; }
 
+    /* ── Вход через Apple (только нативная сборка) ──────────────────────────
+       Гайдлайны Apple разрешают радиус от нуля до половины высоты, поэтому
+       пилюля по закону №43 им не противоречит. Чёрный фон с белым логотипом —
+       один из утверждённых вариантов. Подпись переводится Apple-строками. */
+    .native-apple-btn { display: none; }
+    html.is-native .native-apple-btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      width: 100%; margin: 14px 0 4px; padding: 13px 20px;
+      background: #000; color: #fff; border: 1px solid rgba(255,255,255,0.22);
+      font-size: 16px; font-weight: 600; letter-spacing: -0.01em; cursor: pointer;
+    }
+    html.is-native .native-apple-btn:active { opacity: 0.82; }
+    /* В светлой теме чёрная кнопка на светлом фоне — тоже вариант из гайдлайнов. */
+    html.is-native.theme-light .native-apple-btn,
+    html.is-native body.theme-light .native-apple-btn { border-color: rgba(0,0,0,0.18); }
+
     /* Ряд VK/Telegram и его подпись на нативе не показываем: вход только Apple,
        иначе правило 4.8 требует объяснений, а сторонние входы на iOS лишние. */
     html.is-native .login-icons-row,
@@ -15605,117 +15612,6 @@ body.theme-light .ys-iap-busy-card{background:rgba(255,255,255,.97);color:#1a1a2
 #mtNpPlayBtn.is-loading::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:2px solid rgba(255,255,255,.18);border-top-color:#fff;animation:mtNpSpin .8s linear infinite;pointer-events:none}
 @keyframes mtNpSpin{to{transform:rotate(360deg)}}
 @media (prefers-reduced-motion:reduce){#mtNpPlayBtn.is-loading::after{animation-duration:2.4s}}
-
-
-/* ══ Первый экран iPhone-приложения (23.11.2026, принятый макет YupSoul-pervyj-ekran-iphone-makety.html, закон №46) ══
-   Два шага внутри #webLoginScreen: 1 — пластинка + «Хочу свою песню», 2 — «Остался один шаг» + Вход с Apple.
-   Виден ТОЛЬКО на html.is-native; сайт/Telegram/VK не затронуты. Значения px/цвета/keyframes — из макета дословно
-   (keyframes с префиксом nfs, чтобы не задеть одноимённые в приложении); токены объявлены внутри .nfs, не в :root.
-   Светлая тема: body.theme-light #webLoginScreen * { color !important } (L~7577) перебивает цвета — поэтому
-   color здесь с !important, а общий «* {color:inherit}» возвращает наследование. */
-#webLoginScreen .nfs{display:none}
-html.is-native #webLoginScreen .wl-promo,
-html.is-native #webLoginScreen .home-glass-card{display:none !important}
-html.is-native #webLoginScreen .nfs{--bg:#0a0612;--surface-2:rgba(255,255,255,.1);--line-2:rgba(255,255,255,.16);--text:#f5f1fb;--muted:rgba(245,241,251,.64);--cta:linear-gradient(135deg,#ec4899,#f97316);--cta-glow:rgba(236,72,153,.5);--sans:var(--font-app,'Inter',ui-sans-serif,system-ui,-apple-system,sans-serif);--dot:rgba(255,255,255,.22);--glowa:.14;--aura1:.2;--quiet:rgba(245,241,251,.58);--ring:255,214,236;--ring-o:.22;--grain:.035;--gcol:#cba2ff;--pl-bg:rgba(255,255,255,.08);--pl-line:rgba(255,255,255,.22);--pl-fg:#fff;--apple-bg:#fff;--apple-fg:#000}
-html.is-native body.theme-light #webLoginScreen .nfs{--bg:#faf5ec;--surface-2:#ffffff;--line-2:rgba(74,38,46,.16);--text:#241526;--muted:#6f5a66;--dot:rgba(36,21,38,.16);--glowa:.0;--aura1:.1;--quiet:#7a6570;--ring:157,23,77;--ring-o:.18;--grain:.025;--pl-bg:rgba(36,21,38,.05);--pl-line:rgba(36,21,38,.14);--pl-fg:#241526;--apple-bg:#000;--apple-fg:#fff}
-html.is-native #webLoginScreen .nfs{display:block;position:absolute;inset:0;z-index:30;overflow:hidden;isolation:isolate;box-sizing:border-box;font-family:var(--sans);font-optical-sizing:auto;font-synthesis:none;background:var(--bg);color:var(--text) !important;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;text-align:left}
-html.is-native #webLoginScreen .nfs *,html.is-native #webLoginScreen .nfs *::before,html.is-native #webLoginScreen .nfs *::after{box-sizing:border-box;color:inherit !important}
-html.is-native #webLoginScreen .nfs svg{display:block}
-html.is-native #webLoginScreen .nfs::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;background:radial-gradient(90% 50% at 50% 28%,rgba(124,58,237,.2),transparent 70%),radial-gradient(90% 30% at 50% 112%,rgba(249,115,22,.06),transparent 70%)}
-html.is-native body.theme-light #webLoginScreen .nfs::before{opacity:.6}
-html.is-native #webLoginScreen .nfs::after{content:"";position:absolute;inset:0;z-index:5;pointer-events:none;opacity:var(--grain);mix-blend-mode:overlay;background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .5 0 0 0 0 .5 0 0 0 0 .5 0 0 0 1 0'/></filter><rect width='160' height='160' filter='url(%23n)'/></svg>")}
-html.is-native #webLoginScreen .nfs .ob-stars{position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.28;background-image:radial-gradient(1.4px 1.4px at 14% 12%,rgba(255,255,255,.55),transparent),radial-gradient(1.3px 1.3px at 80% 8%,rgba(255,255,255,.4),transparent),radial-gradient(1.2px 1.2px at 64% 18%,rgba(255,255,255,.38),transparent),radial-gradient(1.3px 1.3px at 24% 70%,rgba(255,255,255,.3),transparent),radial-gradient(1.2px 1.2px at 88% 64%,rgba(255,255,255,.28),transparent),radial-gradient(1.1px 1.1px at 42% 88%,rgba(255,255,255,.26),transparent)}
-html.is-native body.theme-light #webLoginScreen .nfs .ob-stars{display:none}
-html.is-native #webLoginScreen .nfs .aura{position:absolute;z-index:0;width:320px;height:320px;border-radius:50%;filter:blur(64px);pointer-events:none}
-html.is-native #webLoginScreen .nfs .aura.a1{left:35px;top:88px;background:#7c3aed;opacity:var(--aura1);animation:nfsDrift 12s ease-in-out infinite alternate}
-@keyframes nfsDrift{from{transform:translate(0,0)}to{transform:translate(0,-24px)}}
-
-/* два шага: плавный переход fade + сдвиг 12px (вперёд — влево, назад — зеркально) */
-html.is-native #webLoginScreen .nfs .nfs-step{position:absolute;inset:0;z-index:1;display:flex;flex-direction:column;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .28s ease,transform .28s ease,visibility 0s linear .28s}
-html.is-native #webLoginScreen .nfs .nfs-s1{transform:translateX(-12px)}
-html.is-native #webLoginScreen .nfs .nfs-s2{transform:translateX(12px)}
-html.is-native #webLoginScreen .nfs[data-step="1"] .nfs-s1,html.is-native #webLoginScreen .nfs[data-step="2"] .nfs-s2{opacity:1;visibility:visible;pointer-events:auto;transform:none;transition-delay:0s}
-
-/* три текстовых стиля */
-html.is-native #webLoginScreen .nfs .h{font-size:27px !important;font-weight:600 !important;letter-spacing:-.03em !important;line-height:1.12 !important;margin:0;text-wrap:balance;text-transform:none !important}
-html.is-native #webLoginScreen .nfs .t-cap{font-size:14.5px !important;font-weight:400 !important;letter-spacing:0 !important;line-height:1.55 !important;color:var(--muted) !important;margin:0 !important;text-wrap:pretty}
-html.is-native #webLoginScreen .nfs .t-btn{font-size:17px !important;font-weight:600 !important;letter-spacing:0 !important;line-height:1.2 !important}
-
-html.is-native #webLoginScreen .nfs .top{position:relative;z-index:3;flex:none;display:flex;align-items:center;gap:8px;padding:max(56px,calc(env(safe-area-inset-top,0px) + 9px)) 24px 0}
-html.is-native #webLoginScreen .nfs .blogo{width:28px;height:28px;object-fit:contain}
-html.is-native #webLoginScreen .nfs .top2{position:relative;z-index:3;flex:none;padding:max(56px,calc(env(safe-area-inset-top,0px) + 9px)) 24px 0}
-html.is-native #webLoginScreen .nfs .back{width:44px !important;height:44px !important;min-width:0 !important;min-height:0 !important;margin:0 !important;padding:0 !important;border-radius:9999px !important;display:grid !important;place-items:center;background:var(--surface-2) !important;border:1px solid var(--line-2) !important;box-shadow:none !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important;color:var(--text) !important;cursor:pointer;font:inherit}
-
-html.is-native #webLoginScreen .nfs .body1{position:relative;z-index:2;flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 24px 16px;text-align:center}
-html.is-native #webLoginScreen .nfs .vinyl{position:relative;width:176px;height:176px}
-html.is-native #webLoginScreen .nfs .glow{position:absolute;inset:-72px;border-radius:50%;opacity:var(--glowa);background:radial-gradient(closest-side,rgba(168,85,247,.9),rgba(236,72,153,.5) 55%,transparent)}
-html.is-native #webLoginScreen .nfs .dshadow{position:absolute;inset:0;border-radius:50%;box-shadow:0 24px 48px -20px rgba(60,30,60,.35);opacity:0}
-html.is-native body.theme-light #webLoginScreen .nfs .dshadow{opacity:1}
-html.is-native #webLoginScreen .nfs .ring{position:absolute;inset:0;border-radius:50%;border:1px solid rgb(var(--ring));opacity:0;animation:nfsRingOut 5.5s cubic-bezier(.22,1,.36,1) infinite}
-html.is-native #webLoginScreen .nfs .ring.r2{animation-delay:-1.83s}
-html.is-native #webLoginScreen .nfs .ring.r3{animation-delay:-3.67s}
-@keyframes nfsRingOut{0%{transform:scale(1);opacity:var(--ring-o)}100%{transform:scale(1.9);opacity:0}}
-html.is-native #webLoginScreen .nfs .spin{position:absolute;inset:0;border-radius:50%;overflow:hidden;isolation:isolate;will-change:transform;animation:nfsSpin 16s linear infinite;background:repeating-radial-gradient(circle at 50% 50%,rgba(255,255,255,.06) 0 1px,transparent 1px 4px),linear-gradient(160deg,#1c1126,#120a19)}
-html.is-native #webLoginScreen .nfs .bl{position:absolute;inset:0;border-radius:50%;mix-blend-mode:screen;opacity:.3;background:conic-gradient(from 0deg,transparent 0 6%,#f472b6 9%,#a78bfa 12.5%,#67e8f9 16%,transparent 19.5%,transparent 52%,#f97316 55%,#f472b6 58.5%,#a78bfa 62%,transparent 65.5%,transparent 100%)}
-html.is-native #webLoginScreen .nfs .apple-c{position:absolute;left:50%;top:50%;width:80px;height:80px;margin:-40px 0 0 -40px;border-radius:50%;display:grid;place-items:center;box-shadow:inset 0 0 0 1px rgba(255,255,255,.18);background:radial-gradient(120% 120% at 26% 18%,hsl(332,94%,68%),transparent 52%),radial-gradient(128% 128% at 82% 26%,hsl(28,96%,62%),transparent 55%),radial-gradient(140% 140% at 64% 104%,hsl(286,72%,48%),transparent 60%),linear-gradient(160deg,hsl(300,46%,17%),hsl(22,44%,12%))}
-html.is-native #webLoginScreen .nfs .apple-c img{width:52px;height:auto;display:block}
-@keyframes nfsSpin{to{transform:rotate(360deg)}}
-html.is-native #webLoginScreen .nfs .sheen{position:absolute;inset:0;border-radius:50%;pointer-events:none;box-shadow:inset 0 0 0 1px rgba(255,255,255,.18)}
-/* кнопка звука: круг 52px (глобальные button-правила приложения перебиты !important) */
-html.is-native #webLoginScreen .nfs .play{position:relative;z-index:2;width:52px !important;height:52px !important;min-width:0 !important;min-height:0 !important;padding:0 !important;margin:24px 0 0 !important;border:0 !important;border-radius:50% !important;display:grid !important;place-items:center;background:var(--pl-bg) !important;-webkit-backdrop-filter:blur(12px) !important;backdrop-filter:blur(12px) !important;box-shadow:inset 0 0 0 1px var(--pl-line) !important;color:var(--pl-fg) !important;cursor:pointer;font:inherit;overflow:visible}
-html.is-native #webLoginScreen .nfs .play svg{margin-left:0}
-html.is-native #webLoginScreen .nfs .nfs-ic-off{display:none}
-html.is-native #webLoginScreen .nfs[data-muted="1"] .nfs-ic-on{display:none}
-html.is-native #webLoginScreen .nfs[data-muted="1"] .nfs-ic-off{display:block}
-html.is-native #webLoginScreen .nfs .body1 .t-cap{margin-top:8px !important;color:var(--quiet) !important}
-html.is-native #webLoginScreen .nfs .body1 .h{margin-top:40px !important}
-html.is-native #webLoginScreen .nfs .ac,html.is-native #webLoginScreen .nfs .home-card-title-accent{display:inline-block;color:transparent !important;-webkit-text-fill-color:transparent}
-/* светлая тема: акцентный градиент из принятого макета (контраст на кремовом фоне); класс и анимация — приложения */
-html.is-native body.theme-light #webLoginScreen .nfs .ac,html.is-native body.theme-light #webLoginScreen .nfs .home-card-title-accent{background-image:linear-gradient(120deg,#be185d 0%,#be185d 22%,#7c3aed 45%,#c2410c 70%,#b45309 100%) !important;filter:none !important}
-
-html.is-native #webLoginScreen .nfs .bottom{position:relative;z-index:3;flex:none;padding:0 24px 48px}
-html.is-native #webLoginScreen .nfs .dots{display:flex;justify-content:center;gap:8px;margin-bottom:24px}
-html.is-native #webLoginScreen .nfs .dots i{width:5px;height:5px;border-radius:9999px;background:var(--dot)}
-html.is-native #webLoginScreen .nfs .dots i.on{width:18px;background:var(--cta)}
-html.is-native #webLoginScreen .nfs .cta{width:100% !important;height:56px !important;min-width:0 !important;min-height:0 !important;margin:0 !important;padding:0 !important;border:0 !important;border-radius:9999px !important;display:flex !important;align-items:center;justify-content:center;color:#fff !important;background:var(--cta) !important;box-shadow:0 12px 32px -8px rgba(236,72,153,.45),inset 0 1px 0 rgba(255,255,255,.28) !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important;cursor:pointer;font-family:inherit;text-transform:none}
-html.is-native #webLoginScreen .nfs .body2{position:relative;z-index:2;flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 24px 24px;text-align:center}
-html.is-native #webLoginScreen .nfs .lg2{position:relative;width:88px;height:88px;margin-bottom:32px}
-html.is-native #webLoginScreen .nfs .lg2 img{position:relative;width:88px;height:auto;display:block}
-html.is-native #webLoginScreen .nfs .glow2{position:absolute;inset:-40px;border-radius:50%;opacity:calc(var(--glowa) * .8);filter:blur(24px);background:radial-gradient(closest-side,rgba(236,72,153,.8),rgba(168,85,247,.4) 60%,transparent)}
-html.is-native #webLoginScreen .nfs .body2 .t-cap{margin-top:16px !important;max-width:310px;text-wrap:balance}
-/* «Вход с Apple»: по правилам Apple — белая с чёрным в тёмной теме, чёрная с белым в светлой (токены --apple-*) */
-html.is-native #webLoginScreen .nfs .apple{margin:40px 0 0 !important;width:100% !important;height:56px !important;min-width:0 !important;min-height:0 !important;padding:0 !important;border:0 !important;border-radius:9999px !important;display:flex !important;align-items:center;justify-content:center;gap:8px;background:var(--apple-bg) !important;color:var(--apple-fg) !important;box-shadow:none !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important;cursor:pointer;font-family:inherit;text-transform:none}
-html.is-native #webLoginScreen .nfs .apple:active,html.is-native #webLoginScreen .nfs .cta:active,html.is-native #webLoginScreen .nfs .back:active,html.is-native #webLoginScreen .nfs .play:active{opacity:.82}
-html.is-native #webLoginScreen .nfs .body2 .legal{margin-top:24px !important;max-width:none;white-space:nowrap}
-html.is-native #webLoginScreen .nfs .legal a{text-decoration:underline;text-underline-offset:2px;color:inherit !important;cursor:pointer}
-
-html.is-native #webLoginScreen .nfs .in{animation:nfsRise .8s cubic-bezier(.22,1,.36,1) both !important;animation-delay:calc(var(--n,0)*70ms) !important}
-@keyframes nfsRise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
-@media (prefers-reduced-motion:reduce){html.is-native #webLoginScreen .nfs,html.is-native #webLoginScreen .nfs *,html.is-native #webLoginScreen .nfs::before,html.is-native #webLoginScreen .nfs::after{animation:none !important;transition:none !important}}
-
-/* Переключатель языка на нативном экране входа (23.11, решение Аллы): тот же узел шапки #startLangSwitcher и его логика
-   (initLangSwitcher, setLang) — шапка не скрыта, а превращена в прозрачный слой над .nfs; логотип шапки скрыт (бренд есть в шаге 1).
-   Кнопка — стеклянный круг 44px как «назад»: цвета токенов .nfs продублированы литералами (шапка — соседний узел, не внутри .nfs).
-   Строка с ID нужна: !important-правила шапки (#webLoginScreen .home-top-bar .home-top-bar-btn) иначе перебивают. */
-html.is-native #webLoginScreen .home-top-bar{display:block !important;position:absolute !important;left:0 !important;right:0 !important;top:0 !important;height:0 !important;min-height:0 !important;padding:0 !important;margin:0 !important;background:none !important;border:0 !important;box-shadow:none !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important;z-index:40 !important;pointer-events:none !important}
-html.is-native #webLoginScreen .home-top-bar .home-top-bar-logo{display:none !important}
-html.is-native #webLoginScreen .home-top-bar .home-top-bar-actions{position:absolute !important;right:24px !important;left:auto !important;top:max(48px,calc(env(safe-area-inset-top,0px) + 1px)) !important;margin:0 !important;padding:0 !important;display:block !important;pointer-events:auto !important}
-html.is-native #webLoginScreen:has(.nfs[data-step="2"]) .home-top-bar .home-top-bar-actions{top:max(56px,calc(env(safe-area-inset-top,0px) + 9px)) !important}
-html.is-native #webLoginScreen .home-top-bar #startLangSwitcher{position:relative !important;top:auto !important;right:auto !important}
-html.is-native #webLoginScreen .home-top-bar #startLangSwitcherBtn{width:44px !important;height:44px !important;min-width:0 !important;min-height:0 !important;margin:0 !important;padding:0 !important;border-radius:9999px !important;display:grid !important;place-items:center;background:rgba(255,255,255,.1) !important;border:1px solid rgba(255,255,255,.16) !important;box-shadow:none !important;backdrop-filter:blur(12px) !important;-webkit-backdrop-filter:blur(12px) !important;color:#f5f1fb !important;font-family:var(--font-app,'Inter',sans-serif) !important;font-size:13.5px !important;font-weight:600 !important;letter-spacing:0 !important;line-height:1 !important;cursor:pointer}
-html.is-native #webLoginScreen .home-top-bar #startLangSwitcherBtn *{color:inherit !important;font-size:inherit !important;font-weight:inherit !important;letter-spacing:0 !important}
-html.is-native #webLoginScreen .home-top-bar #startLangSwitcherIcon{display:none !important}
-html.is-native #webLoginScreen .home-top-bar #startLangSwitcherDropdown{position:absolute !important;top:calc(100% + 8px) !important;right:0 !important;left:auto !important;width:60px !important;padding:8px !important;gap:6px !important;border-radius:30px !important;background:rgba(22,14,38,.96) !important;border:1px solid rgba(255,255,255,.16) !important;box-shadow:0 14px 36px rgba(0,0,0,.6) !important;display:flex !important;flex-direction:column !important;align-items:center !important;z-index:50 !important}
-html.is-native #webLoginScreen .home-top-bar #startLangSwitcherDropdown[hidden]{display:none !important}
-html.is-native #webLoginScreen .home-top-bar #startLangSwitcherDropdown .lang-opt{width:44px !important;height:44px !important;min-width:44px !important;min-height:44px !important;margin:0 !important;padding:0 !important;border-radius:9999px !important;background:rgba(255,255,255,.08) !important;border:1px solid rgba(255,255,255,.16) !important;box-shadow:none !important;color:#f5f1fb !important;font-size:13.5px !important;font-weight:600 !important;letter-spacing:0 !important}
-html.is-native #webLoginScreen .home-top-bar #startLangSwitcherDropdown .lang-opt:active{background:rgba(236,72,153,.28) !important}
-html.is-native body.theme-light #webLoginScreen .home-top-bar #startLangSwitcherBtn{background:#fff !important;border-color:rgba(74,38,46,.16) !important;color:#241526 !important}
-html.is-native body.theme-light #webLoginScreen .home-top-bar #startLangSwitcherDropdown{background:rgba(255,255,255,.97) !important;border-color:rgba(74,38,46,.16) !important;box-shadow:0 14px 36px rgba(60,30,40,.22) !important}
-html.is-native body.theme-light #webLoginScreen .home-top-bar #startLangSwitcherDropdown .lang-opt{background:rgba(36,21,38,.05) !important;border-color:rgba(74,38,46,.16) !important;color:#241526 !important}
-html.is-native body.theme-light #webLoginScreen .home-top-bar #startLangSwitcherDropdown .lang-opt:active{background:rgba(190,24,93,.14) !important}
-
-/* Шторка «Отправь песню в эфир» (#rsheet) в приложении iPhone: она fixed от низа с max-height:100% — на длинном содержимом верх доходил до края экрана, и крестик уходил под статус-бар (тестер, iPhone 17, App Store, 23.11: «крестик спрятан за техническими символами, не могу закрыть»). Слой .page сдвигается на вырез сам, но fixed-потомки считаются от вьюпорта — верх шторки не выше выреза; длинное содержимое прокручивается внутри (overflow-y:auto уже стоит). */
-html.is-native #myTracksPage .rsheet{max-height:calc(100% - env(safe-area-inset-top,0px) - 12px) !important}
 </style>
   <!-- Sentry Error Tracking (errors only, no tracing).
        НЕ загружается в VK Mini App по правилам платформы VK §1.7 (сторонние
@@ -16723,7 +16619,14 @@ html:not(.is-native) #nativeAiConsentOverlay{display:none !important}
           <button type="button" class="login-icon-btn" id="vkAuthBtn" title="VK"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12.62 21.07C4.54 21.07 0 16.08 0 7H3.73c.16 6.25 3.06 8.9 5.38 9.44V7h3.5v5.39c2.29-.25 4.7-2.88 5.51-5.39h3.5c-.62 3.09-3.23 5.72-5.09 6.72 1.86.79 4.83 3.09 5.97 6.35h-3.86c-.89-2.76-3.1-4.9-6.03-5.19v5.19h-.89z" fill="#fff"/></svg></button>
           <a href="https://t.me/Yup_Soul_bot" target="_blank" rel="noopener" class="login-icon-btn" id="webLoginTelegramBtn" title="Telegram"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z" fill="#fff"/></svg></a>
         </div>
-        <!-- Кнопка «Вход с Apple» (#nativeAppleSignInBtn) живёт в секции .nfs (шаг 2) ниже — только нативная сборка. -->
+        <!-- Вход через Apple: показывается ТОЛЬКО в нативной сборке (html.is-native).
+             Apple 4.8 требует его при наличии сторонних входов, а гайдлайны требуют
+             именно кнопку с логотипом и утверждённой подписью — иконка в общем ряду
+             не подходит. Поэтому на нативе ряд VK/Telegram скрыт, а тут своя кнопка. -->
+        <button type="button" id="nativeAppleSignInBtn" class="native-apple-btn">
+          <svg width="17" height="20" viewBox="0 0 17 20" fill="none" aria-hidden="true"><path d="M14.09 10.62c.01 2.6 2.27 3.46 2.3 3.47-.02.06-.36 1.24-1.2 2.46-.72 1.05-1.47 2.1-2.65 2.12-1.16.02-1.53-.69-2.86-.69-1.32 0-1.74.67-2.84.71-1.13.04-2-1.1-2.72-2.15C2.6 14.4 1.48 10.5 3 7.87c.75-1.31 2.1-2.14 3.56-2.16 1.12-.02 2.17.75 2.86.75.68 0 1.97-.93 3.32-.79.56.02 2.15.2 3.17 1.71-.08.05-1.89 1.11-1.87 3.24M11.86 4.2c.61-.74 1.02-1.77.9-2.79-.9.04-1.99.6-2.62 1.33-.57.65-1.05 1.7-.92 2.7 1 .08 2.03-.51 2.64-1.24" fill="currentColor"/></svg>
+          <span data-i18n="signInWithApple">Вход с Apple</span>
+        </button>
         <!-- (аудит iPhone 24.09: до входа не было ссылки на оферту/конфиденциальность — App Store Review 5.1.1(i)
              требует её в процессе регистрации; переиспользуем существующие ключи footerOffer/footerPrivacy,
              значения цвета/размера — как в #homePage .home-footer a (app.css:12927); светлая тема уже
@@ -16735,40 +16638,6 @@ html:not(.is-native) #nativeAiConsentOverlay{display:none !important}
         <!-- "ТОЛЬКО ЗДЕСЬ" блок убран со стартовой (по запросу) -->
       </article>
     </main>
-    <!-- Первый экран iPhone-приложения (23.11.2026, принятый макет, закон №46): два шага внутри экрана входа.
-         Виден только на html.is-native (стили — конец app.css «nfs»), логика — src/js/14-native-iap.js.
-         Кнопка #nativeAppleSignInBtn — единственная на странице (обработчик bindAppleSignIn вешается по id). -->
-    <section class="nfs" id="nfsRoot" data-step="1">
-      <div class="ob-stars"></div>
-      <div class="nfs-step nfs-s1" id="nfsStep1"><div class="aura a1"></div>
-        <div class="top in" style="--n:0"><img src="assets/icons/logo-mandala.png" alt="" width="28" height="28" class="blogo" aria-hidden="true"><span class="t-btn">YupSoul</span></div>
-        <div class="body1">
-          <div class="vinyl in" style="--n:1"><div class="glow"></div><div class="dshadow"></div><div class="ring r1"></div><div class="ring r2"></div><div class="ring r3"></div><div class="spin"><div class="bl"></div><div class="apple-c"><img src="assets/icons/logo-mandala.png" alt="" aria-hidden="true"></div></div><div class="sheen"></div></div>
-          <button type="button" class="play in" id="nfsSoundBtn" style="--n:2" aria-pressed="true" aria-label="Включить или выключить звук" data-i18n-aria="nfsSoundToggle">
-            <svg class="nfs-ic-on" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5h3.5L12 6v12l-4.5-3.5H4z"/><path d="M15.5 9a4 4 0 010 6"/><path d="M18.2 6.6a8 8 0 010 10.8"/></svg>
-            <svg class="nfs-ic-off" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5h3.5L12 6v12l-4.5-3.5H4z"/><path d="M16 9.5l5 5"/><path d="M21 9.5l-5 5"/></svg>
-          </button>
-          <p class="t-cap in" id="nfsSoundLabel" style="--n:3" data-i18n="nfsSoundOn">Звук включён</p>
-          <h1 class="h in" style="--n:4" data-i18n-html="wlLoginTitleHtml">Узнай, как звучит <span class="home-card-title-accent">твоя</span> дата рождения</h1>
-        </div>
-        <div class="bottom in" style="--n:5"><div class="dots"><i class="on"></i><i></i></div><button type="button" class="cta t-btn" id="nfsCtaBtn" data-i18n="nfsCta">Хочу свою песню</button></div>
-      </div>
-      <div class="nfs-step nfs-s2" id="nfsStep2" aria-hidden="true">
-        <div class="top2"><button type="button" class="back" id="nfsBackBtn" aria-label="Назад" data-i18n-aria="nfsBack"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button></div>
-        <div class="body2">
-          <div class="lg2"><div class="glow2"></div><img src="assets/icons/logo-mandala.png" alt="" aria-hidden="true"></div>
-          <h1 class="h" data-i18n="nfsStep2Title">Остался один шаг</h1>
-          <p class="t-cap" data-i18n="nfsStep2Text">Войди — и мы напишем твою песню. Она сохранится в твоём плейлисте.</p>
-          <button type="button" id="nativeAppleSignInBtn" class="apple t-btn">
-            <svg width="17" height="20" viewBox="0 0 17 20" fill="none" aria-hidden="true"><path d="M14.09 10.62c.01 2.6 2.27 3.46 2.3 3.47-.02.06-.36 1.24-1.2 2.46-.72 1.05-1.47 2.1-2.65 2.12-1.16.02-1.53-.69-2.86-.69-1.32 0-1.74.67-2.84.71-1.13.04-2-1.1-2.72-2.15C2.6 14.4 1.48 10.5 3 7.87c.75-1.31 2.1-2.14 3.56-2.16 1.12-.02 2.17.75 2.86.75.68 0 1.97-.93 3.32-.79.56.02 2.15.2 3.17 1.71-.08.05-1.89 1.11-1.87 3.24M11.86 4.2c.61-.74 1.02-1.77.9-2.79-.9.04-1.99.6-2.62 1.33-.57.65-1.05 1.7-.92 2.7 1 .08 2.03-.51 2.64-1.24" fill="currentColor"/></svg>
-            <span data-i18n="signInWithApple">Вход с Apple</span>
-          </button>
-          <!-- Оферта и конфиденциальность до входа — App Store Review 5.1.1(i); вызовы те же, что были под кнопкой в карточке. -->
-          <p class="t-cap legal"><a href="javascript:void(0)" onclick="if(window.showLegalModal)window.showLegalModal('offer')" data-i18n="footerOffer">Условия использования</a> · <a href="javascript:void(0)" onclick="if(window.showLegalModal)window.showLegalModal('privacy')" data-i18n="footerPrivacy">Конфиденциальность</a></p>
-        </div>
-        <div class="bottom"><div class="dots"><i></i><i class="on"></i></div></div>
-      </div>
-    </section>
     <!-- аудит iPhone 24.09: aria-label/title без i18n -->
     <header class="home-top-bar" aria-label="Шапка" data-i18n-aria="ariaHeader">
       <span class="home-top-bar-logo"><span class="home-logo-symbol-wrap"><img src="assets/icons/logo-symbol.webp" alt="" class="home-logo-symbol" width="36" height="36" aria-hidden="true"></span><span>YupSoul <span class="logo-pipe" style="font-weight:400;opacity:0.4;">|</span> <span class="logo-subtitle-i18n">Музыкальный оракул</span></span></span>
@@ -20804,12 +20673,6 @@ body.theme-light #myTracksPage .mtv2-player .v2act,html.is-vk-light:not(.dark) #
     #mtKaraoke .lyr-foot .ftx b{display:block;font-size:13.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     #mtKaraoke .lyr-foot .ftx span{font-size:11.5px;color:var(--faint)}
     #mtKaraoke .lyr-foot .fplay{flex:none !important;width:44px !important;height:44px !important;min-height:0 !important;margin:0 !important;padding:0 !important;border-radius:50% !important;border:none !important;cursor:pointer;display:grid !important;place-items:center;color:#fff !important;background:var(--cta) !important;box-shadow:0 10px 24px -10px var(--cta-glow) !important;font-size:0 !important}
-    /* Иконки шапки/плеера караоке — одно семейство (эталон showcase-player.html: контур 1.6-1.7, round, стекло rgba(255,255,255,.06)). Фон караоке тёмный в ОБЕИХ темах → стекло и светлая иконка всегда. #mtKaraoke#mtKaraoke (2 id) перебивает глоб. #myTracksPage button:not(…)…{fill/background !important} обеих тем (закон №29) */
-    #mtKaraoke#mtKaraoke .hbtn{background:rgba(255,255,255,.07) !important;border:1px solid rgba(255,255,255,.18) !important;color:#f5f1fb !important}
-    #mtKaraoke#mtKaraoke .hbtn svg{width:20px !important;height:20px !important;fill:none !important;stroke:currentColor !important;color:#f5f1fb !important;opacity:1 !important}
-    #mtKaraoke#mtKaraoke .hbtn svg *{fill:none !important}
-    #mtKaraoke#mtKaraoke .lyr-foot .fplay{background:linear-gradient(135deg,#ec4899,#f97316) !important;border:none !important;color:#fff !important}
-    #mtKaraoke#mtKaraoke .lyr-foot .fplay svg{fill:#fff !important;stroke:none !important;color:#fff !important;opacity:1 !important}
     /* Светлая тема: караоке и карточка шеринга — ВСЕГДА на тёмном фоне → текст светлый.
        Перебиваем блэнкет body.theme-light{color:#1a1a2e!important}(1609)+*{color:inherit}(1850). id-спец+!important. */
     body.theme-light #mtKaraoke,html.is-vk-light:not(.dark) #mtKaraoke,html.is-ok-light:not(.dark) #mtKaraoke,
@@ -21058,7 +20921,6 @@ body.theme-light #myTracksPage .mtv2-player .v2act,html.is-vk-light:not(.dark) #
     #myTracksPage .rbtn-primary.rd-leave{background:var(--rsurf) !important;color:var(--rtext);box-shadow:none;border:1px solid var(--rline2)}
     /* Шторка публикации = модал → прячем нижний навбар, чтобы он не перекрывал CTA */
     html.rd-sheet-open #homeAppMenu.home-app-menu{display:none !important}
-    html.mtk-open #homeAppMenu.home-app-menu{display:none !important} /* караоке z 10046 лежит внутри страницы (z ниже таббара): без этого таббар перекрывал нижнюю панель с «пауза» */
     body.theme-light #myTracksPage .rd-hearts span,html.is-vk-light:not(.dark) #myTracksPage .rd-hearts span,html.is-ok-light:not(.dark) #myTracksPage .rd-hearts span{border-color:#fff}
     #myTracksPage .r2-empty{text-align:center;color:var(--rmuted);font-size:13px;padding:34px 16px;line-height:1.5}
     #myTracksPage .r2-live{display:flex;align-items:center;gap:7px;margin:4px 2px 2px;font-size:12px;color:var(--rmuted)}
@@ -21399,7 +21261,6 @@ body.theme-light #myTracksPage .mtv2-player .v2act,html.is-vk-light:not(.dark) #
         <div class="lyr-head">
           <button type="button" class="hbtn" id="mtkClose" aria-label="Назад" data-i18n-aria="navBack" title="Назад" data-i18n-title="mtCloseBtn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
           <div class="tt"><b data-i18n="karaokeTitle">Текст песни</b><span data-i18n="karaokeSub">Караоке · строки в такт</span></div>
-          <button type="button" class="hbtn" id="mtkCopy" aria-label="Копировать текст" title="Копировать текст" data-i18n-title="mtLyricsCopyBtn" data-i18n-aria="mtLyricsCopyBtn"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></button>
           <button type="button" class="hbtn" id="mtkShare" aria-label="Поделиться" data-i18n-aria="mtActShare" title="Поделиться" data-i18n-title="mtActShare"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg></button>
         </div>
         <div class="lyr-scroll" id="mtkScroll"></div>
@@ -22079,10 +21940,6 @@ body.theme-light #myTracksPage .mtv2-player .v2act,html.is-vk-light:not(.dark) #
       window._mtCloseTopOverlay = function(){
         try {
           if(rsheet && rsheet.classList.contains('show')){ closeSheet(); return true; }
-          var _shs=document.getElementById('mtShareSheet');
-          if(_shs && _shs.classList.contains('open')){ _shs.classList.remove('open'); return true; }
-          var _kar=document.getElementById('mtKaraoke');
-          if(_kar && _kar.classList.contains('open')){ window._mtCloseKaraoke ? window._mtCloseKaraoke() : _kar.classList.remove('open'); return true; }
           var np=document.getElementById('mtNowPlaying');
           if(np && np.classList.contains('open')){ if(window._v2Minimize) window._v2Minimize(); else np.classList.remove('open'); return true; }
         } catch(_){}
@@ -22096,7 +21953,6 @@ body.theme-light #myTracksPage .mtv2-player .v2act,html.is-vk-light:not(.dark) #
       window._mtResetView = function(){
         try { rdStopStatsPoll(); } catch(_){}
         try { if(rsheet) rsheet.classList.remove('show'); if(rsheetBack) rsheetBack.classList.remove('show'); document.documentElement.classList.remove('rd-sheet-open'); } catch(_){}
-        try { var _shs2=document.getElementById('mtShareSheet'); if(_shs2) _shs2.classList.remove('open'); if(window._mtCloseKaraoke) window._mtCloseKaraoke(); } catch(_){}
         try {
           var np=document.getElementById('mtNowPlaying');
           if(np){ if(np.style.display==='block' && window._v2Minimize){ window._v2Minimize(); } else { np.classList.remove('open'); } }
@@ -25810,7 +25666,6 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           wlTrack3Name: 'Для любимого',
           wlTrack3Desc: 'признание',
           wlLoginTitleHtml: 'Узнай, как звучит <span class="home-card-title-accent">твоя</span> дата рождения',
-          nfsCta: 'Хочу свою песню', nfsSoundOn: 'Звук включён', nfsSoundOff: 'Звук выключен', nfsStep2Title: 'Остался один шаг', nfsStep2Text: 'Войди — и мы напишем твою песню. Она сохранится в твоём плейлисте.', nfsBack: 'Назад', nfsSoundToggle: 'Включить или выключить звук',
           wlProofN: '{n} песен уже создано', wlProof: '3000+ песен уже создано',
           loginVia: 'Вход через',
           review1: 'Это просто фантастика! Серьёзно, вы считали меня! Это просто супер проект!', reviewAuthor1: 'Роман',
@@ -25877,7 +25732,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           mtModeCouple: 'Про двоих',
           mtModeTransit: 'Энергия дня',
           mtLoadError: 'Не удалось загрузить список. Проверь интернет.',
-          mtLinkCopied: 'Ссылка скопирована', mtPlayError: 'Не удалось воспроизвести', mtLyricsTitle: 'Текст песни', mtAnalysisTitle: 'Расшифровка', mtCopied: 'Скопировано', mtCopyFail: 'Не удалось скопировать', mtCopyBtn: 'Копировать', mtLyricsCopyBtn: 'Копировать текст', mtLyricsCopied: 'Текст скопирован', mtCloseBtn: 'Закрыть', mtDownloading: 'Открываем...', mtShareFail: 'Не удалось поделиться',
+          mtLinkCopied: 'Ссылка скопирована', mtPlayError: 'Не удалось воспроизвести', mtLyricsTitle: 'Текст песни', mtAnalysisTitle: 'Расшифровка', mtCopied: 'Скопировано', mtCopyFail: 'Не удалось скопировать', mtCopyBtn: 'Копировать', mtCloseBtn: 'Закрыть', mtDownloading: 'Открываем...', mtShareFail: 'Не удалось поделиться',
           dlUnlockTitle: 'Заберём твою песню? 🎵', dlUnlockSub: 'Выбери, как забрать её к себе — это один тёплый шаг 🤍', dlUnlockJoin: 'Вступить и скачать', dlUnlockOr: 'или одно из заданий', dlUnlockShare: 'Поделиться песней', dlUnlockReview: 'Оставить отзыв', dlUnlockReviewPh: 'Пара тёплых слов о приложении…', dlUnlockReviewSend: 'Отправить и скачать', dlUnlockUpsell: 'С пакетом — скачивание без заданий.', dlUnlockClose: 'Позже', dlChecking: 'Секунду, проверяю…', dlDone: 'Готово, скачиваю', dlTryAgain: 'Пока не вижу — попробуй ещё раз', dlReviewShort: 'Пара слов побольше — и готово',
           dlGateTitle: 'Скачать песню', dlGateEyebrow: 'Первая песня — твоя', dlGateHeadline: 'Забери свою песню в подарок', dlGateLead: 'Выполни задание ниже — и файл песни сохранится на устройство. Это наш способ расти вместе.', dlGateSteps: 'Шаги для разблокировки', dlGateAltB: 'Не хочешь заданий?', dlGateAltRest: 'Оформи пакет — скачивай любые песни без шагов.', dlGatePacks: 'Пакеты ›', dlGateLocked: 'Выполни задание, чтобы скачать', dlGateReady: 'Скачать песню', dlGateHint: 'Файл сохранится в формате MP3 на твоё устройство', dlDoneTitle: 'Песня скачана 🤍', dlDoneTextRest: 'сохранена на устройство. Спасибо, что ты с нами — впереди ещё много музыки.', dlTrackFallback: 'Песня души', dlTrackSub: 'Песня души', dlTaskVkTitle: 'Вступить в сообщество', dlTaskVkSub: 'YupSoul во ВКонтакте', dlTaskVkAct: 'Вступить', dlTaskShareTitle: 'Поделиться песней', dlTaskShareSub: 'Расскажи друзьям о YupSoul', dlTaskShareAct: 'Поделиться', dlTaskReviewTitle: 'Оставить отзыв', dlTaskReviewSub: 'Пара тёплых слов о приложении', dlTaskReviewAct: 'Написать',
           myTracksWipTitle: 'Страница в разработке',
@@ -26142,7 +25997,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           alertCustomLyrics: 'Впиши текст песни — хотя бы пару строк',
           errCustomLyricsShort: 'Впиши текст песни — хотя бы пару строк',
           errCustomLyricsProfanity: 'В тексте есть слова, которые мы не сможем спеть',
-          errRadioOwnLyrics: 'Песни на свой текст остаются только у тебя — в эфир их не отправляем', errRadioBanned: 'Сейчас эту песню нельзя отправить в эфир',
+          errRadioOwnLyrics: 'Песни на свой текст остаются только у тебя — в эфир их не отправляем',
           birthDateTooltip: 'Выберите дату рождения', birthTimeTooltip: 'Выберите время рождения',
           formMePlusHuman: 'Я + Человек', formCardPlusCard: 'Карточка + Карточка',
           formPickFromLabHint: 'Выбери человека из Лаборатории — поля заполнятся автоматически',
@@ -26774,7 +26629,6 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           wlTrack3Name: 'For Your Love',
           wlTrack3Desc: 'a confession',
           wlLoginTitleHtml: 'Hear how <span class="home-card-title-accent">your</span> birth date sounds',
-          nfsCta: 'I want my song', nfsSoundOn: 'Sound on', nfsSoundOff: 'Sound off', nfsStep2Title: 'One step left', nfsStep2Text: 'Sign in — and we\'ll write your song. It will be saved in your playlist.', nfsBack: 'Back', nfsSoundToggle: 'Turn sound on or off',
           wlProofN: '{n} songs already created', wlProof: '3,000+ songs already created',
           loginVia: 'Sign in via',
           review1: 'This is just fantastic! Seriously, you read me! This is an amazing project!', reviewAuthor1: 'Roman',
@@ -26839,7 +26693,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           mtNoTitle: 'Song of Soul',
           mtModeSingle: 'About me',
           mtModeCouple: 'For two',
-          mtModeTransit: 'Day energy', mtPlayError: 'Playback failed', mtLyricsTitle: 'Lyrics', mtAnalysisTitle: 'Analysis', mtCopied: 'Copied', mtCopyFail: 'Copy failed', mtCopyBtn: 'Copy', mtLyricsCopyBtn: 'Copy lyrics', mtLyricsCopied: 'Lyrics copied', mtCloseBtn: 'Close', mtDownloading: 'Opening...', mtShareFail: 'Share failed', mtLinkCopied: 'Link copied',
+          mtModeTransit: 'Day energy', mtPlayError: 'Playback failed', mtLyricsTitle: 'Lyrics', mtAnalysisTitle: 'Analysis', mtCopied: 'Copied', mtCopyFail: 'Copy failed', mtCopyBtn: 'Copy', mtCloseBtn: 'Close', mtDownloading: 'Opening...', mtShareFail: 'Share failed', mtLinkCopied: 'Link copied',
           dlUnlockTitle: 'Shall we get your song? 🎵', dlUnlockSub: 'Choose how to keep it — just one warm step 🤍', dlUnlockJoin: 'Join and download', dlUnlockOr: 'or one small task', dlUnlockShare: 'Share the song', dlUnlockReview: 'Leave a review', dlUnlockReviewPh: 'A few warm words about the app…', dlUnlockReviewSend: 'Send and download', dlUnlockUpsell: 'With a package — downloads without tasks.', dlUnlockClose: 'Later', dlChecking: 'One sec, checking…', dlDone: 'Done, downloading', dlTryAgain: "Don't see it yet — try again", dlReviewShort: "A few more words — and you're set",
           dlGateTitle: 'Download the song', dlGateEyebrow: 'Your first song', dlGateHeadline: 'Get your song as a gift', dlGateLead: 'Complete a task below — and the song file saves to your device. This is how we grow together.', dlGateSteps: 'Steps to unlock', dlGateAltB: 'Prefer no tasks?', dlGateAltRest: 'Get a pack — download any songs with no steps.', dlGatePacks: 'Packs ›', dlGateLocked: 'Complete a task to download', dlGateReady: 'Download the song', dlGateHint: 'The file saves as MP3 to your device', dlDoneTitle: 'Song downloaded 🤍', dlDoneTextRest: 'is saved to your device. Thank you for being with us — much more music is ahead.', dlTrackFallback: 'Soul song', dlTrackSub: 'Soul song', dlTaskVkTitle: 'Join the community', dlTaskVkSub: 'YupSoul on VK', dlTaskVkAct: 'Join', dlTaskShareTitle: 'Share the song', dlTaskShareSub: 'Tell friends about YupSoul', dlTaskShareAct: 'Share', dlTaskReviewTitle: 'Leave a review', dlTaskReviewSub: 'A few warm words about the app', dlTaskReviewAct: 'Write',
           myTracksWipTitle: 'Page in development',
@@ -27094,7 +26948,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           alertCustomLyrics: 'Write the lyrics — a couple of lines at least',
           errCustomLyricsShort: 'Write the lyrics — a couple of lines at least',
           errCustomLyricsProfanity: 'There are words here we can\'t sing',
-          errRadioOwnLyrics: 'Songs on your own text stay with you — we don\'t put them on air', errRadioBanned: 'This song can\'t go on air right now',
+          errRadioOwnLyrics: 'Songs on your own text stay with you — we don\'t put them on air',
           birthDateTooltip: 'Pick birth date', birthTimeTooltip: 'Pick birth time',
           formMePlusHuman: 'Me + Person', formCardPlusCard: 'Card + Card',
           formPickFromLabHint: 'Pick a person from the Laboratory — fields will auto-fill',
@@ -27723,7 +27577,6 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           wlTrack3Name: 'Für deine Liebe',
           wlTrack3Desc: 'ein Geständnis',
           wlLoginTitleHtml: 'Hör, wie <span class="home-card-title-accent">dein</span> Geburtsdatum klingt',
-          nfsCta: 'Ich will meinen Song', nfsSoundOn: 'Ton an', nfsSoundOff: 'Ton aus', nfsStep2Title: 'Noch ein Schritt', nfsStep2Text: 'Melde dich an — und wir schreiben deinen Song. Er landet in deiner Playlist.', nfsBack: 'Zurück', nfsSoundToggle: 'Ton ein- oder ausschalten',
           wlProofN: '{n} Songs bereits erstellt', wlProof: '3.000+ Songs bereits erstellt',
           loginVia: 'Anmelden über',
           review1: 'Das ist einfach fantastisch! Ernsthaft, ihr habt mich gelesen! Ein super Projekt!', reviewAuthor1: 'Roman',
@@ -27788,7 +27641,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           mtNoTitle: 'Lied der Seele',
           mtModeSingle: 'Für mich',
           mtModeCouple: 'Für zwei',
-          mtModeTransit: 'Tagesenergie', mtPlayError: 'Wiedergabe fehlgeschlagen', mtLyricsTitle: 'Songtext', mtAnalysisTitle: 'Analyse', mtCopied: 'Kopiert', mtCopyFail: 'Kopieren fehlgeschlagen', mtCopyBtn: 'Kopieren', mtLyricsCopyBtn: 'Songtext kopieren', mtLyricsCopied: 'Songtext kopiert', mtCloseBtn: 'Schließen', mtDownloading: 'Wird geöffnet...', mtShareFail: 'Teilen fehlgeschlagen', mtLinkCopied: 'Link kopiert',
+          mtModeTransit: 'Tagesenergie', mtPlayError: 'Wiedergabe fehlgeschlagen', mtLyricsTitle: 'Songtext', mtAnalysisTitle: 'Analyse', mtCopied: 'Kopiert', mtCopyFail: 'Kopieren fehlgeschlagen', mtCopyBtn: 'Kopieren', mtCloseBtn: 'Schließen', mtDownloading: 'Wird geöffnet...', mtShareFail: 'Teilen fehlgeschlagen', mtLinkCopied: 'Link kopiert',
           dlUnlockTitle: 'Holen wir deinen Song? 🎵', dlUnlockSub: 'Wähle, wie du ihn behältst — nur ein warmer Schritt 🤍', dlUnlockJoin: 'Beitreten und herunterladen', dlUnlockOr: 'oder eine kleine Aufgabe', dlUnlockShare: 'Song teilen', dlUnlockReview: 'Bewertung hinterlassen', dlUnlockReviewPh: 'Ein paar warme Worte zur App…', dlUnlockReviewSend: 'Senden und herunterladen', dlUnlockUpsell: 'Mit Paket — Downloads ohne Aufgaben.', dlUnlockClose: 'Später', dlChecking: 'Einen Moment, ich prüfe…', dlDone: 'Fertig, lädt herunter', dlTryAgain: 'Sehe es noch nicht — versuch es nochmal', dlReviewShort: 'Ein bisschen mehr — und fertig',
           dlGateTitle: 'Song herunterladen', dlGateEyebrow: 'Dein erster Song', dlGateHeadline: 'Hol dir deinen Song als Geschenk', dlGateLead: 'Erledige eine Aufgabe unten — und die Songdatei wird auf deinem Gerät gespeichert. So wachsen wir gemeinsam.', dlGateSteps: 'Schritte zum Freischalten', dlGateAltB: 'Keine Aufgaben?', dlGateAltRest: 'Hol dir ein Paket — lade beliebige Songs ohne Schritte.', dlGatePacks: 'Pakete ›', dlGateLocked: 'Erledige eine Aufgabe zum Download', dlGateReady: 'Song herunterladen', dlGateHint: 'Die Datei wird als MP3 auf deinem Gerät gespeichert', dlDoneTitle: 'Song heruntergeladen 🤍', dlDoneTextRest: 'wurde auf deinem Gerät gespeichert. Danke, dass du dabei bist — es kommt noch viel Musik.', dlTrackFallback: 'Seelensong', dlTrackSub: 'Seelensong', dlTaskVkTitle: 'Der Community beitreten', dlTaskVkSub: 'YupSoul auf VK', dlTaskVkAct: 'Beitreten', dlTaskShareTitle: 'Song teilen', dlTaskShareSub: 'Erzähl Freunden von YupSoul', dlTaskShareAct: 'Teilen', dlTaskReviewTitle: 'Bewertung abgeben', dlTaskReviewSub: 'Ein paar warme Worte zur App', dlTaskReviewAct: 'Schreiben',
           myTracksWipTitle: 'Seite in Entwicklung',
@@ -28043,7 +27896,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           alertCustomLyrics: 'Schreib den Liedtext — wenigstens ein paar Zeilen',
           errCustomLyricsShort: 'Schreib den Liedtext — wenigstens ein paar Zeilen',
           errCustomLyricsProfanity: 'Hier stehen Worte, die wir nicht singen können',
-          errRadioOwnLyrics: 'Lieder auf eigenen Text bleiben bei dir — wir senden sie nicht', errRadioBanned: 'Dieses Lied kann gerade nicht gesendet werden',
+          errRadioOwnLyrics: 'Lieder auf eigenen Text bleiben bei dir — wir senden sie nicht',
           birthDateTooltip: 'Geburtsdatum auswählen', birthTimeTooltip: 'Geburtszeit auswählen',
           formMePlusHuman: 'Ich + Person', formCardPlusCard: 'Karte + Karte',
           formPickFromLabHint: 'Wähle eine Person aus dem Labor — Felder werden automatisch ausgefüllt',
@@ -28670,7 +28523,6 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           wlTrack3Name: 'Pour ton amour',
           wlTrack3Desc: 'une déclaration',
           wlLoginTitleHtml: 'Écoute comment sonne <span class="home-card-title-accent">ta</span> date de naissance',
-          nfsCta: 'Je veux ma chanson', nfsSoundOn: 'Son activé', nfsSoundOff: 'Son désactivé', nfsStep2Title: 'Plus qu\'une étape', nfsStep2Text: 'Connecte-toi — et nous écrivons ta chanson. Elle sera gardée dans ta playlist.', nfsBack: 'Retour', nfsSoundToggle: 'Activer ou couper le son',
           wlProofN: '{n} chansons déjà créées', wlProof: '3 000+ chansons déjà créées',
           loginVia: 'Se connecter via',
           review1: 'C\'est tout simplement fantastique ! Sérieusement, vous m\'avez lu ! Un super projet !', reviewAuthor1: 'Roman',
@@ -28735,7 +28587,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           mtNoTitle: 'Chanson de l\'Ame',
           mtModeSingle: 'Pour moi',
           mtModeCouple: 'Pour deux',
-          mtModeTransit: 'Énergie du jour', mtPlayError: 'Échec de la lecture', mtLyricsTitle: 'Paroles', mtAnalysisTitle: 'Analyse', mtCopied: 'Copié', mtCopyFail: 'Échec de la copie', mtCopyBtn: 'Copier', mtLyricsCopyBtn: 'Copier les paroles', mtLyricsCopied: 'Paroles copiées', mtCloseBtn: 'Fermer', mtDownloading: 'Ouverture...', mtShareFail: 'Échec du partage', mtLinkCopied: 'Lien copié',
+          mtModeTransit: 'Énergie du jour', mtPlayError: 'Échec de la lecture', mtLyricsTitle: 'Paroles', mtAnalysisTitle: 'Analyse', mtCopied: 'Copié', mtCopyFail: 'Échec de la copie', mtCopyBtn: 'Copier', mtCloseBtn: 'Fermer', mtDownloading: 'Ouverture...', mtShareFail: 'Échec du partage', mtLinkCopied: 'Lien copié',
           dlUnlockTitle: 'On récupère ta chanson ? 🎵', dlUnlockSub: 'Choisis comment la garder — juste un pas chaleureux 🤍', dlUnlockJoin: 'Rejoindre et télécharger', dlUnlockOr: 'ou une petite tâche', dlUnlockShare: 'Partager la chanson', dlUnlockReview: 'Laisser un avis', dlUnlockReviewPh: "Quelques mots chaleureux sur l'app…", dlUnlockReviewSend: 'Envoyer et télécharger', dlUnlockUpsell: 'Avec un pack — téléchargements sans tâches.', dlUnlockClose: 'Plus tard', dlChecking: 'Une seconde, je vérifie…', dlDone: 'Téléchargement en cours', dlTryAgain: 'Je ne le vois pas encore — réessaie', dlReviewShort: "Un peu plus de mots — et c'est bon",
           dlGateTitle: 'Télécharger la chanson', dlGateEyebrow: 'Ta première chanson', dlGateHeadline: 'Reçois ta chanson en cadeau', dlGateLead: 'Accomplis une tâche ci-dessous — et le fichier de la chanson sera enregistré sur ton appareil. Voilà notre façon de grandir ensemble.', dlGateSteps: 'Étapes pour débloquer', dlGateAltB: 'Pas envie de tâches ?', dlGateAltRest: 'Prends un pack — télécharge toutes les chansons sans étapes.', dlGatePacks: 'Packs ›', dlGateLocked: 'Accomplis une tâche pour télécharger', dlGateReady: 'Télécharger la chanson', dlGateHint: 'Le fichier sera enregistré au format MP3 sur ton appareil', dlDoneTitle: 'Chanson téléchargée 🤍', dlDoneTextRest: 'est enregistrée sur ton appareil. Merci de rester avec nous — il y a encore beaucoup de musique à venir.', dlTrackFallback: 'Chanson de l’âme', dlTrackSub: 'Chanson de l’âme', dlTaskVkTitle: 'Rejoindre la communauté', dlTaskVkSub: 'YupSoul sur VK', dlTaskVkAct: 'Rejoindre', dlTaskShareTitle: 'Partager la chanson', dlTaskShareSub: 'Parle de YupSoul à tes amis', dlTaskShareAct: 'Partager', dlTaskReviewTitle: 'Laisser un avis', dlTaskReviewSub: 'Quelques mots chaleureux sur l’app', dlTaskReviewAct: 'Écrire',
           myTracksWipTitle: 'Page en cours de développement',
@@ -28989,7 +28841,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           alertCustomLyrics: 'Écris les paroles — au moins quelques lignes',
           errCustomLyricsShort: 'Écris les paroles — au moins quelques lignes',
           errCustomLyricsProfanity: 'Il y a ici des mots que nous ne pouvons pas chanter',
-          errRadioOwnLyrics: 'Les chansons sur ton texte restent chez toi — on ne les diffuse pas', errRadioBanned: 'Cette chanson ne peut pas être diffusée pour le moment',
+          errRadioOwnLyrics: 'Les chansons sur ton texte restent chez toi — on ne les diffuse pas',
           birthDateTooltip: 'Choisir la date de naissance', birthTimeTooltip: 'Choisir l\'heure de naissance',
           formMePlusHuman: 'Moi + Personne', formCardPlusCard: 'Carte + Carte',
           formPickFromLabHint: 'Choisis une personne du Laboratoire — les champs seront remplis automatiquement',
@@ -36488,11 +36340,6 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
         // Мгновенный fallback из localStorage — показываем аккордеон сразу, не дожидаясь API
         // Но если герой уже выбран в forWho (переход с Лаборатории) — не перезатираем
         var cached = getCachedProfile();
-        // Следы прошлого аккаунта/визита на устройстве — снимок ДО await (черновик, который юзер
-        // пишет пока ждёт ответ сервера, сюда не попадает). Нужен ниже: сброс формы — только если
-        // есть что сбрасывать, иначе ответ сервера стирает то, что человек выбирает прямо сейчас.
-        var _hadStaleTraces = !!(cached && cached.birthdate);
-        try { if (sessionStorage.getItem('yup_form_draft')) _hadStaleTraces = true; } catch(_) {}
         var _fwCheck = document.getElementById('forWho');
         var _fwHasHero = _fwCheck && _fwCheck.value;
         if (cached) {
@@ -36513,13 +36360,6 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
         }
         var initData = getInitData();
         var formAuthH = getAuthHeaders();
-        // Что человек успел выбрать, пока ждём сервер, не стираем никогда: снимок полей до ответа,
-        // ниже сброс пропускается, если хоть одно поменялось (TikTok 22.11 — «выбираю месяц, день исчезает»).
-        var _userFieldIds = ['birthdateDay', 'birthdateMonth', 'birthdateYear', 'birthplace', 'gender', 'birthtime'];
-        var _userFieldsBefore = _userFieldIds.map(function(id) { var el = document.getElementById(id); return el ? el.value : ''; }).join('|');
-        var _userEditedMeanwhile = function() {
-          return _userFieldIds.map(function(id) { var el = document.getElementById(id); return el ? el.value : ''; }).join('|') !== _userFieldsBefore;
-        };
         try {
           // Закон №36: таймаут обязателен — на холодном старте бэкенда голый fetch висел
           // 2-5 мин (браузерный дефолт) → «медленно грузится форма» (жалобы юзеров). 20с + json-guard.
@@ -36557,9 +36397,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
             try { localStorage.removeItem('yup_profile_cache'); } catch(_) {}
             try { sessionStorage.removeItem('yup_form_draft'); } catch(_) {}
             window._savedFormProfile = p.name ? { name: p.name } : {};
-            // Новичок (на устройстве нет следов — форма уже чистая после входа): сброс по позднему ответу
-            // сервера стирал выбранный день при выборе месяца («пишешь первое — второе стирает первое», TikTok 22.11).
-            if (_hadStaleTraces && !_userEditedMeanwhile() && typeof window.resetFormState === 'function') { try { window.resetFormState(); } catch(_) {} }
+            if (typeof window.resetFormState === 'function') { try { window.resetFormState(); } catch(_) {} }
             // TG-префилл имени возвращаем (остальное — чистый лист)
             if (p.name) { var _nmEl = document.getElementById('name'); if (_nmEl) _nmEl.value = p.name; }
             if (formWrap) { formWrap.classList.add('no-anim'); formWrap.classList.remove('pfw-collapsed'); }
@@ -46206,39 +46044,10 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
         updatePaymentUiFromCatalog();
       }
 
-      // Подсказка ПОД полем, к которому уезжает экран (18.11.2026: 8 человек жали «Создать» по 5–14 раз).
-      // #submitHint стоит внизу у кнопки, а экран прокручивается к пустому полю — человек видел поле
-      // без объяснения, листал вниз и жал снова. Пустой msg — убрать все такие подсказки.
-      window._ysInlineFieldHint = function (wrap, msg) {
-        document.querySelectorAll('.form-inline-hint').forEach(function (n) {
-          if (!msg || !wrap || !wrap.contains(n)) n.remove();
-        });
-        if (!msg || !wrap) return;
-        var ih = wrap.querySelector('.form-inline-hint');
-        if (!ih) {
-          ih = document.createElement('p');
-          ih.className = 'form-inline-hint';
-          ih.setAttribute('role', 'alert');
-          wrap.appendChild(ih);
-          // Начал заполнять поле — подсказка своё сделала (change ловит и кастомные дропдауны, §23).
-          var clear = function () {
-            // Та же подсказка дублируется внизу у кнопки (#submitHint) — гасим и её, иначе висит устаревшей.
-            var sh = document.getElementById('submitHint');
-            if (sh && sh.textContent === ih.textContent) sh.style.display = 'none';
-            if (ih.parentNode) ih.remove();
-            wrap.removeEventListener('change', clear, true);
-            wrap.removeEventListener('input', clear, true);
-          };
-          wrap.addEventListener('change', clear, true);
-          wrap.addEventListener('input', clear, true);
-        }
-        ih.textContent = msg;
-      };
       function _showFormHint(msg, focusFieldId) {
         var el = document.getElementById('submitHint');
         // Batch 6.1: убираем inline color — стиль теперь через CSS (тёмная и светлая тема)
         if (el) { el.textContent = msg || ''; el.style.display = msg ? 'block' : 'none'; el.style.removeProperty('color'); }
-        if (!msg) window._ysInlineFieldHint(null, '');
         // Развернуть аккордеон, если форма свёрнута — иначе пользователь не увидит поле
         if (msg && focusFieldId) {
           var formWrap = document.getElementById('formFieldsWrap');
@@ -46260,7 +46069,6 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           var field = document.getElementById(focusFieldId);
           var wrap = field && (field.closest('.field') || field.closest('.step-panel') || field.parentElement);
           if (wrap) {
-            window._ysInlineFieldHint(wrap, msg);
             try { wrap.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch(_) {}
             wrap.style.transition = 'box-shadow 0.3s';
             wrap.style.boxShadow = '0 0 0 2px rgba(236,72,153,0.5), 0 0 16px rgba(236,72,153,0.2)';
@@ -47368,13 +47176,11 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
             // Фикс: убираем inline color — фон уже #fda4af на красном с прозрачностью, контраст виден на обеих темах.
             submitHintEl.style.removeProperty('color');
           }
-          if (!msg && window._ysInlineFieldHint) window._ysInlineFieldHint(null, '');
           // Прокручиваем к незаполненному полю и подсвечиваем
           if (msg && focusFieldId) {
             var field = document.getElementById(focusFieldId);
             var wrap = field && (field.closest('.field') || field.closest('.step-panel') || field.parentElement);
             if (wrap) {
-              if (window._ysInlineFieldHint) window._ysInlineFieldHint(wrap, msg);
               try { wrap.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch(_) {}
               wrap.style.transition = 'box-shadow 0.3s';
               wrap.style.boxShadow = '0 0 0 2px rgba(236,72,153,0.5), 0 0 16px rgba(236,72,153,0.2)';
@@ -55182,6 +54988,41 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           return _rcReady;
         }
 
+        /* Страна витрины App Store → сервер (23.11.2026, как у Сонника): Россия — Москва, остальные —
+           Амстердам. Бутстрап шаблона уже выбрал сервер по сохранённому ys_store_region; если витрина
+           говорит другое — запоминаем и перезапускаем страницу один раз. Вход сохраняется: у обеих
+           копий общий ключ подписи, а данные пользователя переносятся вместе с ним. */
+        (async function _syncStoreRegion() {
+          try {
+            if (!(await _rcConfigure()) || typeof Purchases.getStorefront !== 'function') return;
+            var sf = await Purchases.getStorefront();
+            var cc = String((sf && sf.countryCode) || '').toUpperCase();
+            if (!cc) return;
+            var region = (cc === 'RUS' || cc === 'RU') ? 'ru' : 'intl';
+            var stored = '';
+            try { stored = localStorage.getItem('ys_store_region') || ''; } catch (_) {}
+            if (stored === region) return;
+            /* Аккаунт из московской базы (номера веб-пользователей там ~9 999 9xx xxx; у копии в Амстердаме
+               счётчик начат с 9 500 000 000) живёт в Москве: не переключаем, иначе человек увидит пустой
+               профиль. Закрепляем Москву. */
+            var uidNow = 0;
+            try { uidNow = Number(localStorage.getItem('yupsoul_user_id')) || 0; } catch (_) {}
+            if (!stored && uidNow >= 9900000000) {
+              try { localStorage.setItem('ys_store_region', 'ru'); } catch (_) {}
+              return;
+            }
+            try { localStorage.setItem('ys_store_region', region); } catch (_) { return; }
+            var want = region === 'intl' ? 'https://yupsoul-intl.yupsoul.ru' : 'https://www.yupsoul.ru';
+            if ((window.HEROES_API_BASE || '') !== want) {
+              var guard = '';
+              try { guard = sessionStorage.getItem('ys_region_reload') || ''; } catch (_) {}
+              if (guard === region) return;
+              try { sessionStorage.setItem('ys_region_reload', region); } catch (_) {}
+              location.reload();
+            }
+          } catch (e) { console.warn('[native] витрина App Store не определилась', e); }
+        })();
+
         /* Связываем покупателя RevenueCat с нашим пользователем — по этому id
            вебхук находит, кому начислять. */
         async function _rcIdentify(userId) {
@@ -55574,125 +55415,6 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
               btn.disabled = false;
             }
           });
-        })();
-
-        /* ── Первый экран приложения: два шага и фоновая мелодия (23.11.2026) ───
-           Разметка — секция .nfs внутри #webLoginScreen (шаблон), стили — конец app.css.
-           Шаг 1 → шаг 2 — это два состояния одной секции (data-step), роутер не трогаем.
-           Мелодия играет сама, пока экран входа виден (оба шага), зациклена; кнопка под
-           пластинкой гасит ЗВУК через audio.muted (на iOS audio.volume не работает —
-           громкость уже заложена в файл), вращение пластинки не останавливает. Выбор звука
-           помним в localStorage. Экран скрывается другими модулями через style.display
-           (onWebAuthReady, bindAppleSignIn), поэтому следим MutationObserver'ом.
-           Категория аудиосессии: .ambient, пока виден экран входа (уважает беззвучный режим,
-           не перебивает чужую музыку), .playback — после входа (плеер песен); плагин
-           AudioSessionMode — AppDelegate.swift; нет плагина — молча пропускаем. */
-        (function firstScreen() {
-          var root = document.getElementById('nfsRoot');
-          var scr = document.getElementById('webLoginScreen');
-          if (!root || !scr || root._wired) return;
-          root._wired = true;
-          var AudioSessionMode = plugin('AudioSessionMode');
-          var MUTE_KEY = 'ys_nfs_sound_muted';
-          var audio = null, shown = false, armed = false;
-          var muted = false;
-          try { muted = localStorage.getItem(MUTE_KEY) === '1'; } catch(_) {}
-
-          function tr(key, fb) { try { return (typeof t === 'function' && t(key)) || fb; } catch(_) { return fb; } }
-          function session(mode) {
-            try {
-              if (!AudioSessionMode) return;
-              var r = AudioSessionMode.set({ mode: mode });
-              if (r && typeof r.catch === 'function') r.catch(function() {});
-            } catch(_) {}
-          }
-          function isShown() {
-            var cs = window.getComputedStyle(scr);
-            return cs.display !== 'none' && cs.visibility !== 'hidden';
-          }
-          function paintSound() {
-            root.setAttribute('data-muted', muted ? '1' : '0');
-            var btn = document.getElementById('nfsSoundBtn');
-            if (btn) btn.setAttribute('aria-pressed', muted ? 'false' : 'true');
-            var lab = document.getElementById('nfsSoundLabel');
-            if (lab) {
-              var key = muted ? 'nfsSoundOff' : 'nfsSoundOn';
-              lab.setAttribute('data-i18n', key);
-              lab.textContent = tr(key, muted ? 'Звук выключен' : 'Звук включён');
-            }
-          }
-          function disarm() {
-            if (!armed) return;
-            armed = false;
-            document.removeEventListener('pointerdown', onFirstTouch, true);
-          }
-          function onFirstTouch(e) {
-            // касание самой кнопки звука обрабатывает её click — иначе мелодия мигнёт при выключении
-            if (e && e.target && e.target.closest && e.target.closest('#nfsSoundBtn')) return;
-            play();
-          }
-          function play() {
-            if (!shown || document.hidden) return;
-            try {
-              if (!audio) {
-                audio = new Audio('assets/audio/first-screen-lounge.mp3');
-                audio.loop = true;
-                audio.preload = 'auto';
-                audio.setAttribute('playsinline', '');
-              }
-              audio.muted = muted;
-              var p = audio.play();
-              if (p && typeof p.then === 'function') {
-                p.then(disarm).catch(function() {
-                  // автозапуск не разрешён — тихо стартуем с первого касания, без сообщений
-                  if (!armed) { armed = true; document.addEventListener('pointerdown', onFirstTouch, true); }
-                });
-              } else { disarm(); }
-            } catch(_) {}
-          }
-          function pause() { try { if (audio) audio.pause(); } catch(_) {} }
-          function check() {
-            var now = isShown();
-            if (now && !shown) {
-              shown = true;
-              session('ambient');
-              // экран входа может мелькнуть на миг у уже вошедшего — звук включаем, только если он удержался
-              setTimeout(function() { if (shown && isShown()) play(); }, 300);
-            } else if (!now && shown) {
-              shown = false;
-              disarm();
-              pause();
-              try { if (audio) audio.currentTime = 0; } catch(_) {}
-              session('playback');
-            }
-          }
-
-          function goStep(n) {
-            root.setAttribute('data-step', String(n));
-            var s1 = document.getElementById('nfsStep1'), s2 = document.getElementById('nfsStep2');
-            if (s1) s1.setAttribute('aria-hidden', n === 1 ? 'false' : 'true');
-            if (s2) s2.setAttribute('aria-hidden', n === 2 ? 'false' : 'true');
-          }
-          var cta = document.getElementById('nfsCtaBtn');
-          if (cta) cta.addEventListener('click', function() { goStep(2); });
-          var back = document.getElementById('nfsBackBtn');
-          if (back) back.addEventListener('click', function() { goStep(1); });
-          var snd = document.getElementById('nfsSoundBtn');
-          if (snd) snd.addEventListener('click', function() {
-            muted = !muted;
-            try { localStorage.setItem(MUTE_KEY, muted ? '1' : '0'); } catch(_) {}
-            paintSound();
-            if (audio) audio.muted = muted;
-            play(); // касание — разрешение на звук, если автозапуск был отклонён
-          });
-
-          paintSound();
-          document.addEventListener('visibilitychange', function() {
-            if (!shown) return;
-            if (document.hidden) pause(); else play();
-          });
-          try { new MutationObserver(check).observe(scr, { attributes: true, attributeFilter: ['style', 'class'] }); } catch(_) {}
-          check();
         })();
 
         /* ── Перехват платёжных входов ─────────────────────────────────────
@@ -60604,7 +60326,6 @@ body.theme-light #planConfirmOverlay .cf-old{-webkit-text-fill-color:#6f5a66 !im
       var rawLines = String(clean).split('\n').map(function(s){ return s.trim(); });
       while (rawLines.length && !rawLines[0]) rawLines.shift();
       while (rawLines.length && !rawLines[rawLines.length - 1]) rawLines.pop();
-      var hasRealLyrics = rawLines.length > 0;
       if (!rawLines.length) rawLines = [L('karaokeEmpty', 'Текст этой песни пока недоступен')];
       var scroll = document.getElementById('mtkScroll'); if (scroll) scroll.innerHTML = '';
       var lines = [];
@@ -60630,11 +60351,6 @@ body.theme-light #planConfirmOverlay .cf-old{-webkit-text-fill-color:#6f5a66 !im
       var fa = document.getElementById('mtkFootArt'); if (fa) { if (track.cover_url) { var im = document.createElement('img'); im.src = track.cover_url; im.alt = ''; fa.innerHTML = ''; fa.appendChild(im); } else { fa.innerHTML = '<i></i>'; } }
       _mtkWireOnce();
       ov.classList.add('open');
-      document.documentElement.classList.add('mtk-open');
-      window._mtKaraokeCopyText = hasRealLyrics ? rawLines.join('\n') : '';
-      var canCopy = hasRealLyrics && track.locked !== true; // запертый вкус: «слова целиком» — выгода оплаты, копировать нельзя
-      if (!canCopy) window._mtKaraokeCopyText = '';
-      var cpb = document.getElementById('mtkCopy'); if (cpb) { if (canCopy) cpb.style.removeProperty('display'); else cpb.style.setProperty('display', 'none', 'important'); } // .hbtn держит display:grid !important
       window._mtkLastPlaying = null;
       _mtkSync(); _mtkUpdatePlayIcon();
       if (!window._mtkTimer) window._mtkTimer = setInterval(_mtkTick, 40); // 40ms опрос — меньше лага подсветки
@@ -60752,20 +60468,10 @@ body.theme-light #planConfirmOverlay .cf-old{-webkit-text-fill-color:#6f5a66 !im
       if (!ov || !ov.classList.contains('open')) { if (window._mtkTimer) { clearInterval(window._mtkTimer); window._mtkTimer = null; } return; }
       _mtkSync(); _mtkUpdatePlayIcon();
     }
-    // Закрыть караоке (кнопка «назад», BackButton Telegram, уход со страницы «Плейлист»).
-    window._mtCloseKaraoke = function() {
-      var ov = document.getElementById('mtKaraoke'); if (ov) ov.classList.remove('open');
-      document.documentElement.classList.remove('mtk-open');
-    };
     function _mtkWireOnce() {
       if (window._mtkWired) return; window._mtkWired = true;
       var ov = document.getElementById('mtKaraoke');
-      var close = document.getElementById('mtkClose'); if (close) close.addEventListener('click', function(){ window._mtCloseKaraoke(); });
-      var cp = document.getElementById('mtkCopy'); if (cp) cp.addEventListener('click', function(){
-        var txt = window._mtKaraokeCopyText; if (!txt) return;
-        var done = function(ok){ if (window.showToast) window.showToast(typeof t === 'function' ? t(ok ? 'mtLyricsCopied' : 'mtCopyFail') : (ok ? 'Текст скопирован' : 'Не удалось скопировать')); };
-        if (typeof window._copyToClipboard === 'function') window._copyToClipboard(txt, { silent: true }).then(done); else done(false);
-      });
+      var close = document.getElementById('mtkClose'); if (close) close.addEventListener('click', function(){ if (ov) ov.classList.remove('open'); });
       var sh = document.getElementById('mtkShare'); if (sh) sh.addEventListener('click', function(){ var tr = window._mtKaraokeTrack; if (tr && typeof window._mtOpenShareSheet === 'function') window._mtOpenShareSheet(tr); });
       var pl = document.getElementById('mtkPlay'); if (pl) pl.addEventListener('click', function(){ var a = window._audio; if (!a) return; if (a.paused) { try { a.play().catch(function(){}); } catch (_) {} } else a.pause(); _mtkUpdatePlayIcon(); });
     }
@@ -60822,7 +60528,6 @@ body.theme-light #planConfirmOverlay .cf-old{-webkit-text-fill-color:#6f5a66 !im
       if (newPage !== 'myTracksPage' && _origPage === 'myTracksPage') {
         var np = document.getElementById('mtNowPlaying');
         if (np) np.style.display = 'none';
-        if (typeof window._mtCloseKaraoke === 'function') window._mtCloseKaraoke();
       }
       if (newPage === 'myTracksPage') {
         if (_currentIdx >= 0 && _audio) {
@@ -65901,7 +65606,7 @@ body.theme-light #tourReward.tour-new,html.is-vk-light:not(.dark) #tourReward.to
   .page-hint {
     position: fixed !important; z-index: 9990 !important;
     left: 50% !important; transform: translateX(-50%) !important;
-    top: auto !important; bottom: calc(16px + env(safe-area-inset-bottom, 0px)) !important;
+    top: auto !important; bottom: 16px !important;
     background: #0a0612 !important;
     border: 1px solid rgba(138,43,226,0.25) !important;
     border-radius: 18px !important;
@@ -66181,7 +65886,7 @@ body.theme-light #tourReward.tour-new,html.is-vk-light:not(.dark) #tourReward.to
     // Адаптивный bottom: если видно нижнее меню — выше, иначе — ниже
     var appMenu = document.getElementById('homeAppMenu');
     var menuVisible = appMenu && getComputedStyle(appMenu).display !== 'none';
-    var bottomPx = menuVisible ? 'calc(3.6rem + env(safe-area-inset-bottom, 0px) + 12px)' : 'calc(16px + env(safe-area-inset-bottom, 0px))';
+    var bottomPx = menuVisible ? 'calc(3.6rem + env(safe-area-inset-bottom, 0px) + 12px)' : '16px';
     // soulChatPage: подсказка должна стоять НАД инпут-баром оракула, а не поверх него
     if (pageId === 'soulChatPage') {
       var scBar = document.getElementById('scInputArea');

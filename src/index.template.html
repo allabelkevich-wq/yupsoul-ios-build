@@ -1662,6 +1662,15 @@ document.addEventListener('DOMContentLoaded', function() {
       // падал «Load failed» (оплата подарка не открывалась, fetch не доходил до бэкенда). Тот же домен,
       // что и мини-апп = надёжно (мини-апп уже грузится с этого origin, значит он доступен).
       var fallback = 'https://www.yupsoul.ru';
+      // Приложение App Store (23.11.2026, как у Сонника): витрина России — сервер в Москве, остальные
+      // страны — копия в Амстердаме. Страну витрины узнаёт 14-native-iap.js у RevenueCat и запоминает
+      // в ys_store_region; здесь выбор читается синхронно, до первого запроса.
+      if (/^(capacitor|ionic):/i.test(origin)) {
+        var _ysReg = '';
+        try { _ysReg = localStorage.getItem('ys_store_region') || ''; } catch (_e) {}
+        window._ysStoreRegion = _ysReg;
+        if (_ysReg === 'intl') fallback = 'https://yupsoul-intl.yupsoul.ru';
+      }
       if (isOurHost && origin) {
         window.HEROES_API_BASE = origin;
       } else {
@@ -2815,7 +2824,14 @@ html:not(.is-native) #nativeAiConsentOverlay{display:none !important}
           <button type="button" class="login-icon-btn" id="vkAuthBtn" title="VK"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12.62 21.07C4.54 21.07 0 16.08 0 7H3.73c.16 6.25 3.06 8.9 5.38 9.44V7h3.5v5.39c2.29-.25 4.7-2.88 5.51-5.39h3.5c-.62 3.09-3.23 5.72-5.09 6.72 1.86.79 4.83 3.09 5.97 6.35h-3.86c-.89-2.76-3.1-4.9-6.03-5.19v5.19h-.89z" fill="#fff"/></svg></button>
           <a href="https://t.me/Yup_Soul_bot" target="_blank" rel="noopener" class="login-icon-btn" id="webLoginTelegramBtn" title="Telegram"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z" fill="#fff"/></svg></a>
         </div>
-        <!-- Кнопка «Вход с Apple» (#nativeAppleSignInBtn) живёт в секции .nfs (шаг 2) ниже — только нативная сборка. -->
+        <!-- Вход через Apple: показывается ТОЛЬКО в нативной сборке (html.is-native).
+             Apple 4.8 требует его при наличии сторонних входов, а гайдлайны требуют
+             именно кнопку с логотипом и утверждённой подписью — иконка в общем ряду
+             не подходит. Поэтому на нативе ряд VK/Telegram скрыт, а тут своя кнопка. -->
+        <button type="button" id="nativeAppleSignInBtn" class="native-apple-btn">
+          <svg width="17" height="20" viewBox="0 0 17 20" fill="none" aria-hidden="true"><path d="M14.09 10.62c.01 2.6 2.27 3.46 2.3 3.47-.02.06-.36 1.24-1.2 2.46-.72 1.05-1.47 2.1-2.65 2.12-1.16.02-1.53-.69-2.86-.69-1.32 0-1.74.67-2.84.71-1.13.04-2-1.1-2.72-2.15C2.6 14.4 1.48 10.5 3 7.87c.75-1.31 2.1-2.14 3.56-2.16 1.12-.02 2.17.75 2.86.75.68 0 1.97-.93 3.32-.79.56.02 2.15.2 3.17 1.71-.08.05-1.89 1.11-1.87 3.24M11.86 4.2c.61-.74 1.02-1.77.9-2.79-.9.04-1.99.6-2.62 1.33-.57.65-1.05 1.7-.92 2.7 1 .08 2.03-.51 2.64-1.24" fill="currentColor"/></svg>
+          <span data-i18n="signInWithApple">Вход с Apple</span>
+        </button>
         <!-- (аудит iPhone 24.09: до входа не было ссылки на оферту/конфиденциальность — App Store Review 5.1.1(i)
              требует её в процессе регистрации; переиспользуем существующие ключи footerOffer/footerPrivacy,
              значения цвета/размера — как в #homePage .home-footer a (app.css:12927); светлая тема уже
@@ -2827,40 +2843,6 @@ html:not(.is-native) #nativeAiConsentOverlay{display:none !important}
         <!-- "ТОЛЬКО ЗДЕСЬ" блок убран со стартовой (по запросу) -->
       </article>
     </main>
-    <!-- Первый экран iPhone-приложения (23.11.2026, принятый макет, закон №46): два шага внутри экрана входа.
-         Виден только на html.is-native (стили — конец app.css «nfs»), логика — src/js/14-native-iap.js.
-         Кнопка #nativeAppleSignInBtn — единственная на странице (обработчик bindAppleSignIn вешается по id). -->
-    <section class="nfs" id="nfsRoot" data-step="1">
-      <div class="ob-stars"></div>
-      <div class="nfs-step nfs-s1" id="nfsStep1"><div class="aura a1"></div>
-        <div class="top in" style="--n:0"><img src="assets/icons/logo-mandala.png" alt="" width="28" height="28" class="blogo" aria-hidden="true"><span class="t-btn">YupSoul</span></div>
-        <div class="body1">
-          <div class="vinyl in" style="--n:1"><div class="glow"></div><div class="dshadow"></div><div class="ring r1"></div><div class="ring r2"></div><div class="ring r3"></div><div class="spin"><div class="bl"></div><div class="apple-c"><img src="assets/icons/logo-mandala.png" alt="" aria-hidden="true"></div></div><div class="sheen"></div></div>
-          <button type="button" class="play in" id="nfsSoundBtn" style="--n:2" aria-pressed="true" aria-label="Включить или выключить звук" data-i18n-aria="nfsSoundToggle">
-            <svg class="nfs-ic-on" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5h3.5L12 6v12l-4.5-3.5H4z"/><path d="M15.5 9a4 4 0 010 6"/><path d="M18.2 6.6a8 8 0 010 10.8"/></svg>
-            <svg class="nfs-ic-off" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5h3.5L12 6v12l-4.5-3.5H4z"/><path d="M16 9.5l5 5"/><path d="M21 9.5l-5 5"/></svg>
-          </button>
-          <p class="t-cap in" id="nfsSoundLabel" style="--n:3" data-i18n="nfsSoundOn">Звук включён</p>
-          <h1 class="h in" style="--n:4" data-i18n-html="wlLoginTitleHtml">Узнай, как звучит <span class="home-card-title-accent">твоя</span> дата рождения</h1>
-        </div>
-        <div class="bottom in" style="--n:5"><div class="dots"><i class="on"></i><i></i></div><button type="button" class="cta t-btn" id="nfsCtaBtn" data-i18n="nfsCta">Хочу свою песню</button></div>
-      </div>
-      <div class="nfs-step nfs-s2" id="nfsStep2" aria-hidden="true">
-        <div class="top2"><button type="button" class="back" id="nfsBackBtn" aria-label="Назад" data-i18n-aria="nfsBack"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button></div>
-        <div class="body2">
-          <div class="lg2"><div class="glow2"></div><img src="assets/icons/logo-mandala.png" alt="" aria-hidden="true"></div>
-          <h1 class="h" data-i18n="nfsStep2Title">Остался один шаг</h1>
-          <p class="t-cap" data-i18n="nfsStep2Text">Войди — и мы напишем твою песню. Она сохранится в твоём плейлисте.</p>
-          <button type="button" id="nativeAppleSignInBtn" class="apple t-btn">
-            <svg width="17" height="20" viewBox="0 0 17 20" fill="none" aria-hidden="true"><path d="M14.09 10.62c.01 2.6 2.27 3.46 2.3 3.47-.02.06-.36 1.24-1.2 2.46-.72 1.05-1.47 2.1-2.65 2.12-1.16.02-1.53-.69-2.86-.69-1.32 0-1.74.67-2.84.71-1.13.04-2-1.1-2.72-2.15C2.6 14.4 1.48 10.5 3 7.87c.75-1.31 2.1-2.14 3.56-2.16 1.12-.02 2.17.75 2.86.75.68 0 1.97-.93 3.32-.79.56.02 2.15.2 3.17 1.71-.08.05-1.89 1.11-1.87 3.24M11.86 4.2c.61-.74 1.02-1.77.9-2.79-.9.04-1.99.6-2.62 1.33-.57.65-1.05 1.7-.92 2.7 1 .08 2.03-.51 2.64-1.24" fill="currentColor"/></svg>
-            <span data-i18n="signInWithApple">Вход с Apple</span>
-          </button>
-          <!-- Оферта и конфиденциальность до входа — App Store Review 5.1.1(i); вызовы те же, что были под кнопкой в карточке. -->
-          <p class="t-cap legal"><a href="javascript:void(0)" onclick="if(window.showLegalModal)window.showLegalModal('offer')" data-i18n="footerOffer">Условия использования</a> · <a href="javascript:void(0)" onclick="if(window.showLegalModal)window.showLegalModal('privacy')" data-i18n="footerPrivacy">Конфиденциальность</a></p>
-        </div>
-        <div class="bottom"><div class="dots"><i></i><i class="on"></i></div></div>
-      </div>
-    </section>
     <!-- аудит iPhone 24.09: aria-label/title без i18n -->
     <header class="home-top-bar" aria-label="Шапка" data-i18n-aria="ariaHeader">
       <span class="home-top-bar-logo"><span class="home-logo-symbol-wrap"><img src="assets/icons/logo-symbol.webp" alt="" class="home-logo-symbol" width="36" height="36" aria-hidden="true"></span><span>YupSoul <span class="logo-pipe" style="font-weight:400;opacity:0.4;">|</span> <span class="logo-subtitle-i18n">Музыкальный оракул</span></span></span>
@@ -5453,12 +5435,6 @@ body.theme-light #myTracksPage .mtv2-player .v2act,html.is-vk-light:not(.dark) #
     #mtKaraoke .lyr-foot .ftx b{display:block;font-size:13.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     #mtKaraoke .lyr-foot .ftx span{font-size:11.5px;color:var(--faint)}
     #mtKaraoke .lyr-foot .fplay{flex:none !important;width:44px !important;height:44px !important;min-height:0 !important;margin:0 !important;padding:0 !important;border-radius:50% !important;border:none !important;cursor:pointer;display:grid !important;place-items:center;color:#fff !important;background:var(--cta) !important;box-shadow:0 10px 24px -10px var(--cta-glow) !important;font-size:0 !important}
-    /* Иконки шапки/плеера караоке — одно семейство (эталон showcase-player.html: контур 1.6-1.7, round, стекло rgba(255,255,255,.06)). Фон караоке тёмный в ОБЕИХ темах → стекло и светлая иконка всегда. #mtKaraoke#mtKaraoke (2 id) перебивает глоб. #myTracksPage button:not(…)…{fill/background !important} обеих тем (закон №29) */
-    #mtKaraoke#mtKaraoke .hbtn{background:rgba(255,255,255,.07) !important;border:1px solid rgba(255,255,255,.18) !important;color:#f5f1fb !important}
-    #mtKaraoke#mtKaraoke .hbtn svg{width:20px !important;height:20px !important;fill:none !important;stroke:currentColor !important;color:#f5f1fb !important;opacity:1 !important}
-    #mtKaraoke#mtKaraoke .hbtn svg *{fill:none !important}
-    #mtKaraoke#mtKaraoke .lyr-foot .fplay{background:linear-gradient(135deg,#ec4899,#f97316) !important;border:none !important;color:#fff !important}
-    #mtKaraoke#mtKaraoke .lyr-foot .fplay svg{fill:#fff !important;stroke:none !important;color:#fff !important;opacity:1 !important}
     /* Светлая тема: караоке и карточка шеринга — ВСЕГДА на тёмном фоне → текст светлый.
        Перебиваем блэнкет body.theme-light{color:#1a1a2e!important}(1609)+*{color:inherit}(1850). id-спец+!important. */
     body.theme-light #mtKaraoke,html.is-vk-light:not(.dark) #mtKaraoke,html.is-ok-light:not(.dark) #mtKaraoke,
@@ -5707,7 +5683,6 @@ body.theme-light #myTracksPage .mtv2-player .v2act,html.is-vk-light:not(.dark) #
     #myTracksPage .rbtn-primary.rd-leave{background:var(--rsurf) !important;color:var(--rtext);box-shadow:none;border:1px solid var(--rline2)}
     /* Шторка публикации = модал → прячем нижний навбар, чтобы он не перекрывал CTA */
     html.rd-sheet-open #homeAppMenu.home-app-menu{display:none !important}
-    html.mtk-open #homeAppMenu.home-app-menu{display:none !important} /* караоке z 10046 лежит внутри страницы (z ниже таббара): без этого таббар перекрывал нижнюю панель с «пауза» */
     body.theme-light #myTracksPage .rd-hearts span,html.is-vk-light:not(.dark) #myTracksPage .rd-hearts span,html.is-ok-light:not(.dark) #myTracksPage .rd-hearts span{border-color:#fff}
     #myTracksPage .r2-empty{text-align:center;color:var(--rmuted);font-size:13px;padding:34px 16px;line-height:1.5}
     #myTracksPage .r2-live{display:flex;align-items:center;gap:7px;margin:4px 2px 2px;font-size:12px;color:var(--rmuted)}
@@ -6246,10 +6221,6 @@ body.theme-light #myTracksPage .mtv2-player .v2act,html.is-vk-light:not(.dark) #
       window._mtCloseTopOverlay = function(){
         try {
           if(rsheet && rsheet.classList.contains('show')){ closeSheet(); return true; }
-          var _shs=document.getElementById('mtShareSheet');
-          if(_shs && _shs.classList.contains('open')){ _shs.classList.remove('open'); return true; }
-          var _kar=document.getElementById('mtKaraoke');
-          if(_kar && _kar.classList.contains('open')){ window._mtCloseKaraoke ? window._mtCloseKaraoke() : _kar.classList.remove('open'); return true; }
           var np=document.getElementById('mtNowPlaying');
           if(np && np.classList.contains('open')){ if(window._v2Minimize) window._v2Minimize(); else np.classList.remove('open'); return true; }
         } catch(_){}
@@ -6263,7 +6234,6 @@ body.theme-light #myTracksPage .mtv2-player .v2act,html.is-vk-light:not(.dark) #
       window._mtResetView = function(){
         try { rdStopStatsPoll(); } catch(_){}
         try { if(rsheet) rsheet.classList.remove('show'); if(rsheetBack) rsheetBack.classList.remove('show'); document.documentElement.classList.remove('rd-sheet-open'); } catch(_){}
-        try { var _shs2=document.getElementById('mtShareSheet'); if(_shs2) _shs2.classList.remove('open'); if(window._mtCloseKaraoke) window._mtCloseKaraoke(); } catch(_){}
         try {
           var np=document.getElementById('mtNowPlaying');
           if(np){ if(np.style.display==='block' && window._v2Minimize){ window._v2Minimize(); } else { np.classList.remove('open'); } }
@@ -12245,7 +12215,6 @@ body.theme-light #planConfirmOverlay .cf-old{-webkit-text-fill-color:#6f5a66 !im
       var rawLines = String(clean).split('\n').map(function(s){ return s.trim(); });
       while (rawLines.length && !rawLines[0]) rawLines.shift();
       while (rawLines.length && !rawLines[rawLines.length - 1]) rawLines.pop();
-      var hasRealLyrics = rawLines.length > 0;
       if (!rawLines.length) rawLines = [L('karaokeEmpty', 'Текст этой песни пока недоступен')];
       var scroll = document.getElementById('mtkScroll'); if (scroll) scroll.innerHTML = '';
       var lines = [];
@@ -12271,11 +12240,6 @@ body.theme-light #planConfirmOverlay .cf-old{-webkit-text-fill-color:#6f5a66 !im
       var fa = document.getElementById('mtkFootArt'); if (fa) { if (track.cover_url) { var im = document.createElement('img'); im.src = track.cover_url; im.alt = ''; fa.innerHTML = ''; fa.appendChild(im); } else { fa.innerHTML = '<i></i>'; } }
       _mtkWireOnce();
       ov.classList.add('open');
-      document.documentElement.classList.add('mtk-open');
-      window._mtKaraokeCopyText = hasRealLyrics ? rawLines.join('\n') : '';
-      var canCopy = hasRealLyrics && track.locked !== true; // запертый вкус: «слова целиком» — выгода оплаты, копировать нельзя
-      if (!canCopy) window._mtKaraokeCopyText = '';
-      var cpb = document.getElementById('mtkCopy'); if (cpb) { if (canCopy) cpb.style.removeProperty('display'); else cpb.style.setProperty('display', 'none', 'important'); } // .hbtn держит display:grid !important
       window._mtkLastPlaying = null;
       _mtkSync(); _mtkUpdatePlayIcon();
       if (!window._mtkTimer) window._mtkTimer = setInterval(_mtkTick, 40); // 40ms опрос — меньше лага подсветки
@@ -12393,20 +12357,10 @@ body.theme-light #planConfirmOverlay .cf-old{-webkit-text-fill-color:#6f5a66 !im
       if (!ov || !ov.classList.contains('open')) { if (window._mtkTimer) { clearInterval(window._mtkTimer); window._mtkTimer = null; } return; }
       _mtkSync(); _mtkUpdatePlayIcon();
     }
-    // Закрыть караоке (кнопка «назад», BackButton Telegram, уход со страницы «Плейлист»).
-    window._mtCloseKaraoke = function() {
-      var ov = document.getElementById('mtKaraoke'); if (ov) ov.classList.remove('open');
-      document.documentElement.classList.remove('mtk-open');
-    };
     function _mtkWireOnce() {
       if (window._mtkWired) return; window._mtkWired = true;
       var ov = document.getElementById('mtKaraoke');
-      var close = document.getElementById('mtkClose'); if (close) close.addEventListener('click', function(){ window._mtCloseKaraoke(); });
-      var cp = document.getElementById('mtkCopy'); if (cp) cp.addEventListener('click', function(){
-        var txt = window._mtKaraokeCopyText; if (!txt) return;
-        var done = function(ok){ if (window.showToast) window.showToast(typeof t === 'function' ? t(ok ? 'mtLyricsCopied' : 'mtCopyFail') : (ok ? 'Текст скопирован' : 'Не удалось скопировать')); };
-        if (typeof window._copyToClipboard === 'function') window._copyToClipboard(txt, { silent: true }).then(done); else done(false);
-      });
+      var close = document.getElementById('mtkClose'); if (close) close.addEventListener('click', function(){ if (ov) ov.classList.remove('open'); });
       var sh = document.getElementById('mtkShare'); if (sh) sh.addEventListener('click', function(){ var tr = window._mtKaraokeTrack; if (tr && typeof window._mtOpenShareSheet === 'function') window._mtOpenShareSheet(tr); });
       var pl = document.getElementById('mtkPlay'); if (pl) pl.addEventListener('click', function(){ var a = window._audio; if (!a) return; if (a.paused) { try { a.play().catch(function(){}); } catch (_) {} } else a.pause(); _mtkUpdatePlayIcon(); });
     }
@@ -12463,7 +12417,6 @@ body.theme-light #planConfirmOverlay .cf-old{-webkit-text-fill-color:#6f5a66 !im
       if (newPage !== 'myTracksPage' && _origPage === 'myTracksPage') {
         var np = document.getElementById('mtNowPlaying');
         if (np) np.style.display = 'none';
-        if (typeof window._mtCloseKaraoke === 'function') window._mtCloseKaraoke();
       }
       if (newPage === 'myTracksPage') {
         if (_currentIdx >= 0 && _audio) {
@@ -17542,7 +17495,7 @@ body.theme-light #tourReward.tour-new,html.is-vk-light:not(.dark) #tourReward.to
   .page-hint {
     position: fixed !important; z-index: 9990 !important;
     left: 50% !important; transform: translateX(-50%) !important;
-    top: auto !important; bottom: calc(16px + env(safe-area-inset-bottom, 0px)) !important;
+    top: auto !important; bottom: 16px !important;
     background: #0a0612 !important;
     border: 1px solid rgba(138,43,226,0.25) !important;
     border-radius: 18px !important;
@@ -17822,7 +17775,7 @@ body.theme-light #tourReward.tour-new,html.is-vk-light:not(.dark) #tourReward.to
     // Адаптивный bottom: если видно нижнее меню — выше, иначе — ниже
     var appMenu = document.getElementById('homeAppMenu');
     var menuVisible = appMenu && getComputedStyle(appMenu).display !== 'none';
-    var bottomPx = menuVisible ? 'calc(3.6rem + env(safe-area-inset-bottom, 0px) + 12px)' : 'calc(16px + env(safe-area-inset-bottom, 0px))';
+    var bottomPx = menuVisible ? 'calc(3.6rem + env(safe-area-inset-bottom, 0px) + 12px)' : '16px';
     // soulChatPage: подсказка должна стоять НАД инпут-баром оракула, а не поверх него
     if (pageId === 'soulChatPage') {
       var scBar = document.getElementById('scInputArea');

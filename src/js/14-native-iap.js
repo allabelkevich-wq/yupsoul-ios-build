@@ -310,6 +310,41 @@
           return _rcReady;
         }
 
+        /* Страна витрины App Store → сервер (23.11.2026, как у Сонника): Россия — Москва, остальные —
+           Амстердам. Бутстрап шаблона уже выбрал сервер по сохранённому ys_store_region; если витрина
+           говорит другое — запоминаем и перезапускаем страницу один раз. Вход сохраняется: у обеих
+           копий общий ключ подписи, а данные пользователя переносятся вместе с ним. */
+        (async function _syncStoreRegion() {
+          try {
+            if (!(await _rcConfigure()) || typeof Purchases.getStorefront !== 'function') return;
+            var sf = await Purchases.getStorefront();
+            var cc = String((sf && sf.countryCode) || '').toUpperCase();
+            if (!cc) return;
+            var region = (cc === 'RUS' || cc === 'RU') ? 'ru' : 'intl';
+            var stored = '';
+            try { stored = localStorage.getItem('ys_store_region') || ''; } catch (_) {}
+            if (stored === region) return;
+            /* Аккаунт из московской базы (номера веб-пользователей там ~9 999 9xx xxx; у копии в Амстердаме
+               счётчик начат с 9 500 000 000) живёт в Москве: не переключаем, иначе человек увидит пустой
+               профиль. Закрепляем Москву. */
+            var uidNow = 0;
+            try { uidNow = Number(localStorage.getItem('yupsoul_user_id')) || 0; } catch (_) {}
+            if (!stored && uidNow >= 9900000000) {
+              try { localStorage.setItem('ys_store_region', 'ru'); } catch (_) {}
+              return;
+            }
+            try { localStorage.setItem('ys_store_region', region); } catch (_) { return; }
+            var want = region === 'intl' ? 'https://yupsoul-intl.yupsoul.ru' : 'https://www.yupsoul.ru';
+            if ((window.HEROES_API_BASE || '') !== want) {
+              var guard = '';
+              try { guard = sessionStorage.getItem('ys_region_reload') || ''; } catch (_) {}
+              if (guard === region) return;
+              try { sessionStorage.setItem('ys_region_reload', region); } catch (_) {}
+              location.reload();
+            }
+          } catch (e) { console.warn('[native] витрина App Store не определилась', e); }
+        })();
+
         /* Связываем покупателя RevenueCat с нашим пользователем — по этому id
            вебхук находит, кому начислять. */
         async function _rcIdentify(userId) {
@@ -702,125 +737,6 @@
               btn.disabled = false;
             }
           });
-        })();
-
-        /* ── Первый экран приложения: два шага и фоновая мелодия (23.11.2026) ───
-           Разметка — секция .nfs внутри #webLoginScreen (шаблон), стили — конец app.css.
-           Шаг 1 → шаг 2 — это два состояния одной секции (data-step), роутер не трогаем.
-           Мелодия играет сама, пока экран входа виден (оба шага), зациклена; кнопка под
-           пластинкой гасит ЗВУК через audio.muted (на iOS audio.volume не работает —
-           громкость уже заложена в файл), вращение пластинки не останавливает. Выбор звука
-           помним в localStorage. Экран скрывается другими модулями через style.display
-           (onWebAuthReady, bindAppleSignIn), поэтому следим MutationObserver'ом.
-           Категория аудиосессии: .ambient, пока виден экран входа (уважает беззвучный режим,
-           не перебивает чужую музыку), .playback — после входа (плеер песен); плагин
-           AudioSessionMode — AppDelegate.swift; нет плагина — молча пропускаем. */
-        (function firstScreen() {
-          var root = document.getElementById('nfsRoot');
-          var scr = document.getElementById('webLoginScreen');
-          if (!root || !scr || root._wired) return;
-          root._wired = true;
-          var AudioSessionMode = plugin('AudioSessionMode');
-          var MUTE_KEY = 'ys_nfs_sound_muted';
-          var audio = null, shown = false, armed = false;
-          var muted = false;
-          try { muted = localStorage.getItem(MUTE_KEY) === '1'; } catch(_) {}
-
-          function tr(key, fb) { try { return (typeof t === 'function' && t(key)) || fb; } catch(_) { return fb; } }
-          function session(mode) {
-            try {
-              if (!AudioSessionMode) return;
-              var r = AudioSessionMode.set({ mode: mode });
-              if (r && typeof r.catch === 'function') r.catch(function() {});
-            } catch(_) {}
-          }
-          function isShown() {
-            var cs = window.getComputedStyle(scr);
-            return cs.display !== 'none' && cs.visibility !== 'hidden';
-          }
-          function paintSound() {
-            root.setAttribute('data-muted', muted ? '1' : '0');
-            var btn = document.getElementById('nfsSoundBtn');
-            if (btn) btn.setAttribute('aria-pressed', muted ? 'false' : 'true');
-            var lab = document.getElementById('nfsSoundLabel');
-            if (lab) {
-              var key = muted ? 'nfsSoundOff' : 'nfsSoundOn';
-              lab.setAttribute('data-i18n', key);
-              lab.textContent = tr(key, muted ? 'Звук выключен' : 'Звук включён');
-            }
-          }
-          function disarm() {
-            if (!armed) return;
-            armed = false;
-            document.removeEventListener('pointerdown', onFirstTouch, true);
-          }
-          function onFirstTouch(e) {
-            // касание самой кнопки звука обрабатывает её click — иначе мелодия мигнёт при выключении
-            if (e && e.target && e.target.closest && e.target.closest('#nfsSoundBtn')) return;
-            play();
-          }
-          function play() {
-            if (!shown || document.hidden) return;
-            try {
-              if (!audio) {
-                audio = new Audio('assets/audio/first-screen-lounge.mp3');
-                audio.loop = true;
-                audio.preload = 'auto';
-                audio.setAttribute('playsinline', '');
-              }
-              audio.muted = muted;
-              var p = audio.play();
-              if (p && typeof p.then === 'function') {
-                p.then(disarm).catch(function() {
-                  // автозапуск не разрешён — тихо стартуем с первого касания, без сообщений
-                  if (!armed) { armed = true; document.addEventListener('pointerdown', onFirstTouch, true); }
-                });
-              } else { disarm(); }
-            } catch(_) {}
-          }
-          function pause() { try { if (audio) audio.pause(); } catch(_) {} }
-          function check() {
-            var now = isShown();
-            if (now && !shown) {
-              shown = true;
-              session('ambient');
-              // экран входа может мелькнуть на миг у уже вошедшего — звук включаем, только если он удержался
-              setTimeout(function() { if (shown && isShown()) play(); }, 300);
-            } else if (!now && shown) {
-              shown = false;
-              disarm();
-              pause();
-              try { if (audio) audio.currentTime = 0; } catch(_) {}
-              session('playback');
-            }
-          }
-
-          function goStep(n) {
-            root.setAttribute('data-step', String(n));
-            var s1 = document.getElementById('nfsStep1'), s2 = document.getElementById('nfsStep2');
-            if (s1) s1.setAttribute('aria-hidden', n === 1 ? 'false' : 'true');
-            if (s2) s2.setAttribute('aria-hidden', n === 2 ? 'false' : 'true');
-          }
-          var cta = document.getElementById('nfsCtaBtn');
-          if (cta) cta.addEventListener('click', function() { goStep(2); });
-          var back = document.getElementById('nfsBackBtn');
-          if (back) back.addEventListener('click', function() { goStep(1); });
-          var snd = document.getElementById('nfsSoundBtn');
-          if (snd) snd.addEventListener('click', function() {
-            muted = !muted;
-            try { localStorage.setItem(MUTE_KEY, muted ? '1' : '0'); } catch(_) {}
-            paintSound();
-            if (audio) audio.muted = muted;
-            play(); // касание — разрешение на звук, если автозапуск был отклонён
-          });
-
-          paintSound();
-          document.addEventListener('visibilitychange', function() {
-            if (!shown) return;
-            if (document.hidden) pause(); else play();
-          });
-          try { new MutationObserver(check).observe(scr, { attributes: true, attributeFilter: ['style', 'class'] }); } catch(_) {}
-          check();
         })();
 
         /* ── Перехват платёжных входов ─────────────────────────────────────
