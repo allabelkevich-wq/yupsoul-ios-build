@@ -1714,9 +1714,7 @@ document.addEventListener('DOMContentLoaded', function() {
     body { opacity: 0 !important; transition: opacity 0.15s ease; }
     body.app-ready { opacity: 1 !important; }
     /* Оптимизация: скрытые страницы не рендерятся (экономит RAM и CPU на слабых устройствах) */
-    /* Невидимые экраны с display:flex по id (help/profile/heroes/soulChat/gifts…) раньше крутили свои бесконечные анимации вхолостую.
-       hidden (как у low-end) пропускает их стили/раскладку/отрисовку; размеры при запросе из JS считаются по запросу. */
-    .page:not(.active) { content-visibility: hidden; contain: strict; }
+    .page:not(.active) { content-visibility: auto; contain-intrinsic-size: 0 500px; }
     /* Свёрнутое приложение/вкладка: все анимации на паузе (класс ставит visibilitychange). */
     html.ys-bg-paused *, html.ys-bg-paused *::before, html.ys-bg-paused *::after { animation-play-state: paused !important; }
     /* Паузим анимации градиентных фонов на невидимых страницах */
