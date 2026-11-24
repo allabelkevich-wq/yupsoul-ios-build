@@ -1032,32 +1032,18 @@ document.addEventListener('DOMContentLoaded', function() {
     (function initGlobalPageInteractive() {
       if (window._globalPageInteractiveInit) return;
       window._globalPageInteractiveInit = true;
-      var curX = 0, curY = 0, tgX = 0, tgY = 0, rafId = 0, started = false, cId = '', cEl = null;
-      // Слой ищем один раз на экран (а не getElementById/querySelector каждый кадр); цикл идёт, только пока слой догоняет курсор.
-      function blob() {
-        var pageId = document.body && document.body.dataset && document.body.dataset.page;
-        if (pageId !== cId || !cEl || !cEl.isConnected) {
-          var pageEl = pageId ? document.getElementById(pageId) : null;
-          cId = pageId;
-          cEl = pageEl ? (pageEl.querySelector('.page-gradient-bg .interactive') || pageEl.querySelector('.gradient-bg .interactive')) : null;
-        }
-        return cEl;
-      }
-      function apply() {
-        var ib = blob();
-        if (ib) ib.style.transform = 'translate(' + Math.round(curX) + 'px,' + Math.round(curY) + 'px)';
-      }
+      var curX = 0, curY = 0, tgX = 0, tgY = 0, rafId = 0;
       function move() {
-        rafId = 0;
         curX += (tgX - curX) / 20;
         curY += (tgY - curY) / 20;
-        apply();
-        if (Math.abs(tgX - curX) > 0.05 || Math.abs(tgY - curY) > 0.05) rafId = requestAnimationFrame(move);
+        var pageId = document.body && document.body.dataset && document.body.dataset.page;
+        var pageEl = pageId ? document.getElementById(pageId) : null;
+        var ib = pageEl ? (pageEl.querySelector('.page-gradient-bg .interactive') || pageEl.querySelector('.gradient-bg .interactive')) : null;
+        if (ib) ib.style.transform = 'translate(' + Math.round(curX) + 'px,' + Math.round(curY) + 'px)';
+        rafId = requestAnimationFrame(move);
       }
-      // goToPage зовёт: слой нового экрана сразу встаёт туда же, где курсор (раньше это делал вечный цикл).
-      window._ysInteractiveSync = function() { if (started) apply(); };
-      window.addEventListener('mousemove', function(e) { tgX = e.clientX; tgY = e.clientY; started = true; if (!rafId) move(); });
-      window.addEventListener('touchmove', function(e) { if (e.touches[0]) { tgX = e.touches[0].clientX; tgY = e.touches[0].clientY; } started = true; if (!rafId) move(); }, { passive: true });
+      window.addEventListener('mousemove', function(e) { tgX = e.clientX; tgY = e.clientY; if (!rafId) move(); });
+      window.addEventListener('touchmove', function(e) { if (e.touches[0]) { tgX = e.touches[0].clientX; tgY = e.touches[0].clientY; } if (!rafId) move(); }, { passive: true });
     })();
   </script>
   <script>
@@ -44632,7 +44618,6 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           }
         });
         target.classList.add('active');
-        if (window._ysInteractiveSync) window._ysInteractiveSync();
         // Move spiral canvas into active page (behind content, above gradient)
         var _sc = document.getElementById('globalSpiral');
         if (_sc) {
@@ -45612,11 +45597,9 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
         var pauseAfterType = 2200;
         var pauseAfterDelete = 600;
         var tNext = 0;
-        // Шаг по таймеру, но по сетке кадров 60 Гц — скорость набора/стирания та же, что была при опросе в rAF.
-        function _twDelay(ms) { return Math.max(0, Math.ceil(ms / 16.667) * 16.667); }
         function run() {
           var now = Date.now();
-          if (now < tNext) { setTimeout(run, _twDelay(tNext - now)); return; }
+          if (now < tNext) { requestAnimationFrame(run); return; }
           var curLang = (typeof currentLang !== 'undefined' ? currentLang : 'ru');
           if (curLang !== _twLastLang) {
             _twLastLang = curLang;
@@ -45649,7 +45632,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           }
           var text = (phrase || '').slice(0, charIndex);
           targets.forEach(function(el) { if (el) el.textContent = text; });
-          setTimeout(run, _twDelay(tNext - Date.now()));
+          requestAnimationFrame(run);
         }
         run();
       })();
@@ -54014,20 +53997,18 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
       });
       function initSuccessInteractiveBlob() {
         var ib = document.getElementById('successInteractiveBlob');
-        if (!ib || ib._ysBlobInit) return; // функцию зовут при каждом входе на экран — без повторных слушателей
-        ib._ysBlobInit = true;
-        var sp = document.getElementById('successPage');
-        var curX = 0, curY = 0, tgX = 0, tgY = 0, raf = 0;
-        // Цикл идёт, только пока блик догоняет курсор и экран «Готово» открыт (раньше — вечный, каждый кадр).
+        if (!ib) return;
+        var curX = 0, curY = 0, tgX = 0, tgY = 0;
         function move() {
-          raf = 0;
-          if (!sp || !sp.classList.contains('active')) return;
-          curX += (tgX - curX) / 20;
-          curY += (tgY - curY) / 20;
-          ib.style.transform = 'translate(' + Math.round(curX) + 'px,' + Math.round(curY) + 'px)';
-          if (Math.abs(tgX - curX) > 0.05 || Math.abs(tgY - curY) > 0.05) raf = requestAnimationFrame(move);
+          var sp = document.getElementById('successPage');
+          if (sp && sp.classList.contains('active')) {
+            curX += (tgX - curX) / 20;
+            curY += (tgY - curY) / 20;
+            ib.style.transform = 'translate(' + Math.round(curX) + 'px,' + Math.round(curY) + 'px)';
+          }
+          requestAnimationFrame(move);
         }
-        function setTarget(x, y) { tgX = x; tgY = y; if (!raf) raf = requestAnimationFrame(move); }
+        function setTarget(x, y) { tgX = x; tgY = y; }
         window.addEventListener('mousemove', function(e) { setTarget(e.clientX, e.clientY); });
         window.addEventListener('touchmove', function(e) { if (e.touches[0]) setTarget(e.touches[0].clientX, e.touches[0].clientY); }, { passive: true });
         move();

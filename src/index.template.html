@@ -1032,32 +1032,18 @@ document.addEventListener('DOMContentLoaded', function() {
     (function initGlobalPageInteractive() {
       if (window._globalPageInteractiveInit) return;
       window._globalPageInteractiveInit = true;
-      var curX = 0, curY = 0, tgX = 0, tgY = 0, rafId = 0, started = false, cId = '', cEl = null;
-      // Слой ищем один раз на экран (а не getElementById/querySelector каждый кадр); цикл идёт, только пока слой догоняет курсор.
-      function blob() {
-        var pageId = document.body && document.body.dataset && document.body.dataset.page;
-        if (pageId !== cId || !cEl || !cEl.isConnected) {
-          var pageEl = pageId ? document.getElementById(pageId) : null;
-          cId = pageId;
-          cEl = pageEl ? (pageEl.querySelector('.page-gradient-bg .interactive') || pageEl.querySelector('.gradient-bg .interactive')) : null;
-        }
-        return cEl;
-      }
-      function apply() {
-        var ib = blob();
-        if (ib) ib.style.transform = 'translate(' + Math.round(curX) + 'px,' + Math.round(curY) + 'px)';
-      }
+      var curX = 0, curY = 0, tgX = 0, tgY = 0, rafId = 0;
       function move() {
-        rafId = 0;
         curX += (tgX - curX) / 20;
         curY += (tgY - curY) / 20;
-        apply();
-        if (Math.abs(tgX - curX) > 0.05 || Math.abs(tgY - curY) > 0.05) rafId = requestAnimationFrame(move);
+        var pageId = document.body && document.body.dataset && document.body.dataset.page;
+        var pageEl = pageId ? document.getElementById(pageId) : null;
+        var ib = pageEl ? (pageEl.querySelector('.page-gradient-bg .interactive') || pageEl.querySelector('.gradient-bg .interactive')) : null;
+        if (ib) ib.style.transform = 'translate(' + Math.round(curX) + 'px,' + Math.round(curY) + 'px)';
+        rafId = requestAnimationFrame(move);
       }
-      // goToPage зовёт: слой нового экрана сразу встаёт туда же, где курсор (раньше это делал вечный цикл).
-      window._ysInteractiveSync = function() { if (started) apply(); };
-      window.addEventListener('mousemove', function(e) { tgX = e.clientX; tgY = e.clientY; started = true; if (!rafId) move(); });
-      window.addEventListener('touchmove', function(e) { if (e.touches[0]) { tgX = e.touches[0].clientX; tgY = e.touches[0].clientY; } started = true; if (!rafId) move(); }, { passive: true });
+      window.addEventListener('mousemove', function(e) { tgX = e.clientX; tgY = e.clientY; if (!rafId) move(); });
+      window.addEventListener('touchmove', function(e) { if (e.touches[0]) { tgX = e.touches[0].clientX; tgY = e.touches[0].clientY; } if (!rafId) move(); }, { passive: true });
     })();
   </script>
   <script>
