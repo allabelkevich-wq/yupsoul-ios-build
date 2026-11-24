@@ -839,20 +839,18 @@
       });
       function initSuccessInteractiveBlob() {
         var ib = document.getElementById('successInteractiveBlob');
-        if (!ib || ib._ysBlobInit) return; // функцию зовут при каждом входе на экран — без повторных слушателей
-        ib._ysBlobInit = true;
-        var sp = document.getElementById('successPage');
-        var curX = 0, curY = 0, tgX = 0, tgY = 0, raf = 0;
-        // Цикл идёт, только пока блик догоняет курсор и экран «Готово» открыт (раньше — вечный, каждый кадр).
+        if (!ib) return;
+        var curX = 0, curY = 0, tgX = 0, tgY = 0;
         function move() {
-          raf = 0;
-          if (!sp || !sp.classList.contains('active')) return;
-          curX += (tgX - curX) / 20;
-          curY += (tgY - curY) / 20;
-          ib.style.transform = 'translate(' + Math.round(curX) + 'px,' + Math.round(curY) + 'px)';
-          if (Math.abs(tgX - curX) > 0.05 || Math.abs(tgY - curY) > 0.05) raf = requestAnimationFrame(move);
+          var sp = document.getElementById('successPage');
+          if (sp && sp.classList.contains('active')) {
+            curX += (tgX - curX) / 20;
+            curY += (tgY - curY) / 20;
+            ib.style.transform = 'translate(' + Math.round(curX) + 'px,' + Math.round(curY) + 'px)';
+          }
+          requestAnimationFrame(move);
         }
-        function setTarget(x, y) { tgX = x; tgY = y; if (!raf) raf = requestAnimationFrame(move); }
+        function setTarget(x, y) { tgX = x; tgY = y; }
         window.addEventListener('mousemove', function(e) { setTarget(e.clientX, e.clientY); });
         window.addEventListener('touchmove', function(e) { if (e.touches[0]) setTarget(e.touches[0].clientX, e.touches[0].clientY); }, { passive: true });
         move();

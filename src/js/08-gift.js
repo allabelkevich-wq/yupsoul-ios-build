@@ -1054,14 +1054,13 @@
           }
         });
         target.classList.add('active');
-        if (window._ysInteractiveSync) window._ysInteractiveSync();
         // Move spiral canvas into active page (behind content, above gradient)
         var _sc = document.getElementById('globalSpiral');
         if (_sc) {
           // Оракул и его вкладки (Чат/Дневник/Разборы = тот же #soulChatPage) — БЕЗ
           // спирали Фибоначчи (Алла 17.06): прячем canvas. На других страницах — как было.
           if (['soulChatPage','profilePage','helpPage','partnerDashPage','partnerApplyPage'].indexOf(target.id) !== -1) { _sc.style.display = 'none'; }
-          else { _sc.style.display = ''; target.insertBefore(_sc, target.firstChild); if (window._spiralWake) window._spiralWake(); }
+          else { _sc.style.display = ''; target.insertBefore(_sc, target.firstChild); }
         }
         target.setAttribute('role', 'main');
         target.setAttribute('aria-hidden', 'false');
@@ -2034,11 +2033,9 @@
         var pauseAfterType = 2200;
         var pauseAfterDelete = 600;
         var tNext = 0;
-        // Шаг по таймеру, но по сетке кадров 60 Гц — скорость набора/стирания та же, что была при опросе в rAF.
-        function _twDelay(ms) { return Math.max(0, Math.ceil(ms / 16.667) * 16.667); }
         function run() {
           var now = Date.now();
-          if (now < tNext) { setTimeout(run, _twDelay(tNext - now)); return; }
+          if (now < tNext) { requestAnimationFrame(run); return; }
           var curLang = (typeof currentLang !== 'undefined' ? currentLang : 'ru');
           if (curLang !== _twLastLang) {
             _twLastLang = curLang;
@@ -2071,7 +2068,7 @@
           }
           var text = (phrase || '').slice(0, charIndex);
           targets.forEach(function(el) { if (el) el.textContent = text; });
-          setTimeout(run, _twDelay(tNext - Date.now()));
+          requestAnimationFrame(run);
         }
         run();
       })();

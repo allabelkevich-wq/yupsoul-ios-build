@@ -12972,18 +12972,6 @@ body.theme-light #formPage .field .cs-display{ backdrop-filter:none !important; 
 #homePage #homeHero .home-card-teaser{font-size:0.875rem !important;font-weight:400 !important;line-height:1.55 !important}
 
 #homePage #homeHero .home-card-title-accent{background:none !important;-webkit-background-clip:initial !important;background-clip:initial !important;color:#f472b6 !important;-webkit-text-fill-color:#f472b6 !important;filter:none !important;-webkit-animation:none !important;animation:none !important;font-weight:600 !important}
-/* Радужное слово главной переливается (решение заказчицы 24.11). Правило выше закрепляет цвет и гасит анимацию, а !important бьёт любые keyframes по background-position,
-   поэтому сдвиг ведёт зарегистрированное свойство --acx (как на первом экране iPhone), позиция читает его. Включает класс ys-acx на <html>, если в WebView есть CSS.registerProperty;
-   иначе слово остаётся статичным, как раньше. Градиент, 6 с и ease-in-out — из accentGradientShift. Паузы (фон, скрытый экран) действуют как у остальных анимаций. */
-/* @property --acx объявлен один раз — ниже, у блока первого экрана (.nfs). */
-@keyframes ysAcShift{0%,100%{--acx:0%}50%{--acx:100%}}
-@media (prefers-reduced-motion:no-preference){
-html.ys-acx #homePage #homeHero .home-card-title-accent{background-image:linear-gradient(120deg,#f472b6 0%,#ec4899 22%,#a78bfa 45%,#f97316 70%,#fbbf24 100%) !important;background-size:200% 100% !important;-webkit-background-clip:text !important;background-clip:text !important;color:transparent !important;-webkit-text-fill-color:transparent !important;background-position:var(--acx) 50% !important;animation-name:ysAcShift !important;animation-duration:6s !important;animation-timing-function:ease-in-out !important;animation-iteration-count:infinite !important}
-html.ys-acx body.theme-light #homePage #homeHero .home-card-title-accent{background-image:linear-gradient(120deg,#be185d 0%,#be185d 22%,#7c3aed 45%,#c2410c 70%,#b45309 100%) !important}
-}
-/* gradientShift (глобальное h1{…}) на заголовках с НЕПРОЗРАЧНОЙ заливкой текста или вовсе без фона ничего не показывает — градиент закрыт текстом или его нет,
-   но анимация перерисовывала заголовок каждый кадр (на главной и в «Картотеке» ~600 Paint за 5 с). Видимые переливы (заливка transparent: compat, admin, оплата, «Готово» и др.) не тронуты. */
-h1.home-card-title, #heroesPage h1, #topupPage h1, #formPage h1, #plansPage h1, #archetypePage h1, #soulChatPage h1 { -webkit-animation: none !important; animation: none !important; }
 /* Светлая: #ec4899 — заголовок 23px/600 = large text, порог 3:1, у #ec4899 на светлом 3.5:1 — проходит */
 /* градиенты Аллы сохранены — правило убрано (закон №42, 10.07) */
 

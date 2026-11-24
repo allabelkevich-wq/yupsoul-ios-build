@@ -929,13 +929,11 @@
       if (!ib || window._webLoginInteractiveInit) return;
       window._webLoginInteractiveInit = true;
       var curX = 0, curY = 0, tgX = 0, tgY = 0, rafId = 0;
-      // Цикл идёт, только пока блик догоняет курсор (раньше после первого касания/мыши жил вечно).
       function move() {
-        rafId = 0;
         curX += (tgX - curX) / 20;
         curY += (tgY - curY) / 20;
         ib.style.transform = 'translate(' + Math.round(curX) + 'px,' + Math.round(curY) + 'px)';
-        if (Math.abs(tgX - curX) > 0.05 || Math.abs(tgY - curY) > 0.05) rafId = requestAnimationFrame(move);
+        rafId = requestAnimationFrame(move);
       }
       function startOnInteraction(e) {
         tgX = e.clientX || (e.touches && e.touches[0] ? e.touches[0].clientX : 0);
@@ -1017,14 +1015,12 @@ document.addEventListener('DOMContentLoaded', function() {
       if (!targets.length || window._homePageInteractiveInit) return;
       window._homePageInteractiveInit = true;
       var curX = 0, curY = 0, tgX = 0, tgY = 0, rafId = 0;
-      // Цикл идёт, только пока блик догоняет курсор (на телефоне касание порождает mousemove — раньше цикл жил вечно).
       function move() {
-        rafId = 0;
         curX += (tgX - curX) / 20;
         curY += (tgY - curY) / 20;
         var t = 'translate(' + Math.round(curX) + 'px,' + Math.round(curY) + 'px)';
         targets.forEach(function(el) { el.style.transform = t; });
-        if (Math.abs(tgX - curX) > 0.05 || Math.abs(tgY - curY) > 0.05) rafId = requestAnimationFrame(move);
+        rafId = requestAnimationFrame(move);
       }
       window.addEventListener('mousemove', function(e) { tgX = e.clientX; tgY = e.clientY; if (!rafId) move(); });
     };
@@ -1032,32 +1028,18 @@ document.addEventListener('DOMContentLoaded', function() {
     (function initGlobalPageInteractive() {
       if (window._globalPageInteractiveInit) return;
       window._globalPageInteractiveInit = true;
-      var curX = 0, curY = 0, tgX = 0, tgY = 0, rafId = 0, started = false, cId = '', cEl = null;
-      // Слой ищем один раз на экран (а не getElementById/querySelector каждый кадр); цикл идёт, только пока слой догоняет курсор.
-      function blob() {
-        var pageId = document.body && document.body.dataset && document.body.dataset.page;
-        if (pageId !== cId || !cEl || !cEl.isConnected) {
-          var pageEl = pageId ? document.getElementById(pageId) : null;
-          cId = pageId;
-          cEl = pageEl ? (pageEl.querySelector('.page-gradient-bg .interactive') || pageEl.querySelector('.gradient-bg .interactive')) : null;
-        }
-        return cEl;
-      }
-      function apply() {
-        var ib = blob();
-        if (ib) ib.style.transform = 'translate(' + Math.round(curX) + 'px,' + Math.round(curY) + 'px)';
-      }
+      var curX = 0, curY = 0, tgX = 0, tgY = 0, rafId = 0;
       function move() {
-        rafId = 0;
         curX += (tgX - curX) / 20;
         curY += (tgY - curY) / 20;
-        apply();
-        if (Math.abs(tgX - curX) > 0.05 || Math.abs(tgY - curY) > 0.05) rafId = requestAnimationFrame(move);
+        var pageId = document.body && document.body.dataset && document.body.dataset.page;
+        var pageEl = pageId ? document.getElementById(pageId) : null;
+        var ib = pageEl ? (pageEl.querySelector('.page-gradient-bg .interactive') || pageEl.querySelector('.gradient-bg .interactive')) : null;
+        if (ib) ib.style.transform = 'translate(' + Math.round(curX) + 'px,' + Math.round(curY) + 'px)';
+        rafId = requestAnimationFrame(move);
       }
-      // goToPage зовёт: слой нового экрана сразу встаёт туда же, где курсор (раньше это делал вечный цикл).
-      window._ysInteractiveSync = function() { if (started) apply(); };
-      window.addEventListener('mousemove', function(e) { tgX = e.clientX; tgY = e.clientY; started = true; if (!rafId) move(); });
-      window.addEventListener('touchmove', function(e) { if (e.touches[0]) { tgX = e.touches[0].clientX; tgY = e.touches[0].clientY; } started = true; if (!rafId) move(); }, { passive: true });
+      window.addEventListener('mousemove', function(e) { tgX = e.clientX; tgY = e.clientY; if (!rafId) move(); });
+      window.addEventListener('touchmove', function(e) { if (e.touches[0]) { tgX = e.touches[0].clientX; tgY = e.touches[0].clientY; } if (!rafId) move(); }, { passive: true });
     })();
   </script>
   <script>
@@ -1714,11 +1696,7 @@ document.addEventListener('DOMContentLoaded', function() {
     body { opacity: 0 !important; transition: opacity 0.15s ease; }
     body.app-ready { opacity: 1 !important; }
     /* Оптимизация: скрытые страницы не рендерятся (экономит RAM и CPU на слабых устройствах) */
-    /* Невидимые экраны с display:flex по id (help/profile/heroes/soulChat/gifts…) раньше крутили свои бесконечные анимации вхолостую.
-       hidden (как у low-end) пропускает их стили/раскладку/отрисовку; размеры при запросе из JS считаются по запросу. */
-    .page:not(.active) { content-visibility: hidden; contain: strict; }
-    /* Свёрнутое приложение/вкладка: все анимации на паузе (класс ставит visibilitychange). */
-    html.ys-bg-paused *, html.ys-bg-paused *::before, html.ys-bg-paused *::after { animation-play-state: paused !important; }
+    .page:not(.active) { content-visibility: auto; contain-intrinsic-size: 0 500px; }
     /* Паузим анимации градиентных фонов на невидимых страницах */
     .page:not(.active) .gradient-bg .g1,
     .page:not(.active) .gradient-bg .g2,
@@ -14813,18 +14791,6 @@ body.theme-light #formPage .field .cs-display{ backdrop-filter:none !important; 
 #homePage #homeHero .home-card-teaser{font-size:0.875rem !important;font-weight:400 !important;line-height:1.55 !important}
 
 #homePage #homeHero .home-card-title-accent{background:none !important;-webkit-background-clip:initial !important;background-clip:initial !important;color:#f472b6 !important;-webkit-text-fill-color:#f472b6 !important;filter:none !important;-webkit-animation:none !important;animation:none !important;font-weight:600 !important}
-/* Радужное слово главной переливается (решение заказчицы 24.11). Правило выше закрепляет цвет и гасит анимацию, а !important бьёт любые keyframes по background-position,
-   поэтому сдвиг ведёт зарегистрированное свойство --acx (как на первом экране iPhone), позиция читает его. Включает класс ys-acx на <html>, если в WebView есть CSS.registerProperty;
-   иначе слово остаётся статичным, как раньше. Градиент, 6 с и ease-in-out — из accentGradientShift. Паузы (фон, скрытый экран) действуют как у остальных анимаций. */
-/* @property --acx объявлен один раз — ниже, у блока первого экрана (.nfs). */
-@keyframes ysAcShift{0%,100%{--acx:0%}50%{--acx:100%}}
-@media (prefers-reduced-motion:no-preference){
-html.ys-acx #homePage #homeHero .home-card-title-accent{background-image:linear-gradient(120deg,#f472b6 0%,#ec4899 22%,#a78bfa 45%,#f97316 70%,#fbbf24 100%) !important;background-size:200% 100% !important;-webkit-background-clip:text !important;background-clip:text !important;color:transparent !important;-webkit-text-fill-color:transparent !important;background-position:var(--acx) 50% !important;animation-name:ysAcShift !important;animation-duration:6s !important;animation-timing-function:ease-in-out !important;animation-iteration-count:infinite !important}
-html.ys-acx body.theme-light #homePage #homeHero .home-card-title-accent{background-image:linear-gradient(120deg,#be185d 0%,#be185d 22%,#7c3aed 45%,#c2410c 70%,#b45309 100%) !important}
-}
-/* gradientShift (глобальное h1{…}) на заголовках с НЕПРОЗРАЧНОЙ заливкой текста или вовсе без фона ничего не показывает — градиент закрыт текстом или его нет,
-   но анимация перерисовывала заголовок каждый кадр (на главной и в «Картотеке» ~600 Paint за 5 с). Видимые переливы (заливка transparent: compat, admin, оплата, «Готово» и др.) не тронуты. */
-h1.home-card-title, #heroesPage h1, #topupPage h1, #formPage h1, #plansPage h1, #archetypePage h1, #soulChatPage h1 { -webkit-animation: none !important; animation: none !important; }
 /* Светлая: #ec4899 — заголовок 23px/600 = large text, порог 3:1, у #ec4899 на светлом 3.5:1 — проходит */
 /* градиенты Аллы сохранены — правило убрано (закон №42, 10.07) */
 
@@ -15891,11 +15857,6 @@ html.is-native #myTracksPage .rsheet{max-height:calc(100% - env(safe-area-inset-
   <!-- Скролл-перф: класс html.mt-scrolling на время скролла → CSS снимает дорогой backdrop-blur
        с фикс. мини-плеера (лаги скролла при проигрывании песни, Алла 24.06). Снимается через 180мс покоя.
        Capture-фаза ловит скролл любого контейнера (.page-scroll и др.), passive — не блокирует скролл. -->
-  <script>
-  document.addEventListener('visibilitychange', function(){ document.documentElement.classList.toggle('ys-bg-paused', document.hidden); });
-  // Переливы радужного слова главной нужен @property (Chrome 85+, iOS 16.4+): без него слово остаётся статичным.
-  try { if (window.CSS && typeof CSS.registerProperty === 'function') document.documentElement.classList.add('ys-acx'); } catch (_) {}
-  </script>
   <script>
   (function _mtScrollPerf(){
     var de = document.documentElement, tmr;
@@ -17187,10 +17148,10 @@ html:not(.is-native) #nativeAiConsentOverlay{display:none !important}
       #giftsPage button{font-family:inherit}
       #giftsPage b, #giftsPage strong{font-weight:700}
       #giftsPage .bg{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden}
-      #giftsPage .bg .blob{position:absolute;border-radius:50%;opacity:.5;mix-blend-mode:screen}
-      #giftsPage .bg .b1{width:640px;height:640px;margin:-150px;left:-90px;top:-110px;background:radial-gradient(circle closest-side,rgba(249,115,22,0.541) 0.0%,rgba(249,115,22,0.537) 3.8%,rgba(249,115,22,0.525) 7.5%,rgba(249,115,22,0.506) 11.3%,rgba(249,115,22,0.475) 15.6%,rgba(249,115,22,0.442) 19.4%,rgba(249,115,22,0.405) 23.1%,rgba(249,115,22,0.241) 38.1%,rgba(249,115,22,0.171) 45.0%,rgba(249,115,22,0.138) 48.8%,rgba(249,115,22,0.114) 51.9%,rgba(249,115,22,0.092) 55.0%,rgba(249,115,22,0.070) 58.8%,rgba(249,115,22,0.052) 62.5%,rgba(249,115,22,0.037) 66.3%,rgba(249,115,22,0.025) 70.6%,rgba(249,115,22,0.016) 75.0%,rgba(249,115,22,0.005) 85.0%,rgba(249,115,22,0.001) 100.0%);animation:gftdrift1 22s ease-in-out infinite}
-      #giftsPage .bg .b2{width:620px;height:620px;margin:-150px;right:-120px;top:-50px;background:radial-gradient(circle closest-side,rgba(246,201,122,0.515) 0.0%,rgba(246,201,122,0.510) 3.9%,rgba(246,201,122,0.498) 7.7%,rgba(246,201,122,0.478) 11.6%,rgba(246,201,122,0.451) 15.5%,rgba(246,201,122,0.419) 19.4%,rgba(246,201,122,0.382) 23.2%,rgba(246,201,122,0.233) 37.4%,rgba(246,201,122,0.171) 43.9%,rgba(246,201,122,0.137) 47.7%,rgba(246,201,122,0.113) 51.0%,rgba(246,201,122,0.091) 54.2%,rgba(246,201,122,0.069) 58.1%,rgba(246,201,122,0.051) 61.9%,rgba(246,201,122,0.037) 65.8%,rgba(246,201,122,0.024) 70.3%,rgba(246,201,122,0.015) 74.8%,rgba(246,201,122,0.005) 85.2%,rgba(246,201,122,0.001) 100.0%);opacity:.34;animation:gftdrift2 26s ease-in-out infinite}
-      #giftsPage .bg .b3{width:604px;height:604px;margin:-152px;left:30px;bottom:-140px;background:radial-gradient(circle closest-side,rgba(236,72,153,0.485) 0.0%,rgba(236,72,153,0.482) 3.3%,rgba(236,72,153,0.471) 7.3%,rgba(236,72,153,0.452) 11.3%,rgba(236,72,153,0.426) 15.2%,rgba(236,72,153,0.400) 18.5%,rgba(236,72,153,0.364) 22.5%,rgba(236,72,153,0.219) 37.1%,rgba(236,72,153,0.158) 43.7%,rgba(236,72,153,0.126) 47.7%,rgba(236,72,153,0.103) 51.0%,rgba(236,72,153,0.065) 57.6%,rgba(236,72,153,0.048) 61.6%,rgba(236,72,153,0.034) 65.6%,rgba(236,72,153,0.024) 69.5%,rgba(236,72,153,0.015) 74.2%,rgba(236,72,153,0.005) 84.8%,rgba(236,72,153,0.001) 100.0%);opacity:.32;animation:gftdrift3 30s ease-in-out infinite}
+      #giftsPage .bg .blob{position:absolute;border-radius:50%;filter:blur(62px);opacity:.5;mix-blend-mode:screen}
+      #giftsPage .bg .b1{width:340px;height:340px;left:-90px;top:-110px;background:radial-gradient(circle,#f97316,transparent 70%);animation:gftdrift1 22s ease-in-out infinite}
+      #giftsPage .bg .b2{width:320px;height:320px;right:-120px;top:-50px;background:radial-gradient(circle,#f6c97a,transparent 70%);opacity:.34;animation:gftdrift2 26s ease-in-out infinite}
+      #giftsPage .bg .b3{width:300px;height:300px;left:30px;bottom:-140px;background:radial-gradient(circle,#ec4899,transparent 70%);opacity:.32;animation:gftdrift3 30s ease-in-out infinite}
       @keyframes gftdrift1{0%,100%{transform:translate(0,0)}50%{transform:translate(32px,30px)}}
       @keyframes gftdrift2{0%,100%{transform:translate(0,0)}50%{transform:translate(-26px,36px)}}
       @keyframes gftdrift3{0%,100%{transform:translate(0,0)}50%{transform:translate(24px,-26px)}}
@@ -17854,10 +17815,10 @@ body.theme-light #giftsPage .cask-cost{color:#f7c873 !important}
       #helpPage button{font-family:inherit}
       #helpPage{position:relative;display:flex;flex-direction:column;background:var(--bg);isolation:isolate}
       #helpPage .bg{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden}
-      #helpPage .bg .blob{position:absolute;border-radius:50%;opacity:.5;mix-blend-mode:screen}
-      #helpPage .bg .b1{width:640px;height:640px;margin:-150px;left:-90px;top:-110px;background:radial-gradient(circle closest-side,rgba(236,72,153,0.541) 0.0%,rgba(236,72,153,0.537) 3.8%,rgba(236,72,153,0.525) 7.5%,rgba(236,72,153,0.506) 11.3%,rgba(236,72,153,0.475) 15.6%,rgba(236,72,153,0.442) 19.4%,rgba(236,72,153,0.405) 23.1%,rgba(236,72,153,0.241) 38.1%,rgba(236,72,153,0.171) 45.0%,rgba(236,72,153,0.138) 48.8%,rgba(236,72,153,0.114) 51.9%,rgba(236,72,153,0.092) 55.0%,rgba(236,72,153,0.070) 58.8%,rgba(236,72,153,0.052) 62.5%,rgba(236,72,153,0.037) 66.3%,rgba(236,72,153,0.025) 70.6%,rgba(236,72,153,0.016) 75.0%,rgba(236,72,153,0.005) 85.0%,rgba(236,72,153,0.001) 100.0%);animation:hpdrift1 22s ease-in-out infinite}
-      #helpPage .bg .b2{width:620px;height:620px;margin:-150px;right:-120px;top:-50px;background:radial-gradient(circle closest-side,rgba(168,85,247,0.515) 0.0%,rgba(168,85,247,0.510) 3.9%,rgba(168,85,247,0.498) 7.7%,rgba(168,85,247,0.478) 11.6%,rgba(168,85,247,0.451) 15.5%,rgba(168,85,247,0.419) 19.4%,rgba(168,85,247,0.382) 23.2%,rgba(168,85,247,0.233) 37.4%,rgba(168,85,247,0.171) 43.9%,rgba(168,85,247,0.137) 47.7%,rgba(168,85,247,0.113) 51.0%,rgba(168,85,247,0.091) 54.2%,rgba(168,85,247,0.069) 58.1%,rgba(168,85,247,0.051) 61.9%,rgba(168,85,247,0.037) 65.8%,rgba(168,85,247,0.024) 70.3%,rgba(168,85,247,0.015) 74.8%,rgba(168,85,247,0.005) 85.2%,rgba(168,85,247,0.001) 100.0%);animation:hpdrift2 26s ease-in-out infinite}
-      #helpPage .bg .b3{width:604px;height:604px;margin:-152px;left:30px;bottom:-150px;background:radial-gradient(circle closest-side,rgba(249,115,22,0.485) 0.0%,rgba(249,115,22,0.482) 3.3%,rgba(249,115,22,0.471) 7.3%,rgba(249,115,22,0.452) 11.3%,rgba(249,115,22,0.426) 15.2%,rgba(249,115,22,0.400) 18.5%,rgba(249,115,22,0.364) 22.5%,rgba(249,115,22,0.219) 37.1%,rgba(249,115,22,0.158) 43.7%,rgba(249,115,22,0.126) 47.7%,rgba(249,115,22,0.103) 51.0%,rgba(249,115,22,0.065) 57.6%,rgba(249,115,22,0.048) 61.6%,rgba(249,115,22,0.034) 65.6%,rgba(249,115,22,0.024) 69.5%,rgba(249,115,22,0.015) 74.2%,rgba(249,115,22,0.005) 84.8%,rgba(249,115,22,0.001) 100.0%);opacity:.3;animation:hpdrift3 30s ease-in-out infinite}
+      #helpPage .bg .blob{position:absolute;border-radius:50%;filter:blur(62px);opacity:.5;mix-blend-mode:screen}
+      #helpPage .bg .b1{width:340px;height:340px;left:-90px;top:-110px;background:radial-gradient(circle,#ec4899,transparent 70%);animation:hpdrift1 22s ease-in-out infinite}
+      #helpPage .bg .b2{width:320px;height:320px;right:-120px;top:-50px;background:radial-gradient(circle,#a855f7,transparent 70%);animation:hpdrift2 26s ease-in-out infinite}
+      #helpPage .bg .b3{width:300px;height:300px;left:30px;bottom:-150px;background:radial-gradient(circle,#f97316,transparent 70%);opacity:.3;animation:hpdrift3 30s ease-in-out infinite}
       @keyframes hpdrift1{0%,100%{transform:translate(0,0)}50%{transform:translate(32px,30px)}}
       @keyframes hpdrift2{0%,100%{transform:translate(0,0)}50%{transform:translate(-26px,36px)}}
       @keyframes hpdrift3{0%,100%{transform:translate(0,0)}50%{transform:translate(24px,-26px)}}
@@ -19924,10 +19885,10 @@ body.theme-light #profilePage #pfNew .foot-note{color:#6f5a66 !important}
 #partnerDashPage input{font-family:inherit !important}
 #partnerDashPage .bg{position:absolute !important;inset:0 !important;z-index:0 !important;pointer-events:none !important;overflow:hidden !important;
   background:radial-gradient(130% 80% at 50% -6%,rgba(236,72,153,.14),transparent 52%),radial-gradient(120% 70% at 92% 8%,rgba(168,85,247,.14),transparent 55%) !important}
-#partnerDashPage .bg .blob{position:absolute !important;border-radius:50% !important;opacity:.42 !important;mix-blend-mode:screen !important;display:none !important}
-#partnerDashPage .bg .b1{width:644px !important;height:644px !important;margin:-172px !important;left:-80px !important;top:-90px !important;background:radial-gradient(circle closest-side,rgba(236,72,153,0.429) 0.0%,rgba(236,72,153,0.426) 3.7%,rgba(236,72,153,0.416) 7.5%,rgba(236,72,153,0.399) 11.2%,rgba(236,72,153,0.378) 14.9%,rgba(236,72,153,0.351) 18.6%,rgba(236,72,153,0.321) 22.4%,rgba(236,72,153,0.195) 36.6%,rgba(236,72,153,0.144) 42.9%,rgba(236,72,153,0.118) 46.6%,rgba(236,72,153,0.094) 50.3%,rgba(236,72,153,0.059) 57.1%,rgba(236,72,153,0.044) 60.9%,rgba(236,72,153,0.031) 65.2%,rgba(236,72,153,0.014) 73.9%,rgba(236,72,153,0.004) 84.5%,rgba(236,72,153,0.001) 100.0%) !important;animation:pd2_drift1 24s ease-in-out infinite !important}
-#partnerDashPage .bg .b2{width:644px !important;height:644px !important;margin:-172px !important;right:-110px !important;top:-30px !important;background:radial-gradient(circle closest-side,rgba(168,85,247,0.429) 0.0%,rgba(168,85,247,0.426) 3.7%,rgba(168,85,247,0.416) 7.5%,rgba(168,85,247,0.399) 11.2%,rgba(168,85,247,0.378) 14.9%,rgba(168,85,247,0.351) 18.6%,rgba(168,85,247,0.321) 22.4%,rgba(168,85,247,0.195) 36.6%,rgba(168,85,247,0.144) 42.9%,rgba(168,85,247,0.118) 46.6%,rgba(168,85,247,0.094) 50.3%,rgba(168,85,247,0.059) 57.1%,rgba(168,85,247,0.044) 60.9%,rgba(168,85,247,0.031) 65.2%,rgba(168,85,247,0.014) 73.9%,rgba(168,85,247,0.004) 84.5%,rgba(168,85,247,0.001) 100.0%) !important;animation:pd2_drift2 28s ease-in-out infinite !important}
-#partnerDashPage .bg .b3{width:628px !important;height:628px !important;margin:-174px !important;left:40px !important;bottom:-160px !important;background:radial-gradient(circle closest-side,rgba(249,115,22,0.397) 0.0%,rgba(249,115,22,0.395) 3.2%,rgba(249,115,22,0.386) 7.0%,rgba(249,115,22,0.371) 10.8%,rgba(249,115,22,0.350) 14.6%,rgba(249,115,22,0.301) 21.7%,rgba(249,115,22,0.181) 36.3%,rgba(249,115,22,0.133) 42.7%,rgba(249,115,22,0.089) 49.7%,rgba(249,115,22,0.055) 56.7%,rgba(249,115,22,0.042) 60.5%,rgba(249,115,22,0.029) 65.0%,rgba(249,115,22,0.013) 73.9%,rgba(249,115,22,0.004) 84.7%,rgba(249,115,22,0.001) 100.0%) !important;opacity:.24 !important;animation:pd2_drift3 32s ease-in-out infinite !important}
+#partnerDashPage .bg .blob{position:absolute !important;border-radius:50% !important;filter:blur(70px) !important;opacity:.42 !important;mix-blend-mode:screen !important;display:none !important}
+#partnerDashPage .bg .b1{width:300px !important;height:300px !important;left:-80px !important;top:-90px !important;background:radial-gradient(circle,#ec4899,transparent 70%) !important;animation:pd2_drift1 24s ease-in-out infinite !important}
+#partnerDashPage .bg .b2{width:300px !important;height:300px !important;right:-110px !important;top:-30px !important;background:radial-gradient(circle,#a855f7,transparent 70%) !important;animation:pd2_drift2 28s ease-in-out infinite !important}
+#partnerDashPage .bg .b3{width:280px !important;height:280px !important;left:40px !important;bottom:-160px !important;background:radial-gradient(circle,#f97316,transparent 70%) !important;opacity:.24 !important;animation:pd2_drift3 32s ease-in-out infinite !important}
 @keyframes pd2_drift1{0%,100%{transform:translate(0,0)}50%{transform:translate(28px,26px)}}
 @keyframes pd2_drift2{0%,100%{transform:translate(0,0)}50%{transform:translate(-22px,32px)}}
 @keyframes pd2_drift3{0%,100%{transform:translate(0,0)}50%{transform:translate(20px,-22px)}}
@@ -19966,8 +19927,8 @@ body.theme-light #profilePage #pfNew .foot-note{color:#6f5a66 !important}
   background:linear-gradient(158deg,rgba(60,42,20,.65),rgba(28,16,30,.7)),radial-gradient(120% 90% at 50% 0,rgba(244,203,134,.16),transparent 60%) !important;
   box-shadow:inset 0 1px 0 rgba(255,255,255,.12),inset 0 0 0 1px rgba(244,203,134,.06),0 30px 70px -38px rgba(0,0,0,.8),0 0 50px -22px rgba(244,203,134,.32) !important}
 #partnerDashPage .bal .sheen{position:absolute !important;top:-25% !important;left:-150% !important;width:70% !important;height:150% !important;pointer-events:none !important;
-  background:linear-gradient(105deg,transparent 0%,rgba(255,255,255,.14) 50%,transparent 100%) !important;transform:skewX(-18deg) !important}
-/* pd2_sheen: анимация left не срабатывала — left:-150% !important бил кадры; блик стоял за краем. Убрана без изменения вида. */
+  background:linear-gradient(105deg,transparent 0%,rgba(255,255,255,.14) 50%,transparent 100%) !important;transform:skewX(-18deg) !important;animation:pd2_sheen 7.5s ease-in-out infinite !important}
+@keyframes pd2_sheen{0%,70%{left:-150%}86%,100%{left:170%}}
 @media (prefers-reduced-motion:reduce){
 #partnerDashPage .bal .sheen{display:none !important}
 }
@@ -20395,10 +20356,10 @@ body.theme-light #partnerDashPage .btn-pay{color:#2a1c06 !important;background:l
        Не влезающий контент (ряд плиток) прокручивается внутри плеера (overflow-y:auto). */
     /* Фон плеера = ДОСЛОВНО .bg из showcase-player.html (Алла 18.06: убрать «полосу» — старый v2pbg давал тёмную середину-провал; реф = 3 блоба-аврора покрывают всю площадь mix-blend:screen, без полосы). keyframes → mtp_drift* чтобы не конфликтовать с oracle sck_drift. */
     #myTracksPage .mtv2-player .bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
-    #myTracksPage .mtv2-player .bg .blob{position:absolute;border-radius:50%;opacity:.25;mix-blend-mode:screen}
-    #myTracksPage .mtv2-player .bg .b1{width:688px;height:688px;margin:-154px;left:-80px;top:-60px;background:radial-gradient(circle closest-side,rgba(168,85,247,0.575) 0.0%,rgba(168,85,247,0.570) 4.1%,rgba(168,85,247,0.556) 8.1%,rgba(168,85,247,0.532) 12.2%,rgba(168,85,247,0.501) 16.3%,rgba(168,85,247,0.469) 19.8%,rgba(168,85,247,0.426) 23.8%,rgba(168,85,247,0.252) 39.0%,rgba(168,85,247,0.184) 45.3%,rgba(168,85,247,0.151) 48.8%,rgba(168,85,247,0.121) 52.3%,rgba(168,85,247,0.095) 55.8%,rgba(168,85,247,0.074) 59.3%,rgba(168,85,247,0.055) 62.8%,rgba(168,85,247,0.039) 66.9%,rgba(168,85,247,0.026) 70.9%,rgba(168,85,247,0.016) 75.6%,rgba(168,85,247,0.005) 85.5%,rgba(168,85,247,0.001) 100.0%);animation:mtp_drift1 20s ease-in-out infinite}
-    #myTracksPage .mtv2-player .bg .b2{width:648px;height:648px;margin:-154px;right:-110px;top:120px;background:radial-gradient(circle closest-side,rgba(236,72,153,0.527) 0.0%,rgba(236,72,153,0.524) 3.7%,rgba(236,72,153,0.512) 7.4%,rgba(236,72,153,0.494) 11.1%,rgba(236,72,153,0.464) 15.4%,rgba(236,72,153,0.433) 19.1%,rgba(236,72,153,0.397) 22.8%,rgba(236,72,153,0.232) 38.3%,rgba(236,72,153,0.172) 44.4%,rgba(236,72,153,0.139) 48.1%,rgba(236,72,153,0.111) 51.9%,rgba(236,72,153,0.090) 54.9%,rgba(236,72,153,0.069) 58.6%,rgba(236,72,153,0.051) 62.3%,rgba(236,72,153,0.035) 66.7%,rgba(236,72,153,0.024) 71.0%,rgba(236,72,153,0.015) 75.3%,rgba(236,72,153,0.005) 85.2%,rgba(236,72,153,0.001) 100.0%);animation:mtp_drift2 24s ease-in-out infinite}
-    #myTracksPage .mtv2-player .bg .b3{width:632px;height:632px;margin:-156px;left:30px;bottom:-120px;background:radial-gradient(circle closest-side,rgba(124,58,237,0.500) 0.0%,rgba(124,58,237,0.496) 3.8%,rgba(124,58,237,0.485) 7.6%,rgba(124,58,237,0.466) 11.4%,rgba(124,58,237,0.440) 15.2%,rgba(124,58,237,0.409) 19.0%,rgba(124,58,237,0.374) 22.8%,rgba(124,58,237,0.225) 37.3%,rgba(124,58,237,0.165) 43.7%,rgba(124,58,237,0.134) 47.5%,rgba(124,58,237,0.110) 50.6%,rgba(124,58,237,0.089) 53.8%,rgba(124,58,237,0.068) 57.6%,rgba(124,58,237,0.051) 61.4%,rgba(124,58,237,0.037) 65.2%,rgba(124,58,237,0.025) 69.6%,rgba(124,58,237,0.016) 74.1%,rgba(124,58,237,0.005) 84.8%,rgba(124,58,237,0.001) 100.0%);opacity:.4;animation:mtp_drift3 28s ease-in-out infinite}
+    #myTracksPage .mtv2-player .bg .blob{position:absolute;border-radius:50%;filter:blur(64px);opacity:.25;mix-blend-mode:screen}
+    #myTracksPage .mtv2-player .bg .b1{width:380px;height:380px;left:-80px;top:-60px;background:radial-gradient(circle,#a855f7,transparent 70%);animation:mtp_drift1 20s ease-in-out infinite}
+    #myTracksPage .mtv2-player .bg .b2{width:340px;height:340px;right:-110px;top:120px;background:radial-gradient(circle,#ec4899,transparent 70%);animation:mtp_drift2 24s ease-in-out infinite}
+    #myTracksPage .mtv2-player .bg .b3{width:320px;height:320px;left:30px;bottom:-120px;background:radial-gradient(circle,#7c3aed,transparent 70%);opacity:.4;animation:mtp_drift3 28s ease-in-out infinite}
     @keyframes mtp_drift1{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,34px)}}
     @keyframes mtp_drift2{0%,100%{transform:translate(0,0)}50%{transform:translate(-28px,-30px)}}
     @keyframes mtp_drift3{0%,100%{transform:translate(0,0)}50%{transform:translate(26px,-24px)}}
@@ -44632,14 +44593,13 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           }
         });
         target.classList.add('active');
-        if (window._ysInteractiveSync) window._ysInteractiveSync();
         // Move spiral canvas into active page (behind content, above gradient)
         var _sc = document.getElementById('globalSpiral');
         if (_sc) {
           // Оракул и его вкладки (Чат/Дневник/Разборы = тот же #soulChatPage) — БЕЗ
           // спирали Фибоначчи (Алла 17.06): прячем canvas. На других страницах — как было.
           if (['soulChatPage','profilePage','helpPage','partnerDashPage','partnerApplyPage'].indexOf(target.id) !== -1) { _sc.style.display = 'none'; }
-          else { _sc.style.display = ''; target.insertBefore(_sc, target.firstChild); if (window._spiralWake) window._spiralWake(); }
+          else { _sc.style.display = ''; target.insertBefore(_sc, target.firstChild); }
         }
         target.setAttribute('role', 'main');
         target.setAttribute('aria-hidden', 'false');
@@ -45612,11 +45572,9 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
         var pauseAfterType = 2200;
         var pauseAfterDelete = 600;
         var tNext = 0;
-        // Шаг по таймеру, но по сетке кадров 60 Гц — скорость набора/стирания та же, что была при опросе в rAF.
-        function _twDelay(ms) { return Math.max(0, Math.ceil(ms / 16.667) * 16.667); }
         function run() {
           var now = Date.now();
-          if (now < tNext) { setTimeout(run, _twDelay(tNext - now)); return; }
+          if (now < tNext) { requestAnimationFrame(run); return; }
           var curLang = (typeof currentLang !== 'undefined' ? currentLang : 'ru');
           if (curLang !== _twLastLang) {
             _twLastLang = curLang;
@@ -45649,7 +45607,7 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
           }
           var text = (phrase || '').slice(0, charIndex);
           targets.forEach(function(el) { if (el) el.textContent = text; });
-          setTimeout(run, _twDelay(tNext - Date.now()));
+          requestAnimationFrame(run);
         }
         run();
       })();
@@ -54014,20 +53972,18 @@ body:not(.theme-light) #plansPage .b-top{color:#f7cf7a !important} /* тёмна
       });
       function initSuccessInteractiveBlob() {
         var ib = document.getElementById('successInteractiveBlob');
-        if (!ib || ib._ysBlobInit) return; // функцию зовут при каждом входе на экран — без повторных слушателей
-        ib._ysBlobInit = true;
-        var sp = document.getElementById('successPage');
-        var curX = 0, curY = 0, tgX = 0, tgY = 0, raf = 0;
-        // Цикл идёт, только пока блик догоняет курсор и экран «Готово» открыт (раньше — вечный, каждый кадр).
+        if (!ib) return;
+        var curX = 0, curY = 0, tgX = 0, tgY = 0;
         function move() {
-          raf = 0;
-          if (!sp || !sp.classList.contains('active')) return;
-          curX += (tgX - curX) / 20;
-          curY += (tgY - curY) / 20;
-          ib.style.transform = 'translate(' + Math.round(curX) + 'px,' + Math.round(curY) + 'px)';
-          if (Math.abs(tgX - curX) > 0.05 || Math.abs(tgY - curY) > 0.05) raf = requestAnimationFrame(move);
+          var sp = document.getElementById('successPage');
+          if (sp && sp.classList.contains('active')) {
+            curX += (tgX - curX) / 20;
+            curY += (tgY - curY) / 20;
+            ib.style.transform = 'translate(' + Math.round(curX) + 'px,' + Math.round(curY) + 'px)';
+          }
+          requestAnimationFrame(move);
         }
-        function setTarget(x, y) { tgX = x; tgY = y; if (!raf) raf = requestAnimationFrame(move); }
+        function setTarget(x, y) { tgX = x; tgY = y; }
         window.addEventListener('mousemove', function(e) { setTarget(e.clientX, e.clientY); });
         window.addEventListener('touchmove', function(e) { if (e.touches[0]) setTarget(e.touches[0].clientX, e.touches[0].clientY); }, { passive: true });
         move();
@@ -58656,30 +58612,8 @@ body.theme-light #planConfirmOverlay .cf-old{-webkit-text-fill-color:#6f5a66 !im
       function resize() { cv.width = window.innerWidth; cv.height = window.innerHeight; }
       resize();
       window.addEventListener('resize', resize);
-      // Рисуем только когда канву видно: не скрыта (display:none на Оракуле/Профиле/Помощи), не закрыта
-      // непрозрачным плеером или экраном оплаты и вкладка не в фоне. Формула, шаг t и 60 кадров/с прежние.
-      var _spRaf = 0, _spWakeT = 0, _spN = 0, _spCover = false;
-      var _spDark = ['#FFD580','#FFF0B0','#E8E0FF'], _spLight = ['#d4956b','#c8875e','#e8a97a'];
-      function _spOff() {
-        if (document.hidden || cv.style.display === 'none') return true;
-        if ((_spN++ % 15) === 0) {
-          var _np = document.getElementById('mtNowPlaying'), _po = document.getElementById('paymentOverlay');
-          _spCover = !!((_np && _np.classList.contains('open')) || (_po && _po.style.display && _po.style.display !== 'none' && _po.style.visibility !== 'hidden'));
-        }
-        return _spCover;
-      }
-      function _spWake() {
-        _spWakeT = 0;
-        if (_spRaf) return;
-        if (_spOff()) { _spWakeT = setTimeout(_spWake, 120); return; }
-        _spRaf = requestAnimationFrame(frame);
-      }
-      window._spiralWake = function() { if (!_spRaf && !_spWakeT) _spWake(); };
-      document.addEventListener('visibilitychange', window._spiralWake);
       function frame() {
-        _spRaf = 0;
-        if (_spOff()) { _spWakeT = setTimeout(_spWake, 120); return; }
-        _spRaf = requestAnimationFrame(frame);
+        requestAnimationFrame(frame);
         var w=cv.width, h=cv.height, cx=w/2, cy=h/2, R=Math.min(w,h)*0.54;
         ctx.clearRect(0,0,w,h);
         t += 0.012;
@@ -58687,8 +58621,6 @@ body.theme-light #planConfirmOverlay .cf-old{-webkit-text-fill-color:#6f5a66 !im
         // Спираль тише на анкете (Алла 11.07: «мешает на форме»), на других страницах — как есть.
         var _spAp = document.querySelector('.page.active');
         var _spDim = (_spAp && _spAp.id === 'formPage') ? 0.42 : 1;
-        var _isLightTheme = document.body.classList.contains('theme-light');
-        var _spCol = _isLightTheme ? _spLight : _spDark;
         for (var i=0; i<N; i++) {
           var f=i/N, baseR=Math.sqrt(f)*R, baseA=i*GA+rot;
           var r=baseR*(1+0.08*Math.sin(t*1.2+f*12));
@@ -58697,8 +58629,11 @@ body.theme-light #planConfirmOverlay .cf-old{-webkit-text-fill-color:#6f5a66 !im
           var dr=(0.5+(i%3)*0.35)*(0.7+0.5*Math.sin(t*1.5+f*8));
           var op=0.20+0.50*Math.abs(Math.sin(t*0.7+i*0.04));
           ctx.globalAlpha=op*_spDim;
+          var _isLightTheme = document.body.classList.contains('theme-light');
           if (_isLightTheme) { op = Math.min(1, op * 2.2); dr = dr * 1.3; }
-          ctx.fillStyle = _spCol[i%3];
+          ctx.fillStyle = _isLightTheme
+            ? (i%3===0?'#d4956b':i%3===1?'#c8875e':'#e8a97a')
+            : (i%3===0?'#FFD580':i%3===1?'#FFF0B0':'#E8E0FF');
           ctx.beginPath(); ctx.arc(x,y,Math.max(0.2,dr),0,6.283); ctx.fill();
         }
         ctx.globalAlpha=1;
@@ -63120,10 +63055,10 @@ html.low-end-device .page:not(.active) {
   --sans:'Inter',ui-sans-serif,system-ui,-apple-system,sans-serif !important;
 }
 #soulChatPage .bg{position:absolute !important;inset:0 !important;z-index:0 !important;pointer-events:none !important;overflow:hidden !important}
-#soulChatPage .bg .blob{position:absolute !important;border-radius:50% !important;opacity:.5 !important;mix-blend-mode:screen !important}
-#soulChatPage .bg .b1{width:628px !important;height:628px !important;margin:-144px !important;left:-90px !important;top:-110px !important;background:radial-gradient(circle closest-side,rgba(236,72,153,0.555) 0.0%,rgba(236,72,153,0.551) 3.8%,rgba(236,72,153,0.539) 7.6%,rgba(236,72,153,0.518) 11.5%,rgba(236,72,153,0.486) 15.9%,rgba(236,72,153,0.452) 19.7%,rgba(236,72,153,0.413) 23.6%,rgba(236,72,153,0.242) 38.9%,rgba(236,72,153,0.177) 45.2%,rgba(236,72,153,0.142) 49.0%,rgba(236,72,153,0.116) 52.2%,rgba(236,72,153,0.094) 55.4%,rgba(236,72,153,0.071) 59.2%,rgba(236,72,153,0.052) 63.1%,rgba(236,72,153,0.037) 66.9%,rgba(236,72,153,0.026) 70.7%,rgba(236,72,153,0.016) 75.2%,rgba(236,72,153,0.005) 85.4%,rgba(236,72,153,0.001) 100.0%) !important;animation:sck_drift1 20s ease-in-out infinite !important}
-#soulChatPage .bg .b2{width:612px !important;height:612px !important;margin:-146px !important;right:-120px !important;top:-40px !important;background:radial-gradient(circle closest-side,rgba(124,58,237,0.529) 0.0%,rgba(124,58,237,0.525) 3.9%,rgba(124,58,237,0.512) 7.8%,rgba(124,58,237,0.491) 11.8%,rgba(124,58,237,0.463) 15.7%,rgba(124,58,237,0.435) 19.0%,rgba(124,58,237,0.397) 22.9%,rgba(124,58,237,0.235) 37.9%,rgba(124,58,237,0.170) 44.4%,rgba(124,58,237,0.136) 48.4%,rgba(124,58,237,0.111) 51.6%,rgba(124,58,237,0.089) 54.9%,rgba(124,58,237,0.070) 58.2%,rgba(124,58,237,0.051) 62.1%,rgba(124,58,237,0.037) 66.0%,rgba(124,58,237,0.025) 69.9%,rgba(124,58,237,0.016) 74.5%,rgba(124,58,237,0.005) 85.0%,rgba(124,58,237,0.001) 100.0%) !important;animation:sck_drift2 24s ease-in-out infinite !important}
-#soulChatPage .bg .b3{width:592px !important;height:592px !important;margin:-146px !important;left:30px !important;bottom:-140px !important;background:radial-gradient(circle closest-side,rgba(249,115,22,0.500) 0.0%,rgba(249,115,22,0.497) 3.4%,rgba(249,115,22,0.485) 7.4%,rgba(249,115,22,0.465) 11.5%,rgba(249,115,22,0.438) 15.5%,rgba(249,115,22,0.410) 18.9%,rgba(249,115,22,0.373) 23.0%,rgba(249,115,22,0.227) 37.2%,rgba(249,115,22,0.163) 43.9%,rgba(249,115,22,0.130) 48.0%,rgba(249,115,22,0.105) 51.4%,rgba(249,115,22,0.084) 54.7%,rgba(249,115,22,0.066) 58.1%,rgba(249,115,22,0.048) 62.2%,rgba(249,115,22,0.034) 66.2%,rgba(249,115,22,0.023) 70.3%,rgba(249,115,22,0.014) 75.0%,rgba(249,115,22,0.005) 85.1%,rgba(249,115,22,0.001) 100.0%) !important;opacity:.3 !important;animation:sck_drift3 28s ease-in-out infinite !important}
+#soulChatPage .bg .blob{position:absolute !important;border-radius:50% !important;filter:blur(60px) !important;opacity:.5 !important;mix-blend-mode:screen !important}
+#soulChatPage .bg .b1{width:340px !important;height:340px !important;left:-90px !important;top:-110px !important;background:radial-gradient(circle,#ec4899,transparent 70%) !important;animation:sck_drift1 20s ease-in-out infinite !important}
+#soulChatPage .bg .b2{width:320px !important;height:320px !important;right:-120px !important;top:-40px !important;background:radial-gradient(circle,#7c3aed,transparent 70%) !important;animation:sck_drift2 24s ease-in-out infinite !important}
+#soulChatPage .bg .b3{width:300px !important;height:300px !important;left:30px !important;bottom:-140px !important;background:radial-gradient(circle,#f97316,transparent 70%) !important;opacity:.3 !important;animation:sck_drift3 28s ease-in-out infinite !important}
 @keyframes sck_drift1{0%,100%{transform:translate(0,0)}50%{transform:translate(34px,30px)}}
 @keyframes sck_drift2{0%,100%{transform:translate(0,0)}50%{transform:translate(-28px,38px)}}
 @keyframes sck_drift3{0%,100%{transform:translate(0,0)}50%{transform:translate(24px,-26px)}}
