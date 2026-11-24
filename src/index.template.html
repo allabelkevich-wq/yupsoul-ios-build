@@ -1680,6 +1680,15 @@ document.addEventListener('DOMContentLoaded', function() {
       // падал «Load failed» (оплата подарка не открывалась, fetch не доходил до бэкенда). Тот же домен,
       // что и мини-апп = надёжно (мини-апп уже грузится с этого origin, значит он доступен).
       var fallback = 'https://www.yupsoul.ru';
+      // Приложение App Store (23.11.2026, как у Сонника): витрина России — сервер в Москве, остальные
+      // страны — копия в Амстердаме. Страну витрины узнаёт 14-native-iap.js у RevenueCat и запоминает
+      // в ys_store_region; здесь выбор читается синхронно, до первого запроса.
+      if (/^(capacitor|ionic):/i.test(origin)) {
+        var _ysReg = '';
+        try { _ysReg = localStorage.getItem('ys_store_region') || ''; } catch (_e) {}
+        window._ysStoreRegion = _ysReg;
+        if (_ysReg === 'intl') fallback = 'https://yupsoul-intl.yupsoul.ru';
+      }
       if (isOurHost && origin) {
         window.HEROES_API_BASE = origin;
       } else {

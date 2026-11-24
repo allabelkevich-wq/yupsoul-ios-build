@@ -310,6 +310,41 @@
           return _rcReady;
         }
 
+        /* Страна витрины App Store → сервер (23.11.2026, как у Сонника): Россия — Москва, остальные —
+           Амстердам. Бутстрап шаблона уже выбрал сервер по сохранённому ys_store_region; если витрина
+           говорит другое — запоминаем и перезапускаем страницу один раз. Вход сохраняется: у обеих
+           копий общий ключ подписи, а данные пользователя переносятся вместе с ним. */
+        (async function _syncStoreRegion() {
+          try {
+            if (!(await _rcConfigure()) || typeof Purchases.getStorefront !== 'function') return;
+            var sf = await Purchases.getStorefront();
+            var cc = String((sf && sf.countryCode) || '').toUpperCase();
+            if (!cc) return;
+            var region = (cc === 'RUS' || cc === 'RU') ? 'ru' : 'intl';
+            var stored = '';
+            try { stored = localStorage.getItem('ys_store_region') || ''; } catch (_) {}
+            if (stored === region) return;
+            /* Аккаунт из московской базы (номера веб-пользователей там ~9 999 9xx xxx; у копии в Амстердаме
+               счётчик начат с 9 500 000 000) живёт в Москве: не переключаем, иначе человек увидит пустой
+               профиль. Закрепляем Москву. */
+            var uidNow = 0;
+            try { uidNow = Number(localStorage.getItem('yupsoul_user_id')) || 0; } catch (_) {}
+            if (!stored && uidNow >= 9900000000) {
+              try { localStorage.setItem('ys_store_region', 'ru'); } catch (_) {}
+              return;
+            }
+            try { localStorage.setItem('ys_store_region', region); } catch (_) { return; }
+            var want = region === 'intl' ? 'https://yupsoul-intl.yupsoul.ru' : 'https://www.yupsoul.ru';
+            if ((window.HEROES_API_BASE || '') !== want) {
+              var guard = '';
+              try { guard = sessionStorage.getItem('ys_region_reload') || ''; } catch (_) {}
+              if (guard === region) return;
+              try { sessionStorage.setItem('ys_region_reload', region); } catch (_) {}
+              location.reload();
+            }
+          } catch (e) { console.warn('[native] витрина App Store не определилась', e); }
+        })();
+
         /* Связываем покупателя RevenueCat с нашим пользователем — по этому id
            вебхук находит, кому начислять. */
         async function _rcIdentify(userId) {
