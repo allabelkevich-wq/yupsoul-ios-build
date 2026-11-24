@@ -12218,6 +12218,24 @@ html.is-vk-light #soulChatPage .sc-send-btn-icon:disabled svg path {
     border-color: rgba(220,38,38,0.45) !important;
     color: #b91c1c !important;
   }
+  /* Подсказка под незаполненным полем (_ysInlineFieldHint, 18.11.2026) — тот же вид, что #submitHint */
+  .form-inline-hint {
+    background: rgba(244,63,94,0.12);
+    border: 1px solid rgba(244,63,94,0.35);
+    border-radius: 12px;
+    padding: 10px 14px;
+    color: #fda4af;
+    font-size: 0.85rem;
+    line-height: 1.4;
+    margin: 8px 0 0;
+  }
+  body.theme-light .form-inline-hint,
+  html.is-vk-light .form-inline-hint,
+  html.is-ok-light .form-inline-hint {
+    background: rgba(220,38,38,0.08);
+    border-color: rgba(220,38,38,0.45);
+    color: #b91c1c;
+  }
 
   /* ═══ VK Testers 11.05.2026 — Batch 7.10: визуальное выделение required полей ═══
      ID 7256232 (iOS Средний): «Обязательные поля в форме не выделены» — тестер
@@ -12954,6 +12972,18 @@ body.theme-light #formPage .field .cs-display{ backdrop-filter:none !important; 
 #homePage #homeHero .home-card-teaser{font-size:0.875rem !important;font-weight:400 !important;line-height:1.55 !important}
 
 #homePage #homeHero .home-card-title-accent{background:none !important;-webkit-background-clip:initial !important;background-clip:initial !important;color:#f472b6 !important;-webkit-text-fill-color:#f472b6 !important;filter:none !important;-webkit-animation:none !important;animation:none !important;font-weight:600 !important}
+/* Радужное слово главной переливается (решение заказчицы 24.11). Правило выше закрепляет цвет и гасит анимацию, а !important бьёт любые keyframes по background-position,
+   поэтому сдвиг ведёт зарегистрированное свойство --acx (как на первом экране iPhone), позиция читает его. Включает класс ys-acx на <html>, если в WebView есть CSS.registerProperty;
+   иначе слово остаётся статичным, как раньше. Градиент, 6 с и ease-in-out — из accentGradientShift. Паузы (фон, скрытый экран) действуют как у остальных анимаций. */
+/* @property --acx объявлен один раз — ниже, у блока первого экрана (.nfs). */
+@keyframes ysAcShift{0%,100%{--acx:0%}50%{--acx:100%}}
+@media (prefers-reduced-motion:no-preference){
+html.ys-acx #homePage #homeHero .home-card-title-accent{background-image:linear-gradient(120deg,#f472b6 0%,#ec4899 22%,#a78bfa 45%,#f97316 70%,#fbbf24 100%) !important;background-size:200% 100% !important;-webkit-background-clip:text !important;background-clip:text !important;color:transparent !important;-webkit-text-fill-color:transparent !important;background-position:var(--acx) 50% !important;animation-name:ysAcShift !important;animation-duration:6s !important;animation-timing-function:ease-in-out !important;animation-iteration-count:infinite !important}
+html.ys-acx body.theme-light #homePage #homeHero .home-card-title-accent{background-image:linear-gradient(120deg,#be185d 0%,#be185d 22%,#7c3aed 45%,#c2410c 70%,#b45309 100%) !important}
+}
+/* gradientShift (глобальное h1{…}) на заголовках с НЕПРОЗРАЧНОЙ заливкой текста или вовсе без фона ничего не показывает — градиент закрыт текстом или его нет,
+   но анимация перерисовывала заголовок каждый кадр (на главной и в «Картотеке» ~600 Paint за 5 с). Видимые переливы (заливка transparent: compat, admin, оплата, «Готово» и др.) не тронуты. */
+h1.home-card-title, #heroesPage h1, #topupPage h1, #formPage h1, #plansPage h1, #archetypePage h1, #soulChatPage h1 { -webkit-animation: none !important; animation: none !important; }
 /* Светлая: #ec4899 — заголовок 23px/600 = large text, порог 3:1, у #ec4899 на светлом 3.5:1 — проходит */
 /* градиенты Аллы сохранены — правило убрано (закон №42, 10.07) */
 
@@ -13760,22 +13790,6 @@ html.is-ok-light:not(.dark) #homeCommCard .task-body b { color: #241526 !importa
     html.is-native #partnerApplyPage,
     html.is-native #partnerDashPage { display: none !important; }
 
-    /* ── Вход через Apple (только нативная сборка) ──────────────────────────
-       Гайдлайны Apple разрешают радиус от нуля до половины высоты, поэтому
-       пилюля по закону №43 им не противоречит. Чёрный фон с белым логотипом —
-       один из утверждённых вариантов. Подпись переводится Apple-строками. */
-    .native-apple-btn { display: none; }
-    html.is-native .native-apple-btn {
-      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-      width: 100%; margin: 14px 0 4px; padding: 13px 20px;
-      background: #000; color: #fff; border: 1px solid rgba(255,255,255,0.22);
-      font-size: 16px; font-weight: 600; letter-spacing: -0.01em; cursor: pointer;
-    }
-    html.is-native .native-apple-btn:active { opacity: 0.82; }
-    /* В светлой теме чёрная кнопка на светлом фоне — тоже вариант из гайдлайнов. */
-    html.is-native.theme-light .native-apple-btn,
-    html.is-native body.theme-light .native-apple-btn { border-color: rgba(0,0,0,0.18); }
-
     /* Ряд VK/Telegram и его подпись на нативе не показываем: вход только Apple,
        иначе правило 4.8 требует объяснений, а сторонние входы на iOS лишние. */
     html.is-native .login-icons-row,
@@ -13793,3 +13807,127 @@ body.theme-light .ys-iap-busy-card{background:rgba(255,255,255,.97);color:#1a1a2
 #mtNpPlayBtn.is-loading::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:2px solid rgba(255,255,255,.18);border-top-color:#fff;animation:mtNpSpin .8s linear infinite;pointer-events:none}
 @keyframes mtNpSpin{to{transform:rotate(360deg)}}
 @media (prefers-reduced-motion:reduce){#mtNpPlayBtn.is-loading::after{animation-duration:2.4s}}
+
+
+/* ══ Первый экран iPhone-приложения (23.11.2026, принятый макет YupSoul-pervyj-ekran-iphone-makety.html, закон №46) ══
+   Два шага внутри #webLoginScreen: 1 — пластинка + «Хочу свою песню», 2 — «Остался один шаг» + Вход с Apple.
+   Виден ТОЛЬКО на html.is-native; сайт/Telegram/VK не затронуты. Значения px/цвета/keyframes — из макета дословно
+   (keyframes с префиксом nfs, чтобы не задеть одноимённые в приложении); токены объявлены внутри .nfs, не в :root.
+   Светлая тема: body.theme-light #webLoginScreen * { color !important } (L~7577) перебивает цвета — поэтому
+   color здесь с !important, а общий «* {color:inherit}» возвращает наследование. */
+#webLoginScreen .nfs{display:none}
+html.is-native #webLoginScreen .wl-promo,
+html.is-native #webLoginScreen .home-glass-card{display:none !important}
+html.is-native #webLoginScreen .nfs{--bg:#0a0612;--surface-2:rgba(255,255,255,.1);--line-2:rgba(255,255,255,.16);--text:#f5f1fb;--muted:rgba(245,241,251,.64);--cta:linear-gradient(135deg,#ec4899,#f97316);--cta-glow:rgba(236,72,153,.5);--sans:var(--font-app,'Inter',ui-sans-serif,system-ui,-apple-system,sans-serif);--dot:rgba(255,255,255,.22);--glowa:.14;--aura1:.2;--quiet:rgba(245,241,251,.58);--ring:255,214,236;--ring-o:.22;--grain:.035;--gcol:#cba2ff;--pl-bg:rgba(255,255,255,.08);--pl-line:rgba(255,255,255,.22);--pl-fg:#fff;--apple-bg:#fff;--apple-fg:#000}
+html.is-native body.theme-light #webLoginScreen .nfs{--bg:#faf5ec;--surface-2:#ffffff;--line-2:rgba(74,38,46,.16);--text:#241526;--muted:#6f5a66;--dot:rgba(36,21,38,.16);--glowa:.0;--aura1:.1;--quiet:#7a6570;--ring:157,23,77;--ring-o:.18;--grain:.025;--pl-bg:rgba(36,21,38,.05);--pl-line:rgba(36,21,38,.14);--pl-fg:#241526;--apple-bg:#000;--apple-fg:#fff}
+html.is-native #webLoginScreen .nfs{display:block;position:absolute;inset:0;z-index:30;overflow:hidden;isolation:isolate;box-sizing:border-box;font-family:var(--sans);font-optical-sizing:auto;font-synthesis:none;background:var(--bg);color:var(--text) !important;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;text-align:left}
+html.is-native #webLoginScreen .nfs *,html.is-native #webLoginScreen .nfs *::before,html.is-native #webLoginScreen .nfs *::after{box-sizing:border-box;color:inherit !important}
+html.is-native #webLoginScreen .nfs svg{display:block}
+html.is-native #webLoginScreen .nfs::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;background:radial-gradient(90% 50% at 50% 28%,rgba(124,58,237,.2),transparent 70%),radial-gradient(90% 30% at 50% 112%,rgba(249,115,22,.06),transparent 70%)}
+html.is-native body.theme-light #webLoginScreen .nfs::before{opacity:.6}
+/* зерно (::after с mix-blend-mode:overlay на весь экран) убрано 24.11: серый .5 под overlay нейтрален (разница ≤2/255), а смешивание всего экрана каждый кадр дорого; --grain в токенах не используется */
+html.is-native #webLoginScreen .nfs .ob-stars{position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.28;background-image:radial-gradient(1.4px 1.4px at 14% 12%,rgba(255,255,255,.55),transparent),radial-gradient(1.3px 1.3px at 80% 8%,rgba(255,255,255,.4),transparent),radial-gradient(1.2px 1.2px at 64% 18%,rgba(255,255,255,.38),transparent),radial-gradient(1.3px 1.3px at 24% 70%,rgba(255,255,255,.3),transparent),radial-gradient(1.2px 1.2px at 88% 64%,rgba(255,255,255,.28),transparent),radial-gradient(1.1px 1.1px at 42% 88%,rgba(255,255,255,.26),transparent)}
+html.is-native body.theme-light #webLoginScreen .nfs .ob-stars{display:none}
+/* пятно: круг 320px с blur(64px) заменён градиентом того же профиля (круг + 128px по краям), без filter — иначе размытие пересчитывается на каждом кадре дрейфа */
+html.is-native #webLoginScreen .nfs .aura{position:absolute;z-index:0;width:576px;height:576px;border-radius:50%;pointer-events:none;background:radial-gradient(closest-side,rgba(124,58,237,.956) 0%,rgba(124,58,237,.952) 5.6%,rgba(124,58,237,.938) 11.1%,rgba(124,58,237,.914) 16.7%,rgba(124,58,237,.879) 22.2%,rgba(124,58,237,.83) 27.8%,rgba(124,58,237,.767) 33.3%,rgba(124,58,237,.691) 38.9%,rgba(124,58,237,.605) 44.4%,rgba(124,58,237,.512) 50%,rgba(124,58,237,.417) 55.6%,rgba(124,58,237,.327) 61.1%,rgba(124,58,237,.245) 66.7%,rgba(124,58,237,.176) 72.2%,rgba(124,58,237,.12) 77.8%,rgba(124,58,237,.078) 83.3%,rgba(124,58,237,.048) 88.9%,rgba(124,58,237,.028) 94.4%,rgba(124,58,237,0) 100%)}
+html.is-native #webLoginScreen .nfs .aura.a1{left:-93px;top:-40px;opacity:var(--aura1);animation:nfsDrift 12s ease-in-out infinite alternate}
+@keyframes nfsDrift{from{transform:translate(0,0)}to{transform:translate(0,-24px)}}
+
+/* два шага: плавный переход fade + сдвиг 12px (вперёд — влево, назад — зеркально) */
+html.is-native #webLoginScreen .nfs .nfs-step{position:absolute;inset:0;z-index:1;display:flex;flex-direction:column;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .28s ease,transform .28s ease,visibility 0s linear .28s}
+html.is-native #webLoginScreen .nfs .nfs-s1{transform:translateX(-12px)}
+html.is-native #webLoginScreen .nfs .nfs-s2{transform:translateX(12px)}
+html.is-native #webLoginScreen .nfs[data-step="1"] .nfs-s1,html.is-native #webLoginScreen .nfs[data-step="2"] .nfs-s2{opacity:1;visibility:visible;pointer-events:auto;transform:none;transition-delay:0s}
+
+/* три текстовых стиля */
+html.is-native #webLoginScreen .nfs .h{font-size:27px !important;font-weight:600 !important;letter-spacing:-.03em !important;line-height:1.12 !important;margin:0;text-wrap:balance;text-transform:none !important}
+html.is-native #webLoginScreen .nfs .t-cap{font-size:14.5px !important;font-weight:400 !important;letter-spacing:0 !important;line-height:1.55 !important;color:var(--muted) !important;margin:0 !important;text-wrap:pretty}
+html.is-native #webLoginScreen .nfs .t-btn{font-size:17px !important;font-weight:600 !important;letter-spacing:0 !important;line-height:1.2 !important}
+
+html.is-native #webLoginScreen .nfs .top{position:relative;z-index:3;flex:none;display:flex;align-items:center;gap:8px;padding:max(56px,calc(env(safe-area-inset-top,0px) + 9px)) 24px 0}
+html.is-native #webLoginScreen .nfs .blogo{width:28px;height:28px;object-fit:contain}
+html.is-native #webLoginScreen .nfs .top2{position:relative;z-index:3;flex:none;padding:max(56px,calc(env(safe-area-inset-top,0px) + 9px)) 24px 0}
+html.is-native #webLoginScreen .nfs .back{width:44px !important;height:44px !important;min-width:0 !important;min-height:0 !important;margin:0 !important;padding:0 !important;border-radius:9999px !important;display:grid !important;place-items:center;background:var(--surface-2) !important;border:1px solid var(--line-2) !important;box-shadow:none !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important;color:var(--text) !important;cursor:pointer;font:inherit}
+
+html.is-native #webLoginScreen .nfs .body1{position:relative;z-index:2;flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 24px 16px;text-align:center}
+html.is-native #webLoginScreen .nfs .vinyl{position:relative;width:176px;height:176px}
+html.is-native #webLoginScreen .nfs .glow{position:absolute;inset:-72px;border-radius:50%;opacity:var(--glowa);background:radial-gradient(closest-side,rgba(168,85,247,.9),rgba(236,72,153,.5) 55%,transparent)}
+html.is-native #webLoginScreen .nfs .dshadow{position:absolute;inset:0;border-radius:50%;box-shadow:0 24px 48px -20px rgba(60,30,60,.35);opacity:0}
+html.is-native body.theme-light #webLoginScreen .nfs .dshadow{opacity:1}
+html.is-native #webLoginScreen .nfs .ring{position:absolute;inset:0;border-radius:50%;border:1px solid rgb(var(--ring));opacity:0;animation:nfsRingOut 5.5s cubic-bezier(.22,1,.36,1) infinite}
+html.is-native #webLoginScreen .nfs .ring.r2{animation-delay:-1.83s}
+html.is-native #webLoginScreen .nfs .ring.r3{animation-delay:-3.67s}
+@keyframes nfsRingOut{0%{transform:scale(1);opacity:var(--ring-o)}100%{transform:scale(1.9);opacity:0}}
+html.is-native #webLoginScreen .nfs .spin{position:absolute;inset:0;border-radius:50%;overflow:hidden;isolation:isolate;will-change:transform;animation:nfsSpin 16s linear infinite;background:repeating-radial-gradient(circle at 50% 50%,rgba(255,255,255,.06) 0 1px,transparent 1px 4px),linear-gradient(160deg,#1c1126,#120a19)}
+html.is-native #webLoginScreen .nfs .bl{position:absolute;inset:0;border-radius:50%;mix-blend-mode:screen;opacity:.3;background:conic-gradient(from 0deg,transparent 0 6%,#f472b6 9%,#a78bfa 12.5%,#67e8f9 16%,transparent 19.5%,transparent 52%,#f97316 55%,#f472b6 58.5%,#a78bfa 62%,transparent 65.5%,transparent 100%)}
+html.is-native #webLoginScreen .nfs .apple-c{position:absolute;left:50%;top:50%;width:80px;height:80px;margin:-40px 0 0 -40px;border-radius:50%;display:grid;place-items:center;box-shadow:inset 0 0 0 1px rgba(255,255,255,.18);background:radial-gradient(120% 120% at 26% 18%,hsl(332,94%,68%),transparent 52%),radial-gradient(128% 128% at 82% 26%,hsl(28,96%,62%),transparent 55%),radial-gradient(140% 140% at 64% 104%,hsl(286,72%,48%),transparent 60%),linear-gradient(160deg,hsl(300,46%,17%),hsl(22,44%,12%))}
+html.is-native #webLoginScreen .nfs .apple-c img{width:52px;height:auto;display:block}
+@keyframes nfsSpin{to{transform:rotate(360deg)}}
+html.is-native #webLoginScreen .nfs .sheen{position:absolute;inset:0;border-radius:50%;pointer-events:none;box-shadow:inset 0 0 0 1px rgba(255,255,255,.18)}
+/* кнопка звука: круг 52px (глобальные button-правила приложения перебиты !important) */
+html.is-native #webLoginScreen .nfs .play{position:relative;z-index:2;width:52px !important;height:52px !important;min-width:0 !important;min-height:0 !important;padding:0 !important;margin:24px 0 0 !important;border:0 !important;border-radius:50% !important;display:grid !important;place-items:center;background:var(--pl-bg) !important;-webkit-backdrop-filter:blur(12px) !important;backdrop-filter:blur(12px) !important;box-shadow:inset 0 0 0 1px var(--pl-line) !important;color:var(--pl-fg) !important;cursor:pointer;font:inherit;overflow:visible}
+html.is-native #webLoginScreen .nfs .play svg{margin-left:0}
+html.is-native #webLoginScreen .nfs .nfs-ic-off{display:none}
+html.is-native #webLoginScreen .nfs[data-muted="1"] .nfs-ic-on{display:none}
+html.is-native #webLoginScreen .nfs[data-muted="1"] .nfs-ic-off{display:block}
+html.is-native #webLoginScreen .nfs .body1 .t-cap{margin-top:8px !important;color:var(--quiet) !important}
+html.is-native #webLoginScreen .nfs .body1 .h{margin-top:40px !important}
+html.is-native #webLoginScreen .nfs .ac,html.is-native #webLoginScreen .nfs .home-card-title-accent{display:inline-block;color:transparent !important;-webkit-text-fill-color:transparent}
+/* светлая тема: акцентный градиент из принятого макета (контраст на кремовом фоне); класс и анимация — приложения */
+html.is-native body.theme-light #webLoginScreen .nfs .ac,html.is-native body.theme-light #webLoginScreen .nfs .home-card-title-accent{background-image:linear-gradient(120deg,#be185d 0%,#be185d 22%,#7c3aed 45%,#c2410c 70%,#b45309 100%) !important;filter:none !important}
+/* переливы радужного слова (как в принятом макете: 6s ease-in-out, градиент 200% 100%).
+   Глобальное правило .home-card-title-accent задаёт background с !important — позиция в нём закреплена, а !important бьёт любую анимацию,
+   поэтому сдвиг ведёт зарегистрированное свойство --acx, а позиция читает его (var() внутри !important-правила анимируется). Включает firstScreen
+   классом nfs-shimmer, если в WebView есть CSS.registerProperty (iOS 16.4+); иначе слово остаётся статичным, как в покое.
+   Анимация задана длинными свойствами без animation-play-state: паузы (шаг 2, nfs-paused) остаются в силе. */
+@property --acx{syntax:'<percentage>';inherits:false;initial-value:0%}
+@keyframes nfsAcShift{0%,100%{--acx:0%}50%{--acx:100%}}
+@media (prefers-reduced-motion:no-preference){html.is-native #webLoginScreen .nfs.nfs-shimmer .ac,html.is-native #webLoginScreen .nfs.nfs-shimmer .home-card-title-accent{background-position:var(--acx) 50% !important;animation-name:nfsAcShift !important;animation-duration:6s !important;animation-timing-function:ease-in-out !important;animation-iteration-count:infinite !important}}
+
+html.is-native #webLoginScreen .nfs .bottom{position:relative;z-index:3;flex:none;padding:0 24px 48px}
+html.is-native #webLoginScreen .nfs .dots{display:flex;justify-content:center;gap:8px;margin-bottom:24px}
+html.is-native #webLoginScreen .nfs .dots i{width:5px;height:5px;border-radius:9999px;background:var(--dot)}
+html.is-native #webLoginScreen .nfs .dots i.on{width:18px;background:var(--cta)}
+html.is-native #webLoginScreen .nfs .cta{width:100% !important;height:56px !important;min-width:0 !important;min-height:0 !important;margin:0 !important;padding:0 !important;border:0 !important;border-radius:9999px !important;display:flex !important;align-items:center;justify-content:center;color:#fff !important;background:var(--cta) !important;box-shadow:0 12px 32px -8px rgba(236,72,153,.45),inset 0 1px 0 rgba(255,255,255,.28) !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important;cursor:pointer;font-family:inherit;text-transform:none}
+html.is-native #webLoginScreen .nfs .body2{position:relative;z-index:2;flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 24px 24px;text-align:center}
+html.is-native #webLoginScreen .nfs .lg2{position:relative;width:88px;height:88px;margin-bottom:32px}
+html.is-native #webLoginScreen .nfs .lg2 img{position:relative;width:88px;height:auto;display:block}
+html.is-native #webLoginScreen .nfs .glow2{position:absolute;inset:-40px;border-radius:50%;opacity:calc(var(--glowa) * .8);filter:blur(24px);background:radial-gradient(closest-side,rgba(236,72,153,.8),rgba(168,85,247,.4) 60%,transparent)}
+html.is-native #webLoginScreen .nfs .body2 .t-cap{margin-top:16px !important;max-width:310px;text-wrap:balance}
+/* заголовок шага 2 наследует от глобального h1 анимацию сдвига градиента (gradientShift), но текст здесь закрашен сплошным цветом — кадры её не видны, а экран перерисовывался каждый кадр */
+html.is-native #webLoginScreen .nfs .body2 .h{animation:none !important}
+/* «Вход с Apple»: по правилам Apple — белая с чёрным в тёмной теме, чёрная с белым в светлой (токены --apple-*) */
+html.is-native #webLoginScreen .nfs .apple{margin:40px 0 0 !important;width:100% !important;height:56px !important;min-width:0 !important;min-height:0 !important;padding:0 !important;border:0 !important;border-radius:9999px !important;display:flex !important;align-items:center;justify-content:center;gap:8px;background:var(--apple-bg) !important;color:var(--apple-fg) !important;box-shadow:none !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important;cursor:pointer;font-family:inherit;text-transform:none}
+html.is-native #webLoginScreen .nfs .apple:active,html.is-native #webLoginScreen .nfs .cta:active,html.is-native #webLoginScreen .nfs .back:active,html.is-native #webLoginScreen .nfs .play:active{opacity:.82}
+html.is-native #webLoginScreen .nfs .body2 .legal{margin-top:24px !important;max-width:none;white-space:nowrap}
+html.is-native #webLoginScreen .nfs .legal a{text-decoration:underline;text-underline-offset:2px;color:inherit !important;cursor:pointer}
+
+html.is-native #webLoginScreen .nfs .in{animation:nfsRise .8s cubic-bezier(.22,1,.36,1) both !important;animation-delay:calc(var(--n,0)*70ms) !important}
+@keyframes nfsRise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+/* паузы: анимации скрытого шага и свёрнутого приложения стоят (класс nfs-paused ставит firstScreen на visibilitychange); экран входа скрыт display:none — там они и так снимаются */
+html.is-native #webLoginScreen .nfs[data-step="2"] .nfs-s1 *,html.is-native #webLoginScreen .nfs[data-step="1"] .nfs-s2 *,html.is-native #webLoginScreen .nfs.nfs-paused *{animation-play-state:paused !important}
+@media (prefers-reduced-motion:reduce){html.is-native #webLoginScreen .nfs,html.is-native #webLoginScreen .nfs *,html.is-native #webLoginScreen .nfs::before,html.is-native #webLoginScreen .nfs::after{animation:none !important;transition:none !important}}
+
+/* Переключатель языка на нативном экране входа (23.11, решение Аллы): тот же узел шапки #startLangSwitcher и его логика
+   (initLangSwitcher, setLang) — шапка не скрыта, а превращена в прозрачный слой над .nfs; логотип шапки скрыт (бренд есть в шаге 1).
+   Кнопка — стеклянный круг 44px как «назад»: цвета токенов .nfs продублированы литералами (шапка — соседний узел, не внутри .nfs).
+   Строка с ID нужна: !important-правила шапки (#webLoginScreen .home-top-bar .home-top-bar-btn) иначе перебивают. */
+html.is-native #webLoginScreen .home-top-bar{display:block !important;position:absolute !important;left:0 !important;right:0 !important;top:0 !important;height:0 !important;min-height:0 !important;padding:0 !important;margin:0 !important;background:none !important;border:0 !important;box-shadow:none !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important;z-index:40 !important;pointer-events:none !important}
+html.is-native #webLoginScreen .home-top-bar .home-top-bar-logo{display:none !important}
+html.is-native #webLoginScreen .home-top-bar .home-top-bar-actions{position:absolute !important;right:24px !important;left:auto !important;top:max(48px,calc(env(safe-area-inset-top,0px) + 1px)) !important;margin:0 !important;padding:0 !important;display:block !important;pointer-events:auto !important}
+html.is-native #webLoginScreen:has(.nfs[data-step="2"]) .home-top-bar .home-top-bar-actions{top:max(56px,calc(env(safe-area-inset-top,0px) + 9px)) !important}
+html.is-native #webLoginScreen .home-top-bar #startLangSwitcher{position:relative !important;top:auto !important;right:auto !important}
+html.is-native #webLoginScreen .home-top-bar #startLangSwitcherBtn{width:44px !important;height:44px !important;min-width:0 !important;min-height:0 !important;margin:0 !important;padding:0 !important;border-radius:9999px !important;display:grid !important;place-items:center;background:rgba(255,255,255,.1) !important;border:1px solid rgba(255,255,255,.16) !important;box-shadow:none !important;backdrop-filter:blur(12px) !important;-webkit-backdrop-filter:blur(12px) !important;color:#f5f1fb !important;font-family:var(--font-app,'Inter',sans-serif) !important;font-size:13.5px !important;font-weight:600 !important;letter-spacing:0 !important;line-height:1 !important;cursor:pointer}
+html.is-native #webLoginScreen .home-top-bar #startLangSwitcherBtn *{color:inherit !important;font-size:inherit !important;font-weight:inherit !important;letter-spacing:0 !important}
+html.is-native #webLoginScreen .home-top-bar #startLangSwitcherIcon{display:none !important}
+html.is-native #webLoginScreen .home-top-bar #startLangSwitcherDropdown{position:absolute !important;top:calc(100% + 8px) !important;right:0 !important;left:auto !important;width:60px !important;padding:8px !important;gap:6px !important;border-radius:30px !important;background:rgba(22,14,38,.96) !important;border:1px solid rgba(255,255,255,.16) !important;box-shadow:0 14px 36px rgba(0,0,0,.6) !important;display:flex !important;flex-direction:column !important;align-items:center !important;z-index:50 !important}
+html.is-native #webLoginScreen .home-top-bar #startLangSwitcherDropdown[hidden]{display:none !important}
+html.is-native #webLoginScreen .home-top-bar #startLangSwitcherDropdown .lang-opt{width:44px !important;height:44px !important;min-width:44px !important;min-height:44px !important;margin:0 !important;padding:0 !important;border-radius:9999px !important;background:rgba(255,255,255,.08) !important;border:1px solid rgba(255,255,255,.16) !important;box-shadow:none !important;color:#f5f1fb !important;font-size:13.5px !important;font-weight:600 !important;letter-spacing:0 !important}
+html.is-native #webLoginScreen .home-top-bar #startLangSwitcherDropdown .lang-opt:active{background:rgba(236,72,153,.28) !important}
+html.is-native body.theme-light #webLoginScreen .home-top-bar #startLangSwitcherBtn{background:#fff !important;border-color:rgba(74,38,46,.16) !important;color:#241526 !important}
+html.is-native body.theme-light #webLoginScreen .home-top-bar #startLangSwitcherDropdown{background:rgba(255,255,255,.97) !important;border-color:rgba(74,38,46,.16) !important;box-shadow:0 14px 36px rgba(60,30,40,.22) !important}
+html.is-native body.theme-light #webLoginScreen .home-top-bar #startLangSwitcherDropdown .lang-opt{background:rgba(36,21,38,.05) !important;border-color:rgba(74,38,46,.16) !important;color:#241526 !important}
+html.is-native body.theme-light #webLoginScreen .home-top-bar #startLangSwitcherDropdown .lang-opt:active{background:rgba(190,24,93,.14) !important}
+
+/* Шторка «Отправь песню в эфир» (#rsheet) в приложении iPhone: она fixed от низа с max-height:100% — на длинном содержимом верх доходил до края экрана, и крестик уходил под статус-бар (тестер, iPhone 17, App Store, 23.11: «крестик спрятан за техническими символами, не могу закрыть»). Слой .page сдвигается на вырез сам, но fixed-потомки считаются от вьюпорта — верх шторки не выше выреза; длинное содержимое прокручивается внутри (overflow-y:auto уже стоит). */
+html.is-native #myTracksPage .rsheet{max-height:calc(100% - env(safe-area-inset-top,0px) - 12px) !important}

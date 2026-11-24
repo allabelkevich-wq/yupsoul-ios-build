@@ -1054,13 +1054,14 @@
           }
         });
         target.classList.add('active');
+        if (window._ysInteractiveSync) window._ysInteractiveSync();
         // Move spiral canvas into active page (behind content, above gradient)
         var _sc = document.getElementById('globalSpiral');
         if (_sc) {
           // Оракул и его вкладки (Чат/Дневник/Разборы = тот же #soulChatPage) — БЕЗ
           // спирали Фибоначчи (Алла 17.06): прячем canvas. На других страницах — как было.
           if (['soulChatPage','profilePage','helpPage','partnerDashPage','partnerApplyPage'].indexOf(target.id) !== -1) { _sc.style.display = 'none'; }
-          else { _sc.style.display = ''; target.insertBefore(_sc, target.firstChild); }
+          else { _sc.style.display = ''; target.insertBefore(_sc, target.firstChild); if (window._spiralWake) window._spiralWake(); }
         }
         target.setAttribute('role', 'main');
         target.setAttribute('aria-hidden', 'false');
@@ -2033,9 +2034,11 @@
         var pauseAfterType = 2200;
         var pauseAfterDelete = 600;
         var tNext = 0;
+        // Шаг по таймеру, но по сетке кадров 60 Гц — скорость набора/стирания та же, что была при опросе в rAF.
+        function _twDelay(ms) { return Math.max(0, Math.ceil(ms / 16.667) * 16.667); }
         function run() {
           var now = Date.now();
-          if (now < tNext) { requestAnimationFrame(run); return; }
+          if (now < tNext) { setTimeout(run, _twDelay(tNext - now)); return; }
           var curLang = (typeof currentLang !== 'undefined' ? currentLang : 'ru');
           if (curLang !== _twLastLang) {
             _twLastLang = curLang;
@@ -2068,7 +2071,7 @@
           }
           var text = (phrase || '').slice(0, charIndex);
           targets.forEach(function(el) { if (el) el.textContent = text; });
-          requestAnimationFrame(run);
+          setTimeout(run, _twDelay(tNext - Date.now()));
         }
         run();
       })();
@@ -2689,10 +2692,39 @@
         updatePaymentUiFromCatalog();
       }
 
+      // Подсказка ПОД полем, к которому уезжает экран (18.11.2026: 8 человек жали «Создать» по 5–14 раз).
+      // #submitHint стоит внизу у кнопки, а экран прокручивается к пустому полю — человек видел поле
+      // без объяснения, листал вниз и жал снова. Пустой msg — убрать все такие подсказки.
+      window._ysInlineFieldHint = function (wrap, msg) {
+        document.querySelectorAll('.form-inline-hint').forEach(function (n) {
+          if (!msg || !wrap || !wrap.contains(n)) n.remove();
+        });
+        if (!msg || !wrap) return;
+        var ih = wrap.querySelector('.form-inline-hint');
+        if (!ih) {
+          ih = document.createElement('p');
+          ih.className = 'form-inline-hint';
+          ih.setAttribute('role', 'alert');
+          wrap.appendChild(ih);
+          // Начал заполнять поле — подсказка своё сделала (change ловит и кастомные дропдауны, §23).
+          var clear = function () {
+            // Та же подсказка дублируется внизу у кнопки (#submitHint) — гасим и её, иначе висит устаревшей.
+            var sh = document.getElementById('submitHint');
+            if (sh && sh.textContent === ih.textContent) sh.style.display = 'none';
+            if (ih.parentNode) ih.remove();
+            wrap.removeEventListener('change', clear, true);
+            wrap.removeEventListener('input', clear, true);
+          };
+          wrap.addEventListener('change', clear, true);
+          wrap.addEventListener('input', clear, true);
+        }
+        ih.textContent = msg;
+      };
       function _showFormHint(msg, focusFieldId) {
         var el = document.getElementById('submitHint');
         // Batch 6.1: убираем inline color — стиль теперь через CSS (тёмная и светлая тема)
         if (el) { el.textContent = msg || ''; el.style.display = msg ? 'block' : 'none'; el.style.removeProperty('color'); }
+        if (!msg) window._ysInlineFieldHint(null, '');
         // Развернуть аккордеон, если форма свёрнута — иначе пользователь не увидит поле
         if (msg && focusFieldId) {
           var formWrap = document.getElementById('formFieldsWrap');
@@ -2714,6 +2746,7 @@
           var field = document.getElementById(focusFieldId);
           var wrap = field && (field.closest('.field') || field.closest('.step-panel') || field.parentElement);
           if (wrap) {
+            window._ysInlineFieldHint(wrap, msg);
             try { wrap.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch(_) {}
             wrap.style.transition = 'box-shadow 0.3s';
             wrap.style.boxShadow = '0 0 0 2px rgba(236,72,153,0.5), 0 0 16px rgba(236,72,153,0.2)';
@@ -3821,11 +3854,13 @@
             // Фикс: убираем inline color — фон уже #fda4af на красном с прозрачностью, контраст виден на обеих темах.
             submitHintEl.style.removeProperty('color');
           }
+          if (!msg && window._ysInlineFieldHint) window._ysInlineFieldHint(null, '');
           // Прокручиваем к незаполненному полю и подсвечиваем
           if (msg && focusFieldId) {
             var field = document.getElementById(focusFieldId);
             var wrap = field && (field.closest('.field') || field.closest('.step-panel') || field.parentElement);
             if (wrap) {
+              if (window._ysInlineFieldHint) window._ysInlineFieldHint(wrap, msg);
               try { wrap.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch(_) {}
               wrap.style.transition = 'box-shadow 0.3s';
               wrap.style.boxShadow = '0 0 0 2px rgba(236,72,153,0.5), 0 0 16px rgba(236,72,153,0.2)';
